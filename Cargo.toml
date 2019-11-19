@@ -9,8 +9,12 @@ edition = "2018"
 [workspace]
 
 members = [
-    "perm"
+    "perm",
+    "digraph",
+    "btpartition"
 ]
 
 [dependencies]
 perm = {version = "0.1.0", path = "perm" }
+digraph = {version = "0.1.0", path = "digraph" }
+btpartition = {version = "0.1.0", path = "btpartition" }

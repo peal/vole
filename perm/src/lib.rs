@@ -1,18 +1,28 @@
+//! Digraphs
+//!
+//! This crate implements permutations on integers
+
 use std::cmp::max;
 use std::rc::Rc;
 
-#[derive(Clone, Debug, Eq)]
+/// Represents a permutation
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, Hash)]
 pub struct Permutation {
     vals: Rc<Vec<usize>>,
 }
 
 impl Permutation {
+    /// Get the identity permutation
     pub fn id() -> Permutation {
         Permutation {
             vals: Rc::new(Vec::new()),
         }
     }
 
+    /// Create a permutation based on `vals`.
+    /// Produces a permutation which maps i to vals\[i\], and acts as the
+    /// identity for i >= vals.len()
+    /// Requires: vals is a permutation on 0..vals.len()
     pub fn from_vec(mut vals: Vec<usize>) -> Permutation {
         while !vals.is_empty() && vals[vals.len() - 1] == vals.len() - 1 {
             vals.pop();
@@ -40,12 +50,6 @@ impl Permutation {
         } else {
             Some(self.vals.len() - 1)
         }
-    }
-}
-
-impl std::cmp::PartialEq for Permutation {
-    fn eq(&self, other: &Permutation) -> bool {
-        self.vals == other.vals
     }
 }
 
@@ -131,6 +135,19 @@ mod tests {
     fn id_perm() {
         assert_eq!(Permutation::id(), Permutation::id());
         assert_eq!(Permutation::id(), Permutation::from_vec(vec![0, 1, 2]));
+    }
+
+    #[test]
+    fn leq_perm() {
+        assert!(Permutation::id() <= Permutation::id());
+        assert!(!(Permutation::id() < Permutation::id()));
+        assert!(Permutation::id() <= Permutation::from_vec(vec![0, 1, 2]));
+        assert!(!(Permutation::id() < Permutation::from_vec(vec![0, 1, 2])));
+
+        let id = Permutation::id();
+        let cycle = Permutation::from_vec(vec![1, 2, 0]);
+        assert!(id < cycle);
+        assert!(!(id > cycle));
     }
 
     #[test]
