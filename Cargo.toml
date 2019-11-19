@@ -11,10 +11,10 @@ edition = "2018"
 members = [
     "perm",
     "digraph",
-    "btpartition"
+    "partitionstack"
 ]
 
 [dependencies]
 perm = {version = "0.1.0", path = "perm" }
 digraph = {version = "0.1.0", path = "digraph" }
-btpartition = {version = "0.1.0", path = "btpartition" }
+partitionstack = {version = "0.1.0", path = "partitionstack" }
