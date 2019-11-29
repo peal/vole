@@ -1,14 +1,25 @@
+use std::collections::hash_map::DefaultHasher;
+use std::hash::{Hash, Hasher};
+
+
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, Hash)]
 pub enum TraceEvent {
     Start(),
     End(),
-    Split{cell: usize, size: usize, reasons:usize},
-    NoSplit{cell:usize, reason:usize}
+    Split{cell: usize, size: usize, reason:u64},
+    NoSplit{cell:usize, reason:u64}
 }
 
+pub fn hash<T: Hash>(t: &T) -> u64 {
+    let mut s = DefaultHasher::new();
+    t.hash(&mut s);
+    s.finish()
+}
+
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, Hash)]
 pub struct TraceFailure {}
 
-trait Tracer {
+pub trait Tracer {
     fn add(&mut self, t: TraceEvent) -> Result<(),TraceFailure>;
 }
 
@@ -17,7 +28,7 @@ pub struct RecordingTracer {
 }
 
 impl RecordingTracer {
-    fn new() -> RecordingTracer {
+    pub fn new() -> RecordingTracer {
         RecordingTracer{ trace: vec![] }
     }
 }
@@ -36,7 +47,7 @@ pub struct ReplayingTracer {
 }
 
 impl ReplayingTracer {
-    fn new(trace: Vec<TraceEvent>) -> ReplayingTracer {
+    pub fn new(trace: Vec<TraceEvent>) -> ReplayingTracer {
         ReplayingTracer{trace, pos: 0}
     }
 }
