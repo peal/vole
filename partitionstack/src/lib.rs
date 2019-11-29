@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use std::collections::HashSet;
 use std::iter::FromIterator;
 
@@ -22,8 +24,8 @@ impl MarkStore {
         self.marks[i]
     }
 
-    fn setmarks(&mut self, start :usize, len: usize, cell: usize) {
-        for i in start..start+len {
+    fn setmarks(&mut self, start: usize, len: usize, cell: usize) {
+        for i in start..start + len {
             self.marks[i] = cell;
         }
     }
@@ -63,14 +65,14 @@ impl PartitionStack {
     pub fn new(n: usize) -> PartitionStack {
         PartitionStack {
             size: n,
-        cells : CellData {
-            vals: (0..n).collect(),
-            invvals: (0..n).collect(),
-            fixed: vec![],
-            fixed_vals: vec![],
-            starts: vec![0],
-            lengths: vec![n],
-        },
+            cells: CellData {
+                vals: (0..n).collect(),
+                invvals: (0..n).collect(),
+                fixed: vec![],
+                fixed_vals: vec![],
+                starts: vec![0],
+                lengths: vec![n],
+            },
             marks: MarkStore::new(n),
             splits: vec![],
         }
@@ -129,7 +131,6 @@ impl PartitionStack {
         assert_eq!(self.cells.starts.len(), self.cells.lengths.len());
 
         let mut starts: HashSet<usize> = HashSet::from_iter(self.cells.starts.iter().cloned());
-        print!("{:?} {:?}\n",starts,self.cells.starts);
         assert_eq!(starts.len(), self.cells.starts.len());
         starts.insert(self.size);
 
@@ -145,7 +146,7 @@ impl PartitionStack {
         }
     }
 
-    pub fn split_cell(&mut self, cell: usize, pos: usize) {
+    fn split_cell(&mut self, cell: usize, pos: usize) {
         debug_assert!(pos > 0 && pos < self.cells.lengths[cell]);
 
         self.splits.push(Split { cell });
@@ -166,31 +167,68 @@ impl PartitionStack {
         }
         if old_cell_new_size == 1 {
             self.cells.fixed.push(cell);
-            self.cells.fixed_vals.push(self.cells.vals[self.cells.starts[cell]]);
+            self.cells
+                .fixed_vals
+                .push(self.cells.vals[self.cells.starts[cell]]);
         }
 
-
-        self.marks.setmarks(new_cell_start,new_cell_size, new_cell_num);
+        self.marks
+            .setmarks(new_cell_start, new_cell_size, new_cell_num);
     }
 
-    pub fn unsplit_cell(&mut self) {
+    fn unsplit_cell(&mut self) {
         let unsplit = self.splits.pop().unwrap();
-    
+
         let cell_start = self.cells.starts.pop().unwrap();
         let cell_length = self.cells.lengths.pop().unwrap();
 
-        self.marks.setmarks(cell_start,cell_length, unsplit.cell);
+        self.marks.setmarks(cell_start, cell_length, unsplit.cell);
 
         self.cells.lengths[unsplit.cell] += cell_length;
     }
 
-    pub fn unsplit_cells_to(&mut self, cells: usize) {
-        debug_assert!(cells > self.cells());
-        while cells > self.cells() {
+    fn unsplit_cells_to(&mut self, cells: usize) {
+        debug_assert!(self.cells() >= cells);
+        while self.cells() > cells {
             self.unsplit_cell();
         }
     }
- }
+
+    /// The following methods are highly unsafe, and must be used with care.
+    fn mut_cell<'a>(&'a mut self, i: usize) -> &'a mut [usize] {
+        &mut self.cells.vals[self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i]]
+    }
+
+    fn mut_fix_cell_inverses(&mut self, i: usize) {
+        for j in self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i] {
+            self.cells.invvals[self.cells.vals[j]] = j;
+        }
+    }
+
+    fn refine_partition_cell<T: Ord>(&mut self, i: usize, f: fn(&usize) -> T) -> Result<(), ()> {
+        {
+            let cell_slice = self.mut_cell(i);
+            cell_slice.sort_by_key(f);
+        }
+        self.mut_fix_cell_inverses(i);
+        {
+            let cellstart = self.cells.starts[i];
+            for p in (1..self.cells.lengths[i]).rev() {
+                if f(&self.cells.vals[cellstart + p]) != f(&self.cells.vals[cellstart + p - 1]) {
+                    self.split_cell(i, p);
+                }
+            }
+        }
+        Ok(())
+    }
+
+    fn refine_partition<T: Ord>(&mut self, f: fn(&usize) -> T) -> Result<(), ()> {
+        for i in 0..self.cells() {
+            self.refine_partition_cell(i, f)?;
+        }
+        Ok(())
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -223,19 +261,72 @@ mod tests {
         p.unsplit_cell();
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         p.sanity_check();
-        p.split_cell(0,3);
+        p.split_cell(0, 3);
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2], vec![3, 4]]);
         p.sanity_check();
-        p.split_cell(0,1);
-        assert_eq!(p.as_list_set(), vec![vec![0], vec![3, 4], vec![1,2]]);
-        p.split_cell(1,1);
+        p.split_cell(0, 1);
+        assert_eq!(p.as_list_set(), vec![vec![0], vec![3, 4], vec![1, 2]]);
+        p.split_cell(1, 1);
         p.sanity_check();
-        assert_eq!(p.as_list_set(), vec![vec![0], vec![3], vec![1,2], vec![4]]);
+        assert_eq!(p.as_list_set(), vec![vec![0], vec![3], vec![1, 2], vec![4]]);
         p.unsplit_cell();
-        assert_eq!(p.as_list_set(), vec![vec![0], vec![3, 4], vec![1,2]]);
+        assert_eq!(p.as_list_set(), vec![vec![0], vec![3, 4], vec![1, 2]]);
         p.unsplit_cell();
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2], vec![3, 4]]);
         p.unsplit_cell();
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+    }
+
+    #[test]
+    fn test_refine() -> Result<(), ()> {
+        let mut p = PartitionStack::new(5);
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        p.refine_partition(|x| *x == 2)?;
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 3, 4], vec![2]]);
+        p.sanity_check();
+                // Do twice, as splitting rearranges internal values
+        p.unsplit_cell();
+        p.sanity_check();
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        p.refine_partition(|x| *x == 2)?;
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 3, 4], vec![2]]);
+        p.sanity_check();
+        p.refine_partition(|x| *x > 2)?;
+        assert_eq!(p.as_list_set(), vec![vec![0, 1], vec![2], vec![3, 4]]);
+        p.sanity_check();
+        Ok(())
+    }
+
+    #[test]
+    fn test_refine2() -> Result<(), ()> {
+        let mut p = PartitionStack::new(5);
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        p.refine_partition(|x| *x % 2 != 0)?;
+        assert_eq!(p.as_list_set(), vec![vec![0, 2, 4], vec![1, 3]]);
+        p.sanity_check();
+        p.unsplit_cell();
+        p.sanity_check();
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        p.refine_partition(|x| *x % 2 != 0)?;
+        assert_eq!(p.as_list_set(), vec![vec![0, 2, 4], vec![1, 3]]);
+        p.sanity_check();
+        p.refine_partition(|x| *x < 2)?;
+        assert_eq!(p.as_list_set(), vec![vec![2, 4], vec![3], vec![0], vec![1]]);
+        p.sanity_check();
+        p.unsplit_cells_to(2);
+        // Do twice, as splitting rearranges internal values
+        assert_eq!(p.as_list_set(), vec![vec![0, 2, 4], vec![1, 3]]);
+        p.sanity_check();
+        p.refine_partition(|x| *x < 2)?;
+        assert_eq!(p.as_list_set(), vec![vec![2, 4], vec![3], vec![0], vec![1]]);
+        p.sanity_check();
+        p.unsplit_cells_to(2);
+        assert_eq!(p.as_list_set(), vec![vec![0, 2, 4], vec![1, 3]]);
+        p.sanity_check();
+        p.refine_partition(|x| *x >= 2)?;
+        assert_eq!(p.as_list_set(), vec![ vec![0], vec![1],vec![2, 4], vec![3]]);
+        p.sanity_check();
+        p.unsplit_cell();
+        Ok(())
     }
 }

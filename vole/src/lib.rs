@@ -1,5 +1,6 @@
 mod refiners;
 mod state;
+mod search;
 
 #[cfg(test)]
 mod tests {
