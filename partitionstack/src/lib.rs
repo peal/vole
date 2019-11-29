@@ -205,7 +205,8 @@ impl PartitionStack {
         }
     }
 
-    fn refine_partition_cell<T: Ord>(&mut self, i: usize, f: fn(&usize) -> T) -> Result<(), ()> {
+    pub fn refine_partition_cell_by<F:Copy, T: Ord>(&mut self, i: usize, f: F) -> Result<(), ()>
+        where F : Fn(&usize) -> T {
         {
             let cell_slice = self.mut_cell(i);
             cell_slice.sort_by_key(f);
@@ -222,9 +223,10 @@ impl PartitionStack {
         Ok(())
     }
 
-    fn refine_partition<T: Ord>(&mut self, f: fn(&usize) -> T) -> Result<(), ()> {
+    pub fn refine_partition_by<F:Copy,T: Ord>(&mut self, f: F) -> Result<(), ()> 
+        where F: Fn(&usize) -> T {
         for i in 0..self.cells() {
-            self.refine_partition_cell(i, f)?;
+            self.refine_partition_cell_by(i, f)?;
         }
         Ok(())
     }
@@ -281,17 +283,17 @@ mod tests {
     fn test_refine() -> Result<(), ()> {
         let mut p = PartitionStack::new(5);
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
-        p.refine_partition(|x| *x == 2)?;
+        p.refine_partition_by(|x| *x == 2)?;
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 3, 4], vec![2]]);
         p.sanity_check();
                 // Do twice, as splitting rearranges internal values
         p.unsplit_cell();
         p.sanity_check();
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
-        p.refine_partition(|x| *x == 2)?;
+        p.refine_partition_by(|x| *x == 2)?;
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 3, 4], vec![2]]);
         p.sanity_check();
-        p.refine_partition(|x| *x > 2)?;
+        p.refine_partition_by(|x| *x > 2)?;
         assert_eq!(p.as_list_set(), vec![vec![0, 1], vec![2], vec![3, 4]]);
         p.sanity_check();
         Ok(())
@@ -301,29 +303,29 @@ mod tests {
     fn test_refine2() -> Result<(), ()> {
         let mut p = PartitionStack::new(5);
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
-        p.refine_partition(|x| *x % 2 != 0)?;
+        p.refine_partition_by(|x| *x % 2 != 0)?;
         assert_eq!(p.as_list_set(), vec![vec![0, 2, 4], vec![1, 3]]);
         p.sanity_check();
         p.unsplit_cell();
         p.sanity_check();
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
-        p.refine_partition(|x| *x % 2 != 0)?;
+        p.refine_partition_by(|x| *x % 2 != 0)?;
         assert_eq!(p.as_list_set(), vec![vec![0, 2, 4], vec![1, 3]]);
         p.sanity_check();
-        p.refine_partition(|x| *x < 2)?;
+        p.refine_partition_by(|x| *x < 2)?;
         assert_eq!(p.as_list_set(), vec![vec![2, 4], vec![3], vec![0], vec![1]]);
         p.sanity_check();
         p.unsplit_cells_to(2);
         // Do twice, as splitting rearranges internal values
         assert_eq!(p.as_list_set(), vec![vec![0, 2, 4], vec![1, 3]]);
         p.sanity_check();
-        p.refine_partition(|x| *x < 2)?;
+        p.refine_partition_by(|x| *x < 2)?;
         assert_eq!(p.as_list_set(), vec![vec![2, 4], vec![3], vec![0], vec![1]]);
         p.sanity_check();
         p.unsplit_cells_to(2);
         assert_eq!(p.as_list_set(), vec![vec![0, 2, 4], vec![1, 3]]);
         p.sanity_check();
-        p.refine_partition(|x| *x >= 2)?;
+        p.refine_partition_by(|x| *x >= 2)?;
         assert_eq!(p.as_list_set(), vec![ vec![0], vec![1],vec![2, 4], vec![3]]);
         p.sanity_check();
         p.unsplit_cell();

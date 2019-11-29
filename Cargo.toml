@@ -20,5 +20,6 @@ members = [
 perm = {version = "0.1.0", path = "perm" }
 digraph = {version = "0.1.0", path = "digraph" }
 partitionstack = {version = "0.1.0", path = "partitionstack" }
+trace = {version = "0.1.0", path = "trace" }
 graphiso = {version = "0.1.0", path = "graphiso" }
 vole = {version = "0.1.0", path = "vole" }

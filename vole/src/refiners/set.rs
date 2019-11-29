@@ -18,8 +18,8 @@ impl<T:State> Refiner<T> for SetStabilizer {
             .all(|x| self.set.contains(&(x ^ p)))
     }
 
-    fn refine_begin(&mut self, state: &T) -> Result<(), ()> {
-        state.refine_partition(|x| self.set.contains(&x))?;
+    fn refine_begin(&mut self, state: &mut T) -> Result<(), ()> {
+        state.refine_partition_by(|x| self.set.contains(x))?;
         Ok(())
     }
 }

@@ -6,15 +6,15 @@ pub trait Refiner<State: crate::state::State> {
 
     fn check(&self, p: &perm::Permutation) -> bool;
 
-    fn refine_begin(&mut self, _: &State) -> Result<(), ()> {
+    fn refine_begin(&mut self, _: &mut State) -> Result<(), ()> {
         Ok(())
     }
 
-    fn refine_fixed_points(&mut self, _: &State) -> Result<(), ()> {
+    fn refine_fixed_points(&mut self, _: &mut State) -> Result<(), ()> {
         Ok(())
     }
 
-    fn refine_changed_cells(&mut self, _: &State) -> Result<(), ()> {
+    fn refine_changed_cells(&mut self, _: &mut State) -> Result<(), ()> {
         Ok(())
     }
 }
