@@ -3,11 +3,6 @@
 use std::collections::HashSet;
 use std::iter::FromIterator;
 
-#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, Hash)]
-pub struct Split {
-    cell: usize,
-}
-
 #[derive(Clone, Debug)]
 struct MarkStore {
     marks: Vec<usize>,
@@ -58,7 +53,7 @@ pub struct PartitionStack {
 
     marks: MarkStore,
 
-    splits: Vec<Split>,
+    splits: Vec<usize>,
 }
 
 impl PartitionStack {
@@ -149,7 +144,7 @@ impl PartitionStack {
     fn split_cell(&mut self, cell: usize, pos: usize) {
         debug_assert!(pos > 0 && pos < self.cells.lengths[cell]);
 
-        self.splits.push(Split { cell });
+        self.splits.push(cell);
 
         let new_cell_num = self.cells.starts.len();
 
@@ -182,9 +177,9 @@ impl PartitionStack {
         let cell_start = self.cells.starts.pop().unwrap();
         let cell_length = self.cells.lengths.pop().unwrap();
 
-        self.marks.setmarks(cell_start, cell_length, unsplit.cell);
+        self.marks.setmarks(cell_start, cell_length, unsplit);
 
-        self.cells.lengths[unsplit.cell] += cell_length;
+        self.cells.lengths[unsplit] += cell_length;
     }
 
     fn unsplit_cells_to(&mut self, cells: usize) {
