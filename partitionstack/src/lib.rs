@@ -204,7 +204,7 @@ impl PartitionStack {
     }
 
 
-    pub fn refine_partition_cell_by<F:Copy, T: trace::Tracer, O: Ord+Hash>(&mut self, tracer: &mut T, i: usize, f: F) -> Result<(), trace::TraceFailure>
+    pub fn refine_partition_cell_by<F:Copy, T: trace::Tracer, O: Ord+Hash>(&mut self, tracer: &mut T, i: usize, f: F) -> trace::Result<()>
         where F : Fn(&usize) -> O {
             tracer.add(trace::TraceEvent::Start())?;
         {
@@ -229,7 +229,7 @@ impl PartitionStack {
         Ok(())
     }
 
-    pub fn refine_partition_by<F:Copy,T: trace::Tracer, O: Ord+Hash>(&mut self, tracer: &mut T, f: F) -> Result<(), trace::TraceFailure> 
+    pub fn refine_partition_by<F:Copy,T: trace::Tracer, O: Ord+Hash>(&mut self, tracer: &mut T, f: F) -> trace::Result<()> 
         where F: Fn(&usize) -> O {
         for i in 0..self.cells() {
             self.refine_partition_cell_by(tracer,i, f)?;
@@ -286,7 +286,7 @@ mod tests {
     }
 
     #[test]
-    fn test_refine() -> Result<(), trace::TraceFailure> {
+    fn test_refine() -> trace::Result<()> {
         let mut tracer = trace::RecordingTracer::new();
         let mut p = PartitionStack::new(5);
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
@@ -307,7 +307,7 @@ mod tests {
     }
 
     #[test]
-    fn test_refine2() -> Result<(), trace::TraceFailure> {
+    fn test_refine2() -> trace::Result<()> {
         let mut tracer = trace::RecordingTracer::new();
         let mut p = PartitionStack::new(5);
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);

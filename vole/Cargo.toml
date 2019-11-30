@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 perm = {version = "0.1.0", path = "../perm" }
 partitionstack = {version = "0.1.0", path = "../partitionstack" }
+trace = {version= "0.1.0", path = "../trace" }

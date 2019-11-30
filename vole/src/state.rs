@@ -1,31 +1,34 @@
+use std::hash::Hash;
+
 pub trait State {
     fn partition(&self) -> &partitionstack::PartitionStack;
-    fn refine_partition_cell_by<F: Copy, T:Ord>(&mut self, i: usize, f: F) -> Result<(), ()>
+    fn refine_partition_cell_by<F: Copy, T:Ord+Hash>(&mut self, i: usize, f: F) -> trace::Result<()>
         where F: Fn(&usize) -> T;
-    fn refine_partition_by<F:Copy,T:Ord>(&mut self,  f: F) -> Result<(), ()>
+    fn refine_partition_by<F:Copy,T:Ord+Hash>(&mut self,  f: F) -> trace::Result<()>
         where F: Fn(&usize) -> T;
 }
 
-pub struct PartitionState {
-    stack: partitionstack::PartitionStack
+pub struct PartitionState<T: trace::Tracer> {
+    stack: partitionstack::PartitionStack,
+    tracer: T
 }
 
-impl PartitionState {
-    fn new(n: usize) -> PartitionState {
-        PartitionState { stack: partitionstack::PartitionStack::new(n) }
+impl<Tracer: trace::Tracer> PartitionState<Tracer> {
+    fn new(n: usize, t: Tracer) -> PartitionState<Tracer> {
+        PartitionState { stack: partitionstack::PartitionStack::new(n), tracer: t }
     }
 }
 
-impl State for PartitionState {
+impl<Tracer: trace::Tracer> State for PartitionState<Tracer> {
     fn partition(&self) -> &partitionstack::PartitionStack {
         &self.stack
     }
 
-    fn refine_partition_cell_by<F: Copy, T:Ord>(&mut self, i: usize, f: F) -> Result<(), ()>
+    fn refine_partition_cell_by<F: Copy, T:Ord+Hash>(&mut self, i: usize, f: F) -> trace::Result<()>
         where F: Fn(&usize) -> T
-    { self.stack.refine_partition_cell_by(i, f) }
+    { self.stack.refine_partition_cell_by(&mut self.tracer, i, f) }
 
-    fn refine_partition_by<F:Copy,T:Ord>(&mut self,  f: F) -> Result<(), ()>
+    fn refine_partition_by<F:Copy,T:Ord+Hash>(&mut self,  f: F) -> trace::Result<()>
     where F: Fn(&usize) -> T
-    { self.stack.refine_partition_by(f) }
+    { self.stack.refine_partition_by(&mut self.tracer, f) }
 }

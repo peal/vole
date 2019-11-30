@@ -19,8 +19,10 @@ pub fn hash<T: Hash>(t: &T) -> u64 {
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, Hash)]
 pub struct TraceFailure {}
 
+pub type Result<T> = std::result::Result<T, TraceFailure>;
+
 pub trait Tracer {
-    fn add(&mut self, t: TraceEvent) -> Result<(),TraceFailure>;
+    fn add(&mut self, t: TraceEvent) -> Result<()>;
 }
 
 pub struct RecordingTracer {
@@ -34,7 +36,7 @@ impl RecordingTracer {
 }
 
 impl Tracer for RecordingTracer {
-    fn add(&mut self, t: TraceEvent) -> Result<(),TraceFailure>
+    fn add(&mut self, t: TraceEvent) -> Result<()>
     {
         self.trace.push(t);
         Ok(())
@@ -53,7 +55,7 @@ impl ReplayingTracer {
 }
 
 impl Tracer for ReplayingTracer {
-    fn add(&mut self, t: TraceEvent) -> Result<(),TraceFailure>
+    fn add(&mut self, t: TraceEvent) -> Result<()>
     {
         if self.pos >= self.trace.len() {
             Err(TraceFailure{})
