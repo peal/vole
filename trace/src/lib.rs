@@ -25,13 +25,14 @@ pub trait Tracer {
     fn add(&mut self, t: TraceEvent) -> Result<()>;
 }
 
+#[derive(Clone, Debug, Default)]
 pub struct RecordingTracer {
     trace: Vec<TraceEvent>
 }
 
 impl RecordingTracer {
-    pub fn new() -> RecordingTracer {
-        RecordingTracer{ trace: vec![] }
+    pub fn new() -> Self {
+        Default::default()
     }
 }
 
