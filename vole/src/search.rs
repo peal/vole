@@ -17,7 +17,7 @@ pub fn select_branching_cell<T:State>(state: &T) -> usize {
 pub fn simple_search_recurse<T:State>(state: &mut T, refiners: &mut Vec<Box<dyn Refiner<T>>>) -> trace::Result<()> {
     let part = state.partition();
     let cellnum = select_branching_cell(state);
-    let mut cell: Vec<usize> = part.cell(cellnum).iter().cloned().collect();
+    let mut cell: Vec<usize> = part.cell(cellnum).to_vec();
     cell.sort();
 
     for c in cell {
