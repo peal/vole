@@ -99,10 +99,7 @@ impl std::ops::Mul<&Permutation> for &Permutation {
         } else {
             let size = max(self.lmp().unwrap_or(0), other.lmp().unwrap_or(0));
             debug_assert!(size > 0);
-            let v = (0..size + 1)
-                .into_iter()
-                .map(|x| (x ^ self) ^ other)
-                .collect();
+            let v = (0..=size).map(|x| (x ^ self) ^ other).collect();
             Permutation::from_vec(v)
         }
     }
