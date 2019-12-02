@@ -99,7 +99,10 @@ impl std::ops::Mul<&Permutation> for &Permutation {
         } else {
             let size = max(self.lmp().unwrap_or(0), other.lmp().unwrap_or(0));
             debug_assert!(size > 0);
-            let v = (0..size+1).into_iter().map(|x| (x^self)^other).collect();
+            let v = (0..size + 1)
+                .into_iter()
+                .map(|x| (x ^ self) ^ other)
+                .collect();
             Permutation::from_vec(v)
         }
     }
@@ -169,7 +172,7 @@ mod tests {
     fn mult_perm() {
         let id = Permutation::id();
         let cycle = Permutation::from_vec(vec![1, 2, 0]);
-        let cycle2 = Permutation::from_vec(vec![2,0,1]);
+        let cycle2 = Permutation::from_vec(vec![2, 0, 1]);
         assert_eq!(id, &id * &id);
         assert_eq!(cycle, &cycle * &id);
         assert_eq!(cycle, &id * &cycle);

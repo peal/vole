@@ -8,11 +8,11 @@ pub struct SetStabilizer {
 
 impl SetStabilizer {
     pub fn new(set: HashSet<usize>) -> SetStabilizer {
-        SetStabilizer{set}
+        SetStabilizer { set }
     }
 }
 
-impl<T:State> Refiner<T> for SetStabilizer {
+impl<T: State> Refiner<T> for SetStabilizer {
     fn name(&self) -> String {
         format!("SetStabilizer of {:?}", self.set)
     }

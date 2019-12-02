@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
 use std::collections::HashSet;
-use std::iter::FromIterator;
 use std::hash::Hash;
+use std::iter::FromIterator;
 
 #[derive(Clone, Debug)]
 struct MarkStore {
@@ -56,8 +56,6 @@ pub struct PartitionStack {
 
     splits: Vec<usize>,
 }
-
-
 
 impl PartitionStack {
     pub fn new(n: usize) -> PartitionStack {
@@ -203,10 +201,16 @@ impl PartitionStack {
         }
     }
 
-
-    pub fn refine_partition_cell_by<F:Copy, T: trace::Tracer, O: Ord+Hash>(&mut self, tracer: &mut T, i: usize, f: F) -> trace::Result<()>
-        where F : Fn(&usize) -> O {
-            tracer.add(trace::TraceEvent::Start())?;
+    pub fn refine_partition_cell_by<F: Copy, T: trace::Tracer, O: Ord + Hash>(
+        &mut self,
+        tracer: &mut T,
+        i: usize,
+        f: F,
+    ) -> trace::Result<()>
+    where
+        F: Fn(&usize) -> O,
+    {
+        tracer.add(trace::TraceEvent::Start())?;
         {
             let cell_slice = self.mut_cell(i);
             cell_slice.sort_by_key(f);
@@ -215,13 +219,20 @@ impl PartitionStack {
         {
             let cellstart = self.cells.starts[i];
             // First cell is never split
-            tracer.add(trace::TraceEvent::NoSplit{cell: i, reason: trace::hash(&f(&self.cells.vals[cellstart]))})?;
+            tracer.add(trace::TraceEvent::NoSplit {
+                cell: i,
+                reason: trace::hash(&f(&self.cells.vals[cellstart])),
+            })?;
             for p in (1..self.cells.lengths[i]).rev() {
                 if f(&self.cells.vals[cellstart + p]) != f(&self.cells.vals[cellstart + p - 1]) {
                     self.split_cell(i, p);
-                      let val = f(&self.cells.vals[cellstart + p - 1]);
-                      
-                    tracer.add(trace::TraceEvent::Split{cell: i, size: p, reason: trace::hash(&val)})?
+                    let val = f(&self.cells.vals[cellstart + p - 1]);
+
+                    tracer.add(trace::TraceEvent::Split {
+                        cell: i,
+                        size: p,
+                        reason: trace::hash(&val),
+                    })?
                 }
             }
         }
@@ -229,10 +240,16 @@ impl PartitionStack {
         Ok(())
     }
 
-    pub fn refine_partition_by<F:Copy,T: trace::Tracer, O: Ord+Hash>(&mut self, tracer: &mut T, f: F) -> trace::Result<()> 
-        where F: Fn(&usize) -> O {
+    pub fn refine_partition_by<F: Copy, T: trace::Tracer, O: Ord + Hash>(
+        &mut self,
+        tracer: &mut T,
+        f: F,
+    ) -> trace::Result<()>
+    where
+        F: Fn(&usize) -> O,
+    {
         for i in 0..self.cells() {
-            self.refine_partition_cell_by(tracer,i, f)?;
+            self.refine_partition_cell_by(tracer, i, f)?;
         }
         Ok(())
     }
@@ -293,7 +310,7 @@ mod tests {
         p.refine_partition_by(&mut tracer, |x| *x == 2)?;
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 3, 4], vec![2]]);
         p.sanity_check();
-                // Do twice, as splitting rearranges internal values
+        // Do twice, as splitting rearranges internal values
         p.unsplit_cell();
         p.sanity_check();
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
@@ -334,7 +351,7 @@ mod tests {
         assert_eq!(p.as_list_set(), vec![vec![0, 2, 4], vec![1, 3]]);
         p.sanity_check();
         p.refine_partition_by(&mut tracer, |x| *x >= 2)?;
-        assert_eq!(p.as_list_set(), vec![ vec![0], vec![1],vec![2, 4], vec![3]]);
+        assert_eq!(p.as_list_set(), vec![vec![0], vec![1], vec![2, 4], vec![3]]);
         p.sanity_check();
         p.unsplit_cell();
         Ok(())

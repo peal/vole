@@ -1,7 +1,7 @@
-use crate::state::State;
 use crate::refiners::Refiner;
+use crate::state::State;
 
-pub fn select_branching_cell<T:State>(state: &T) -> usize {
+pub fn select_branching_cell<T: State>(state: &T) -> usize {
     let mut cell = std::usize::MAX;
     let mut cellsize = std::usize::MAX;
     for i in 1..state.partition().cells() {
@@ -14,7 +14,10 @@ pub fn select_branching_cell<T:State>(state: &T) -> usize {
     cell
 }
 
-pub fn simple_search_recurse<T:State>(state: &mut T, refiners: &mut Vec<Box<dyn Refiner<T>>>) -> trace::Result<()> {
+pub fn simple_search_recurse<T: State>(
+    state: &mut T,
+    refiners: &mut Vec<Box<dyn Refiner<T>>>,
+) -> trace::Result<()> {
     let part = state.partition();
     let cellnum = select_branching_cell(state);
     let mut cell: Vec<usize> = part.cell(cellnum).to_vec();
@@ -31,7 +34,10 @@ pub fn simple_search_recurse<T:State>(state: &mut T, refiners: &mut Vec<Box<dyn 
     Ok(())
 }
 
-pub fn simple_search<T:State>(state: &mut T, refiners: &mut Vec<Box<dyn Refiner<T>>>) -> trace::Result<()> {
+pub fn simple_search<T: State>(
+    state: &mut T,
+    refiners: &mut Vec<Box<dyn Refiner<T>>>,
+) -> trace::Result<()> {
     for r in refiners.iter_mut() {
         r.refine_begin(state)?;
     }

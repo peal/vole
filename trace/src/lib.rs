@@ -1,13 +1,19 @@
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 
-
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, Hash)]
 pub enum TraceEvent {
     Start(),
     End(),
-    Split{cell: usize, size: usize, reason:u64},
-    NoSplit{cell:usize, reason:u64}
+    Split {
+        cell: usize,
+        size: usize,
+        reason: u64,
+    },
+    NoSplit {
+        cell: usize,
+        reason: u64,
+    },
 }
 
 pub fn hash<T: Hash>(t: &T) -> u64 {
@@ -27,7 +33,7 @@ pub trait Tracer {
 
 #[derive(Clone, Debug, Default)]
 pub struct RecordingTracer {
-    trace: Vec<TraceEvent>
+    trace: Vec<TraceEvent>,
 }
 
 impl RecordingTracer {
@@ -37,8 +43,7 @@ impl RecordingTracer {
 }
 
 impl Tracer for RecordingTracer {
-    fn add(&mut self, t: TraceEvent) -> Result<()>
-    {
+    fn add(&mut self, t: TraceEvent) -> Result<()> {
         self.trace.push(t);
         Ok(())
     }
@@ -46,29 +51,27 @@ impl Tracer for RecordingTracer {
 
 pub struct ReplayingTracer {
     trace: Vec<TraceEvent>,
-    pos: usize
+    pos: usize,
 }
 
 impl ReplayingTracer {
     pub fn new(trace: Vec<TraceEvent>) -> ReplayingTracer {
-        ReplayingTracer{trace, pos: 0}
+        ReplayingTracer { trace, pos: 0 }
     }
 }
 
 impl Tracer for ReplayingTracer {
-    fn add(&mut self, t: TraceEvent) -> Result<()>
-    {
+    fn add(&mut self, t: TraceEvent) -> Result<()> {
         if self.pos >= self.trace.len() {
-            Err(TraceFailure{})
+            Err(TraceFailure {})
         } else if t != self.trace[self.pos] {
-            Err(TraceFailure{})
+            Err(TraceFailure {})
         } else {
             self.pos += 1;
             Ok(())
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests {

@@ -1,6 +1,6 @@
 pub mod refiners;
-pub mod state;
 pub mod search;
+pub mod state;
 
 #[cfg(test)]
 mod tests {
