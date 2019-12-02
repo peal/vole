@@ -1,5 +1,5 @@
-mod graph;
-mod set;
+pub mod graph;
+pub mod set;
 
 pub trait Refiner<State: crate::state::State> {
     fn name(&self) -> String;

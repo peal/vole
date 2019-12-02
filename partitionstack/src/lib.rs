@@ -185,7 +185,7 @@ impl PartitionStack {
         self.cells.lengths[unsplit] += cell_length;
     }
 
-    fn unsplit_cells_to(&mut self, cells: usize) {
+    pub fn unsplit_cells_to(&mut self, cells: usize) {
         debug_assert!(self.cells() >= cells);
         while self.cells() > cells {
             self.unsplit_cell();

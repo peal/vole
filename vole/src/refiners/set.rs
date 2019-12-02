@@ -2,8 +2,14 @@ use crate::refiners::Refiner;
 use crate::state::State;
 use std::collections::HashSet;
 
-struct SetStabilizer {
+pub struct SetStabilizer {
     set: HashSet<usize>,
+}
+
+impl SetStabilizer {
+    pub fn new(set: HashSet<usize>) -> SetStabilizer {
+        SetStabilizer{set}
+    }
 }
 
 impl<T:State> Refiner<T> for SetStabilizer {
