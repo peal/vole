@@ -46,6 +46,7 @@ pub struct CellData {
     lengths: Vec<usize>,
 }
 
+#[derive(Clone, Debug)]
 pub struct PartitionStack {
     /// Size of partition
     pub size: usize,

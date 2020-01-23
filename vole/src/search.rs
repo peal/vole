@@ -1,11 +1,15 @@
 use crate::refiners::Refiner;
 use crate::state::State;
 
+use log::trace;
+
 pub fn select_branching_cell<T: State>(state: &T) -> usize {
     let mut cell = std::usize::MAX;
     let mut cellsize = std::usize::MAX;
-    for i in 1..state.partition().cells() {
-        if state.partition().cell(i).len() < cellsize {
+    trace!("Choosing cell: {:?}", state.partition().as_list_set());
+    for i in 0..state.partition().cells() {
+        let size = state.partition().cell(i).len();
+        if size < cellsize && size > 1 {
             cell = i;
             cellsize = state.partition().cell(i).len();
         }
@@ -14,12 +18,17 @@ pub fn select_branching_cell<T: State>(state: &T) -> usize {
     cell
 }
 
-pub fn simple_search_recurse<T: State>(
-    state: &mut T,
-    refiners: &mut Vec<Box<dyn Refiner<T>>>,
-) -> trace::Result<()> {
+pub fn simple_search_recurse<T: State>(state: &mut T, refiners: &mut Vec<Box<dyn Refiner<T>>>) {
     let part = state.partition();
+
+    if part.cells() == part.domain_size() {
+        //check_solution();
+        trace!("Fixed all points");
+        return;
+    }
     let cellnum = select_branching_cell(state);
+    trace!("Partition: {:?}", state.partition().as_list_set());
+    trace!("Branching on {}", cellnum);
     let mut cell: Vec<usize> = part.cell(cellnum).to_vec();
     cell.sort();
 
@@ -27,22 +36,19 @@ pub fn simple_search_recurse<T: State>(
         let saved = state.save_state();
         let ret = state.refine_partition_cell_by(cellnum, |x| *x == c);
         if let Ok(()) = ret {
-            simple_search_recurse(state, refiners)?;
+            simple_search_recurse(state, refiners);
         }
         state.restore_state(saved);
     }
-    Ok(())
+    trace!("Returning");
 }
 
-pub fn simple_search<T: State>(
-    state: &mut T,
-    refiners: &mut Vec<Box<dyn Refiner<T>>>,
-) -> trace::Result<()> {
+pub fn simple_search<T: State>(state: &mut T, refiners: &mut Vec<Box<dyn Refiner<T>>>) {
     for r in refiners.iter_mut() {
-        r.refine_begin(state)?;
+        if let Err(_) = r.refine_begin(state) {
+            return;
+        }
     }
 
-    simple_search_recurse(state, refiners)?;
-
-    Ok(())
+    simple_search_recurse(state, refiners);
 }

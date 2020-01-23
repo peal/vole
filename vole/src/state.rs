@@ -2,6 +2,10 @@ use std::hash::Hash;
 
 pub trait State {
     fn partition(&self) -> &partitionstack::PartitionStack;
+
+    fn snapshot_rbase(&mut self);
+    fn rbase_partition(&self) -> &partitionstack::PartitionStack;
+
     fn refine_partition_cell_by<F: Copy, T: Ord + Hash>(
         &mut self,
         i: usize,
@@ -19,6 +23,7 @@ pub trait State {
 
 pub struct PartitionState<T: trace::Tracer> {
     stack: partitionstack::PartitionStack,
+    rbasestack: Option<partitionstack::PartitionStack>,
     tracer: T,
 }
 
@@ -26,6 +31,7 @@ impl<Tracer: trace::Tracer> PartitionState<Tracer> {
     pub fn new(n: usize, t: Tracer) -> PartitionState<Tracer> {
         PartitionState {
             stack: partitionstack::PartitionStack::new(n),
+            rbasestack: Option::None,
             tracer: t,
         }
     }
@@ -34,6 +40,15 @@ impl<Tracer: trace::Tracer> PartitionState<Tracer> {
 impl<Tracer: trace::Tracer> State for PartitionState<Tracer> {
     fn partition(&self) -> &partitionstack::PartitionStack {
         &self.stack
+    }
+
+    fn snapshot_rbase(&mut self) {
+        assert!(self.rbasestack.is_none());
+        self.rbasestack = Some(self.stack.clone());
+    }
+
+    fn rbase_partition(&self) -> &partitionstack::PartitionStack {
+        self.rbasestack.as_ref().unwrap()
     }
 
     fn refine_partition_cell_by<F: Copy, T: Ord + Hash>(
