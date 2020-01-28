@@ -62,7 +62,7 @@ impl ReplayingTracer {
 
 impl Tracer for ReplayingTracer {
     fn add(&mut self, t: TraceEvent) -> Result<()> {
-        if self.pos >= self.trace.len() ||  t != self.trace[self.pos] {
+        if self.pos >= self.trace.len() || t != self.trace[self.pos] {
             Err(TraceFailure {})
         } else {
             self.pos += 1;
