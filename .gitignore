@@ -3,3 +3,4 @@
 Cargo.lock
 target
 perm/Cargo.lock
+vole-trace.log

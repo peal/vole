@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 trace = {version = "0.1.0", path = "../trace" }
 perm = {version = "0.1.0", path = "../perm" }
+log = "0.4.8"
