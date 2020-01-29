@@ -263,13 +263,13 @@ impl PartitionStack {
         assert!(lhs.cells() == lhs.domain_size());
         assert!(rhs.cells() == rhs.domain_size());
         assert!(lhs.domain_size() == rhs.domain_size());
-        let mut perm = vec![0;rhs.domain_size()];
+        let mut perm = vec![0; rhs.domain_size()];
         for i in 0..rhs.domain_size() {
             perm[lhs.fixed_vals()[i]] = rhs.fixed_vals()[i];
         }
 
-    Permutation::from_vec(perm)
-}
+        Permutation::from_vec(perm)
+    }
 }
 
 #[cfg(test)]
@@ -382,7 +382,7 @@ mod tests {
         let mut q = PartitionStack::new(5);
         p.refine_partition_by(&mut tracer, |x| *x)?;
         q.refine_partition_by(&mut tracer, |x| *x)?;
-        assert_eq!(PartitionStack::perm_between(&p,&q), Permutation::id());
+        assert_eq!(PartitionStack::perm_between(&p, &q), Permutation::id());
         Ok(())
     }
 
@@ -393,8 +393,10 @@ mod tests {
         let mut q = PartitionStack::new(5);
         p.refine_partition_by(&mut tracer, |x| 10 - *x)?;
         q.refine_partition_by(&mut tracer, |x| *x)?;
-        assert_eq!(PartitionStack::perm_between(&p,&q), Permutation::from_vec(vec![4,3,2,1,0]));
+        assert_eq!(
+            PartitionStack::perm_between(&p, &q),
+            Permutation::from_vec(vec![4, 3, 2, 1, 0])
+        );
         Ok(())
     }
-
 }

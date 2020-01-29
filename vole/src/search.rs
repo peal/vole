@@ -1,6 +1,6 @@
+use crate::handlesols::check_solution;
 use crate::refiners::Refiner;
 use crate::state::State;
-use crate::handlesols::check_solution;
 
 use log::trace;
 

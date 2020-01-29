@@ -11,6 +11,6 @@ pub fn check_solution<T: State>(state: &mut T, refiners: &mut Vec<Box<dyn Refine
         state.snapshot_rbase();
     }
 
-//    let rbasepart = state.rbase_partition().
+    //    let rbasepart = state.rbase_partition().
     trace!("Checking solution: {:?}", state.partition().as_list_set());
 }
