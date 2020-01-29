@@ -71,16 +71,6 @@ impl Tracer for ReplayingTracer {
     }
 }
 
-enum TraceState {
-    BuildRBase,
-    FindAnswer,
-}
-
-pub struct AllTracer {
-    trace: Vec<TraceEvent>,
-    pos: usize,
-}
-
 #[cfg(test)]
 mod tests {
     #[test]

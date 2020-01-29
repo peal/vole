@@ -95,15 +95,15 @@ impl PartitionStack {
         self.cells.starts.len()
     }
 
-    pub fn cell<'a>(&'a self, i: usize) -> &'a [usize] {
+    pub fn cell(&self, i: usize) -> &[usize] {
         &self.cells.vals[self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i]]
     }
 
-    pub fn fixed_cells<'a>(&'a self) -> &'a [usize] {
+    pub fn fixed_cells(&self) -> &[usize] {
         &self.cells.fixed
     }
 
-    pub fn fixed_vals<'a>(&'a self) -> &'a [usize] {
+    pub fn fixed_vals(&self) -> &[usize] {
         &self.cells.fixed_vals
     }
 
@@ -194,7 +194,7 @@ impl PartitionStack {
     }
 
     /// The following methods are highly unsafe, and must be used with care.
-    fn mut_cell<'a>(&'a mut self, i: usize) -> &'a mut [usize] {
+    fn mut_cell(&mut self, i: usize) -> &mut [usize] {
         &mut self.cells.vals[self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i]]
     }
 
