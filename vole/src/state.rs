@@ -3,6 +3,7 @@ use std::hash::Hash;
 pub trait State {
     fn partition(&self) -> &partitionstack::PartitionStack;
 
+    fn has_rbase(&self) -> bool;
     fn snapshot_rbase(&mut self);
     fn rbase_partition(&self) -> &partitionstack::PartitionStack;
 
@@ -42,6 +43,9 @@ impl<Tracer: trace::Tracer> State for PartitionState<Tracer> {
         &self.stack
     }
 
+    fn has_rbase(&self) -> bool {
+        self.rbasestack.is_some()
+    }
     fn snapshot_rbase(&mut self) {
         assert!(self.rbasestack.is_none());
         self.rbasestack = Some(self.stack.clone());

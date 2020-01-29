@@ -1,5 +1,6 @@
 use crate::refiners::Refiner;
 use crate::state::State;
+use crate::handlesols::check_solution;
 
 use log::trace;
 
@@ -22,8 +23,7 @@ pub fn simple_search_recurse<T: State>(state: &mut T, refiners: &mut Vec<Box<dyn
     let part = state.partition();
 
     if part.cells() == part.domain_size() {
-        //check_solution();
-        trace!("Fixed all points");
+        check_solution(state, refiners);
         return;
     }
     let cellnum = select_branching_cell(state);

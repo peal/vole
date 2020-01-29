@@ -1,5 +1,7 @@
 #![allow(dead_code)]
 
+use perm::Permutation;
+
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter::FromIterator;
@@ -256,11 +258,26 @@ impl PartitionStack {
     }
 }
 
+impl PartitionStack {
+    pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> Permutation {
+        assert!(lhs.cells() == lhs.domain_size());
+        assert!(rhs.cells() == rhs.domain_size());
+        assert!(lhs.domain_size() == rhs.domain_size());
+        let mut perm = vec![0;rhs.domain_size()];
+        for i in 0..rhs.domain_size() {
+            perm[lhs.fixed_vals()[i]] = rhs.fixed_vals()[i];
+        }
+
+    Permutation::from_vec(perm)
+}
+}
+
 #[cfg(test)]
 mod tests {
     use crate::PartitionStack;
+    use perm::Permutation;
     #[test]
-    fn it_works() {
+    fn basic() {
         let p = PartitionStack::new(5);
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.domain_size(), 5);
@@ -357,4 +374,27 @@ mod tests {
         p.unsplit_cell();
         Ok(())
     }
+
+    #[test]
+    fn test_perm() -> trace::Result<()> {
+        let mut tracer = trace::RecordingTracer::new();
+        let mut p = PartitionStack::new(5);
+        let mut q = PartitionStack::new(5);
+        p.refine_partition_by(&mut tracer, |x| *x)?;
+        q.refine_partition_by(&mut tracer, |x| *x)?;
+        assert_eq!(PartitionStack::perm_between(&p,&q), Permutation::id());
+        Ok(())
+    }
+
+    #[test]
+    fn test_perm2() -> trace::Result<()> {
+        let mut tracer = trace::RecordingTracer::new();
+        let mut p = PartitionStack::new(5);
+        let mut q = PartitionStack::new(5);
+        p.refine_partition_by(&mut tracer, |x| 10 - *x)?;
+        q.refine_partition_by(&mut tracer, |x| *x)?;
+        assert_eq!(PartitionStack::perm_between(&p,&q), Permutation::from_vec(vec![4,3,2,1,0]));
+        Ok(())
+    }
+
 }
