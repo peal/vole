@@ -2,10 +2,13 @@
 //!
 //! This crate implements directed graphs
 
-pub trait Edge: Copy + Clone + Ord + Sized {
+use perm::Permutation;
+
+pub trait Edge: Copy + Clone + Ord + Sized + std::fmt::Debug {
     fn colour(&self) -> usize;
     fn end(&self) -> usize;
-    fn newend(&self, vertex: usize) -> Self;
+    fn replace_end(&self, i: usize) -> Self;
+    fn apply(&self, p: &Permutation) -> Self;
 }
 
 impl Edge for usize {
@@ -15,8 +18,13 @@ impl Edge for usize {
     fn end(&self) -> usize {
         *self
     }
-    fn newend(&self, vertex: usize) -> Self {
-        vertex
+
+    fn replace_end(&self, i: usize) -> Self {
+        i
+    }
+
+    fn apply(&self, p: &Permutation) -> Self {
+        (*self) ^ p
     }
 }
 
@@ -24,26 +32,26 @@ impl Edge for usize {
 /// 'outedges' represents the edges out from vertex i
 /// 'inedges' representes the edges into vertex i
 #[derive(Clone, Debug, PartialEq, Eq, Ord, PartialOrd)]
-pub struct Digraph<E: Edge> {
+pub struct DigraphBase<E: Edge> {
     outedges: Vec<Vec<E>>,
     inedges: Vec<Vec<E>>,
 }
 
-impl<E: Edge> Digraph<E> {
+impl<E: Edge> DigraphBase<E> {
     /// Get the empty digraph on n vertices
-    pub fn empty(n: usize) -> Digraph<E> {
-        Digraph {
+    pub fn empty(n: usize) -> DigraphBase<E> {
+        DigraphBase {
             outedges: vec![vec![]; n],
             inedges: vec![vec![]; n],
         }
     }
 
-    pub fn from_vec(mut outedges: Vec<Vec<E>>) -> Digraph<E> {
+    pub fn from_vec(mut outedges: Vec<Vec<E>>) -> DigraphBase<E> {
         let mut inedges = vec![vec![]; outedges.len()];
 
         for (i, item) in outedges.iter().enumerate() {
             for edge in item {
-                inedges[edge.end()].push(edge.newend(i))
+                inedges[edge.end()].push(edge.replace_end(i))
             }
         }
 
@@ -55,7 +63,7 @@ impl<E: Edge> Digraph<E> {
             i.sort();
         }
 
-        Digraph { outedges, inedges }
+        DigraphBase { outedges, inedges }
     }
 
     pub fn vertices(&self) -> usize {
@@ -68,5 +76,64 @@ impl<E: Edge> Digraph<E> {
 
     pub fn inedges<'a>(&'a self, i: usize) -> &'a Vec<E> {
         &self.inedges[i]
+    }
+}
+
+impl<E: Edge> std::ops::BitXor<&Permutation> for &DigraphBase<E> {
+    type Output = DigraphBase<E>;
+
+    fn bitxor(self, perm: &Permutation) -> Self::Output {
+        let mut outedges: Vec<Vec<E>> = vec![vec![]; self.outedges.len()];
+        for i in 0..self.outedges.len() {
+            let i_img = i ^ perm;
+            for edge in &self.outedges[i] {
+                outedges[i_img].push(edge.apply(&perm));
+            }
+        }
+        println!("{:?} {:?}\n", self.outedges, outedges);
+        DigraphBase::from_vec(outedges)
+    }
+}
+
+pub type Digraph = DigraphBase<usize>;
+
+#[cfg(test)]
+mod tests {
+    use crate::Digraph;
+    use crate::Permutation;
+    #[test]
+    fn id_perm() {
+        let d = Digraph::empty(3);
+        assert_eq!(d.vertices(), 3);
+        for i in 0..3 {
+            assert_eq!(d.inedges(i), &vec![]);
+            assert_eq!(d.outedges(i), &vec![]);
+        }
+        assert_eq!(d, d);
+        let e = Digraph::empty(4);
+        assert!(d != e);
+        assert!(d < e);
+        assert!(e >= d);
+    }
+
+    #[test]
+    fn empty_perm_graph() {
+        let d = Digraph::empty(3);
+        let p = Permutation::from_vec(vec![1, 0]);
+        let e = (&d) ^ (&p);
+        assert_eq!(d, e);
+    }
+
+    #[test]
+    fn cycle_perm_graph() {
+        let d = Digraph::from_vec(vec![vec![1], vec![2], vec![0]]);
+        let p = Permutation::from_vec(vec![1, 2, 0]);
+        let c2 = Permutation::from_vec(vec![1, 0]);
+        let e = (&d) ^ (&p);
+        let f = (&d) ^ (&c2);
+        let g = (&f) ^ (&c2);
+        assert_eq!(d, e);
+        assert!(d != f);
+        assert_eq!(d, g);
     }
 }

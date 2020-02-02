@@ -2,7 +2,7 @@ use crate::refiners::Refiner;
 use crate::state::State;
 use log::trace;
 
-pub fn check_solution<T: State>(state: &mut T, refiners: &mut Vec<Box<dyn Refiner<T>>>) {
+pub fn check_solution<T: State>(state: &mut T, refiners: &mut Vec<Box<dyn Refiner<T>>>) -> bool {
     if !state.has_rbase() {
         trace!("Taking rbase snapshot");
         state.snapshot_rbase();
@@ -11,13 +11,13 @@ pub fn check_solution<T: State>(state: &mut T, refiners: &mut Vec<Box<dyn Refine
     let part = state.partition();
     assert!(part.cells() == part.domain_size());
 
-    trace!(
-        "AChecking solution: {:?}",
-        state.rbase_partition().as_list_set()
-    );
-    trace!("BChecking solution: {:?}", part.as_list_set());
-
     let sol = partitionstack::perm_between(&state.rbase_partition(), &part);
 
     trace!("Checking solution: {:?}", sol);
+
+    let is_sol = refiners.iter().all(|x| x.check(&sol));
+    if is_sol {
+        trace!("Found solution");
+    }
+    is_sol
 }

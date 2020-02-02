@@ -27,6 +27,14 @@ impl Permutation {
         while !vals.is_empty() && vals[vals.len() - 1] == vals.len() - 1 {
             vals.pop();
         }
+
+        if cfg!(debug_assertions) {
+            let mut val_cpy = vals.clone();
+            val_cpy.sort();
+            for i in val_cpy.into_iter().enumerate() {
+                assert_eq!(i.0, i.1)
+            }
+        }
         Permutation {
             vals: Rc::new(vals),
         }

@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 perm = {version = "0.1.0", path = "../perm" }
 partitionstack = {version = "0.1.0", path = "../partitionstack" }
+digraph = { version = "0.1.0", path = "../digraph" }
 trace = {version= "0.1.0", path = "../trace" }
 log = "0.4.8"
 simplelog = "0.7.4"
