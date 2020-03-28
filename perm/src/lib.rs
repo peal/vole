@@ -2,11 +2,17 @@
 //!
 //! This crate implements permutations on integers
 
+extern crate serde;
+extern crate serde_json;
+
+extern crate serde_derive;
+use serde_derive::{Deserialize, Serialize};
+
 use std::cmp::max;
 use std::rc::Rc;
 
 /// Represents a permutation
-#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, Hash)]
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, Hash, Deserialize, Serialize)]
 pub struct Permutation {
     vals: Rc<Vec<usize>>,
 }

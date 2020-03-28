@@ -1,4 +1,4 @@
-pub mod graph;
+pub mod digraph;
 pub mod set;
 
 pub trait Refiner<State: crate::state::State> {
