@@ -1,11 +1,9 @@
 extern crate vole;
 use crate::vole::parseinput;
-use crate::vole::refiners::digraph::DigraphStabilizer;
-use crate::vole::refiners::set::SetStabilizer;
+
 use crate::vole::refiners::Refiner;
 use crate::vole::state::PartitionState;
 
-use digraph::Digraph;
 use std::collections::HashSet;
 use trace::Tracer;
 use vole::search::simple_search;

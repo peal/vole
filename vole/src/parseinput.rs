@@ -3,32 +3,54 @@ extern crate serde_derive;
 extern crate serde_json;
 use serde_derive::{Deserialize, Serialize};
 
+use digraph::Digraph;
+
 use crate::refiners::Refiner;
+use crate::refiners::digraph::DigraphStabilizer;
+use crate::refiners::simple::SetStabilizer;
+use crate::refiners::simple::TupleStabilizer;
 use crate::state::PartitionState;
 
 use anyhow::Result;
 
 use std::io::BufRead;
 
-trait BuildRefiner {
+trait RefinerDescription {
     fn refiner(&self) -> Box<dyn Refiner<PartitionState>>;
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DigraphStab {
-    edges: Vec<Vec<u64>>,
+    edges: Vec<Vec<usize>>,
+}
+
+impl RefinerDescription for DigraphStab {
+    fn refiner(&self) -> Box<dyn Refiner<PartitionState>> {
+        Box::new(DigraphStabilizer::new(Digraph::from_vec(self.edges.clone())))
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct SetStab {
-    points: Vec<u64>,
+    points: Vec<usize>,
+}
+
+impl RefinerDescription for SetStab {
+    fn refiner(&self) -> Box<dyn Refiner<PartitionState>> {
+        Box::new(SetStabilizer::new(self.points.iter().cloned().collect()))
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct TupleStab {
-    points: Vec<u64>,
+    points: Vec<usize>,
 }
 
+impl RefinerDescription for TupleStab {
+    fn refiner(&self) -> Box<dyn Refiner<PartitionState>> {
+        Box::new(TupleStabilizer::new(self.points.clone()))
+    }
+}
 #[derive(Debug, Deserialize, Serialize)]
 pub enum Constraint {
     DigraphStab(DigraphStab),

@@ -1,5 +1,5 @@
 pub mod digraph;
-pub mod set;
+pub mod simple;
 
 pub trait Refiner<State: crate::state::State> {
     fn name(&self) -> String;
