@@ -49,10 +49,16 @@ fn main() -> anyhow::Result<()> {
     ])
     .unwrap();
 
+    println!("Parsed");
+
     let mut infile = BufReader::new(unsafe { File::from_raw_fd(opt.inpipe.unwrap()) });
     let mut outfile = BufWriter::new(unsafe { File::from_raw_fd(opt.outpipe.unwrap()) });
 
-    parseinput::read_problem(&mut infile)?;
+    println!("Reading");
+
+    let problem = parseinput::read_problem(&mut infile)?;
+
+    println!("Reading finished");
     /*
     let set: HashSet<usize> = vec![2, 4, 6].into_iter().collect();
     let digraph: Digraph = Digraph::empty(6);
@@ -63,5 +69,6 @@ fn main() -> anyhow::Result<()> {
     let mut state = PartitionState::new(5, tracer);
     simple_search(&mut state, &mut refiners);
     */
+    write!(&mut outfile, "{{\"result\": \"OK\"}}\n")?;
     Ok(())
 }

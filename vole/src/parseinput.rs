@@ -5,10 +5,10 @@ use serde_derive::{Deserialize, Serialize};
 
 use digraph::Digraph;
 
-use crate::refiners::Refiner;
 use crate::refiners::digraph::DigraphStabilizer;
 use crate::refiners::simple::SetStabilizer;
 use crate::refiners::simple::TupleStabilizer;
+use crate::refiners::Refiner;
 use crate::state::PartitionState;
 
 use anyhow::Result;
@@ -26,7 +26,9 @@ pub struct DigraphStab {
 
 impl RefinerDescription for DigraphStab {
     fn refiner(&self) -> Box<dyn Refiner<PartitionState>> {
-        Box::new(DigraphStabilizer::new(Digraph::from_vec(self.edges.clone())))
+        Box::new(DigraphStabilizer::new(Digraph::from_vec(
+            self.edges.clone(),
+        )))
     }
 }
 
@@ -72,6 +74,8 @@ pub struct Problem {
 }
 
 pub fn read_problem<R: BufRead>(prob: &mut R) -> Result<Problem> {
-    let parsed: Problem = serde_json::from_reader(prob)?;
+    let mut line = String::new();
+    let _ = prob.read_line(&mut line)?;
+    let parsed: Problem = serde_json::from_str(&line)?;
     Ok(parsed)
 }
