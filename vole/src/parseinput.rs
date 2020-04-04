@@ -16,7 +16,7 @@ use anyhow::Result;
 use std::io::BufRead;
 
 trait RefinerDescription {
-    fn refiner(&self) -> Box<dyn Refiner<PartitionState>>;
+    fn build_refiner(&self) -> Box<dyn Refiner<PartitionState>>;
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -25,7 +25,7 @@ pub struct DigraphStab {
 }
 
 impl RefinerDescription for DigraphStab {
-    fn refiner(&self) -> Box<dyn Refiner<PartitionState>> {
+    fn build_refiner(&self) -> Box<dyn Refiner<PartitionState>> {
         Box::new(DigraphStabilizer::new(Digraph::from_vec(
             self.edges.clone(),
         )))
@@ -38,7 +38,7 @@ pub struct SetStab {
 }
 
 impl RefinerDescription for SetStab {
-    fn refiner(&self) -> Box<dyn Refiner<PartitionState>> {
+    fn build_refiner(&self) -> Box<dyn Refiner<PartitionState>> {
         Box::new(SetStabilizer::new(self.points.iter().cloned().collect()))
     }
 }
@@ -49,7 +49,7 @@ pub struct TupleStab {
 }
 
 impl RefinerDescription for TupleStab {
-    fn refiner(&self) -> Box<dyn Refiner<PartitionState>> {
+    fn build_refiner(&self) -> Box<dyn Refiner<PartitionState>> {
         Box::new(TupleStabilizer::new(self.points.clone()))
     }
 }
@@ -60,19 +60,32 @@ pub enum Constraint {
     TupleStab(TupleStab),
 }
 
+impl RefinerDescription for Constraint {
+    fn build_refiner(&self) -> Box<dyn Refiner<PartitionState>> {
+        match self {
+            Constraint::DigraphStab(c) => c.build_refiner(),
+            Constraint::SetStab(c) => c.build_refiner(),
+            Constraint::TupleStab(c) => c.build_refiner(),
+        }
+    }
+}
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
-    points: u64,
-    findgens: bool,
+    pub points: usize,
+    pub findgens: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Problem {
-    config: Config,
-    constraints: Vec<Constraint>,
-    debug: bool,
+    pub config: Config,
+    pub constraints: Vec<Constraint>,
+    pub debug: bool,
 }
 
+pub fn build_constraints(constraints: &Vec<Constraint>) -> Vec<Box<dyn Refiner<PartitionState>>> {
+    constraints.iter().map(|x| x.build_refiner()).collect()
+}
 pub fn read_problem<R: BufRead>(prob: &mut R) -> Result<Problem> {
     let mut line = String::new();
     let _ = prob.read_line(&mut line)?;

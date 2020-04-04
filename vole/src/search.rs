@@ -1,5 +1,6 @@
 use crate::handlesols::check_solution;
 use crate::refiners::Refiner;
+use crate::solutions::Solutions;
 use crate::state::State;
 
 use log::trace;
@@ -19,11 +20,15 @@ pub fn select_branching_cell<T: State>(state: &T) -> usize {
     cell
 }
 
-pub fn simple_search_recurse<T: State>(state: &mut T, refiners: &mut Vec<Box<dyn Refiner<T>>>) {
+pub fn simple_search_recurse<T: State>(
+    state: &mut T,
+    sols: &mut Solutions,
+    refiners: &mut Vec<Box<dyn Refiner<T>>>,
+) {
     let part = state.partition();
 
     if part.cells() == part.domain_size() {
-        check_solution(state, refiners);
+        if check_solution(state, sols, refiners) {}
         return;
     }
     let cellnum = select_branching_cell(state);
@@ -36,19 +41,23 @@ pub fn simple_search_recurse<T: State>(state: &mut T, refiners: &mut Vec<Box<dyn
         let saved = state.save_state();
         let ret = state.refine_partition_cell_by(cellnum, |x| *x == c);
         if let Ok(()) = ret {
-            simple_search_recurse(state, refiners);
+            simple_search_recurse(state, sols, refiners);
         }
         state.restore_state(saved);
     }
     trace!("Returning");
 }
 
-pub fn simple_search<T: State>(state: &mut T, refiners: &mut Vec<Box<dyn Refiner<T>>>) {
+pub fn simple_search<T: State>(
+    state: &mut T,
+    sols: &mut Solutions,
+    refiners: &mut Vec<Box<dyn Refiner<T>>>,
+) {
     for r in refiners.iter_mut() {
         if let Err(_) = r.refine_begin(state) {
             return;
         }
     }
 
-    simple_search_recurse(state, refiners);
+    simple_search_recurse(state, sols, refiners);
 }

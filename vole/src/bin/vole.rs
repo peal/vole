@@ -1,9 +1,14 @@
 extern crate vole;
 use crate::vole::parseinput;
-
+use crate::vole::solutions::Solutions;
+use crate::vole::state::PartitionState;
 extern crate simplelog;
 
+use vole::search::simple_search;
+
 use simplelog::*;
+
+extern crate serde_json;
 
 use std::path::PathBuf;
 use structopt::StructOpt;
@@ -49,19 +54,20 @@ fn main() -> anyhow::Result<()> {
 
     println!("Reading");
 
-    let _problem = parseinput::read_problem(&mut infile)?;
-
+    let problem = parseinput::read_problem(&mut infile)?;
     println!("Reading finished");
-    /*
-    let set: HashSet<usize> = vec![2, 4, 6].into_iter().collect();
-    let digraph: Digraph = Digraph::empty(6);
-    let mut refiners: Vec<Box<dyn Refiner<PartitionState>>> =
-        vec![Box::new(SetStabilizer::new(set)), Box::new(DigraphStabilizer::new(digraph))];
+
+    let mut constraints = parseinput::build_constraints(&problem.constraints);
     let tracer = trace::Tracer::new();
 
-    let mut state = PartitionState::new(5, tracer);
-    simple_search(&mut state, &mut refiners);
-    */
-    write!(&mut outfile, "{{\"result\": \"OK\"}}\n")?;
+    let mut state = PartitionState::new(problem.config.points, tracer);
+    let mut solutions = Solutions::default();
+    simple_search(&mut state, &mut solutions, &mut constraints);
+
+    writeln!(
+        &mut outfile,
+        "{}",
+        serde_json::to_string(&solutions).unwrap()
+    )?;
     Ok(())
 }

@@ -1,8 +1,13 @@
 use crate::refiners::Refiner;
+use crate::solutions::Solutions;
 use crate::state::State;
 use log::trace;
 
-pub fn check_solution<T: State>(state: &mut T, refiners: &mut Vec<Box<dyn Refiner<T>>>) -> bool {
+pub fn check_solution<T: State>(
+    state: &mut T,
+    sols: &mut Solutions,
+    refiners: &mut Vec<Box<dyn Refiner<T>>>,
+) -> bool {
     if !state.has_rbase() {
         trace!("Taking rbase snapshot");
         state.snapshot_rbase();
@@ -18,6 +23,7 @@ pub fn check_solution<T: State>(state: &mut T, refiners: &mut Vec<Box<dyn Refine
     let is_sol = refiners.iter().all(|x| x.check(&sol));
     if is_sol {
         trace!("Found solution");
+        sols.add(&sol);
     }
     is_sol
 }
