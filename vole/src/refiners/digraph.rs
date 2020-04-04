@@ -18,7 +18,7 @@ impl<T: State> Refiner<T> for DigraphStabilizer {
     }
 
     fn check(&self, p: &perm::Permutation) -> bool {
-        (&self.digraph) ^ (&p) == self.digraph
+        (&self.digraph) ^ p == self.digraph
     }
 
     fn refine_begin(&mut self, _state: &mut T) -> trace::Result<()> {
