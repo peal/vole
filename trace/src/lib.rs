@@ -27,54 +27,33 @@ pub struct TraceFailure {}
 
 pub type Result<T> = std::result::Result<T, TraceFailure>;
 
-pub trait Tracer {
-    fn add(&mut self, t: TraceEvent) -> Result<()>;
-}
-
-#[derive(Clone, Debug, Default)]
-pub struct RecordingTracer {
-    trace: Vec<TraceEvent>,
-}
-
-impl RecordingTracer {
-    pub fn new() -> Self {
-        Default::default()
-    }
-}
-
-impl Tracer for RecordingTracer {
-    fn add(&mut self, t: TraceEvent) -> Result<()> {
-        self.trace.push(t);
-        Ok(())
-    }
-}
-
-pub struct ReplayingTracer {
-    trace: Vec<TraceEvent>,
+#[derive(Clone, Debug)]
+pub struct Tracer {
+    recording: bool,
     pos: usize,
+    trace: Vec<TraceEvent>,
 }
 
-impl ReplayingTracer {
-    pub fn new(trace: Vec<TraceEvent>) -> ReplayingTracer {
-        ReplayingTracer { trace, pos: 0 }
-    }
-}
-
-impl Tracer for ReplayingTracer {
-    fn add(&mut self, t: TraceEvent) -> Result<()> {
-        if self.pos >= self.trace.len() || t != self.trace[self.pos] {
-            Err(TraceFailure {})
-        } else {
-            self.pos += 1;
-            Ok(())
+impl Tracer {
+    pub fn new() -> Self {
+        Tracer {
+            recording: true,
+            pos: 0,
+            trace: Default::default(),
         }
     }
-}
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    pub fn add(&mut self, t: TraceEvent) -> Result<()> {
+        if self.recording {
+            self.trace.push(t);
+            Ok(())
+        } else {
+            if self.pos >= self.trace.len() || self.trace[self.pos] != t {
+                Err(TraceFailure {})
+            } else {
+                self.pos += 1;
+                Ok(())
+            }
+        }
     }
 }

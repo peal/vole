@@ -233,9 +233,9 @@ impl PartitionStack {
         }
     }
 
-    pub fn refine_partition_cell_by<F: Copy, T: trace::Tracer, O: Ord + Hash>(
+    pub fn refine_partition_cell_by<F: Copy, O: Ord + Hash>(
         &mut self,
-        tracer: &mut T,
+        tracer: &mut trace::Tracer,
         i: usize,
         f: F,
     ) -> trace::Result<()>
@@ -272,9 +272,9 @@ impl PartitionStack {
         Ok(())
     }
 
-    pub fn refine_partition_by<F: Copy, T: trace::Tracer, O: Ord + Hash>(
+    pub fn refine_partition_by<F: Copy, O: Ord + Hash>(
         &mut self,
-        tracer: &mut T,
+        tracer: &mut trace::Tracer,
         f: F,
     ) -> trace::Result<()>
     where
@@ -356,7 +356,7 @@ mod tests {
 
     #[test]
     fn test_refine() -> trace::Result<()> {
-        let mut tracer = trace::RecordingTracer::new();
+        let mut tracer = trace::Tracer::new();
         let mut p = PartitionStack::new(5);
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         p.refine_partition_by(&mut tracer, |x| *x == 2)?;
@@ -377,7 +377,7 @@ mod tests {
 
     #[test]
     fn test_refine2() -> trace::Result<()> {
-        let mut tracer = trace::RecordingTracer::new();
+        let mut tracer = trace::Tracer::new();
         let mut p = PartitionStack::new(5);
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         p.refine_partition_by(&mut tracer, |x| *x % 2 != 0)?;
@@ -411,7 +411,7 @@ mod tests {
 
     #[test]
     fn test_perm() -> trace::Result<()> {
-        let mut tracer = trace::RecordingTracer::new();
+        let mut tracer = trace::Tracer::new();
         let mut p = PartitionStack::new(5);
         let mut q = PartitionStack::new(5);
         p.refine_partition_by(&mut tracer, |x| *x)?;
@@ -422,7 +422,7 @@ mod tests {
 
     #[test]
     fn test_perm2() -> trace::Result<()> {
-        let mut tracer = trace::RecordingTracer::new();
+        let mut tracer = trace::Tracer::new();
         let mut p = PartitionStack::new(5);
         let mut q = PartitionStack::new(5);
         p.refine_partition_by(&mut tracer, |x| 10 - *x)?;

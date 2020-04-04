@@ -22,14 +22,14 @@ pub trait State {
     fn restore_state(&mut self, depth: usize);
 }
 
-pub struct PartitionState<T: trace::Tracer> {
+pub struct PartitionState {
     stack: partitionstack::PartitionStack,
     rbasestack: Option<partitionstack::PartitionStack>,
-    tracer: T,
+    tracer: trace::Tracer,
 }
 
-impl<Tracer: trace::Tracer> PartitionState<Tracer> {
-    pub fn new(n: usize, t: Tracer) -> PartitionState<Tracer> {
+impl PartitionState {
+    pub fn new(n: usize, t: trace::Tracer) -> PartitionState {
         PartitionState {
             stack: partitionstack::PartitionStack::new(n),
             rbasestack: Option::None,
@@ -38,7 +38,7 @@ impl<Tracer: trace::Tracer> PartitionState<Tracer> {
     }
 }
 
-impl<Tracer: trace::Tracer> State for PartitionState<Tracer> {
+impl State for PartitionState {
     fn partition(&self) -> &partitionstack::PartitionStack {
         &self.stack
     }

@@ -106,8 +106,8 @@ mod tests {
         let d = Digraph::empty(3);
         assert_eq!(d.vertices(), 3);
         for i in 0..3 {
-            assert_eq!(d.inedges(i), &vec![]);
-            assert_eq!(d.outedges(i), &vec![]);
+            assert_eq!(d.inedges(i), &Vec::<usize>::new());
+            assert_eq!(d.outedges(i), &Vec::<usize>::new());
         }
         assert_eq!(d, d);
         let e = Digraph::empty(4);
