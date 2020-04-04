@@ -1,13 +1,6 @@
 extern crate vole;
 use crate::vole::parseinput;
 
-use crate::vole::refiners::Refiner;
-use crate::vole::state::PartitionState;
-
-use std::collections::HashSet;
-use trace::Tracer;
-use vole::search::simple_search;
-
 extern crate simplelog;
 
 use simplelog::*;
@@ -17,7 +10,7 @@ use structopt::StructOpt;
 
 use std::{
     fs::File,
-    io::{self, BufReader, BufWriter, Write},
+    io::{BufReader, BufWriter, Write},
     os::unix::io::FromRawFd,
 };
 
@@ -56,7 +49,7 @@ fn main() -> anyhow::Result<()> {
 
     println!("Reading");
 
-    let problem = parseinput::read_problem(&mut infile)?;
+    let _problem = parseinput::read_problem(&mut infile)?;
 
     println!("Reading finished");
     /*
