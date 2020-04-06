@@ -15,4 +15,16 @@ impl Solutions {
     pub fn get(&mut self) -> &Vec<Permutation> {
         &self.sols
     }
+
+    pub fn write_one_indexed<W: std::io::Write>(&self, out: &mut W) -> anyhow::Result<()> {
+        write!(out, "{{ \"sols\": ")?;
+        let solsone: Vec<Vec<usize>> = self
+            .sols
+            .iter()
+            .map(|s| s.as_vec().iter().map(|x| x + 1).collect())
+            .collect();
+        write!(out, "{:?}", solsone)?;
+        write!(out, "}}")?;
+        Ok(())
+    }
 }

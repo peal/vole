@@ -46,6 +46,10 @@ impl Permutation {
         }
     }
 
+    pub fn as_vec(&self) -> &Vec<usize> {
+        &(*self.vals)
+    }
+
     pub fn inv(&self) -> Permutation {
         let mut v = vec![0; self.vals.len()];
         for i in 0..self.vals.len() {

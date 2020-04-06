@@ -24,6 +24,8 @@ pub fn check_solution<T: State>(
     if is_sol {
         trace!("Found solution");
         sols.add(&sol);
+    } else {
+        trace!("Not solution");
     }
     is_sol
 }

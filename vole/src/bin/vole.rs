@@ -15,7 +15,7 @@ use structopt::StructOpt;
 
 use std::{
     fs::File,
-    io::{BufReader, BufWriter, Write},
+    io::{BufReader, BufWriter},
     os::unix::io::FromRawFd,
 };
 
@@ -38,7 +38,7 @@ fn main() -> anyhow::Result<()> {
     let opt = Opt::from_args();
 
     CombinedLogger::init(vec![
-        TermLogger::new(LevelFilter::Trace, Config::default(), TerminalMode::Mixed).unwrap(),
+        TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Mixed).unwrap(),
         WriteLogger::new(
             LevelFilter::Info,
             Config::default(),
@@ -47,15 +47,10 @@ fn main() -> anyhow::Result<()> {
     ])
     .unwrap();
 
-    println!("Parsed");
-
     let mut infile = BufReader::new(unsafe { File::from_raw_fd(opt.inpipe.unwrap()) });
     let mut outfile = BufWriter::new(unsafe { File::from_raw_fd(opt.outpipe.unwrap()) });
 
-    println!("Reading");
-
     let problem = parseinput::read_problem(&mut infile)?;
-    println!("Reading finished");
 
     let mut constraints = parseinput::build_constraints(&problem.constraints);
     let tracer = trace::Tracer::new();
@@ -64,10 +59,6 @@ fn main() -> anyhow::Result<()> {
     let mut solutions = Solutions::default();
     simple_search(&mut state, &mut solutions, &mut constraints);
 
-    writeln!(
-        &mut outfile,
-        "{}",
-        serde_json::to_string(&solutions).unwrap()
-    )?;
+    solutions.write_one_indexed(&mut outfile)?;
     Ok(())
 }
