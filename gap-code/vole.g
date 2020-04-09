@@ -33,7 +33,7 @@ ExecuteVole := function(obj)
         IO_Close(gappipe.toread);
         Info(InfoVole, 2, "C: In child\n");
         args := ["echo", "hello", "world"];
-        args :=  ["run", "-p", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+        args :=  ["run", "-q", "-p", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
         Info(InfoVole, 2, "C:", args,"\n");
         IO_execvp("cargo", args);
         Info(InfoVole, 2, "Fatal error");
@@ -92,13 +92,13 @@ Comp := function(p,c)
     ret1 := Solve(p, true, c);
     ret2 := GAPSolve(p, true, c);
     if ret2 <> ret1.group then
-        Print("\nError!!",p,c,ret1,ret2,"!!\n");
+        Error("\nError!!",p,c,ret1,ret2,"!!\n");
     fi;
 end;
 
 Comp(5, [con.SetStab([2,3,4]), con.SetStab([3,4,5])]);
 
-Comp(5, [con.SetStab([2,3,4]), con.TupleStab([3])]);
+Comp(7, [con.SetStab([2,3,4]), con.TupleStab([5])]);
 
 Comp(5, [con.SetStab([2,3,4]), con.TupleStab([5])]);
 

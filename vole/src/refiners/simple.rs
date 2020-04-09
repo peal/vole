@@ -43,7 +43,7 @@ impl TupleStabilizer {
         // but this will lead to the same result anyway.
         // We use '+1', so 0 is free to use in refine_begin as a blank value
         for i in 0..tuple.len() {
-            tuplemap.insert(i, tuple[i] + 1);
+            tuplemap.insert(tuple[i], i + 1);
         }
         TupleStabilizer { tuplemap, tuple }
     }

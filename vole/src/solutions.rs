@@ -5,6 +5,9 @@ use perm::Permutation;
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct Solutions {
     sols: Vec<Permutation>,
+    nodes: u64,
+    tracefails: u64,
+    solsfails: u64,
 }
 
 impl Solutions {
