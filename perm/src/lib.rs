@@ -11,7 +11,7 @@ use serde_derive::{Deserialize, Serialize};
 use std::cmp::max;
 use std::rc::Rc;
 
-mod stabchain;
+mod schreiervector;
 
 /// Represents a permutation
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, Hash, Deserialize, Serialize)]

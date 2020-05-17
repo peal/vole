@@ -90,8 +90,7 @@ impl<E: Edge> std::ops::BitXor<&Permutation> for &DigraphBase<E> {
                 outedges[i_img].push(edge.apply(&perm));
             }
         }
-        let out = DigraphBase::from_vec(outedges);
-        out
+        DigraphBase::from_vec(outedges)
     }
 }
 

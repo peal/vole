@@ -42,8 +42,8 @@ impl TupleStabilizer {
         // If a value occurs multiple times, only the last one will be stored,
         // but this will lead to the same result anyway.
         // We use '+1', so 0 is free to use in refine_begin as a blank value
-        for i in 0..tuple.len() {
-            tuplemap.insert(tuple[i], i + 1);
+        for (i, val) in tuple.iter().enumerate() {
+            tuplemap.insert(*val, i + 1);
         }
         TupleStabilizer { tuplemap, tuple }
     }

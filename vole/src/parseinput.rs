@@ -106,7 +106,7 @@ pub struct Problem {
     pub debug: bool,
 }
 
-pub fn build_constraints(constraints: &Vec<Constraint>) -> Vec<Box<dyn Refiner<PartitionState>>> {
+pub fn build_constraints(constraints: &[Constraint]) -> Vec<Box<dyn Refiner<PartitionState>>> {
     constraints.iter().map(|x| x.build_refiner()).collect()
 }
 pub fn read_problem<R: BufRead>(prob: &mut R) -> Result<Problem> {
