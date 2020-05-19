@@ -54,7 +54,7 @@ pub fn simple_search<T: State>(
     refiners: &mut Vec<Box<dyn Refiner<T>>>,
 ) {
     for r in refiners.iter_mut() {
-        if let Err(_) = r.refine_begin(state) {
+        if r.refine_begin(state).is_err() {
             return;
         }
     }
