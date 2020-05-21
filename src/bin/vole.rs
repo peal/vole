@@ -11,10 +11,14 @@ use structopt::StructOpt;
 
 use std::{
     fs::File,
+    io::prelude::*,
     io::{BufReader, BufWriter},
-    os::unix::io::FromRawFd,
 };
 
+#[cfg(target_os = "linux")]
+use os::unix::io::FromRawFd;
+
+#[cfg(target_os = "linux")]
 #[derive(StructOpt, Debug)]
 #[structopt(name = "basic")]
 pub struct Opt {
@@ -22,12 +26,46 @@ pub struct Opt {
     pub inpipe: Option<i32>,
     #[structopt(short, long)]
     pub outpipe: Option<i32>,
-    /// Output file
-    #[structopt(short, long, parse(from_os_str))]
-    pub file: Option<PathBuf>,
 
     #[structopt(short, long)]
     pub trace: bool,
+}
+
+#[cfg(not(target_os = "linux"))]
+#[derive(StructOpt, Debug)]
+#[structopt(name = "basic")]
+pub struct Opt {
+    #[structopt(parse(from_os_str))]
+    pub input: PathBuf,
+
+    #[structopt(parse(from_os_str))]
+    pub output: PathBuf,
+
+    #[structopt(short, long)]
+    pub trace: bool,
+}
+
+impl Opt {
+    #[cfg(target_os = "linux")]
+    fn input(&self) -> impl BufRead {
+        BufReader::new(unsafe { File::from_raw_fd(self.inpipe.unwrap()) })
+    }
+
+    #[cfg(not(target_os = "linux"))]
+    fn input(&self) -> impl BufRead {
+        // TODO Error handle
+        BufReader::new(File::open(&self.input).unwrap())
+    }
+
+    #[cfg(target_os = "linux")]
+    fn output(&self) -> impl Write {
+        BufReader::new(unsafe { File::from_raw_fd(self.outpipe.unwrap()) })
+    }
+
+    #[cfg(not(target_os = "linux"))]
+    fn output(&self) -> impl Write {
+        BufWriter::new(File::open(&self.output).unwrap())
+    }
 }
 
 fn main() -> anyhow::Result<()> {
@@ -43,8 +81,8 @@ fn main() -> anyhow::Result<()> {
     ])
     .unwrap();
 
-    let mut infile = BufReader::new(unsafe { File::from_raw_fd(opt.inpipe.unwrap()) });
-    let mut outfile = BufWriter::new(unsafe { File::from_raw_fd(opt.outpipe.unwrap()) });
+    let mut infile = opt.input();
+    let mut outfile = opt.output();
 
     let problem = parseinput::read_problem(&mut infile)?;
 
