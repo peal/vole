@@ -6,8 +6,6 @@ use rust_peal::vole::state::PartitionState;
 
 use simplelog::*;
 
-extern crate serde_json;
-
 use std::path::PathBuf;
 use structopt::StructOpt;
 

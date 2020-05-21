@@ -2,11 +2,7 @@
 //!
 //! This crate implements permutations on integers
 
-extern crate serde;
-extern crate serde_json;
-
-extern crate serde_derive;
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use std::cmp::max;
 use std::rc::Rc;
