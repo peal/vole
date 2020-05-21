@@ -1,6 +1,6 @@
 use serde_derive::{Deserialize, Serialize};
 
-use perm::Permutation;
+use crate::perm::Permutation;
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct Solutions {

@@ -1,10 +1,8 @@
-extern crate vole;
-use crate::vole::parseinput;
-use crate::vole::solutions::Solutions;
-use crate::vole::state::PartitionState;
-extern crate simplelog;
-
-use vole::search::simple_search;
+use rust_peal::trace;
+use rust_peal::vole::parseinput;
+use rust_peal::vole::search::simple_search;
+use rust_peal::vole::solutions::Solutions;
+use rust_peal::vole::state::PartitionState;
 
 use simplelog::*;
 

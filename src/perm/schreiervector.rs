@@ -1,6 +1,6 @@
-use crate::Permutation;
-use std::collections::HashMap;
+use super::Permutation;
 use std::collections::hash_map::Entry;
+use std::collections::HashMap;
 
 pub struct SchreierVector {
     base: usize,
@@ -26,10 +26,7 @@ impl SchreierVector {
             }
         }
 
-        SchreierVector {
-            base,
-            transversal
-        }
+        SchreierVector { base, transversal }
     }
 
     pub fn base(&self) -> usize {
@@ -40,7 +37,6 @@ impl SchreierVector {
         self.transversal.contains_key(&pos)
     }
 }
-
 
 pub struct StabiliserChain {
     svector: SchreierVector,
@@ -56,16 +52,15 @@ impl StabiliserChain {
         &self.svector
     }
 
-    pub fn stabilizer(&self) -> & Option<Box<StabiliserChain>> {
+    pub fn stabilizer(&self) -> &Option<Box<StabiliserChain>> {
         &self.stabilizer
     }
 }
 
-
 #[cfg(test)]
 mod tests {
-    use crate::schreiervector::SchreierVector;
-    use crate::Permutation;
+    use super::SchreierVector;
+    use crate::perm::Permutation;
 
     #[test]
     fn id_stabchain() {

@@ -1,5 +1,3 @@
-extern crate smallbitvec;
-
 use smallbitvec::SmallBitVec;
 
 #[derive(Debug, Clone)]
@@ -34,7 +32,7 @@ impl SmallIntSet {
 
 #[cfg(test)]
 mod tests {
-    use SmallIntSet;
+    use super::SmallIntSet;
 
     #[test]
     fn basic_test() {

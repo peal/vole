@@ -1,7 +1,7 @@
-use crate::handlesols::check_solution;
-use crate::refiners::Refiner;
-use crate::solutions::Solutions;
-use crate::state::State;
+use super::handlesols::check_solution;
+use super::refiners::Refiner;
+use super::solutions::Solutions;
+use super::state::State;
 
 use log::trace;
 

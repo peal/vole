@@ -1,5 +1,8 @@
 use std::hash::Hash;
 
+use crate::partitionstack;
+use crate::trace;
+
 pub trait State {
     fn partition(&self) -> &partitionstack::PartitionStack;
 

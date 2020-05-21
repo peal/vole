@@ -147,7 +147,7 @@ impl std::ops::Mul<Permutation> for &Permutation {
 
 #[cfg(test)]
 mod tests {
-    use crate::Permutation;
+    use super::Permutation;
     #[test]
     fn id_perm() {
         assert_eq!(Permutation::id(), Permutation::id());

@@ -1,5 +1,7 @@
-use crate::refiners::Refiner;
-use crate::state::State;
+use super::super::state::State;
+use super::Refiner;
+use crate::perm::Permutation;
+use crate::trace;
 use std::collections::{HashMap, HashSet};
 
 pub struct SetStabilizer {
@@ -17,7 +19,7 @@ impl<T: State> Refiner<T> for SetStabilizer {
         format!("SetStabilizer of {:?}", self.set)
     }
 
-    fn check(&self, p: &perm::Permutation) -> bool {
+    fn check(&self, p: &Permutation) -> bool {
         self.set
             .iter()
             .cloned()
@@ -54,7 +56,7 @@ impl<T: State> Refiner<T> for TupleStabilizer {
         format!("TupleStabilizer of {:?}", self.tuple)
     }
 
-    fn check(&self, p: &perm::Permutation) -> bool {
+    fn check(&self, p: &Permutation) -> bool {
         self.tuple.iter().cloned().all(|x| x ^ p == x)
     }
 

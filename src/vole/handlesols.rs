@@ -1,6 +1,7 @@
-use crate::refiners::Refiner;
-use crate::solutions::Solutions;
-use crate::state::State;
+use super::refiners::Refiner;
+use super::solutions::Solutions;
+use super::state::State;
+use crate::partitionstack;
 use log::trace;
 
 pub fn check_solution<T: State>(

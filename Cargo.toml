@@ -6,21 +6,15 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[workspace]
-
-members = [
-    "perm",
-    "digraph",
-    "partitionstack",
-    "graphiso",
-    "vole"
-]
-
 [dependencies]
-perm = {version = "0.1.0", path = "perm" }
-digraph = {version = "0.1.0", path = "digraph" }
-partitionstack = {version = "0.1.0", path = "partitionstack" }
-trace = {version = "0.1.0", path = "trace" }
-graphiso = {version = "0.1.0", path = "graphiso" }
-vole = {version = "0.1.0", path = "vole" }
-datastructures = {version = "0.1.0", path = "datastructures" }
+log = "0.4.8"
+simplelog = "0.7.4"
+structopt = "0.3.5"
+serde_json = "1.0.42"
+anyhow = "1.0.26"
+smallbitvec = "2.5"
+serde_derive = "1.0.104"
+
+[dependencies.serde]
+version = "1.0.104"
+features = ["rc"]

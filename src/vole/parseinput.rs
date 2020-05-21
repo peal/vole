@@ -3,13 +3,13 @@ extern crate serde_derive;
 extern crate serde_json;
 use serde_derive::{Deserialize, Serialize};
 
-use digraph::Digraph;
+use crate::digraph::Digraph;
 
-use crate::refiners::digraph::DigraphStabilizer;
-use crate::refiners::simple::SetStabilizer;
-use crate::refiners::simple::TupleStabilizer;
-use crate::refiners::Refiner;
-use crate::state::PartitionState;
+use super::refiners::digraph::DigraphStabilizer;
+use super::refiners::simple::SetStabilizer;
+use super::refiners::simple::TupleStabilizer;
+use super::refiners::Refiner;
+use super::state::PartitionState;
 
 use anyhow::Result;
 

@@ -2,7 +2,7 @@
 //!
 //! This crate implements directed graphs
 
-use perm::Permutation;
+use crate::perm::Permutation;
 
 pub trait Edge: Copy + Clone + Ord + Sized + std::fmt::Debug {
     fn colour(&self) -> usize;
@@ -98,8 +98,8 @@ pub type Digraph = DigraphBase<usize>;
 
 #[cfg(test)]
 mod tests {
-    use crate::Digraph;
-    use crate::Permutation;
+    use super::Digraph;
+    use crate::perm::Permutation;
     #[test]
     fn id_perm() {
         let d = Digraph::empty(3);
