@@ -2,11 +2,7 @@
 //!
 //! This crate implements permutations on integers
 
-extern crate serde;
-extern crate serde_json;
-
-extern crate serde_derive;
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use std::cmp::max;
 use std::rc::Rc;
@@ -147,7 +143,7 @@ impl std::ops::Mul<Permutation> for &Permutation {
 
 #[cfg(test)]
 mod tests {
-    use crate::Permutation;
+    use super::Permutation;
     #[test]
     fn id_perm() {
         assert_eq!(Permutation::id(), Permutation::id());

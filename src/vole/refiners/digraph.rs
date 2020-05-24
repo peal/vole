@@ -1,6 +1,8 @@
-use crate::refiners::Refiner;
-use crate::state::State;
-use digraph::Digraph;
+use super::super::state::State;
+use super::Refiner;
+use crate::digraph::Digraph;
+use crate::perm::Permutation;
+use crate::trace;
 
 pub struct DigraphStabilizer {
     digraph: Digraph,
@@ -17,7 +19,7 @@ impl<T: State> Refiner<T> for DigraphStabilizer {
         format!("DigraphStabilizer of {:?}", self.digraph)
     }
 
-    fn check(&self, p: &perm::Permutation) -> bool {
+    fn check(&self, p: &Permutation) -> bool {
         (&self.digraph) ^ p == self.digraph
     }
 

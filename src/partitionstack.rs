@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
-use perm::Permutation;
+use crate::perm::Permutation;
+use crate::trace;
 
 use std::collections::HashSet;
 use std::hash::Hash;
@@ -307,9 +308,11 @@ pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> Permutation {
 
 #[cfg(test)]
 mod tests {
-    use crate::perm_between;
-    use crate::PartitionStack;
-    use perm::Permutation;
+    use super::perm_between;
+    use super::PartitionStack;
+    use super::Permutation;
+    use crate::trace;
+
     #[test]
     fn basic() {
         let p = PartitionStack::new(5);

@@ -46,14 +46,14 @@ impl Tracer {
     pub fn add(&mut self, t: TraceEvent) -> Result<()> {
         if self.recording {
             self.trace.push(t);
-            Ok(())
-        } else {
-            if self.pos >= self.trace.len() || self.trace[self.pos] != t {
-                Err(TraceFailure {})
-            } else {
-                self.pos += 1;
-                Ok(())
-            }
+            return Ok(());
         }
+
+        if self.pos >= self.trace.len() || self.trace[self.pos] != t {
+            return Err(TraceFailure {});
+        }
+
+        self.pos += 1;
+        Ok(())
     }
 }

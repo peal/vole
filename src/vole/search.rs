@@ -1,7 +1,7 @@
-use crate::handlesols::check_solution;
-use crate::refiners::Refiner;
-use crate::solutions::Solutions;
-use crate::state::State;
+use super::handlesols::check_solution;
+use super::refiners::Refiner;
+use super::solutions::Solutions;
+use super::state::State;
 
 use log::trace;
 
@@ -54,7 +54,7 @@ pub fn simple_search<T: State>(
     refiners: &mut Vec<Box<dyn Refiner<T>>>,
 ) {
     for r in refiners.iter_mut() {
-        if let Err(_) = r.refine_begin(state) {
+        if r.refine_begin(state).is_err() {
             return;
         }
     }
