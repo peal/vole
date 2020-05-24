@@ -16,7 +16,7 @@ use std::{
 };
 
 #[cfg(target_os = "linux")]
-use os::unix::io::FromRawFd;
+use std::os::unix::io::FromRawFd;
 
 #[cfg(target_os = "linux")]
 #[derive(StructOpt, Debug)]
@@ -59,7 +59,7 @@ impl Opt {
 
     #[cfg(target_os = "linux")]
     fn output(&self) -> impl Write {
-        BufReader::new(unsafe { File::from_raw_fd(self.outpipe.unwrap()) })
+        BufWriter::new(unsafe { File::from_raw_fd(self.outpipe.unwrap()) })
     }
 
     #[cfg(not(target_os = "linux"))]

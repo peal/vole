@@ -33,7 +33,7 @@ ExecuteVole := function(obj)
         IO_Close(gappipe.toread);
         Info(InfoVole, 2, "C: In child\n");
         args := ["echo", "hello", "world"];
-        args :=  ["run", "-q", "-p", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+        args :=  ["run", "-q", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
         Info(InfoVole, 2, "C:", args,"\n");
         IO_execvp("cargo", args);
         Info(InfoVole, 2, "Fatal error");
