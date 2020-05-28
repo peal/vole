@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use std::cmp::max;
 use std::rc::Rc;
 
+mod randomreplacement;
 mod schreiervector;
 
 /// Represents a permutation
@@ -49,6 +50,7 @@ impl Permutation {
     }
 
     pub fn inv(&self) -> Permutation {
+        // TODO: Cache the inverse of permutations
         let mut v = vec![0; self.vals.len()];
         for i in 0..self.vals.len() {
             v[self.vals[i]] = i;
@@ -141,6 +143,36 @@ impl std::ops::Mul<Permutation> for &Permutation {
     }
 }
 
+impl std::ops::Div<&Permutation> for &Permutation {
+    type Output = Permutation;
+
+    #[allow(clippy::suspicious_arithmetic_impl)]
+    fn div(self, other: &Permutation) -> Self::Output {
+        // TODO Make this faster
+        self * (other.inv())
+    }
+}
+
+impl std::ops::Div<Permutation> for Permutation {
+    type Output = Permutation;
+    fn div(self, other: Permutation) -> Self::Output {
+        &self / &other
+    }
+}
+
+impl std::ops::Div<&Permutation> for Permutation {
+    type Output = Permutation;
+    fn div(self, other: &Permutation) -> Self::Output {
+        &self / other
+    }
+}
+impl std::ops::Div<Permutation> for &Permutation {
+    type Output = Permutation;
+    fn div(self, other: Permutation) -> Self::Output {
+        self / &other
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Permutation;
@@ -197,5 +229,18 @@ mod tests {
         assert_eq!((&cycle) ^ (-2), cycle);
         assert_eq!((&cycle) ^ 3, id);
         assert_eq!((&cycle) ^ 10, cycle);
+    }
+    #[test]
+    fn div_perm() {
+        let id = Permutation::id();
+        let cycle = Permutation::from_vec(vec![1, 2, 0]);
+        let cycle2 = Permutation::from_vec(vec![2, 0, 1]);
+        assert_eq!(id, &id / &id);
+        assert_eq!(cycle, &cycle / &id);
+        assert_eq!(cycle2, &id / &cycle);
+        assert_eq!(cycle, &id / &cycle2);
+        assert_eq!(id, &cycle / &cycle);
+        assert_eq!(cycle, &id / &cycle2);
+        assert_eq!(cycle2, &id / &cycle);
     }
 }
