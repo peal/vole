@@ -15,7 +15,7 @@ impl SmallIntSet {
     }
 
     pub fn contains(&self, size: usize) -> bool {
-        return self.bit_set[size];
+        self.bit_set[size]
     }
 
     pub fn add(&mut self, pos: usize) {

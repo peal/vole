@@ -1,13 +1,13 @@
 pub mod digraph;
 pub mod simple;
 
-use crate::perm::Permutation;
+use crate::perm::FullPermutation;
 use crate::trace;
 
 pub trait Refiner<State: super::state::State> {
     fn name(&self) -> String;
 
-    fn check(&self, p: &Permutation) -> bool;
+    fn check(&self, p: &FullPermutation) -> bool;
 
     fn refine_begin(&mut self, _: &mut State) -> trace::Result<()> {
         Ok(())
