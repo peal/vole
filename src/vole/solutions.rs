@@ -1,21 +1,21 @@
 use serde::{Deserialize, Serialize};
 
-use crate::perm::Permutation;
+use crate::perm::{FullPermutation, Permutation};
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct Solutions {
-    sols: Vec<Permutation>,
+    sols: Vec<FullPermutation>,
     nodes: u64,
     tracefails: u64,
     solsfails: u64,
 }
 
 impl Solutions {
-    pub fn add(&mut self, p: &Permutation) {
-        self.sols.push(p.clone());
+    pub fn add(&mut self, p: &impl Permutation) {
+        self.sols.push(p.collapse());
     }
 
-    pub fn get(&mut self) -> &Vec<Permutation> {
+    pub fn get(&mut self) -> &Vec<FullPermutation> {
         &self.sols
     }
 
