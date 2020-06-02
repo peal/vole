@@ -7,6 +7,7 @@ mod full_permutation;
 mod join;
 mod pow;
 mod schreiervector;
+mod randomreplacement;
 
 pub use full_permutation::FullPermutation;
 use join::Join;
