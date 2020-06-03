@@ -11,8 +11,8 @@ pub struct Solutions {
 }
 
 impl Solutions {
-    pub fn add(&mut self, p: &impl Permutation) {
-        self.sols.push(p.collapse());
+    pub fn add(&mut self, p: &FullPermutation) {
+        self.sols.push(p.clone());
     }
 
     pub fn get(&mut self) -> &Vec<FullPermutation> {

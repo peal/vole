@@ -99,7 +99,7 @@ pub type Digraph = DigraphBase<usize>;
 #[cfg(test)]
 mod tests {
     use super::Digraph;
-    use crate::perm::FullPermutation;
+    use crate::perm::{FullPermutation, Permutation};
     #[test]
     fn id_perm() {
         let d = Digraph::empty(3);
