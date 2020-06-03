@@ -2,7 +2,7 @@
 //!
 //! This crate implements permutations on integers
 
-use super::Permutation;
+use super::{PermBuilder, Permutation};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::cmp::max;
@@ -28,46 +28,15 @@ impl Permutation for FullPermutation {
         }
     }
 
-    fn collapse(&self) -> FullPermutation {
-        self.clone()
-    }
-}
-
-impl FullPermutation {
-    /// Get the identity permutation
-    pub fn id() -> Self {
-        Self {
-            vals: Rc::new(Vec::new()),
-            invvals: RefCell::new(Some(Rc::new(Vec::new()))),
-        }
-    }
-
-    pub fn is_id(&self) -> bool {
-        self.vals.is_empty()
-    }
-
-    pub fn multiply(&self, other: &FullPermutation) -> FullPermutation {
-        if self.is_id() {
-            other.clone()
-        } else if other.is_id() {
-            self.clone()
-        } else {
-            let size = max(self.lmp().unwrap_or(0), other.lmp().unwrap_or(0));
-            debug_assert!(size > 0);
-            let v = (0..=size).map(|x| self.and_then(other).apply(x)).collect();
-            FullPermutation::from_vec(v)
-        }
-    }
-
     /// Create a permutation based on `vals`.
     /// Produces a permutation which maps i to vals\[i\], and acts as the
     /// identity for i >= vals.len()
     /// Requires: vals is a permutation on 0..vals.len()
-    pub fn from_vec(mut vals: Vec<usize>) -> Self {
+    fn from_vec(mut vals: Vec<usize>) -> Self {
         while !vals.is_empty() && vals[vals.len() - 1] == vals.len() - 1 {
             vals.pop();
         }
-
+        println!("{:?}", vals);
         if cfg!(debug_assertions) {
             let mut val_cpy = vals.clone();
             val_cpy.sort();
@@ -81,18 +50,7 @@ impl FullPermutation {
         }
     }
 
-    pub fn as_vec(&self) -> &Vec<usize> {
-        &self.vals
-    }
-
-    fn make_inverse(vals: Rc<Vec<usize>>, invvals: Rc<Vec<usize>>) -> Self {
-        Self {
-            vals: invvals,
-            invvals: RefCell::new(Some(vals)),
-        }
-    }
-
-    pub fn inv(&self) -> Self {
+    fn inv(&self) -> Self {
         if self.invvals.borrow().is_some() {
             return FullPermutation::make_inverse(
                 self.vals.clone(),
@@ -112,11 +70,63 @@ impl FullPermutation {
         FullPermutation::make_inverse(self.vals.clone(), ptr)
     }
 
-    pub fn lmp(&self) -> Option<usize> {
+    fn multiply<InPerm: Permutation>(&self, other: &InPerm) -> Self {
         if self.is_id() {
+            if other.is_id() {
+                return self.clone();
+            }
+            let size = other.lmp().unwrap();
+            FullPermutation::from_vec((0..=size).map(|x| other.apply(x)).collect())
+        } else if other.is_id() {
+            self.clone()
+        } else {
+            let size = max(self.lmp().unwrap_or(0), other.lmp().unwrap_or(0));
+            debug_assert!(size > 0);
+            let v = (0..=size).map(|x| self.apply(other.apply(x))).collect();
+            FullPermutation::from_vec(v)
+        }
+    }
+
+    fn lmp(&self) -> Option<usize> {
+        if self.vals.is_empty() {
             None
         } else {
             Some(self.vals.len() - 1)
+        }
+    }
+}
+
+impl PermBuilder for FullPermutation {
+    fn build_apply(&self, x: usize) -> usize {
+        if x < self.vals.len() {
+            self.vals[x]
+        } else {
+            x
+        }
+    }
+
+    fn collapse(&self) -> FullPermutation {
+        self.clone()
+    }
+}
+
+impl FullPermutation {
+    /// Get the identity permutation
+    pub fn id() -> Self {
+        Self {
+            vals: Rc::new(Vec::new()),
+            invvals: RefCell::new(Some(Rc::new(Vec::new()))),
+        }
+    }
+
+    pub fn as_vec(&self) -> &Vec<usize> {
+        &self.vals
+    }
+
+    fn make_inverse(vals: Rc<Vec<usize>>, invvals: Rc<Vec<usize>>) -> Self {
+        Self {
+            vals: invvals,
+            invvals: RefCell::new(Some(vals)),
         }
     }
 }
@@ -201,17 +211,17 @@ mod tests {
         let cycle = &cycle;
         let cycle2 = &cycle2;
 
-        assert_eq!(*id, id.and_then(id).collapse());
-        assert_eq!(*cycle, cycle.and_then(id).collapse());
-        assert_eq!(*cycle, id.and_then(cycle).collapse());
-        assert_eq!(*cycle2, cycle.and_then(cycle).collapse());
-        assert_eq!(*id, cycle.and_then(cycle).and_then(cycle).collapse());
-        assert_ne!(*cycle, cycle.and_then(cycle).collapse());
-        assert_eq!(*cycle, cycle.pow(1).collapse());
-        assert_eq!(cycle.pow(-1).collapse(), cycle.and_then(cycle).collapse());
-        assert_eq!(cycle.pow(-2).collapse(), *cycle);
-        assert_eq!(cycle.pow(3).collapse(), *id);
-        assert_eq!(cycle.pow(10).collapse(), *cycle);
+        assert_eq!(*id, id.multiply(id));
+        assert_eq!(*cycle, cycle.multiply(id));
+        assert_eq!(*cycle, id.multiply(cycle));
+        assert_eq!(*cycle2, cycle.multiply(cycle));
+        assert_eq!(*id, cycle.multiply(cycle).multiply(cycle));
+        assert_ne!(*cycle, cycle.multiply(cycle));
+        assert_eq!(*cycle, cycle.pow(1));
+        assert_eq!(cycle.pow(-1), cycle.multiply(cycle));
+        assert_eq!(cycle.pow(-2), *cycle);
+        assert_eq!(cycle.pow(3), *id);
+        assert_eq!(cycle.pow(10), *cycle);
     }
     #[test]
     fn div_perm() {
@@ -223,12 +233,12 @@ mod tests {
         let cycle = &cycle;
         let cycle2 = &cycle2;
 
-        assert_eq!(*id, id.divide(id).collapse());
-        assert_eq!(*cycle, cycle.divide(id).collapse());
-        assert_eq!(*cycle2, id.divide(cycle).collapse());
-        assert_eq!(*cycle, id.divide(cycle2).collapse());
-        assert_eq!(*id, cycle.divide(cycle).collapse());
-        assert_eq!(*cycle, id.divide(cycle2).collapse());
-        assert_eq!(*cycle2, id.divide(cycle).collapse());
+        assert_eq!(*id, id.divide(id));
+        assert_eq!(*cycle, cycle.divide(id));
+        assert_eq!(*cycle2, id.divide(cycle));
+        assert_eq!(*cycle, id.divide(cycle2));
+        assert_eq!(*id, cycle.divide(cycle));
+        assert_eq!(*cycle, id.divide(cycle2));
+        assert_eq!(*cycle2, id.divide(cycle));
     }
 }

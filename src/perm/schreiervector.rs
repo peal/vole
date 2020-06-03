@@ -60,7 +60,7 @@ impl StabiliserChain {
 #[cfg(test)]
 mod tests {
     use super::SchreierVector;
-    use crate::perm::FullPermutation;
+    use crate::perm::{FullPermutation, Permutation};
 
     #[test]
     fn id_stabchain() {

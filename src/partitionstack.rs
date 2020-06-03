@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::perm::FullPermutation;
+use crate::perm::{FullPermutation, Permutation};
 use crate::trace;
 
 use std::collections::HashSet;
@@ -309,8 +309,8 @@ pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> FullPermutati
 #[cfg(test)]
 mod tests {
     use super::perm_between;
-    use super::FullPermutation;
     use super::PartitionStack;
+    use super::{FullPermutation, Permutation};
     use crate::trace;
 
     #[test]

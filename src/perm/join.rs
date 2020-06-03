@@ -1,11 +1,11 @@
-use super::FullPermutation;
-use super::Permutation;
+use super::PermBuilder;
+use super::{FullPermutation, Permutation};
 
 #[derive(Debug, Clone)]
 pub struct Join<First, Second>
 where
-    First: Permutation,
-    Second: Permutation,
+    First: PermBuilder,
+    Second: PermBuilder,
 {
     first: First,
     second: Second,
@@ -13,21 +13,21 @@ where
 
 impl<First, Second> Join<First, Second>
 where
-    First: Permutation,
-    Second: Permutation,
+    First: PermBuilder,
+    Second: PermBuilder,
 {
     pub(crate) fn new(first: First, second: Second) -> Self {
         Self { first, second }
     }
 }
 
-impl<First, Second> Permutation for Join<First, Second>
+impl<First, Second> PermBuilder for Join<First, Second>
 where
-    First: Permutation,
-    Second: Permutation,
+    First: PermBuilder,
+    Second: PermBuilder,
 {
-    fn apply(&self, x: usize) -> usize {
-        self.second.apply(self.first.apply(x))
+    fn build_apply(&self, x: usize) -> usize {
+        self.second.build_apply(self.first.build_apply(x))
     }
 
     fn collapse(&self) -> FullPermutation {
@@ -56,8 +56,8 @@ impl MultiJoin {
     }
 }
 
-impl Permutation for MultiJoin {
-    fn apply(&self, mut x: usize) -> usize {
+impl PermBuilder for MultiJoin {
+    fn build_apply(&self, mut x: usize) -> usize {
         for perm in &self.args {
             x = perm.apply(x)
         }
@@ -68,7 +68,7 @@ impl Permutation for MultiJoin {
     fn collapse(&self) -> FullPermutation {
         let mut res = FullPermutation::id();
         for perm in &self.args {
-            res = res.multiply(&perm)
+            res = res.multiply(perm)
         }
 
         res
