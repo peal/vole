@@ -1,16 +1,16 @@
-use super::{FullPermutation, Permutation};
+use super::Permutation;
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 
 pub struct SchreierVector {
     base: usize,
-    transversal: HashMap<usize, FullPermutation>,
+    transversal: HashMap<usize, Permutation>,
 }
 
 impl SchreierVector {
-    pub fn from_generators(base: usize, gens: Vec<FullPermutation>) -> SchreierVector {
+    pub fn from_generators(base: usize, gens: Vec<Permutation>) -> SchreierVector {
         let mut transversal = HashMap::new();
-        transversal.insert(base, FullPermutation::id());
+        transversal.insert(base, Permutation::id());
 
         let mut q = std::collections::VecDeque::new();
         q.push_back(base);
@@ -60,7 +60,7 @@ impl StabiliserChain {
 #[cfg(test)]
 mod tests {
     use super::SchreierVector;
-    use crate::perm::{FullPermutation, Permutation};
+    use crate::perm::Permutation;
 
     #[test]
     fn id_stabchain() {
@@ -73,8 +73,7 @@ mod tests {
 
     #[test]
     fn simple_stabchain() {
-        let sc =
-            SchreierVector::from_generators(1, vec![FullPermutation::from_vec(vec![0, 3, 2, 1])]);
+        let sc = SchreierVector::from_generators(1, vec![Permutation::from_vec(vec![0, 3, 2, 1])]);
         assert_eq!(sc.base(), 1);
         assert!(sc.in_orbit(1));
         assert!(sc.in_orbit(3));

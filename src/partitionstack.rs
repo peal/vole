@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::perm::{FullPermutation, Permutation};
+use crate::perm::Permutation;
 use crate::trace;
 
 use std::collections::HashSet;
@@ -288,7 +288,7 @@ impl PartitionStack {
     }
 }
 
-pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> FullPermutation {
+pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> Permutation {
     assert!(lhs.cells() == lhs.domain_size());
     assert!(rhs.cells() == rhs.domain_size());
     assert!(lhs.domain_size() == rhs.domain_size());
@@ -303,14 +303,14 @@ pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> FullPermutati
         perm[lhs.fixed_vals()[i]] = rhs.fixed_vals()[i];
     }
 
-    FullPermutation::from_vec(perm)
+    Permutation::from_vec(perm)
 }
 
 #[cfg(test)]
 mod tests {
     use super::perm_between;
     use super::PartitionStack;
-    use super::{FullPermutation, Permutation};
+    use super::Permutation;
     use crate::trace;
 
     #[test]
@@ -419,7 +419,7 @@ mod tests {
         let mut q = PartitionStack::new(5);
         p.refine_partition_by(&mut tracer, |x| *x)?;
         q.refine_partition_by(&mut tracer, |x| *x)?;
-        assert_eq!(perm_between(&p, &q), FullPermutation::id());
+        assert_eq!(perm_between(&p, &q), Permutation::id());
         Ok(())
     }
 
@@ -432,7 +432,7 @@ mod tests {
         q.refine_partition_by(&mut tracer, |x| *x)?;
         assert_eq!(
             perm_between(&p, &q),
-            FullPermutation::from_vec(vec![4, 3, 2, 1, 0])
+            Permutation::from_vec(vec![4, 3, 2, 1, 0])
         );
         Ok(())
     }
