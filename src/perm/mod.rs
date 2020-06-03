@@ -34,7 +34,6 @@ impl Permutation {
     }
 
     pub fn is_id(&self) -> bool {
-        // TODO If I multiply g * g^-1 is the vals going to be empty?
         self.vals.is_empty()
     }
 
@@ -178,6 +177,14 @@ mod tests {
     fn id_perm() {
         assert_eq!(Permutation::id(), Permutation::id());
         assert_eq!(Permutation::id(), Permutation::from_vec(vec![0, 1, 2]));
+    }
+
+    #[test]
+    fn test_is_id() {
+        let perm = Permutation::from_vec(vec![0, 1, 2]);
+        assert!(perm.is_id());
+        let perm = Permutation::from_vec(vec![0, 2, 1, 4, 3]);
+        assert!(perm.multiply(&perm.inv()).is_id())
     }
 
     #[test]

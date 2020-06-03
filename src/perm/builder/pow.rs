@@ -94,4 +94,33 @@ mod tests {
             counter = counter.multiply(&inv);
         }
     }
+
+    #[test]
+    fn application_positive() {
+        use super::MultiJoin;
+        let perm = Permutation::from_vec(vec![1, 3, 2, 4, 5, 0]);
+        let lazy_pow = perm.build_pow(4);
+        let lazy_mult = MultiJoin::new(std::iter::repeat(perm.clone()).take(4));
+        let full = perm.multiply(&perm).multiply(&perm).multiply(&perm);
+
+        for i in 0..5 {
+            assert_eq!(lazy_pow.build_apply(i), lazy_mult.build_apply(i));
+            assert_eq!(lazy_pow.build_apply(i), full.apply(i));
+        }
+    }
+
+    #[test]
+    fn application_negative() {
+        use super::MultiJoin;
+        let perm_inv = Permutation::from_vec(vec![1, 3, 2, 4, 5, 0]);
+        let perm = perm_inv.inv();
+        let lazy_pow = perm_inv.build_pow(-4);
+        let lazy_mult = MultiJoin::new(std::iter::repeat(perm.clone()).take(4));
+        let full = perm.multiply(&perm).multiply(&perm).multiply(&perm);
+
+        for i in 0..5 {
+            assert_eq!(lazy_pow.build_apply(i), lazy_mult.build_apply(i));
+            assert_eq!(lazy_pow.build_apply(i), full.apply(i));
+        }
+    }
 }
