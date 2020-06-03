@@ -1,6 +1,6 @@
 use super::super::state::State;
 use super::Refiner;
-use crate::perm::{FullPermutation, Permutation};
+use crate::perm::Permutation;
 use crate::trace;
 use std::collections::{HashMap, HashSet};
 
@@ -19,7 +19,7 @@ impl<T: State> Refiner<T> for SetStabilizer {
         format!("SetStabilizer of {:?}", self.set)
     }
 
-    fn check(&self, p: &FullPermutation) -> bool {
+    fn check(&self, p: &Permutation) -> bool {
         self.set
             .iter()
             .cloned()
@@ -56,7 +56,7 @@ impl<T: State> Refiner<T> for TupleStabilizer {
         format!("TupleStabilizer of {:?}", self.tuple)
     }
 
-    fn check(&self, p: &FullPermutation) -> bool {
+    fn check(&self, p: &Permutation) -> bool {
         self.tuple.iter().cloned().all(|x| p.apply(x) == x)
     }
 

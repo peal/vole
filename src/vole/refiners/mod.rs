@@ -1,7 +1,7 @@
 pub mod digraph;
 pub mod simple;
 
-use crate::perm::FullPermutation;
+use crate::perm::Permutation;
 use crate::trace;
 
 pub trait Refiner<State: super::state::State> {
@@ -9,7 +9,7 @@ pub trait Refiner<State: super::state::State> {
 
     // TODO: I would like this to take an arbitrary permutation,
     // but it conflicts with a couple of things (I think maybe a Refiner, RefinerExt pair could solve it)
-    fn check(&self, p: &FullPermutation) -> bool;
+    fn check(&self, p: &Permutation) -> bool;
 
     fn refine_begin(&mut self, _: &mut State) -> trace::Result<()> {
         Ok(())

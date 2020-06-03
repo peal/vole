@@ -2,13 +2,13 @@
 //!
 //! This crate implements directed graphs
 
-use crate::perm::{FullPermutation, Permutation};
+use crate::perm::Permutation;
 
 pub trait Edge: Copy + Clone + Ord + Sized + std::fmt::Debug {
     fn colour(&self) -> usize;
     fn end(&self) -> usize;
     fn replace_end(&self, i: usize) -> Self;
-    fn apply(&self, p: &impl Permutation) -> Self;
+    fn apply(&self, p: &Permutation) -> Self;
 }
 
 impl Edge for usize {
@@ -23,7 +23,7 @@ impl Edge for usize {
         i
     }
 
-    fn apply(&self, p: &impl Permutation) -> Self {
+    fn apply(&self, p: &Permutation) -> Self {
         p.apply(*self)
     }
 }
@@ -79,10 +79,10 @@ impl<E: Edge> DigraphBase<E> {
     }
 }
 
-impl<E: Edge> std::ops::BitXor<&FullPermutation> for &DigraphBase<E> {
+impl<E: Edge> std::ops::BitXor<&Permutation> for &DigraphBase<E> {
     type Output = DigraphBase<E>;
 
-    fn bitxor(self, perm: &FullPermutation) -> Self::Output {
+    fn bitxor(self, perm: &Permutation) -> Self::Output {
         let mut outedges: Vec<Vec<E>> = vec![vec![]; self.outedges.len()];
         for i in 0..self.outedges.len() {
             let i_img = perm.apply(i);
@@ -99,7 +99,7 @@ pub type Digraph = DigraphBase<usize>;
 #[cfg(test)]
 mod tests {
     use super::Digraph;
-    use crate::perm::{FullPermutation, Permutation};
+    use crate::perm::Permutation;
     #[test]
     fn id_perm() {
         let d = Digraph::empty(3);
@@ -118,7 +118,7 @@ mod tests {
     #[test]
     fn empty_perm_graph() {
         let d = Digraph::empty(3);
-        let p = FullPermutation::from_vec(vec![1, 0]);
+        let p = Permutation::from_vec(vec![1, 0]);
         let e = (&d) ^ (&p);
         assert_eq!(d, e);
     }
@@ -126,8 +126,8 @@ mod tests {
     #[test]
     fn cycle_perm_graph() {
         let d = Digraph::from_vec(vec![vec![1], vec![2], vec![0]]);
-        let p = FullPermutation::from_vec(vec![1, 2, 0]);
-        let c2 = FullPermutation::from_vec(vec![1, 0]);
+        let p = Permutation::from_vec(vec![1, 2, 0]);
+        let c2 = Permutation::from_vec(vec![1, 0]);
         let e = (&d) ^ (&p);
         let f = (&d) ^ (&c2);
         let g = (&f) ^ (&c2);
