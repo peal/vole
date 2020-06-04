@@ -23,4 +23,3 @@ criterion = "0.3"
 [[bench]]
 name = "permutation"
 harness = false
-debug_assertions = false

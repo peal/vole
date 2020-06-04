@@ -5,6 +5,7 @@
 // mod randomreplacement;
 mod builder;
 mod schreiervector;
+pub mod utils;
 
 use builder::PermBuilder;
 
