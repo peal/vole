@@ -5,6 +5,7 @@
 // mod randomreplacement;
 mod builder;
 mod schreiervector;
+pub mod utils;
 
 use builder::PermBuilder;
 
@@ -64,7 +65,7 @@ impl Permutation {
         while !vals.is_empty() && vals[vals.len() - 1] == vals.len() - 1 {
             vals.pop();
         }
-        println!("{:?}", vals);
+        //println!("{:?}", vals);
         if cfg!(debug_assertions) {
             let mut val_cpy = vals.clone();
             val_cpy.sort();

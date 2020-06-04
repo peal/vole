@@ -16,3 +16,10 @@ serde = { version = "1.0", features=["rc", "derive"]}
 serde_json = "1.0.42"
 rand = "0.7.3"
 rand_chacha = "0.2.2"
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "permutation"
+harness = false
