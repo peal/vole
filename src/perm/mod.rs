@@ -34,14 +34,23 @@ impl Permutation {
         }
     }
 
+    /// Tests if the permutation is the identity
+    /// ```
+    /// use rust_peal::perm::Permutation;
+    /// assert!(Permutation::id().is_id());
+    /// let a = Permutation::from_vec(vec![1, 0]);
+    /// assert!(a.multiply(&a).is_id());
+    /// ```
     pub fn is_id(&self) -> bool {
         self.vals.is_empty()
     }
 
-    pub fn as_vec(&self) -> &Vec<usize> {
-        &self.vals
+    /// Get the vector representation of the permutation
+    pub fn as_vec(&self) -> &[usize] {
+        &self.vals[..]
     }
 
+    // Helper to make the inverse
     fn make_inverse(vals: Rc<Vec<usize>>, invvals: Rc<Vec<usize>>) -> Self {
         Self {
             vals: invvals,
@@ -49,6 +58,11 @@ impl Permutation {
         }
     }
 
+    /// Applies the permutation to a point
+    /// ```
+    /// use rust_peal::perm::Permutation;
+    /// assert_eq!(Permutation::id().apply(1), 1);
+    /// ```
     pub fn apply(&self, x: usize) -> usize {
         if x < self.vals.len() {
             self.vals[x]
@@ -61,6 +75,10 @@ impl Permutation {
     /// Produces a permutation which maps i to vals\[i\], and acts as the
     /// identity for i >= vals.len()
     /// Requires: vals is a permutation on 0..vals.len()
+    /// ```
+    /// use rust_peal::perm::Permutation;
+    /// let a = Permutation::from_vec(vec![1, 0]);
+    /// ```
     pub fn from_vec(mut vals: Vec<usize>) -> Self {
         while !vals.is_empty() && vals[vals.len() - 1] == vals.len() - 1 {
             vals.pop();
@@ -79,6 +97,14 @@ impl Permutation {
         }
     }
 
+    /// Computes the inverse of a permutation.
+    /// Note this also lazily caches the inverse, so subsequent calls should
+    /// be extremely quick
+    /// ```
+    /// use rust_peal::perm::Permutation;
+    /// let a = Permutation::from_vec(vec![1, 0]);
+    /// assert_eq!(a, a.inv());
+    /// ```
     pub fn inv(&self) -> Self {
         if self.invvals.borrow().is_some() {
             return Permutation::make_inverse(
@@ -99,6 +125,13 @@ impl Permutation {
         Permutation::make_inverse(self.vals.clone(), ptr)
     }
 
+    /// Multiplies two permutations
+    /// ```
+    /// use rust_peal::perm::Permutation;
+    /// let a = Permutation::from_vec(vec![0, 2, 1]);
+    /// let b = a.inv();
+    /// assert_eq!(a.multiply(&b), Permutation::id());
+    /// ```
     pub fn multiply(&self, other: &Permutation) -> Self {
         if self.is_id() {
             if other.is_id() {
@@ -116,10 +149,18 @@ impl Permutation {
         }
     }
 
+    /// Computes the n-th power of a a permutation
+    /// ```
+    /// use rust_peal::perm::Permutation;
+    /// let a = Permutation::from_vec(vec![2, 0, 1]);
+    /// assert_eq!(a.pow(3), Permutation::id());
+    /// assert_eq!(a.pow(-1), a.inv());
+    /// ```
     pub fn pow(&self, pow: isize) -> Self {
         self.build_pow(pow).collapse()
     }
 
+    /// Computes f * g^-1
     pub fn divide(&self, other: &Permutation) -> Self {
         self.build_divide(other).collapse()
     }
