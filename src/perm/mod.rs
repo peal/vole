@@ -85,7 +85,9 @@ impl Permutation {
 
         copy.sort();
         for i in copy.into_iter().enumerate() {
-            assert_eq!(i.0, i.1)
+            if i.0 != i.1 {
+                panic!("Invalid Representation");
+            }
         }
 
         perm
@@ -219,6 +221,19 @@ impl From<Vec<usize>> for Permutation {
 
 #[cfg(test)]
 mod tests {
+
+    #[test]
+    #[should_panic]
+    fn invalid_missing_0() {
+        Permutation::from_vec(vec![1, 2, 3]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn invalid_double_value() {
+        Permutation::from_vec(vec![0, 1, 2, 2]);
+    }
+
     use super::Permutation;
     #[test]
     fn id_perm() {
