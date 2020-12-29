@@ -1,8 +1,8 @@
 use super::super::state::State;
 use super::Refiner;
-use crate::digraph::Digraph;
+use crate::datastructures::digraph::Digraph;
 use crate::perm::Permutation;
-use crate::trace;
+use crate::vole::trace;
 
 pub struct DigraphStabilizer {
     digraph: Digraph,

@@ -29,53 +29,53 @@ impl Edge for usize {
 }
 
 /// Represents a digraph
-/// 'outedges' represents the edges out from vertex i
-/// 'inedges' representes the edges into vertex i
+/// 'out_edges' represents the edges out from vertex i
+/// 'in_edges' represents the edges into vertex i
 #[derive(Clone, Debug, PartialEq, Eq, Ord, PartialOrd)]
 pub struct DigraphBase<E: Edge> {
-    outedges: Vec<Vec<E>>,
-    inedges: Vec<Vec<E>>,
+    out_edges: Vec<Vec<E>>,
+    in_edges: Vec<Vec<E>>,
 }
 
 impl<E: Edge> DigraphBase<E> {
     /// Get the empty digraph on n vertices
     pub fn empty(n: usize) -> DigraphBase<E> {
         DigraphBase {
-            outedges: vec![vec![]; n],
-            inedges: vec![vec![]; n],
+            out_edges: vec![vec![]; n],
+            in_edges: vec![vec![]; n],
         }
     }
 
-    pub fn from_vec(mut outedges: Vec<Vec<E>>) -> DigraphBase<E> {
-        let mut inedges = vec![vec![]; outedges.len()];
+    pub fn from_vec(mut out_edges: Vec<Vec<E>>) -> DigraphBase<E> {
+        let mut in_edges = vec![vec![]; out_edges.len()];
 
-        for (i, item) in outedges.iter().enumerate() {
+        for (i, item) in out_edges.iter().enumerate() {
             for edge in item {
-                inedges[edge.end()].push(edge.replace_end(i))
+                in_edges[edge.end()].push(edge.replace_end(i))
             }
         }
 
-        for o in &mut outedges {
+        for o in &mut out_edges {
             o.sort();
         }
 
-        for i in &mut inedges {
+        for i in &mut in_edges {
             i.sort();
         }
 
-        DigraphBase { outedges, inedges }
+        DigraphBase { out_edges, in_edges }
     }
 
     pub fn vertices(&self) -> usize {
-        self.outedges.len()
+        self.out_edges.len()
     }
 
-    pub fn outedges<'a>(&'a self, i: usize) -> &'a Vec<E> {
-        &self.outedges[i]
+    pub fn out_edges<'a>(&'a self, i: usize) -> &'a Vec<E> {
+        &self.out_edges[i]
     }
 
-    pub fn inedges<'a>(&'a self, i: usize) -> &'a Vec<E> {
-        &self.inedges[i]
+    pub fn in_edges<'a>(&'a self, i: usize) -> &'a Vec<E> {
+        &self.in_edges[i]
     }
 }
 
@@ -83,14 +83,14 @@ impl<E: Edge> std::ops::BitXor<&Permutation> for &DigraphBase<E> {
     type Output = DigraphBase<E>;
 
     fn bitxor(self, perm: &Permutation) -> Self::Output {
-        let mut outedges: Vec<Vec<E>> = vec![vec![]; self.outedges.len()];
-        for i in 0..self.outedges.len() {
+        let mut out_edges: Vec<Vec<E>> = vec![vec![]; self.out_edges.len()];
+        for i in 0..self.out_edges.len() {
             let i_img = perm.apply(i);
-            for edge in &self.outedges[i] {
-                outedges[i_img].push(edge.apply(perm));
+            for edge in &self.out_edges[i] {
+                out_edges[i_img].push(edge.apply(perm));
             }
         }
-        DigraphBase::from_vec(outedges)
+        DigraphBase::from_vec(out_edges)
     }
 }
 
@@ -105,8 +105,8 @@ mod tests {
         let d = Digraph::empty(3);
         assert_eq!(d.vertices(), 3);
         for i in 0..3 {
-            assert_eq!(d.inedges(i), &Vec::<usize>::new());
-            assert_eq!(d.outedges(i), &Vec::<usize>::new());
+            assert_eq!(d.in_edges(i), &Vec::<usize>::new());
+            assert_eq!(d.out_edges(i), &Vec::<usize>::new());
         }
         assert_eq!(d, d);
         let e = Digraph::empty(4);

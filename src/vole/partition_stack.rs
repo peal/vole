@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 use crate::perm::Permutation;
-use crate::trace;
+use crate::vole::trace;
 
 use std::collections::HashSet;
 use std::hash::Hash;
@@ -311,7 +311,7 @@ mod tests {
     use super::perm_between;
     use super::PartitionStack;
     use super::Permutation;
-    use crate::trace;
+    use crate::vole::trace;
 
     #[test]
     fn basic() {

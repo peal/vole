@@ -1,4 +1,4 @@
-use rust_peal::trace;
+use rust_peal::vole::trace;
 use rust_peal::vole::parseinput;
 use rust_peal::vole::search::simple_search;
 use rust_peal::vole::solutions::Solutions;
@@ -6,7 +6,6 @@ use rust_peal::vole::state::PartitionState;
 
 use simplelog::*;
 
-use std::path::PathBuf;
 use structopt::StructOpt;
 
 use std::{
@@ -69,6 +68,7 @@ impl Opt {
 }
 
 fn main() -> anyhow::Result<()> {
+
     let opt = Opt::from_args();
 
     CombinedLogger::init(vec![

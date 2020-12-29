@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::digraph::Digraph;
+use crate::datastructures::digraph::Digraph;
 
 use super::refiners::digraph::DigraphStabilizer;
 use super::refiners::simple::SetStabilizer;

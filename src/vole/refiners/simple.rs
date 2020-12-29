@@ -1,7 +1,7 @@
 use super::super::state::State;
 use super::Refiner;
 use crate::perm::Permutation;
-use crate::trace;
+use crate::vole::trace;
 use std::collections::{HashMap, HashSet};
 
 pub struct SetStabilizer {

@@ -1,14 +1,14 @@
 use std::hash::Hash;
 
-use crate::partitionstack;
-use crate::trace;
+use crate::vole::partition_stack;
+use crate::vole::trace;
 
 pub trait State {
-    fn partition(&self) -> &partitionstack::PartitionStack;
+    fn partition(&self) -> &partition_stack::PartitionStack;
 
     fn has_rbase(&self) -> bool;
     fn snapshot_rbase(&mut self);
-    fn rbase_partition(&self) -> &partitionstack::PartitionStack;
+    fn rbase_partition(&self) -> &partition_stack::PartitionStack;
 
     fn refine_partition_cell_by<F: Copy, T: Ord + Hash>(
         &mut self,
@@ -26,15 +26,15 @@ pub trait State {
 }
 
 pub struct PartitionState {
-    stack: partitionstack::PartitionStack,
-    rbasestack: Option<partitionstack::PartitionStack>,
+    stack: partition_stack::PartitionStack,
+    rbasestack: Option<partition_stack::PartitionStack>,
     tracer: trace::Tracer,
 }
 
 impl PartitionState {
     pub fn new(n: usize, t: trace::Tracer) -> PartitionState {
         PartitionState {
-            stack: partitionstack::PartitionStack::new(n),
+            stack: partition_stack::PartitionStack::new(n),
             rbasestack: Option::None,
             tracer: t,
         }
@@ -42,7 +42,7 @@ impl PartitionState {
 }
 
 impl State for PartitionState {
-    fn partition(&self) -> &partitionstack::PartitionStack {
+    fn partition(&self) -> &partition_stack::PartitionStack {
         &self.stack
     }
 
@@ -54,7 +54,7 @@ impl State for PartitionState {
         self.rbasestack = Some(self.stack.clone());
     }
 
-    fn rbase_partition(&self) -> &partitionstack::PartitionStack {
+    fn rbase_partition(&self) -> &partition_stack::PartitionStack {
         self.rbasestack.as_ref().unwrap()
     }
 

@@ -2,7 +2,7 @@ pub mod digraph;
 pub mod simple;
 
 use crate::perm::Permutation;
-use crate::trace;
+use crate::vole::trace;
 
 pub trait Refiner<State: super::state::State> {
     fn name(&self) -> String;

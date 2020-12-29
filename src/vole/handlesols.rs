@@ -1,7 +1,7 @@
 use super::refiners::Refiner;
 use super::solutions::Solutions;
 use super::state::State;
-use crate::partitionstack;
+use crate::vole::partition_stack;
 use log::trace;
 
 pub fn check_solution<T: State>(
@@ -17,7 +17,7 @@ pub fn check_solution<T: State>(
     let part = state.partition();
     assert!(part.cells() == part.domain_size());
 
-    let sol = partitionstack::perm_between(&state.rbase_partition(), &part);
+    let sol = partition_stack::perm_between(&state.rbase_partition(), &part);
 
     trace!("Checking solution: {:?}", sol);
 

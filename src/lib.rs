@@ -1,7 +1,7 @@
-pub mod digraph;
-pub mod graphiso;
-pub mod partitionstack;
+#![allow(dead_code)]
+#![allow(clippy::stable_sort_primitive)]
+#![allow(clippy::rc_buffer)]
+
 pub mod perm;
-pub mod small_int_set;
-pub mod trace;
 pub mod vole;
+pub mod datastructures;

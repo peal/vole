@@ -57,3 +57,9 @@ impl Tracer {
         Ok(())
     }
 }
+
+impl Default for Tracer {
+ fn default() -> Self {
+        Self::new()
+  }
+ }
