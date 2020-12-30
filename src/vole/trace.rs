@@ -59,7 +59,7 @@ impl Tracer {
 }
 
 impl Default for Tracer {
- fn default() -> Self {
+    fn default() -> Self {
         Self::new()
-  }
- }
+    }
+}

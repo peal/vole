@@ -1,7 +1,7 @@
 use super::super::state::State;
 use super::Refiner;
-use crate::perm::Permutation;
 use crate::vole::trace;
+use crate::{perm::Permutation, vole::backtracking::Backtrack};
 use std::collections::{HashMap, HashSet};
 
 pub struct SetStabilizer {
@@ -30,6 +30,11 @@ impl<T: State> Refiner<T> for SetStabilizer {
         state.refine_partition_by(|x| self.set.contains(x))?;
         Ok(())
     }
+}
+
+impl Backtrack for SetStabilizer {
+    fn bt_save(&mut self) {}
+    fn bt_revert(&mut self) {}
 }
 
 // Tuple is stored as a hash map, from value to position in list
@@ -64,4 +69,9 @@ impl<T: State> Refiner<T> for TupleStabilizer {
         state.refine_partition_by(|x| self.tuplemap.get(x).unwrap_or(&0))?;
         Ok(())
     }
+}
+
+impl Backtrack for TupleStabilizer {
+    fn bt_save(&mut self) {}
+    fn bt_revert(&mut self) {}
 }

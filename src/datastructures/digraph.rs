@@ -63,7 +63,10 @@ impl<E: Edge> DigraphBase<E> {
             i.sort();
         }
 
-        DigraphBase { out_edges, in_edges }
+        DigraphBase {
+            out_edges,
+            in_edges,
+        }
     }
 
     pub fn vertices(&self) -> usize {

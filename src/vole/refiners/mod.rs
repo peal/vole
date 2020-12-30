@@ -2,9 +2,10 @@ pub mod digraph;
 pub mod simple;
 
 use crate::perm::Permutation;
+use crate::vole::backtracking::Backtrack;
 use crate::vole::trace;
 
-pub trait Refiner<State: super::state::State> {
+pub trait Refiner<State: super::state::State>: Backtrack {
     fn name(&self) -> String;
 
     // TODO: I would like this to take an arbitrary permutation,
