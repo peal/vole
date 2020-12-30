@@ -4,8 +4,6 @@ use crate::perm::Permutation;
 use crate::vole::trace;
 use crate::{datastructures::digraph::Digraph, vole::backtracking::Backtrack};
 
-
-
 pub struct DigraphStabilizer {
     digraph: Digraph,
 }
@@ -32,6 +30,6 @@ impl<T: State> Refiner<T> for DigraphStabilizer {
 }
 
 impl Backtrack for DigraphStabilizer {
-    fn bt_save(&mut self) {}
-    fn bt_revert(&mut self) {}
+    fn save_state(&mut self) {}
+    fn restore_state(&mut self) {}
 }

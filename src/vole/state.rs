@@ -1,9 +1,14 @@
 use std::hash::Hash;
 
-use crate::vole::partition_stack;
 use crate::vole::trace;
+use crate::{
+    datastructures::digraph::{Digraph, DigraphStack},
+    vole::partition_stack,
+};
 
-pub trait State {
+use crate::vole::backtracking::Backtrack;
+
+pub trait State: Backtrack {
     fn partition(&self) -> &partition_stack::PartitionStack;
 
     fn has_rbase(&self) -> bool;
@@ -21,14 +26,16 @@ pub trait State {
     where
         F: Fn(&usize) -> T;
 
-    fn save_state(&self) -> usize;
-    fn restore_state(&mut self, depth: usize);
+    fn add_graph(&mut self, dgraph: &Digraph);
+    fn add_graphs(&mut self, dgraphs: &[Digraph]);
 }
 
 pub struct PartitionState {
     stack: partition_stack::PartitionStack,
     rbasestack: Option<partition_stack::PartitionStack>,
     tracer: trace::Tracer,
+    save_state_stack: Vec<usize>,
+    digraph_stack: DigraphStack,
 }
 
 impl PartitionState {
@@ -37,6 +44,8 @@ impl PartitionState {
             stack: partition_stack::PartitionStack::new(n),
             rbasestack: Option::None,
             tracer: t,
+            save_state_stack: vec![],
+            digraph_stack: DigraphStack::empty(n),
         }
     }
 }
@@ -76,11 +85,22 @@ impl State for PartitionState {
         self.stack.refine_partition_by(&mut self.tracer, f)
     }
 
-    fn save_state(&self) -> usize {
-        self.stack.cells()
+    fn add_graph(&mut self, d: &Digraph) {
+        self.digraph_stack.add_graph(d);
     }
 
-    fn restore_state(&mut self, depth: usize) {
-        self.stack.unsplit_cells_to(depth)
+    fn add_graphs(&mut self, dgraphs: &[Digraph]) {
+        self.digraph_stack.add_graphs(dgraphs);
+    }
+}
+
+impl Backtrack for PartitionState {
+    fn save_state(&mut self) {
+        self.save_state_stack.push(self.stack.cells());
+    }
+
+    fn restore_state(&mut self) {
+        self.stack
+            .unsplit_cells_to(self.save_state_stack.pop().unwrap());
     }
 }

@@ -33,8 +33,8 @@ impl<T: State> Refiner<T> for SetStabilizer {
 }
 
 impl Backtrack for SetStabilizer {
-    fn bt_save(&mut self) {}
-    fn bt_revert(&mut self) {}
+    fn save_state(&mut self) {}
+    fn restore_state(&mut self) {}
 }
 
 // Tuple is stored as a hash map, from value to position in list
@@ -72,6 +72,6 @@ impl<T: State> Refiner<T> for TupleStabilizer {
 }
 
 impl Backtrack for TupleStabilizer {
-    fn bt_save(&mut self) {}
-    fn bt_revert(&mut self) {}
+    fn save_state(&mut self) {}
+    fn restore_state(&mut self) {}
 }

@@ -38,12 +38,12 @@ pub fn simple_search_recurse<T: State>(
     cell.sort();
 
     for c in cell {
-        let saved = state.save_state();
+        state.save_state();
         let ret = state.refine_partition_cell_by(cellnum, |x| *x == c);
         if let Ok(()) = ret {
             simple_search_recurse(state, sols, refiners);
         }
-        state.restore_state(saved);
+        state.restore_state();
     }
     trace!("Returning");
 }

@@ -2,24 +2,30 @@
 //!
 //! This crate implements edge-coloured graphs.
 
+use std::{slice, sync::Arc};
 
+use crate::{
+    perm::Permutation,
+    vole::backtracking::{Backtrack, Backtracking},
+};
 use indexmap::map::IndexMap;
 use itertools::Itertools;
-use crate::perm::Permutation;
 
 use super::hash::do_hash;
 
-
-type Neighbours = IndexMap<usize,usize>;
+type Neighbours = IndexMap<usize, usize>;
 #[derive(Clone, Debug, Eq)]
 pub struct Digraph {
-    edges: Vec<Neighbours>
+    edges: Vec<Neighbours>,
 }
 
 impl PartialEq<Digraph> for Digraph {
     fn eq(&self, other: &Digraph) -> bool {
         // Check edges are sorted and unique
-        assert!(self.edges.iter().all(|e| e.keys().tuple_windows().all(|(a,b)| a < b)));
+        assert!(self
+            .edges
+            .iter()
+            .all(|e| e.keys().tuple_windows().all(|(a, b)| a < b)));
         self.edges == other.edges
     }
 }
@@ -27,9 +33,12 @@ impl PartialEq<Digraph> for Digraph {
 impl PartialOrd<Digraph> for Digraph {
     fn partial_cmp(&self, other: &Digraph) -> Option<std::cmp::Ordering> {
         // Check edges are sorted and unique
-        assert!(self.edges.iter().all(|e| e.keys().tuple_windows().all(|(a,b)| a < b)));
+        assert!(self
+            .edges
+            .iter()
+            .all(|e| e.keys().tuple_windows().all(|(a, b)| a < b)));
         assert!(self.edges.len() == other.edges.len());
-        
+
         for (left, right) in self.edges.iter().zip(other.edges.iter()) {
             let c = left.iter().cmp(right.iter());
             if c != std::cmp::Ordering::Equal {
@@ -38,7 +47,6 @@ impl PartialOrd<Digraph> for Digraph {
         }
         Some(std::cmp::Ordering::Equal)
     }
-
 }
 
 impl Digraph {
@@ -63,7 +71,7 @@ impl Digraph {
             e.sort_keys();
         }
 
-        Digraph{ edges }
+        Digraph { edges }
     }
 
     pub fn vertices(&self) -> usize {
@@ -74,17 +82,23 @@ impl Digraph {
         &self.edges[i]
     }
 
-    pub fn merge(&mut self, d: &Digraph, depth: usize) {
-        if d.edges.len() > self.edges.len() {
-            self.edges.resize(d.edges.len(), Neighbours::new());
-        }
+    pub fn merge(&mut self, dgraphs: &[Digraph], in_depth: usize) {
+        for (size, d) in dgraphs.iter().enumerate() {
+            let depth = in_depth + size;
+            if d.edges.len() > self.edges.len() {
+                self.edges.resize(d.edges.len(), Neighbours::new());
+            }
 
-        for i in 0..d.edges.len() {
-            for (&neighbour, &colour) in &d.edges[i] {
-                *self.edges[i].entry(neighbour).or_insert(0) += do_hash((colour, depth));
+            for i in 0..d.edges.len() {
+                for (&neighbour, &colour) in &d.edges[i] {
+                    *self.edges[i].entry(neighbour).or_insert(0) += do_hash((colour, depth));
+                }
             }
         }
-        
+
+        for i in 0..self.edges.len() {
+            self.edges[i].sort_keys();
+        }
     }
 }
 
@@ -101,7 +115,45 @@ impl std::ops::BitXor<&Permutation> for &Digraph {
             edges[i_img].sort_keys();
         }
 
-        Digraph{edges}
+        Digraph { edges }
+    }
+}
+
+pub struct DigraphStack {
+    digraph: Backtracking<Arc<Digraph>>,
+    depth: Backtracking<usize>,
+}
+
+impl DigraphStack {
+    pub fn empty(n: usize) -> DigraphStack {
+        DigraphStack {
+            digraph: Backtracking::new(Arc::new(Digraph::empty(n))),
+            depth: Backtracking::new(0),
+        }
+    }
+
+    pub fn add_graph(&mut self, d: &Digraph) {
+        let digraph: &mut Digraph = Arc::make_mut(&mut (*self.digraph));
+        digraph.merge(slice::from_ref(d), *self.depth);
+        *self.depth += 1;
+    }
+
+    pub fn add_graphs(&mut self, dgraphs: &[Digraph]) {
+        let digraph: &mut Digraph = Arc::make_mut(&mut (*self.digraph));
+        digraph.merge(dgraphs, *self.depth);
+        *self.depth += dgraphs.len();
+    }
+}
+
+impl Backtrack for DigraphStack {
+    fn save_state(&mut self) {
+        self.digraph.save_state();
+        self.depth.save_state();
+    }
+
+    fn restore_state(&mut self) {
+        self.digraph.restore_state();
+        self.depth.restore_state();
     }
 }
 
@@ -150,7 +202,7 @@ mod tests {
 
     #[test]
     fn more_graph() {
-        let d = Digraph::from_vec(vec![vec![1,2], vec![], vec![],vec![]]);
+        let d = Digraph::from_vec(vec![vec![1, 2], vec![], vec![], vec![]]);
         let p = Permutation::from_vec(vec![1, 2, 0]);
         let c2 = Permutation::from_vec(vec![1, 0]);
         let e = (&d) ^ (&p);

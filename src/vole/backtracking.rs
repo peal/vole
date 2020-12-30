@@ -1,14 +1,13 @@
 use std::ops::{Deref, DerefMut};
 
-
 /// Denote objects whose state can be saved and later restored
 /// during backtrack search. These saves and reverts are stored in
 /// stack
 pub trait Backtrack {
     /// Save the current state of the object
-    fn bt_save(&mut self);
+    fn save_state(&mut self);
     /// Revert to a previous saved state
-    fn bt_revert(&mut self);
+    fn restore_state(&mut self);
 }
 
 /// A 'smart pointer' which implements [Backtrack]
@@ -27,11 +26,11 @@ impl<T: Clone> Backtracking<T> {
 }
 
 impl<T: Clone> Backtrack for Backtracking<T> {
-    fn bt_save(&mut self) {
+    fn save_state(&mut self) {
         self.stack.push(self.value.clone());
     }
 
-    fn bt_revert(&mut self) {
+    fn restore_state(&mut self) {
         self.value = self.stack.pop().unwrap();
     }
 }
@@ -74,11 +73,11 @@ impl<T: Clone> BacktrackingStack<T> {
 }
 
 impl<T: Clone> Backtrack for BacktrackingStack<T> {
-    fn bt_save(&mut self) {
+    fn save_state(&mut self) {
         self.saved_depths.push(self.stack.len());
     }
 
-    fn bt_revert(&mut self) {
+    fn restore_state(&mut self) {
         let depth = self.saved_depths.pop().unwrap();
         self.stack.truncate(depth);
     }
@@ -97,26 +96,26 @@ mod tests {
         assert_eq!(*bt, 2);
         *bt = 3;
         assert_eq!(*bt, 3);
-        bt.bt_save();
+        bt.save_state();
         assert_eq!(*bt, 3);
         *bt = 4;
         assert_eq!(*bt, 4);
-        bt.bt_save();
+        bt.save_state();
         assert_eq!(*bt, 4);
         *bt = 5;
         assert_eq!(*bt, 5);
-        bt.bt_save();
+        bt.save_state();
         assert_eq!(*bt, 5);
-        bt.bt_revert();
+        bt.restore_state();
         assert_eq!(*bt, 5);
-        bt.bt_revert();
+        bt.restore_state();
         assert_eq!(*bt, 4);
-        bt.bt_revert();
+        bt.restore_state();
         assert_eq!(*bt, 3);
 
         // Check reverting again panics, stop backtrace being printed
         std::panic::set_hook(Box::new(|_info| {}));
-        assert!(std::panic::catch_unwind(move || bt.bt_revert()).is_err());
+        assert!(std::panic::catch_unwind(move || bt.restore_state()).is_err());
     }
 
     #[test]
@@ -125,33 +124,33 @@ mod tests {
         assert_eq!(*bt.get(), vec![2]);
         bt.push(3);
         assert_eq!(*bt.get(), vec![2, 3]);
-        bt.bt_save();
+        bt.save_state();
         assert_eq!(*bt.get(), vec![2, 3]);
         bt.push(3);
         assert_eq!(*bt.get(), vec![2, 3, 3]);
         bt.push(4);
         bt.push(5);
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5]);
-        bt.bt_save();
+        bt.save_state();
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5]);
         bt.push(6);
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5, 6]);
-        bt.bt_save();
+        bt.save_state();
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5, 6]);
-        bt.bt_save();
+        bt.save_state();
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5, 6]);
         bt.push(8);
-        bt.bt_revert();
+        bt.restore_state();
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5, 6]);
-        bt.bt_revert();
+        bt.restore_state();
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5, 6]);
-        bt.bt_revert();
+        bt.restore_state();
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5]);
-        bt.bt_revert();
+        bt.restore_state();
         assert_eq!(*bt.get(), vec![2, 3]);
 
         // Check reverting again panics, stop backtrace being printed
         std::panic::set_hook(Box::new(|_info| {}));
-        assert!(std::panic::catch_unwind(move || bt.bt_revert()).is_err());
+        assert!(std::panic::catch_unwind(move || bt.restore_state()).is_err());
     }
 }

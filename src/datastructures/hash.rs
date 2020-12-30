@@ -1,5 +1,5 @@
+use std::hash::{Hash, Hasher};
 use twox_hash::XxHash64;
-use std::hash::{Hash,Hasher};
 
 pub fn do_hash<T>(obj: T) -> usize
 where
