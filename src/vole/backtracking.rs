@@ -1,10 +1,17 @@
 use std::ops::{Deref, DerefMut};
 
+
+/// Denote objects whose state can be saved and later restored
+/// during backtrack search. These saves and reverts are stored in
+/// stack
 pub trait Backtrack {
+    /// Save the current state of the object
     fn bt_save(&mut self);
+    /// Revert to a previous saved state
     fn bt_revert(&mut self);
 }
 
+/// A 'smart pointer' which implements [Backtrack]
 pub struct Backtracking<T: Clone> {
     value: T,
     stack: Vec<T>,
@@ -43,6 +50,7 @@ impl<T: Clone> DerefMut for Backtracking<T> {
     }
 }
 
+/// A stack which implements [Backtrack]
 pub struct BacktrackingStack<T: Clone> {
     stack: Vec<T>,
     saved_depths: Vec<usize>,

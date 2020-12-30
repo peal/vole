@@ -4,6 +4,8 @@ use crate::perm::Permutation;
 use crate::vole::trace;
 use crate::{datastructures::digraph::Digraph, vole::backtracking::Backtrack};
 
+
+
 pub struct DigraphStabilizer {
     digraph: Digraph,
 }

@@ -1,121 +1,126 @@
-//! Directed Graphs
+//! Edge-coloured Graphs
 //!
-//! This crate implements directed graphs
+//! This crate implements edge-coloured graphs.
 
+
+use indexmap::map::IndexMap;
+use itertools::Itertools;
 use crate::perm::Permutation;
 
-pub trait Edge: Copy + Clone + Ord + Sized + std::fmt::Debug {
-    fn colour(&self) -> usize;
-    fn end(&self) -> usize;
-    fn replace_end(&self, i: usize) -> Self;
-    fn apply(&self, p: &Permutation) -> Self;
+use super::hash::do_hash;
+
+
+type Neighbours = IndexMap<usize,usize>;
+#[derive(Clone, Debug, Eq)]
+pub struct Digraph {
+    edges: Vec<Neighbours>
 }
 
-impl Edge for usize {
-    fn colour(&self) -> usize {
-        0
-    }
-    fn end(&self) -> usize {
-        *self
-    }
-
-    fn replace_end(&self, i: usize) -> Self {
-        i
-    }
-
-    fn apply(&self, p: &Permutation) -> Self {
-        p.apply(*self)
+impl PartialEq<Digraph> for Digraph {
+    fn eq(&self, other: &Digraph) -> bool {
+        // Check edges are sorted and unique
+        assert!(self.edges.iter().all(|e| e.keys().tuple_windows().all(|(a,b)| a < b)));
+        self.edges == other.edges
     }
 }
 
-/// Represents a digraph
-/// 'out_edges' represents the edges out from vertex i
-/// 'in_edges' represents the edges into vertex i
-#[derive(Clone, Debug, PartialEq, Eq, Ord, PartialOrd)]
-pub struct DigraphBase<E: Edge> {
-    out_edges: Vec<Vec<E>>,
-    in_edges: Vec<Vec<E>>,
+impl PartialOrd<Digraph> for Digraph {
+    fn partial_cmp(&self, other: &Digraph) -> Option<std::cmp::Ordering> {
+        // Check edges are sorted and unique
+        assert!(self.edges.iter().all(|e| e.keys().tuple_windows().all(|(a,b)| a < b)));
+        assert!(self.edges.len() == other.edges.len());
+        
+        for (left, right) in self.edges.iter().zip(other.edges.iter()) {
+            let c = left.iter().cmp(right.iter());
+            if c != std::cmp::Ordering::Equal {
+                return Some(c);
+            }
+        }
+        Some(std::cmp::Ordering::Equal)
+    }
+
 }
 
-impl<E: Edge> DigraphBase<E> {
+impl Digraph {
     /// Get the empty digraph on n vertices
-    pub fn empty(n: usize) -> DigraphBase<E> {
-        DigraphBase {
-            out_edges: vec![vec![]; n],
-            in_edges: vec![vec![]; n],
+    pub fn empty(n: usize) -> Digraph {
+        Digraph {
+            edges: vec![Neighbours::new(); n],
         }
     }
 
-    pub fn from_vec(mut out_edges: Vec<Vec<E>>) -> DigraphBase<E> {
-        let mut in_edges = vec![vec![]; out_edges.len()];
+    pub fn from_vec(in_edges: Vec<Vec<usize>>) -> Digraph {
+        let mut edges: Vec<Neighbours> = vec![Neighbours::new(); in_edges.len()];
 
-        for (i, item) in out_edges.iter().enumerate() {
-            for edge in item {
-                in_edges[edge.end()].push(edge.replace_end(i))
+        for (i, item) in in_edges.iter().enumerate() {
+            for &edge in item {
+                *edges[i].entry(edge).or_insert(0) += 1;
+                *edges[edge].entry(i).or_insert(0) += 2;
             }
         }
 
-        for o in &mut out_edges {
-            o.sort();
+        for e in &mut edges {
+            e.sort_keys();
         }
 
-        for i in &mut in_edges {
-            i.sort();
-        }
-
-        DigraphBase {
-            out_edges,
-            in_edges,
-        }
+        Digraph{ edges }
     }
 
     pub fn vertices(&self) -> usize {
-        self.out_edges.len()
+        self.edges.len()
     }
 
-    pub fn out_edges<'a>(&'a self, i: usize) -> &'a Vec<E> {
-        &self.out_edges[i]
+    pub fn neighbours<'a>(&'a self, i: usize) -> &'a Neighbours {
+        &self.edges[i]
     }
 
-    pub fn in_edges<'a>(&'a self, i: usize) -> &'a Vec<E> {
-        &self.in_edges[i]
-    }
-}
+    pub fn merge(&mut self, d: &Digraph, depth: usize) {
+        if d.edges.len() > self.edges.len() {
+            self.edges.resize(d.edges.len(), Neighbours::new());
+        }
 
-impl<E: Edge> std::ops::BitXor<&Permutation> for &DigraphBase<E> {
-    type Output = DigraphBase<E>;
-
-    fn bitxor(self, perm: &Permutation) -> Self::Output {
-        let mut out_edges: Vec<Vec<E>> = vec![vec![]; self.out_edges.len()];
-        for i in 0..self.out_edges.len() {
-            let i_img = perm.apply(i);
-            for edge in &self.out_edges[i] {
-                out_edges[i_img].push(edge.apply(perm));
+        for i in 0..d.edges.len() {
+            for (&neighbour, &colour) in &d.edges[i] {
+                *self.edges[i].entry(neighbour).or_insert(0) += do_hash((colour, depth));
             }
         }
-        DigraphBase::from_vec(out_edges)
+        
     }
 }
 
-pub type Digraph = DigraphBase<usize>;
+impl std::ops::BitXor<&Permutation> for &Digraph {
+    type Output = Digraph;
+
+    fn bitxor(self, perm: &Permutation) -> Self::Output {
+        let mut edges: Vec<Neighbours> = vec![Neighbours::new(); self.edges.len()];
+        for i in 0..self.edges.len() {
+            let i_img = perm.apply(i);
+            for (&target, &colour) in &self.edges[i] {
+                edges[i_img].insert(perm.apply(target), colour);
+            }
+            edges[i_img].sort_keys();
+        }
+
+        Digraph{edges}
+    }
+}
 
 #[cfg(test)]
 mod tests {
-    use super::Digraph;
+    use super::{Digraph, Neighbours};
     use crate::perm::Permutation;
     #[test]
     fn id_perm() {
         let d = Digraph::empty(3);
         assert_eq!(d.vertices(), 3);
-        for i in 0..3 {
-            assert_eq!(d.in_edges(i), &Vec::<usize>::new());
-            assert_eq!(d.out_edges(i), &Vec::<usize>::new());
+        for i in 0..d.vertices() {
+            let ehash = Neighbours::new();
+            assert_eq!(*d.neighbours(i), ehash);
+            assert_eq!(*d.neighbours(i), ehash);
         }
         assert_eq!(d, d);
-        let e = Digraph::empty(4);
-        assert!(d != e);
-        assert!(d < e);
-        assert!(e >= d);
+        assert!(!(d < d));
+        assert!(d <= d);
     }
 
     #[test]
@@ -135,7 +140,24 @@ mod tests {
         let f = (&d) ^ (&c2);
         let g = (&f) ^ (&c2);
         assert_eq!(d, e);
+        assert!(d <= e);
+        assert!(!(d < e));
         assert!(d != f);
+        assert!(d < f);
+        assert!(g < f);
+        assert_eq!(d, g);
+    }
+
+    #[test]
+    fn more_graph() {
+        let d = Digraph::from_vec(vec![vec![1,2], vec![], vec![],vec![]]);
+        let p = Permutation::from_vec(vec![1, 2, 0]);
+        let c2 = Permutation::from_vec(vec![1, 0]);
+        let e = (&d) ^ (&p);
+        let f = (&d) ^ (&c2);
+        let g = (&f) ^ (&c2);
+        assert!(d < e);
+        assert!(d < f);
         assert_eq!(d, g);
     }
 }
