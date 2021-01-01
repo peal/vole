@@ -1,7 +1,10 @@
 #![allow(dead_code)]
 
-use crate::perm::Permutation;
 use crate::vole::trace;
+use crate::{
+    datastructures::{digraph::Digraph, hash::do_hash},
+    perm::Permutation,
+};
 
 use std::collections::HashSet;
 use std::hash::Hash;
@@ -286,6 +289,42 @@ impl PartitionStack {
         }
         Ok(())
     }
+
+    pub fn refine_partition_cells_by_graph<I>(
+        &mut self,
+        tracer: &mut trace::Tracer,
+        d: &Digraph,
+        cells: I,
+    ) -> trace::Result<()>
+    where
+        I: IntoIterator<Item = usize>,
+    {
+        let mut seen_cells = HashSet::<usize>::new();
+
+        let mut points = vec![0; self.domain_size()];
+
+        for c in cells.into_iter() {
+            for p in self.cell(c) {
+                for (&neighbour, &colour) in d.neighbours(*p) {
+                    points[neighbour] += do_hash((c, colour));
+                    seen_cells.insert(self.cellof(neighbour));
+                }
+            }
+        }
+
+        for s in seen_cells {
+            self.refine_partition_cell_by(tracer, s, |x| points[*x])?;
+        }
+        Ok(())
+    }
+
+    pub fn refine_partition_by_graph(
+        &mut self,
+        tracer: &mut trace::Tracer,
+        d: &Digraph,
+    ) -> trace::Result<()> {
+        self.refine_partition_cells_by_graph(tracer, d, 0..self.cells())
+    }
 }
 
 pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> Permutation {
@@ -311,7 +350,7 @@ mod tests {
     use super::perm_between;
     use super::PartitionStack;
     use super::Permutation;
-    use crate::vole::trace;
+    use crate::{datastructures::digraph::Digraph, vole::trace};
 
     #[test]
     fn basic() {
@@ -409,6 +448,28 @@ mod tests {
         assert_eq!(p.as_list_set(), vec![vec![0], vec![1], vec![2, 4], vec![3]]);
         p.sanity_check();
         p.unsplit_cell();
+        Ok(())
+    }
+
+    #[test]
+    fn test_refine_graph() -> trace::Result<()> {
+        let mut tracer = trace::Tracer::new();
+        let mut p = PartitionStack::new(5);
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        let d = Digraph::empty(5);
+        p.refine_partition_by_graph(&mut tracer, &d)?;
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        let d2 = Digraph::from_vec(vec![vec![1], vec![2], vec![0], vec![], vec![]]);
+        p.refine_partition_by_graph(&mut tracer, &d2)?;
+        assert_eq!(p.as_list_set(), vec![vec![3, 4], vec![0, 1, 2]]);
+        p.sanity_check();
+        // Do twice, as splitting rearranges internal values
+        p.unsplit_cell();
+        p.sanity_check();
+        let d2 = Digraph::from_vec(vec![vec![1], vec![2], vec![0], vec![], vec![]]);
+        p.refine_partition_by_graph(&mut tracer, &d2)?;
+        assert_eq!(p.as_list_set(), vec![vec![3, 4], vec![0, 1, 2]]);
+        p.sanity_check();
         Ok(())
     }
 
