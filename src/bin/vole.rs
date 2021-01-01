@@ -71,7 +71,7 @@ fn main() -> anyhow::Result<()> {
     let opt = Opt::from_args();
 
     CombinedLogger::init(vec![
-        TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Mixed).unwrap(),
+        TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Mixed),
         WriteLogger::new(
             LevelFilter::Info,
             Config::default(),
