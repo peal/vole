@@ -12,6 +12,8 @@ use std::iter::FromIterator;
 
 use log::trace;
 
+use super::backtracking::Backtrack;
+
 #[derive(Clone, Debug)]
 struct MarkStore {
     marks: Vec<usize>,
@@ -64,6 +66,8 @@ pub struct PartitionStack {
     marks: MarkStore,
 
     splits: Vec<usize>,
+
+    saved_depths: Vec<usize>,
 }
 
 impl PartitionStack {
@@ -80,6 +84,7 @@ impl PartitionStack {
             },
             marks: MarkStore::new(n),
             splits: vec![],
+            saved_depths: vec![],
         }
     }
 
@@ -219,13 +224,26 @@ impl PartitionStack {
         self.cells.lengths[unsplit] += cell_length;
     }
 
-    pub fn unsplit_cells_to(&mut self, cells: usize) {
+    fn unsplit_cells_to(&mut self, cells: usize) {
         debug_assert!(self.cells() >= cells);
         while self.cells() > cells {
             self.unsplit_cell();
         }
     }
+}
 
+impl Backtrack for PartitionStack {
+    fn save_state(&mut self) {
+        self.saved_depths.push(self.cells());
+    }
+
+    fn restore_state(&mut self) {
+        let depth = self.saved_depths.pop().unwrap();
+        self.unsplit_cells_to(depth);
+    }
+}
+
+impl PartitionStack {
     /// The following methods are highly unsafe, and must be used with care.
     fn mut_cell(&mut self, i: usize) -> &mut [usize] {
         &mut self.cells.vals[self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i]]

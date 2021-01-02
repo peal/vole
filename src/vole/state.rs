@@ -34,7 +34,6 @@ pub struct PartitionState {
     stack: partition_stack::PartitionStack,
     rbasestack: Option<partition_stack::PartitionStack>,
     tracer: trace::Tracer,
-    save_state_stack: Vec<usize>,
     digraph_stack: DigraphStack,
 }
 
@@ -44,7 +43,6 @@ impl PartitionState {
             stack: partition_stack::PartitionStack::new(n),
             rbasestack: Option::None,
             tracer: t,
-            save_state_stack: vec![],
             digraph_stack: DigraphStack::empty(n),
         }
     }
@@ -96,11 +94,12 @@ impl State for PartitionState {
 
 impl Backtrack for PartitionState {
     fn save_state(&mut self) {
-        self.save_state_stack.push(self.stack.cells());
+        self.stack.save_state();
+        self.digraph_stack.save_state();
     }
 
     fn restore_state(&mut self) {
-        self.stack
-            .unsplit_cells_to(self.save_state_stack.pop().unwrap());
+        self.stack.restore_state();
+        self.digraph_stack.restore_state();
     }
 }
