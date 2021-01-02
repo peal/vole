@@ -212,6 +212,7 @@ impl From<Vec<usize>> for Permutation {
     }
 }
 
+#[allow(clippy::eq_op, clippy::neg_cmp_op_on_partial_ord)]
 #[cfg(test)]
 mod tests {
     use super::Permutation;
