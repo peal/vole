@@ -78,7 +78,7 @@ impl Digraph {
         self.edges.len()
     }
 
-    pub fn neighbours<'a>(&'a self, i: usize) -> &'a Neighbours {
+    pub fn neighbours(&self, i: usize) -> &Neighbours {
         &self.edges[i]
     }
 
@@ -189,16 +189,16 @@ mod tests {
         let d = Digraph::from_vec(vec![vec![1], vec![2], vec![0]]);
         let p = Permutation::from_vec(vec![1, 2, 0]);
         let c2 = Permutation::from_vec(vec![1, 0]);
-        let e = (&d) ^ (&p);
-        let f = (&d) ^ (&c2);
-        let g = (&f) ^ (&c2);
-        assert_eq!(d, e);
-        assert!(d <= e);
-        assert!(!(d < e));
-        assert!(d != f);
-        assert!(d < f);
-        assert!(g < f);
-        assert_eq!(d, g);
+        let de = (&d) ^ (&p);
+        let df = (&d) ^ (&c2);
+        let dg = (&df) ^ (&c2);
+        assert_eq!(d, de);
+        assert!(d <= de);
+        assert!(!(d < de));
+        assert!(d != df);
+        assert!(d < df);
+        assert!(dg < df);
+        assert_eq!(d, dg);
     }
 
     #[test]
@@ -206,11 +206,11 @@ mod tests {
         let d = Digraph::from_vec(vec![vec![1, 2], vec![], vec![], vec![]]);
         let p = Permutation::from_vec(vec![1, 2, 0]);
         let c2 = Permutation::from_vec(vec![1, 0]);
-        let e = (&d) ^ (&p);
-        let f = (&d) ^ (&c2);
-        let g = (&f) ^ (&c2);
-        assert!(d < e);
-        assert!(d < f);
-        assert_eq!(d, g);
+        let de = (&d) ^ (&p);
+        let df = (&d) ^ (&c2);
+        let dg = (&df) ^ (&c2);
+        assert!(d < de);
+        assert!(d < df);
+        assert_eq!(d, dg);
     }
 }

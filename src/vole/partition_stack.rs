@@ -8,7 +8,6 @@ use crate::{
 
 use std::collections::HashSet;
 use std::hash::Hash;
-use std::iter::FromIterator;
 
 use log::trace;
 
@@ -157,7 +156,7 @@ impl PartitionStack {
 
         assert_eq!(self.cells.starts.len(), self.cells.lengths.len());
 
-        let mut starts: HashSet<usize> = HashSet::from_iter(self.cells.starts.iter().cloned());
+        let mut starts: HashSet<usize> = self.cells.starts.iter().cloned().collect();
         assert_eq!(starts.len(), self.cells.starts.len());
         starts.insert(self.size);
 
