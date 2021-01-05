@@ -7,9 +7,9 @@
 #![allow(clippy::rc_buffer)]
 #![warn(clippy::needless_borrow, clippy::use_self)]
 pub mod datastructures;
+pub mod gap_chat;
 pub mod perm;
 pub mod vole;
-pub mod gap_chat;
 
 #[macro_use]
 extern crate bitflags;

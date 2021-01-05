@@ -11,7 +11,6 @@ use tracing_subscriber::{self, fmt::format::FmtSpan};
 
 use rust_peal::gap_chat::GAP_CHAT;
 
-
 fn main() -> anyhow::Result<()> {
     // Set up debugging output
     let (non_block, _guard) = tracing_appender::non_blocking(File::create("vole.trace")?);
@@ -22,7 +21,6 @@ fn main() -> anyhow::Result<()> {
         //.pretty()
         .with_writer(non_block)
         .init();
-
 
     let problem = parse_input::read_problem(&mut GAP_CHAT.lock().unwrap().in_file)?;
 
