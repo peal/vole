@@ -19,8 +19,8 @@ struct MarkStore {
 }
 
 impl MarkStore {
-    fn new(n: usize) -> MarkStore {
-        MarkStore {
+    fn new(n: usize) -> Self {
+        Self {
             marks: vec![0; n + 1],
         }
     }
@@ -70,8 +70,8 @@ pub struct PartitionStack {
 }
 
 impl PartitionStack {
-    pub fn new(n: usize) -> PartitionStack {
-        PartitionStack {
+    pub fn new(n: usize) -> Self {
+        Self {
             size: n,
             cells: CellData {
                 vals: (0..n).collect(),
@@ -320,7 +320,7 @@ impl PartitionStack {
 
         let mut points = vec![0; self.domain_size()];
 
-        for c in cells.into_iter() {
+        for c in cells {
             for p in self.cell(c) {
                 for (&neighbour, &colour) in d.neighbours(*p) {
                     points[neighbour] += do_hash((c, colour));

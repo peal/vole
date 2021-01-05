@@ -9,8 +9,8 @@ pub struct DigraphStabilizer {
 }
 
 impl DigraphStabilizer {
-    pub fn new(digraph: Digraph) -> DigraphStabilizer {
-        DigraphStabilizer { digraph }
+    pub fn new(digraph: Digraph) -> Self {
+        Self { digraph }
     }
 }
 

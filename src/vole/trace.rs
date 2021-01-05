@@ -36,7 +36,7 @@ pub struct Tracer {
 
 impl Tracer {
     pub fn new() -> Self {
-        Tracer {
+        Self {
             recording: true,
             pos: 0,
             trace: Default::default(),

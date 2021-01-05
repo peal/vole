@@ -38,8 +38,8 @@ pub struct PartitionState {
 }
 
 impl PartitionState {
-    pub fn new(n: usize, t: trace::Tracer) -> PartitionState {
-        PartitionState {
+    pub fn new(n: usize, t: trace::Tracer) -> Self {
+        Self {
             stack: partition_stack::PartitionStack::new(n),
             rbasestack: Option::None,
             tracer: t,

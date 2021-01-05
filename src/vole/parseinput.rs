@@ -75,17 +75,17 @@ pub enum Constraint {
 impl RefinerDescription for Constraint {
     fn build_refiner(&self) -> Box<dyn Refiner<PartitionState>> {
         match self {
-            Constraint::DigraphStab(c) => c.build_refiner(),
-            Constraint::SetStab(c) => c.build_refiner(),
-            Constraint::TupleStab(c) => c.build_refiner(),
+            Self::DigraphStab(c) => c.build_refiner(),
+            Self::SetStab(c) => c.build_refiner(),
+            Self::TupleStab(c) => c.build_refiner(),
         }
     }
 
     fn one_index_to_zero(&mut self) {
         match self {
-            Constraint::DigraphStab(c) => c.one_index_to_zero(),
-            Constraint::SetStab(c) => c.one_index_to_zero(),
-            Constraint::TupleStab(c) => c.one_index_to_zero(),
+            Self::DigraphStab(c) => c.one_index_to_zero(),
+            Self::SetStab(c) => c.one_index_to_zero(),
+            Self::TupleStab(c) => c.one_index_to_zero(),
         }
     }
 }

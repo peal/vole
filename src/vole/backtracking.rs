@@ -17,8 +17,8 @@ pub struct Backtracking<T: Clone> {
 }
 
 impl<T: Clone> Backtracking<T> {
-    pub fn new(t: T) -> Backtracking<T> {
-        Backtracking {
+    pub fn new(t: T) -> Self {
+        Self {
             value: t,
             stack: Vec::new(),
         }
@@ -56,8 +56,8 @@ pub struct BacktrackingStack<T: Clone> {
 }
 
 impl<T: Clone> BacktrackingStack<T> {
-    fn new(t: T) -> BacktrackingStack<T> {
-        BacktrackingStack {
+    fn new(t: T) -> Self {
+        Self {
             stack: vec![t],
             saved_depths: vec![],
         }

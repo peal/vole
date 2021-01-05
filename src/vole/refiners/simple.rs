@@ -9,8 +9,8 @@ pub struct SetStabilizer {
 }
 
 impl SetStabilizer {
-    pub fn new(set: HashSet<usize>) -> SetStabilizer {
-        SetStabilizer { set }
+    pub fn new(set: HashSet<usize>) -> Self {
+        Self { set }
     }
 }
 
@@ -44,7 +44,7 @@ pub struct TupleStabilizer {
 }
 
 impl TupleStabilizer {
-    pub fn new(tuple: Vec<usize>) -> TupleStabilizer {
+    pub fn new(tuple: Vec<usize>) -> Self {
         let mut tuplemap = HashMap::<usize, usize>::new();
         // If a value occurs multiple times, only the last one will be stored,
         // but this will lead to the same result anyway.
@@ -52,7 +52,7 @@ impl TupleStabilizer {
         for (i, val) in tuple.iter().enumerate() {
             tuplemap.insert(*val, i + 1);
         }
-        TupleStabilizer { tuplemap, tuple }
+        Self { tuplemap, tuple }
     }
 }
 
