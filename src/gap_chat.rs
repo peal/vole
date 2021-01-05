@@ -9,9 +9,6 @@ use std::{
 
 use std::io::Write;
 
-#[cfg(target_os = "linux")]
-use std::os::unix::io::FromRawFd;
-
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -35,6 +32,7 @@ pub struct Opt {
 impl Opt {
     #[cfg(target_os = "linux")]
     fn input(&self) -> impl BufRead + Send {
+        use std::os::unix::io::FromRawFd;
         BufReader::new(unsafe { File::from_raw_fd(self.inpipe.unwrap()) })
     }
 
@@ -46,6 +44,7 @@ impl Opt {
 
     #[cfg(target_os = "linux")]
     fn output(&self) -> impl Write + Send {
+        use std::os::unix::io::FromRawFd;
         BufWriter::new(unsafe { File::from_raw_fd(self.outpipe.unwrap()) })
     }
 
