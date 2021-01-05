@@ -23,8 +23,8 @@ impl<T: State> Refiner<T> for DigraphStabilizer {
         (&self.digraph) ^ p == self.digraph
     }
 
-    fn refine_begin(&mut self, _state: &mut T) -> trace::Result<()> {
-        //  state.refine_partition_by(|x| self.digraph.contains(x))?;
+    fn refine_begin(&mut self, state: &mut T) -> trace::Result<()> {
+        state.add_graph(&self.digraph);
         Ok(())
     }
 }

@@ -1,11 +1,14 @@
-use std::hash::{Hash, Hasher};
+use std::{
+    hash::{Hash, Hasher},
+    num::Wrapping,
+};
 use twox_hash::XxHash64;
 
-pub fn do_hash<T>(obj: T) -> usize
+pub fn do_hash<T>(obj: T) -> Wrapping<usize>
 where
     T: Hash,
 {
     let mut hasher = XxHash64::default();
     obj.hash(&mut hasher);
-    hasher.finish() as usize
+    Wrapping(hasher.finish() as usize)
 }

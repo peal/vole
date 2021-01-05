@@ -9,3 +9,6 @@
 pub mod datastructures;
 pub mod perm;
 pub mod vole;
+
+#[macro_use]
+extern crate bitflags;

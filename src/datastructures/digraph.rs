@@ -2,7 +2,7 @@
 //!
 //! This crate implements edge-coloured graphs.
 
-use std::{slice, sync::Arc};
+use std::{num::Wrapping, slice, sync::Arc};
 
 use crate::{
     perm::Permutation,
@@ -10,10 +10,11 @@ use crate::{
 };
 use indexmap::map::IndexMap;
 use itertools::Itertools;
+use tracing::trace;
 
 use super::hash::do_hash;
 
-type Neighbours = IndexMap<usize, usize>;
+type Neighbours = IndexMap<usize, Wrapping<usize>>;
 #[derive(Clone, Debug, Eq)]
 pub struct Digraph {
     edges: Vec<Neighbours>,
@@ -62,8 +63,8 @@ impl Digraph {
 
         for (i, item) in in_edges.iter().enumerate() {
             for &edge in item {
-                *edges[i].entry(edge).or_insert(0) += 1;
-                *edges[edge].entry(i).or_insert(0) += 2;
+                *edges[i].entry(edge).or_insert(Wrapping(0)) += Wrapping(1);
+                *edges[edge].entry(i).or_insert(Wrapping(0)) += Wrapping(2);
             }
         }
 
@@ -91,7 +92,8 @@ impl Digraph {
 
             for i in 0..d.edges.len() {
                 for (&neighbour, &colour) in &d.edges[i] {
-                    *self.edges[i].entry(neighbour).or_insert(0) += do_hash((colour, depth));
+                    *self.edges[i].entry(neighbour).or_insert(Wrapping(0)) +=
+                        do_hash((colour, depth));
                 }
             }
         }
@@ -137,12 +139,14 @@ impl DigraphStack {
     }
 
     pub fn add_graph(&mut self, d: &Digraph) {
+        trace!("Adding digraph");
         let digraph: &mut Digraph = Arc::make_mut(&mut (*self.digraph));
         digraph.merge(slice::from_ref(d), *self.depth);
         *self.depth += 1;
     }
 
     pub fn add_graphs(&mut self, digraphs: &[Digraph]) {
+        trace!("Adding {} digraphs", digraphs.len());
         let digraph: &mut Digraph = Arc::make_mut(&mut (*self.digraph));
         digraph.merge(digraphs, *self.depth);
         *self.depth += digraphs.len();

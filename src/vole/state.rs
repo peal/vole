@@ -124,12 +124,14 @@ impl State for PartitionState {
 impl Backtrack for PartitionState {
     fn save_state(&mut self) {
         self.stack.save_state();
+        self.tracer.save_state();
         self.digraph_stack.save_state();
         self.digraph_stack_cells_refined.save_state();
     }
 
     fn restore_state(&mut self) {
         self.stack.restore_state();
+        self.tracer.restore_state();
         self.digraph_stack.restore_state();
         self.digraph_stack_cells_refined.restore_state();
     }

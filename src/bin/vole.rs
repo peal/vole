@@ -1,11 +1,11 @@
-use rust_peal::vole::parse_input;
 use rust_peal::vole::search::simple_search;
 use rust_peal::vole::solutions::Solutions;
 use rust_peal::vole::state::PartitionState;
 use rust_peal::vole::trace;
+use rust_peal::vole::{parse_input, search::RefinerStore};
 
-use tracing_appender;
-use tracing_subscriber;
+use tracing::Level;
+use tracing_subscriber::{self, fmt::format::FmtSpan};
 
 use structopt::StructOpt;
 
@@ -76,7 +76,9 @@ fn main() -> anyhow::Result<()> {
     let (non_block, _guard) = tracing_appender::non_blocking(File::create("vole.trace")?);
 
     tracing_subscriber::fmt()
-        .pretty()
+        .with_span_events(FmtSpan::ACTIVE)
+        .with_max_level(Level::TRACE)
+        //.pretty()
         .with_writer(non_block)
         .init();
 
@@ -85,7 +87,8 @@ fn main() -> anyhow::Result<()> {
 
     let problem = parse_input::read_problem(&mut in_file)?;
 
-    let mut constraints = parse_input::build_constraints(&problem.constraints);
+    let mut constraints =
+        RefinerStore::new_from_refiners(parse_input::build_constraints(&problem.constraints));
     let tracer = trace::Tracer::new();
 
     let mut state = PartitionState::new(problem.config.points, tracer);

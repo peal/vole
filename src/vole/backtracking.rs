@@ -1,3 +1,4 @@
+use core::fmt;
 use std::ops::{Deref, DerefMut};
 
 /// Denote objects whose state can be saved and later restored
@@ -11,12 +12,13 @@ pub trait Backtrack {
 }
 
 /// A 'smart pointer' which implements [Backtrack]
-pub struct Backtracking<T: Clone> {
+#[derive(Debug)]
+pub struct Backtracking<T: Clone + fmt::Debug> {
     value: T,
     stack: Vec<T>,
 }
 
-impl<T: Clone> Backtracking<T> {
+impl<T: Clone + fmt::Debug> Backtracking<T> {
     pub fn new(t: T) -> Self {
         Self {
             value: t,
@@ -25,7 +27,7 @@ impl<T: Clone> Backtracking<T> {
     }
 }
 
-impl<T: Clone> Backtrack for Backtracking<T> {
+impl<T: Clone + fmt::Debug> Backtrack for Backtracking<T> {
     fn save_state(&mut self) {
         self.stack.push(self.value.clone());
     }
@@ -35,7 +37,7 @@ impl<T: Clone> Backtrack for Backtracking<T> {
     }
 }
 
-impl<T: Clone> Deref for Backtracking<T> {
+impl<T: Clone + fmt::Debug> Deref for Backtracking<T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -43,19 +45,20 @@ impl<T: Clone> Deref for Backtracking<T> {
     }
 }
 
-impl<T: Clone> DerefMut for Backtracking<T> {
+impl<T: Clone + fmt::Debug> DerefMut for Backtracking<T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.value
     }
 }
 
 /// A stack which implements [Backtrack]
-pub struct BacktrackingStack<T: Clone> {
+#[derive(Debug)]
+pub struct BacktrackingStack<T: Clone + fmt::Debug> {
     stack: Vec<T>,
     saved_depths: Vec<usize>,
 }
 
-impl<T: Clone> BacktrackingStack<T> {
+impl<T: Clone + fmt::Debug> BacktrackingStack<T> {
     fn new(t: T) -> Self {
         Self {
             stack: vec![t],
@@ -72,7 +75,7 @@ impl<T: Clone> BacktrackingStack<T> {
     }
 }
 
-impl<T: Clone> Backtrack for BacktrackingStack<T> {
+impl<T: Clone + fmt::Debug> Backtrack for BacktrackingStack<T> {
     fn save_state(&mut self) {
         self.saved_depths.push(self.stack.len());
     }

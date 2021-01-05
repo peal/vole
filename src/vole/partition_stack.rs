@@ -6,8 +6,8 @@ use crate::{
     perm::Permutation,
 };
 
-use std::collections::HashSet;
 use std::hash::Hash;
+use std::{collections::HashSet, num::Wrapping};
 
 use tracing::info;
 
@@ -322,7 +322,7 @@ impl PartitionStack {
     {
         let mut seen_cells = HashSet::<usize>::new();
 
-        let mut points = vec![0; self.domain_size()];
+        let mut points = vec![Wrapping(0usize); self.domain_size()];
 
         for c in cells {
             for p in self.cell(c) {
@@ -368,6 +368,8 @@ pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> Permutation {
 
 #[cfg(test)]
 mod tests {
+    use test_env_log::test;
+
     use super::perm_between;
     use super::PartitionStack;
     use super::Permutation;
