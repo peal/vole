@@ -50,7 +50,7 @@ pub struct MultiJoin {
 
 impl MultiJoin {
     pub fn new(it: impl IntoIterator<Item = Permutation>) -> Self {
-        MultiJoin {
+        Self {
             args: it.into_iter().collect(),
         }
     }

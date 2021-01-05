@@ -1,3 +1,6 @@
+// There is a bug in this clippy which hits in this file
+#![allow(clippy::use_self)]
+
 use super::super::Permutation;
 use super::join::MultiJoin;
 use super::PermBuilder;
@@ -16,7 +19,7 @@ where
     Perm: PermBuilder,
 {
     pub(crate) fn new(perm: Perm, power: isize) -> Self {
-        Pow { perm, power }
+        Self { perm, power }
     }
 
     // TODO: This is not really the conjugate I just wanted a nice name

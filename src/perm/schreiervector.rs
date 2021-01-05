@@ -8,7 +8,7 @@ pub struct SchreierVector {
 }
 
 impl SchreierVector {
-    pub fn from_generators(base: usize, gens: Vec<Permutation>) -> SchreierVector {
+    pub fn from_generators(base: usize, gens: Vec<Permutation>) -> Self {
         let mut transversal = HashMap::new();
         transversal.insert(base, Permutation::id());
 
@@ -26,7 +26,7 @@ impl SchreierVector {
             }
         }
 
-        SchreierVector { base, transversal }
+        Self { base, transversal }
     }
 
     pub fn base(&self) -> usize {
@@ -52,7 +52,7 @@ impl StabiliserChain {
         &self.svector
     }
 
-    pub fn stabilizer(&self) -> &Option<Box<StabiliserChain>> {
+    pub fn stabilizer(&self) -> &Option<Box<Self>> {
         &self.stabilizer
     }
 }

@@ -20,7 +20,7 @@ pub struct Digraph {
 }
 
 impl PartialEq<Digraph> for Digraph {
-    fn eq(&self, other: &Digraph) -> bool {
+    fn eq(&self, other: &Self) -> bool {
         // Check edges are sorted and unique
         assert!(self
             .edges
@@ -31,7 +31,7 @@ impl PartialEq<Digraph> for Digraph {
 }
 
 impl PartialOrd<Digraph> for Digraph {
-    fn partial_cmp(&self, other: &Digraph) -> Option<std::cmp::Ordering> {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         // Check edges are sorted and unique
         assert!(self
             .edges
@@ -51,13 +51,13 @@ impl PartialOrd<Digraph> for Digraph {
 
 impl Digraph {
     /// Get the empty digraph on n vertices
-    pub fn empty(n: usize) -> Digraph {
-        Digraph {
+    pub fn empty(n: usize) -> Self {
+        Self {
             edges: vec![Neighbours::new(); n],
         }
     }
 
-    pub fn from_vec(in_edges: Vec<Vec<usize>>) -> Digraph {
+    pub fn from_vec(in_edges: Vec<Vec<usize>>) -> Self {
         let mut edges: Vec<Neighbours> = vec![Neighbours::new(); in_edges.len()];
 
         for (i, item) in in_edges.iter().enumerate() {
@@ -71,7 +71,7 @@ impl Digraph {
             e.sort_keys();
         }
 
-        Digraph { edges }
+        Self { edges }
     }
 
     pub fn vertices(&self) -> usize {
@@ -82,7 +82,7 @@ impl Digraph {
         &self.edges[i]
     }
 
-    pub fn merge(&mut self, dgraphs: &[Digraph], in_depth: usize) {
+    pub fn merge(&mut self, dgraphs: &[Self], in_depth: usize) {
         for (size, d) in dgraphs.iter().enumerate() {
             let depth = in_depth + size;
             if d.edges.len() > self.edges.len() {
@@ -125,8 +125,8 @@ pub struct DigraphStack {
 }
 
 impl DigraphStack {
-    pub fn empty(n: usize) -> DigraphStack {
-        DigraphStack {
+    pub fn empty(n: usize) -> Self {
+        Self {
             digraph: Backtracking::new(Arc::new(Digraph::empty(n))),
             depth: Backtracking::new(0),
         }

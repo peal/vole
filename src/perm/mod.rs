@@ -107,7 +107,7 @@ impl Permutation {
     /// ```
     pub fn inv(&self) -> Self {
         if self.invvals.borrow().is_some() {
-            return Permutation::make_inverse(
+            return Self::make_inverse(
                 self.vals.clone(),
                 self.invvals.borrow().clone().unwrap(),
             );
@@ -122,7 +122,7 @@ impl Permutation {
 
         *self.invvals.borrow_mut() = Some(ptr.clone());
 
-        Permutation::make_inverse(self.vals.clone(), ptr)
+        Self::make_inverse(self.vals.clone(), ptr)
     }
 
     /// Multiplies two permutations
@@ -132,20 +132,20 @@ impl Permutation {
     /// let b = a.inv();
     /// assert_eq!(a.multiply(&b), Permutation::id());
     /// ```
-    pub fn multiply(&self, other: &Permutation) -> Self {
+    pub fn multiply(&self, other: &Self) -> Self {
         if self.is_id() {
             if other.is_id() {
                 return self.clone();
             }
             let size = other.lmp().unwrap();
-            Permutation::from_vec((0..=size).map(|x| other.apply(x)).collect())
+            Self::from_vec((0..=size).map(|x| other.apply(x)).collect())
         } else if other.is_id() {
             self.clone()
         } else {
             let size = max(self.lmp().unwrap_or(0), other.lmp().unwrap_or(0));
             debug_assert!(size > 0);
             let v = (0..=size).map(|x| self.apply(other.apply(x))).collect();
-            Permutation::from_vec(v)
+            Self::from_vec(v)
         }
     }
 
@@ -161,7 +161,7 @@ impl Permutation {
     }
 
     /// Computes f * g^-1
-    pub fn divide(&self, other: &Permutation) -> Self {
+    pub fn divide(&self, other: &Self) -> Self {
         self.build_divide(other).collapse()
     }
 
@@ -208,7 +208,7 @@ impl std::hash::Hash for Permutation {
 
 impl From<Vec<usize>> for Permutation {
     fn from(v: Vec<usize>) -> Self {
-        Permutation::from_vec(v)
+        Self::from_vec(v)
     }
 }
 

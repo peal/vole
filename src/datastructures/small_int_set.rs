@@ -7,8 +7,8 @@ pub struct SmallIntSet {
 }
 
 impl SmallIntSet {
-    pub fn with_size(size: usize) -> SmallIntSet {
-        SmallIntSet {
+    pub fn with_size(size: usize) -> Self {
+        Self {
             bit_set: SmallBitVec::from_elem(size, false),
             vals: vec![],
         }
