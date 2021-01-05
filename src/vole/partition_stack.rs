@@ -25,11 +25,11 @@ impl MarkStore {
         }
     }
 
-    fn markof(&self, i: usize) -> usize {
+    fn mark_of(&self, i: usize) -> usize {
         self.marks[i]
     }
 
-    fn setmarks(&mut self, start: usize, len: usize, cell: usize) {
+    fn set_marks(&mut self, start: usize, len: usize, cell: usize) {
         for i in start..start + len {
             self.marks[i] = cell;
         }
@@ -39,14 +39,14 @@ impl MarkStore {
 #[derive(Clone, Debug)]
 pub struct CellData {
     /// The partition, and it's inverse
-    vals: Vec<usize>,
-    invvals: Vec<usize>,
+    values: Vec<usize>,
+    inv_values: Vec<usize>,
 
     /// Fixed cells, in order of creation
     fixed: Vec<usize>,
 
     /// Contents of fixed cells, in order of creation
-    fixed_vals: Vec<usize>,
+    fixed_values: Vec<usize>,
 
     /// Start of cells
     starts: Vec<usize>,
@@ -74,10 +74,10 @@ impl PartitionStack {
         Self {
             size: n,
             cells: CellData {
-                vals: (0..n).collect(),
-                invvals: (0..n).collect(),
+                values: (0..n).collect(),
+                inv_values: (0..n).collect(),
                 fixed: vec![],
-                fixed_vals: vec![],
+                fixed_values: vec![],
                 starts: vec![0],
                 lengths: vec![n],
             },
@@ -106,42 +106,42 @@ impl PartitionStack {
     }
 
     pub fn cell(&self, i: usize) -> &[usize] {
-        &self.cells.vals[self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i]]
+        &self.cells.values[self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i]]
     }
 
     pub fn fixed_cells(&self) -> &[usize] {
         &self.cells.fixed
     }
 
-    pub fn fixed_vals(&self) -> &[usize] {
-        &self.cells.fixed_vals
+    pub fn fixed_values(&self) -> &[usize] {
+        &self.cells.fixed_values
     }
 
-    pub fn cellof(&self, i: usize) -> usize {
-        self.marks.markof(self.cells.invvals[i])
+    pub fn cell_of(&self, i: usize) -> usize {
+        self.marks.mark_of(self.cells.inv_values[i])
     }
 
     fn sanity_check(&self) {
         {
-            let mut valscpy = self.cells.vals.clone();
-            valscpy.sort();
-            assert_eq!(valscpy, (0..self.size).collect::<Vec<usize>>());
+            let mut values_cpy = self.cells.values.clone();
+            values_cpy.sort();
+            assert_eq!(values_cpy, (0..self.size).collect::<Vec<usize>>());
         }
         {
-            let mut valsinvcpy = self.cells.invvals.clone();
-            valsinvcpy.sort();
-            assert_eq!(valsinvcpy, (0..self.size).collect::<Vec<usize>>());
+            let mut inv_values_cpy = self.cells.inv_values.clone();
+            inv_values_cpy.sort();
+            assert_eq!(inv_values_cpy, (0..self.size).collect::<Vec<usize>>());
         }
         for i in 0..self.size {
-            assert_eq!(self.cells.vals[self.cells.invvals[i]], i);
+            assert_eq!(self.cells.values[self.cells.inv_values[i]], i);
         }
 
-        assert_eq!(self.cells.fixed.len(), self.cells.fixed_vals.len());
+        assert_eq!(self.cells.fixed.len(), self.cells.fixed_values.len());
 
         for i in 0..self.cells.fixed.len() {
             let cell = self.cells.fixed[i];
             assert_eq!(self.cells.lengths[cell], 1);
-            assert_eq!(self.cells.fixed_vals[i], self.cell(cell)[0]);
+            assert_eq!(self.cells.fixed_values[i], self.cell(cell)[0]);
         }
 
         let mut fixed_count = 0;
@@ -167,7 +167,7 @@ impl PartitionStack {
         }
         for i in 0..self.cells() {
             for j in self.cell(i) {
-                assert_eq!(self.cellof(*j), i);
+                assert_eq!(self.cell_of(*j), i);
             }
         }
     }
@@ -189,17 +189,19 @@ impl PartitionStack {
 
         if new_cell_size == 1 {
             self.cells.fixed.push(new_cell_num);
-            self.cells.fixed_vals.push(self.cells.vals[new_cell_start]);
+            self.cells
+                .fixed_values
+                .push(self.cells.values[new_cell_start]);
         }
         if old_cell_new_size == 1 {
             self.cells.fixed.push(cell);
             self.cells
-                .fixed_vals
-                .push(self.cells.vals[self.cells.starts[cell]]);
+                .fixed_values
+                .push(self.cells.values[self.cells.starts[cell]]);
         }
 
         self.marks
-            .setmarks(new_cell_start, new_cell_size, new_cell_num);
+            .set_marks(new_cell_start, new_cell_size, new_cell_num);
     }
 
     fn unsplit_cell(&mut self) {
@@ -208,15 +210,15 @@ impl PartitionStack {
         let cell_start = self.cells.starts.pop().unwrap();
         let cell_length = self.cells.lengths.pop().unwrap();
 
-        self.marks.setmarks(cell_start, cell_length, unsplit);
+        self.marks.set_marks(cell_start, cell_length, unsplit);
 
         if cell_length == 1 {
-            self.cells.fixed_vals.pop();
+            self.cells.fixed_values.pop();
             self.cells.fixed.pop();
         }
 
         if self.cells.lengths[unsplit] == 1 {
-            self.cells.fixed_vals.pop();
+            self.cells.fixed_values.pop();
             self.cells.fixed.pop();
         }
 
@@ -245,12 +247,12 @@ impl Backtrack for PartitionStack {
 impl PartitionStack {
     /// The following methods are highly unsafe, and must be used with care.
     fn mut_cell(&mut self, i: usize) -> &mut [usize] {
-        &mut self.cells.vals[self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i]]
+        &mut self.cells.values[self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i]]
     }
 
     fn mut_fix_cell_inverses(&mut self, i: usize) {
         for j in self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i] {
-            self.cells.invvals[self.cells.vals[j]] = j;
+            self.cells.inv_values[self.cells.values[j]] = j;
         }
     }
 
@@ -270,16 +272,18 @@ impl PartitionStack {
         }
         self.mut_fix_cell_inverses(i);
         {
-            let cellstart = self.cells.starts[i];
+            let cell_start = self.cells.starts[i];
             // First cell is never split
             tracer.add(trace::TraceEvent::NoSplit {
                 cell: i,
-                reason: trace::hash(&f(&self.cells.vals[cellstart])),
+                reason: trace::hash(&f(&self.cells.values[cell_start])),
             })?;
             for p in (1..self.cells.lengths[i]).rev() {
-                if f(&self.cells.vals[cellstart + p]) != f(&self.cells.vals[cellstart + p - 1]) {
+                if f(&self.cells.values[cell_start + p])
+                    != f(&self.cells.values[cell_start + p - 1])
+                {
                     self.split_cell(i, p);
-                    let val = f(&self.cells.vals[cellstart + p - 1]);
+                    let val = f(&self.cells.values[cell_start + p - 1]);
 
                     tracer.add(trace::TraceEvent::Split {
                         cell: i,
@@ -324,7 +328,7 @@ impl PartitionStack {
             for p in self.cell(c) {
                 for (&neighbour, &colour) in d.neighbours(*p) {
                     points[neighbour] += do_hash((c, colour));
-                    seen_cells.insert(self.cellof(neighbour));
+                    seen_cells.insert(self.cell_of(neighbour));
                 }
             }
         }
@@ -351,12 +355,12 @@ pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> Permutation {
     let mut perm = vec![0; rhs.domain_size()];
     info!(
         "{:?}:{:?}:{:?}",
-        lhs.fixed_vals(),
-        rhs.fixed_vals(),
+        lhs.fixed_values(),
+        rhs.fixed_values(),
         rhs.domain_size()
     );
     for i in 0..rhs.domain_size() {
-        perm[lhs.fixed_vals()[i]] = rhs.fixed_vals()[i];
+        perm[lhs.fixed_values()[i]] = rhs.fixed_values()[i];
     }
 
     Permutation::from_vec(perm)
@@ -376,7 +380,7 @@ mod tests {
         assert_eq!(p.domain_size(), 5);
         assert_eq!(p.cells(), 1);
         for i in 0..5 {
-            assert_eq!(p.cellof(i), 0);
+            assert_eq!(p.cell_of(i), 0);
         }
 
         let mut slice = p.cell(0).to_vec();

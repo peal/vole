@@ -1,5 +1,6 @@
 use std::hash::Hash;
 
+use tracing::info;
 
 use crate::vole::trace;
 use crate::{
@@ -37,20 +38,20 @@ pub trait State: Backtrack {
 
 pub struct PartitionState {
     stack: partition_stack::PartitionStack,
-    rbasestack: Option<partition_stack::PartitionStack>,
+    rbase_stack: Option<partition_stack::PartitionStack>,
     tracer: trace::Tracer,
     digraph_stack: DigraphStack,
-    digraph_stack_cells_refined: Backtracking<usize>
+    digraph_stack_cells_refined: Backtracking<usize>,
 }
 
 impl PartitionState {
     pub fn new(n: usize, t: trace::Tracer) -> Self {
         Self {
             stack: partition_stack::PartitionStack::new(n),
-            rbasestack: Option::None,
+            rbase_stack: Option::None,
             tracer: t,
             digraph_stack: DigraphStack::empty(n),
-            digraph_stack_cells_refined: Backtracking::new(0)
+            digraph_stack_cells_refined: Backtracking::new(0),
         }
     }
 }
@@ -61,15 +62,15 @@ impl State for PartitionState {
     }
 
     fn has_rbase(&self) -> bool {
-        self.rbasestack.is_some()
+        self.rbase_stack.is_some()
     }
     fn snapshot_rbase(&mut self) {
-        assert!(self.rbasestack.is_none());
-        self.rbasestack = Some(self.stack.clone());
+        assert!(self.rbase_stack.is_none());
+        self.rbase_stack = Some(self.stack.clone());
     }
 
     fn rbase_partition(&self) -> &partition_stack::PartitionStack {
-        self.rbasestack.as_ref().unwrap()
+        self.rbase_stack.as_ref().unwrap()
     }
 
     fn refine_partition_cell_by<F: Copy, T: Ord + Hash>(
@@ -92,17 +93,28 @@ impl State for PartitionState {
 
     fn add_graph(&mut self, d: &Digraph) {
         self.digraph_stack.add_graph(d);
+        // Need to refine whole graph
+        *self.digraph_stack_cells_refined = 0;
     }
 
-    fn add_graphs(&mut self, dgraphs: &[Digraph]) {
-        self.digraph_stack.add_graphs(dgraphs);
+    fn add_graphs(&mut self, digraphs: &[Digraph]) {
+        self.digraph_stack.add_graphs(digraphs);
+        // Need to refine whole graph
+        *self.digraph_stack_cells_refined = 0;
     }
-
 
     fn refine_graphs(&mut self) -> trace::Result<()> {
         while self.stack.cells() > *self.digraph_stack_cells_refined {
             let max_cells = self.stack.cells();
-            self.stack.refine_partition_cells_by_graph(&mut self.tracer, self.digraph_stack.digraph(), *self.digraph_stack_cells_refined..max_cells)?;
+            info!(
+                "Refining graph: {:?}",
+                *self.digraph_stack_cells_refined..max_cells
+            );
+            self.stack.refine_partition_cells_by_graph(
+                &mut self.tracer,
+                self.digraph_stack.digraph(),
+                *self.digraph_stack_cells_refined..max_cells,
+            )?;
             *self.digraph_stack_cells_refined = max_cells;
         }
         Ok(())

@@ -3,14 +3,14 @@ use smallbitvec::SmallBitVec;
 #[derive(Debug, Clone)]
 pub struct SmallIntSet {
     bit_set: SmallBitVec,
-    vals: Vec<usize>,
+    values: Vec<usize>,
 }
 
 impl SmallIntSet {
     pub fn with_size(size: usize) -> Self {
         Self {
             bit_set: SmallBitVec::from_elem(size, false),
-            vals: vec![],
+            values: vec![],
         }
     }
 
@@ -21,12 +21,12 @@ impl SmallIntSet {
     pub fn add(&mut self, pos: usize) {
         if !self.bit_set.get(pos).unwrap() {
             self.bit_set.set(pos, true);
-            self.vals.push(pos)
+            self.values.push(pos)
         }
     }
 
     pub fn iter(&self) -> ::std::slice::Iter<usize> {
-        self.vals.iter()
+        self.values.iter()
     }
 }
 

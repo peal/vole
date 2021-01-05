@@ -7,8 +7,8 @@ use pow::Pow;
 
 pub trait PermBuilder: Clone {
     /// Builds from a Vec
-    fn lazy_from_vec(vals: Vec<usize>) -> Permutation {
-        Permutation::from_vec(vals)
+    fn lazy_from_vec(values: Vec<usize>) -> Permutation {
+        Permutation::from_vec(values)
     }
 
     /// Computes f(x)

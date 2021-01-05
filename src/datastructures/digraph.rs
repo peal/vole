@@ -82,8 +82,8 @@ impl Digraph {
         &self.edges[i]
     }
 
-    pub fn merge(&mut self, dgraphs: &[Self], in_depth: usize) {
-        for (size, d) in dgraphs.iter().enumerate() {
+    pub fn merge(&mut self, digraphs: &[Self], in_depth: usize) {
+        for (size, d) in digraphs.iter().enumerate() {
             let depth = in_depth + size;
             if d.edges.len() > self.edges.len() {
                 self.edges.resize(d.edges.len(), Neighbours::new());
@@ -142,10 +142,10 @@ impl DigraphStack {
         *self.depth += 1;
     }
 
-    pub fn add_graphs(&mut self, dgraphs: &[Digraph]) {
+    pub fn add_graphs(&mut self, digraphs: &[Digraph]) {
         let digraph: &mut Digraph = Arc::make_mut(&mut (*self.digraph));
-        digraph.merge(dgraphs, *self.depth);
-        *self.depth += dgraphs.len();
+        digraph.merge(digraphs, *self.depth);
+        *self.depth += digraphs.len();
     }
 }
 
@@ -171,9 +171,9 @@ mod tests {
         let d = Digraph::empty(3);
         assert_eq!(d.vertices(), 3);
         for i in 0..d.vertices() {
-            let ehash = Neighbours::new();
-            assert_eq!(*d.neighbours(i), ehash);
-            assert_eq!(*d.neighbours(i), ehash);
+            let empty = Neighbours::new();
+            assert_eq!(*d.neighbours(i), empty);
+            assert_eq!(*d.neighbours(i), empty);
         }
         assert_eq!(d, d);
         assert!(!(d < d));
