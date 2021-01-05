@@ -1,4 +1,4 @@
-use super::handlesols::check_solution;
+use super::handle_sols::check_solution;
 use super::refiners::Refiner;
 use super::solutions::Solutions;
 use super::state::State;
@@ -7,13 +7,13 @@ use log::trace;
 
 pub fn select_branching_cell<T: State>(state: &T) -> usize {
     let mut cell = std::usize::MAX;
-    let mut cellsize = std::usize::MAX;
+    let mut cell_size = std::usize::MAX;
     trace!("Choosing cell: {:?}", state.partition().as_list_set());
     for i in 0..state.partition().cells() {
         let size = state.partition().cell(i).len();
-        if size < cellsize && size > 1 {
+        if size < cell_size && size > 1 {
             cell = i;
-            cellsize = state.partition().cell(i).len();
+            cell_size = state.partition().cell(i).len();
         }
     }
     assert_ne!(cell, std::usize::MAX);
@@ -31,15 +31,15 @@ pub fn simple_search_recurse<T: State>(
         if check_solution(state, sols, refiners) {}
         return;
     }
-    let cellnum = select_branching_cell(state);
+    let cell_num = select_branching_cell(state);
     trace!("Partition: {:?}", state.partition().as_list_set());
-    trace!("Branching on {}", cellnum);
-    let mut cell: Vec<usize> = part.cell(cellnum).to_vec();
+    trace!("Branching on {}", cell_num);
+    let mut cell: Vec<usize> = part.cell(cell_num).to_vec();
     cell.sort();
 
     for c in cell {
         state.save_state();
-        let ret = state.refine_partition_cell_by(cellnum, |x| *x == c);
+        let ret = state.refine_partition_cell_by(cell_num, |x| *x == c);
         if let Ok(()) = ret {
             simple_search_recurse(state, sols, refiners);
         }

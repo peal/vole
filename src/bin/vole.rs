@@ -1,4 +1,4 @@
-use rust_peal::vole::parseinput;
+use rust_peal::vole::parse_input;
 use rust_peal::vole::search::simple_search;
 use rust_peal::vole::solutions::Solutions;
 use rust_peal::vole::state::PartitionState;
@@ -80,18 +80,18 @@ fn main() -> anyhow::Result<()> {
     ])
     .unwrap();
 
-    let mut infile = opt.input();
-    let mut outfile = opt.output();
+    let mut in_file = opt.input();
+    let mut out_file = opt.output();
 
-    let problem = parseinput::read_problem(&mut infile)?;
+    let problem = parse_input::read_problem(&mut in_file)?;
 
-    let mut constraints = parseinput::build_constraints(&problem.constraints);
+    let mut constraints = parse_input::build_constraints(&problem.constraints);
     let tracer = trace::Tracer::new();
 
     let mut state = PartitionState::new(problem.config.points, tracer);
     let mut solutions = Solutions::default();
     simple_search(&mut state, &mut solutions, &mut constraints);
 
-    solutions.write_one_indexed(&mut outfile)?;
+    solutions.write_one_indexed(&mut out_file)?;
     Ok(())
 }
