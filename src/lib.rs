@@ -9,6 +9,10 @@
 pub mod datastructures;
 pub mod perm;
 pub mod vole;
+pub mod gap_chat;
 
 #[macro_use]
 extern crate bitflags;
+
+#[macro_use]
+extern crate lazy_static;
