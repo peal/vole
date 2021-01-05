@@ -132,6 +132,10 @@ impl DigraphStack {
         }
     }
 
+    pub fn digraph(&self) -> &Digraph {
+        &**self.digraph
+    }
+
     pub fn add_graph(&mut self, d: &Digraph) {
         let digraph: &mut Digraph = Arc::make_mut(&mut (*self.digraph));
         digraph.merge(slice::from_ref(d), *self.depth);
