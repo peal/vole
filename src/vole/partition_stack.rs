@@ -9,7 +9,7 @@ use crate::{
 use std::collections::HashSet;
 use std::hash::Hash;
 
-use log::trace;
+use tracing::info;
 
 use super::backtracking::Backtrack;
 
@@ -349,7 +349,7 @@ pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> Permutation {
     assert!(rhs.cells() == rhs.domain_size());
     assert!(lhs.domain_size() == rhs.domain_size());
     let mut perm = vec![0; rhs.domain_size()];
-    trace!(
+    info!(
         "{:?}:{:?}:{:?}",
         lhs.fixed_vals(),
         rhs.fixed_vals(),

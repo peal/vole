@@ -4,7 +4,8 @@ use rust_peal::vole::solutions::Solutions;
 use rust_peal::vole::state::PartitionState;
 use rust_peal::vole::trace;
 
-use simplelog::*;
+use tracing_subscriber;
+use tracing_appender;
 
 use structopt::StructOpt;
 
@@ -13,6 +14,8 @@ use std::{
     io::prelude::*,
     io::{BufReader, BufWriter},
 };
+
+use std::io::Write;
 
 #[cfg(target_os = "linux")]
 use std::os::unix::io::FromRawFd;
@@ -70,15 +73,9 @@ impl Opt {
 fn main() -> anyhow::Result<()> {
     let opt = Opt::from_args();
 
-    CombinedLogger::init(vec![
-        TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Mixed),
-        WriteLogger::new(
-            LevelFilter::Info,
-            Config::default(),
-            File::create("vole-trace.log").unwrap(),
-        ),
-    ])
-    .unwrap();
+    let (non_block, _guard) = tracing_appender::non_blocking(File::create("vole.trace")?);
+
+    tracing_subscriber::fmt().pretty().with_writer(non_block).init();
 
     let mut in_file = opt.input();
     let mut out_file = opt.output();

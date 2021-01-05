@@ -2,7 +2,7 @@ use super::refiners::Refiner;
 use super::solutions::Solutions;
 use super::state::State;
 use crate::vole::partition_stack;
-use log::trace;
+use tracing::info;
 
 pub fn check_solution<T: State>(
     state: &mut T,
@@ -10,7 +10,7 @@ pub fn check_solution<T: State>(
     refiners: &mut Vec<Box<dyn Refiner<T>>>,
 ) -> bool {
     if !state.has_rbase() {
-        trace!("Taking rbase snapshot");
+        info!("Taking rbase snapshot");
         state.snapshot_rbase();
     }
 
@@ -19,14 +19,14 @@ pub fn check_solution<T: State>(
 
     let sol = partition_stack::perm_between(state.rbase_partition(), part);
 
-    trace!("Checking solution: {:?}", sol);
+    info!("Checking solution: {:?}", sol);
 
     let is_sol = refiners.iter().all(|x| x.check(&sol));
     if is_sol {
-        trace!("Found solution");
+        info!("Found solution");
         sols.add(&sol);
     } else {
-        trace!("Not solution");
+        info!("Not solution");
     }
     is_sol
 }
