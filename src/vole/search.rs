@@ -122,6 +122,7 @@ pub fn simple_search_recurse<T: State>(
     state: &mut T,
     sols: &mut Solutions,
     refiners: &mut RefinerStore<T>,
+    first_branch_in: bool,
 ) {
     let part = state.partition();
 
@@ -134,19 +135,27 @@ pub fn simple_search_recurse<T: State>(
     info!("Partition: {:?}", state.partition().as_list_set());
     info!("Branching on {}", cell_num);
     let mut cell: Vec<usize> = part.cell(cell_num).to_vec();
-    cell.sort();
 
+    if first_branch_in {
+        cell.sort();
+    }
+
+    let mut doing_first_branch = first_branch_in;
     for c in cell {
-        state.save_state();
-        if state
-            .refine_partition_cell_by(cell_num, |x| *x == c)
-            .is_ok()
-            && refiners.do_refine(state).is_ok()
-        {
-            simple_search_recurse(state, sols, refiners);
+        // Skip search if we are in the first branch, not on the first thing, and not min in orbit
+        let skip = first_branch_in && !doing_first_branch && !sols.min_in_orbit(c);
+        if !skip {
+            state.save_state();
+            if state
+                .refine_partition_cell_by(cell_num, |x| *x == c)
+                .is_ok()
+                && refiners.do_refine(state).is_ok()
+            {
+                simple_search_recurse(state, sols, refiners, doing_first_branch);
+            }
+            state.restore_state();
         }
-
-        state.restore_state();
+        doing_first_branch = false;
     }
     info!("Returning");
 }
@@ -161,5 +170,5 @@ pub fn simple_search<T: State>(
     if ret.is_err() {
         return;
     }
-    simple_search_recurse(state, sols, refiners);
+    simple_search_recurse(state, sols, refiners, true);
 }
