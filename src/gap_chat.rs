@@ -29,25 +29,25 @@ pub struct Opt {
 }
 
 impl Opt {
-    #[cfg(target_os = "linux")]
+    #[cfg(target_family = "unix")]
     fn input(&self) -> impl BufRead + Send {
         use std::os::unix::io::FromRawFd;
         BufReader::new(unsafe { File::from_raw_fd(self.inpipe.unwrap()) })
     }
 
-    #[cfg(not(target_os = "linux"))]
+    #[cfg(not(target_family = "unix"))]
     fn input(&self) -> impl BufRead + Send {
         // TODO Error handle
         BufReader::new(File::open(&self.input).unwrap())
     }
 
-    #[cfg(target_os = "linux")]
+    #[cfg(target_family = "unix")]
     fn output(&self) -> impl Write + Send {
         use std::os::unix::io::FromRawFd;
         BufWriter::new(unsafe { File::from_raw_fd(self.outpipe.unwrap()) })
     }
 
-    #[cfg(not(target_os = "linux"))]
+    #[cfg(not(target_family = "unix"))]
     fn output(&self) -> impl Write + Send {
         BufWriter::new(File::open(&self.output).unwrap())
     }
