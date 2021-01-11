@@ -43,7 +43,9 @@ pub struct SetStab {
 
 impl RefinerDescription for SetStab {
     fn build_refiner(&self) -> Box<dyn Refiner<PartitionState>> {
-        Box::new(SetStabilizer::new(self.points.iter().cloned().collect()))
+        Box::new(SetStabilizer::new_stabilizer(
+            self.points.iter().cloned().collect(),
+        ))
     }
 
     fn one_index_to_zero(&mut self) {

@@ -2,33 +2,65 @@ use super::super::state::State;
 use super::Refiner;
 use crate::vole::trace;
 use crate::{perm::Permutation, vole::backtracking::Backtrack};
-use std::collections::{HashMap, HashSet};
+use std::{
+    collections::{HashMap, HashSet},
+    rc::Rc,
+};
 
 pub struct SetStabilizer {
-    set: HashSet<usize>,
+    set_left: Rc<HashSet<usize>>,
+    set_right: Rc<HashSet<usize>>,
 }
 
 impl SetStabilizer {
-    pub fn new(set: HashSet<usize>) -> Self {
-        Self { set }
+    pub fn new_transporter(set_left: HashSet<usize>, set_right: HashSet<usize>) -> Self {
+        Self {
+            set_left: Rc::new(set_left),
+            set_right: Rc::new(set_right),
+        }
+    }
+
+    pub fn new_stabilizer(set: HashSet<usize>) -> Self {
+        let r = Rc::new(set);
+        Self {
+            set_left: r.clone(),
+            set_right: r,
+        }
     }
 }
 
 impl<T: State> Refiner<T> for SetStabilizer {
     fn name(&self) -> String {
-        format!("SetStabilizer of {:?}", self.set)
+        let g: bool = <Self as Refiner<T>>::is_group(self);
+        if g {
+            format!("SetStabilizer of {:?}", self.set_left)
+        } else {
+            format!(
+                "SetTransporter of {:?} -> {:?}",
+                self.set_left, self.set_right
+            )
+        }
     }
 
     fn check(&self, p: &Permutation) -> bool {
-        self.set
+        self.set_left
             .iter()
             .cloned()
-            .all(|x| self.set.contains(&(p.apply(x))))
+            .all(|x| self.set_right.contains(&(p.apply(x))))
     }
 
-    fn refine_begin(&mut self, state: &mut T) -> trace::Result<()> {
-        state.refine_partition_by(|x| self.set.contains(x))?;
+    fn refine_begin_left(&mut self, state: &mut T) -> trace::Result<()> {
+        state.refine_partition_by(|x| self.set_left.contains(x))?;
         Ok(())
+    }
+
+    fn refine_begin_right(&mut self, state: &mut T) -> trace::Result<()> {
+        state.refine_partition_by(|x| self.set_right.contains(x))?;
+        Ok(())
+    }
+
+    fn is_group(&self) -> bool {
+        Rc::ptr_eq(&self.set_left, &self.set_right)
     }
 }
 
@@ -48,7 +80,7 @@ impl TupleStabilizer {
         let mut tuplemap = HashMap::<usize, usize>::new();
         // If a value occurs multiple times, only the last one will be stored,
         // but this will lead to the same result anyway.
-        // We use '+1', so 0 is free to use in refine_begin as a blank value
+        // We use '+1', so 0 is free to use in refine_begin_left as a blank value
         for (i, val) in tuple.iter().enumerate() {
             tuplemap.insert(*val, i + 1);
         }
@@ -65,9 +97,13 @@ impl<T: State> Refiner<T> for TupleStabilizer {
         self.tuple.iter().cloned().all(|x| p.apply(x) == x)
     }
 
-    fn refine_begin(&mut self, state: &mut T) -> trace::Result<()> {
+    fn refine_begin_left(&mut self, state: &mut T) -> trace::Result<()> {
         state.refine_partition_by(|x| self.tuplemap.get(x).unwrap_or(&0))?;
         Ok(())
+    }
+
+    fn is_group(&self) -> bool {
+        true
     }
 }
 

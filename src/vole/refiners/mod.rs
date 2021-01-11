@@ -6,21 +6,36 @@ use crate::vole::backtracking::Backtrack;
 use crate::vole::trace;
 
 pub trait Refiner<State: super::state::State>: Backtrack {
+    // A human readable name for the refiners
     fn name(&self) -> String;
 
-    // TODO: I would like this to take an arbitrary permutation,
-    // but it conflicts with a couple of things (I think maybe a Refiner, RefinerExt pair could solve it)
+    /// Check if this refiner represents a group (as opposed to a coset)
+    fn is_group(&self) -> bool;
+
+    /// Check is [p] is in group/coset represented by the refiner
     fn check(&self, p: &Permutation) -> bool;
 
-    fn refine_begin(&mut self, _: &mut State) -> trace::Result<()> {
+    fn refine_begin_left(&mut self, _: &mut State) -> trace::Result<()> {
         Ok(())
     }
 
-    fn refine_fixed_points(&mut self, _: &mut State) -> trace::Result<()> {
+    fn refine_fixed_points_left(&mut self, _: &mut State) -> trace::Result<()> {
         Ok(())
     }
 
-    fn refine_changed_cells(&mut self, _: &mut State) -> trace::Result<()> {
+    fn refine_changed_cells_left(&mut self, _: &mut State) -> trace::Result<()> {
         Ok(())
+    }
+
+    fn refine_begin_right(&mut self, s: &mut State) -> trace::Result<()> {
+        self.refine_begin_left(s)
+    }
+
+    fn refine_fixed_points_right(&mut self, s: &mut State) -> trace::Result<()> {
+        self.refine_fixed_points_left(s)
+    }
+
+    fn refine_changed_cells_right(&mut self, s: &mut State) -> trace::Result<()> {
+        self.refine_changed_cells_left(s)
     }
 }

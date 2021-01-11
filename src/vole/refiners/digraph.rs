@@ -23,9 +23,13 @@ impl<T: State> Refiner<T> for DigraphStabilizer {
         (&self.digraph) ^ p == self.digraph
     }
 
-    fn refine_begin(&mut self, state: &mut T) -> trace::Result<()> {
+    fn refine_begin_left(&mut self, state: &mut T) -> trace::Result<()> {
         state.add_graph(&self.digraph);
         Ok(())
+    }
+
+    fn is_group(&self) -> bool {
+        true
     }
 }
 

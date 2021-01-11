@@ -27,7 +27,7 @@ impl<T: State> RefinerStore<T> {
         let span = trace_span!("init_refine");
         let _e = span.enter();
         for r in self.refiners.iter_mut() {
-            r.refine_begin(state)?
+            r.refine_begin_left(state)?
         }
         self.do_refine(state)
     }
@@ -42,7 +42,7 @@ impl<T: State> RefinerStore<T> {
             assert!(fixed_points >= *self.fixed_values_considered);
             if fixed_points > *self.fixed_values_considered {
                 for refiner in &mut self.refiners {
-                    refiner.refine_fixed_points(state)?
+                    refiner.refine_fixed_points_left(state)?
                 }
             }
 
@@ -50,7 +50,7 @@ impl<T: State> RefinerStore<T> {
             assert!(cells >= *self.cells_considered);
             if cells > *self.cells_considered {
                 for refiner in &mut self.refiners {
-                    refiner.refine_changed_cells(state)?
+                    refiner.refine_changed_cells_left(state)?
                 }
             }
 
