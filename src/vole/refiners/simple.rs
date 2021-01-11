@@ -29,9 +29,9 @@ impl SetStabilizer {
     }
 }
 
-impl<T: State> Refiner<T> for SetStabilizer {
+impl Refiner for SetStabilizer {
     fn name(&self) -> String {
-        let g: bool = <Self as Refiner<T>>::is_group(self);
+        let g: bool = self.is_group();
         if g {
             format!("SetStabilizer of {:?}", self.set_left)
         } else {
@@ -49,12 +49,12 @@ impl<T: State> Refiner<T> for SetStabilizer {
             .all(|x| self.set_right.contains(&(p.apply(x))))
     }
 
-    fn refine_begin_left(&mut self, state: &mut T) -> trace::Result<()> {
+    fn refine_begin_left(&mut self, state: &mut State) -> trace::Result<()> {
         state.refine_partition_by(|x| self.set_left.contains(x))?;
         Ok(())
     }
 
-    fn refine_begin_right(&mut self, state: &mut T) -> trace::Result<()> {
+    fn refine_begin_right(&mut self, state: &mut State) -> trace::Result<()> {
         state.refine_partition_by(|x| self.set_right.contains(x))?;
         Ok(())
     }
@@ -88,7 +88,7 @@ impl TupleStabilizer {
     }
 }
 
-impl<T: State> Refiner<T> for TupleStabilizer {
+impl Refiner for TupleStabilizer {
     fn name(&self) -> String {
         format!("TupleStabilizer of {:?}", self.tuple)
     }
@@ -97,7 +97,7 @@ impl<T: State> Refiner<T> for TupleStabilizer {
         self.tuple.iter().cloned().all(|x| p.apply(x) == x)
     }
 
-    fn refine_begin_left(&mut self, state: &mut T) -> trace::Result<()> {
+    fn refine_begin_left(&mut self, state: &mut State) -> trace::Result<()> {
         state.refine_partition_by(|x| self.tuplemap.get(x).unwrap_or(&0))?;
         Ok(())
     }

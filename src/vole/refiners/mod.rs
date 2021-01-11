@@ -5,7 +5,9 @@ use crate::perm::Permutation;
 use crate::vole::backtracking::Backtrack;
 use crate::vole::trace;
 
-pub trait Refiner<State: super::state::State>: Backtrack {
+use super::state::State;
+
+pub trait Refiner: Backtrack {
     // A human readable name for the refiners
     fn name(&self) -> String;
 

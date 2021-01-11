@@ -1,11 +1,12 @@
 use serde::{Deserialize, Serialize};
 
-use crate::datastructures::digraph::Digraph;
+use crate::digraph::Digraph;
 
 use super::refiners::digraph::DigraphStabilizer;
 use super::refiners::simple::SetStabilizer;
 use super::refiners::simple::TupleStabilizer;
 use super::refiners::Refiner;
+use super::state::State;
 
 use anyhow::Result;
 
@@ -42,9 +43,7 @@ pub struct SetStab {
 
 impl RefinerDescription for SetStab {
     fn build_refiner(&self) -> Box<dyn Refiner> {
-        Box::new(SetStabilizer::new_stabilizer(
-            self.points.iter().cloned().collect(),
-        ))
+        Box::new(SetStabilizer::new(self.points.iter().cloned().collect()))
     }
 
     fn one_index_to_zero(&mut self) {
@@ -76,17 +75,17 @@ pub enum Constraint {
 impl RefinerDescription for Constraint {
     fn build_refiner(&self) -> Box<dyn Refiner> {
         match self {
-            Self::DigraphStab(c) => c.build_refiner(),
-            Self::SetStab(c) => c.build_refiner(),
-            Self::TupleStab(c) => c.build_refiner(),
+            Constraint::DigraphStab(c) => c.build_refiner(),
+            Constraint::SetStab(c) => c.build_refiner(),
+            Constraint::TupleStab(c) => c.build_refiner(),
         }
     }
 
     fn one_index_to_zero(&mut self) {
         match self {
-            Self::DigraphStab(c) => c.one_index_to_zero(),
-            Self::SetStab(c) => c.one_index_to_zero(),
-            Self::TupleStab(c) => c.one_index_to_zero(),
+            Constraint::DigraphStab(c) => c.one_index_to_zero(),
+            Constraint::SetStab(c) => c.one_index_to_zero(),
+            Constraint::TupleStab(c) => c.one_index_to_zero(),
         }
     }
 }

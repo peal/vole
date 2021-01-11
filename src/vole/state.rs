@@ -12,31 +12,7 @@ use crate::vole::backtracking::Backtrack;
 
 use super::backtracking::Backtracking;
 
-pub trait State: Backtrack {
-    fn partition(&self) -> &partition_stack::PartitionStack;
-
-    fn has_rbase(&self) -> bool;
-    fn snapshot_rbase(&mut self);
-    fn rbase_partition(&self) -> &partition_stack::PartitionStack;
-
-    fn refine_partition_cell_by<F: Copy, T: Ord + Hash>(
-        &mut self,
-        i: usize,
-        f: F,
-    ) -> trace::Result<()>
-    where
-        F: Fn(&usize) -> T;
-    fn refine_partition_by<F: Copy, T: Ord + Hash>(&mut self, f: F) -> trace::Result<()>
-    where
-        F: Fn(&usize) -> T;
-
-    fn add_graph(&mut self, digraph: &Digraph);
-    fn add_graphs(&mut self, digraphs: &[Digraph]);
-
-    fn refine_graphs(&mut self) -> trace::Result<()>;
-}
-
-pub struct PartitionState {
+pub struct State {
     stack: partition_stack::PartitionStack,
     rbase_stack: Option<partition_stack::PartitionStack>,
     tracer: trace::Tracer,
@@ -44,7 +20,7 @@ pub struct PartitionState {
     digraph_stack_cells_refined: Backtracking<usize>,
 }
 
-impl PartitionState {
+impl State {
     pub fn new(n: usize, t: trace::Tracer) -> Self {
         Self {
             stack: partition_stack::PartitionStack::new(n),
@@ -56,24 +32,25 @@ impl PartitionState {
     }
 }
 
-impl State for PartitionState {
-    fn partition(&self) -> &partition_stack::PartitionStack {
+impl State {
+    pub fn partition(&self) -> &partition_stack::PartitionStack {
         &self.stack
     }
 
-    fn has_rbase(&self) -> bool {
+    pub fn has_rbase(&self) -> bool {
         self.rbase_stack.is_some()
     }
-    fn snapshot_rbase(&mut self) {
+
+    pub fn snapshot_rbase(&mut self) {
         assert!(self.rbase_stack.is_none());
         self.rbase_stack = Some(self.stack.clone());
     }
 
-    fn rbase_partition(&self) -> &partition_stack::PartitionStack {
+    pub fn rbase_partition(&self) -> &partition_stack::PartitionStack {
         self.rbase_stack.as_ref().unwrap()
     }
 
-    fn refine_partition_cell_by<F: Copy, T: Ord + Hash>(
+    pub fn refine_partition_cell_by<F: Copy, T: Ord + Hash>(
         &mut self,
         i: usize,
         f: F,
@@ -84,26 +61,26 @@ impl State for PartitionState {
         self.stack.refine_partition_cell_by(&mut self.tracer, i, f)
     }
 
-    fn refine_partition_by<F: Copy, T: Ord + Hash>(&mut self, f: F) -> trace::Result<()>
+    pub fn refine_partition_by<F: Copy, T: Ord + Hash>(&mut self, f: F) -> trace::Result<()>
     where
         F: Fn(&usize) -> T,
     {
         self.stack.refine_partition_by(&mut self.tracer, f)
     }
 
-    fn add_graph(&mut self, d: &Digraph) {
+    pub fn add_graph(&mut self, d: &Digraph) {
         self.digraph_stack.add_graph(d);
         // Need to refine whole graph
         *self.digraph_stack_cells_refined = 0;
     }
 
-    fn add_graphs(&mut self, digraphs: &[Digraph]) {
+    pub fn add_graphs(&mut self, digraphs: &[Digraph]) {
         self.digraph_stack.add_graphs(digraphs);
         // Need to refine whole graph
         *self.digraph_stack_cells_refined = 0;
     }
 
-    fn refine_graphs(&mut self) -> trace::Result<()> {
+    pub fn refine_graphs(&mut self) -> trace::Result<()> {
         while self.stack.cells() > *self.digraph_stack_cells_refined {
             let max_cells = self.stack.cells();
             info!(
@@ -121,7 +98,7 @@ impl State for PartitionState {
     }
 }
 
-impl Backtrack for PartitionState {
+impl Backtrack for State {
     fn save_state(&mut self) {
         self.stack.save_state();
         self.tracer.save_state();

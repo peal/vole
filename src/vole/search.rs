@@ -8,14 +8,14 @@ use super::{
 
 use tracing::{info, trace, trace_span};
 
-pub struct RefinerStore<T: State> {
-    refiners: Vec<Box<dyn Refiner<T>>>,
+pub struct RefinerStore {
+    refiners: Vec<Box<dyn Refiner>>,
     fixed_values_considered: Backtracking<usize>,
     cells_considered: Backtracking<usize>,
 }
 
-impl<T: State> RefinerStore<T> {
-    pub fn new_from_refiners(refiners: Vec<Box<dyn Refiner<T>>>) -> Self {
+impl RefinerStore {
+    pub fn new_from_refiners(refiners: Vec<Box<dyn Refiner>>) -> Self {
         Self {
             refiners,
             fixed_values_considered: Backtracking::new(0),
@@ -23,7 +23,7 @@ impl<T: State> RefinerStore<T> {
         }
     }
 
-    pub fn init_refine(&mut self, state: &mut T) -> trace::Result<()> {
+    pub fn init_refine(&mut self, state: &mut State) -> trace::Result<()> {
         let span = trace_span!("init_refine");
         let _e = span.enter();
         for r in self.refiners.iter_mut() {
@@ -32,7 +32,7 @@ impl<T: State> RefinerStore<T> {
         self.do_refine(state)
     }
 
-    pub fn do_refine(&mut self, state: &mut T) -> trace::Result<()> {
+    pub fn do_refine(&mut self, state: &mut State) -> trace::Result<()> {
         let span = trace_span!("do_refine");
         let _e = span.enter();
         loop {
@@ -63,7 +63,7 @@ impl<T: State> RefinerStore<T> {
         }
     }
 
-    pub fn check_solution(&mut self, state: &mut T, sols: &mut Solutions) -> bool {
+    pub fn check_solution(&mut self, state: &mut State, sols: &mut Solutions) -> bool {
         if !state.has_rbase() {
             info!("Taking rbase snapshot");
             state.snapshot_rbase();
@@ -87,7 +87,7 @@ impl<T: State> RefinerStore<T> {
     }
 }
 
-impl<T: State> Backtrack for RefinerStore<T> {
+impl Backtrack for RefinerStore {
     fn save_state(&mut self) {
         self.fixed_values_considered.save_state();
         self.cells_considered.save_state();
@@ -99,7 +99,7 @@ impl<T: State> Backtrack for RefinerStore<T> {
     }
 }
 
-pub fn select_branching_cell<T: State>(state: &T) -> usize {
+pub fn select_branching_cell(state: &State) -> usize {
     let mut cell = std::usize::MAX;
     let mut cell_size = std::usize::MAX;
     for i in 0..state.partition().cells() {
@@ -118,10 +118,10 @@ pub fn select_branching_cell<T: State>(state: &T) -> usize {
     cell
 }
 
-pub fn simple_search_recurse<T: State>(
-    state: &mut T,
+pub fn simple_search_recurse(
+    state: &mut State,
     sols: &mut Solutions,
-    refiners: &mut RefinerStore<T>,
+    refiners: &mut RefinerStore,
     first_branch_in: bool,
 ) {
     let part = state.partition();
@@ -160,11 +160,7 @@ pub fn simple_search_recurse<T: State>(
     info!("Returning");
 }
 
-pub fn simple_search<T: State>(
-    state: &mut T,
-    sols: &mut Solutions,
-    refiners: &mut RefinerStore<T>,
-) {
+pub fn simple_search(state: &mut State, sols: &mut Solutions, refiners: &mut RefinerStore) {
     trace!("CHECK");
     let ret = refiners.init_refine(state);
     if ret.is_err() {

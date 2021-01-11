@@ -2,7 +2,7 @@ use std::fs::File;
 
 use rust_peal::vole::search::simple_search;
 use rust_peal::vole::solutions::Solutions;
-use rust_peal::vole::state::PartitionState;
+use rust_peal::vole::state::State;
 use rust_peal::vole::trace;
 use rust_peal::vole::{parse_input, search::RefinerStore};
 
@@ -28,7 +28,7 @@ fn main() -> anyhow::Result<()> {
         RefinerStore::new_from_refiners(parse_input::build_constraints(&problem.constraints));
     let tracer = trace::Tracer::new();
 
-    let mut state = PartitionState::new(problem.config.points, tracer);
+    let mut state = State::new(problem.config.points, tracer);
     let mut solutions = Solutions::default();
     simple_search(&mut state, &mut solutions, &mut constraints);
 
