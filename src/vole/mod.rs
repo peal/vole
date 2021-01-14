@@ -1,5 +1,4 @@
 pub mod backtracking;
-pub mod handle_sols;
 pub mod parse_input;
 pub mod partition_stack;
 pub mod refiners;
