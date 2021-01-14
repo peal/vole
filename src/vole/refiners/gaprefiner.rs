@@ -9,7 +9,7 @@ use crate::{
 };
 
 pub struct GapRefiner {
-    gap_id: String,
+    gap_id: usize,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -19,7 +19,7 @@ struct GapRefinerReturn {
 }
 
 impl GapRefiner {
-    fn new(gap_id: String) -> Self {
+    pub fn new(gap_id: usize) -> Self {
         Self { gap_id }
     }
 
@@ -58,28 +58,28 @@ impl Refiner for GapRefiner {
         GapChatType::send_request(&("refiner", &self.gap_id, "check", p))
     }
 
-    fn refine_begin_left(&mut self, _: &mut State) -> trace::Result<()> {
-        Ok(())
+    fn refine_begin_left(&mut self, s: &mut State) -> trace::Result<()> {
+        self.generic_refine(s, "begin", "left")
     }
 
-    fn refine_fixed_points_left(&mut self, _: &mut State) -> trace::Result<()> {
-        Ok(())
+    fn refine_fixed_points_left(&mut self, s: &mut State) -> trace::Result<()> {
+        self.generic_refine(s, "fixed", "left")
     }
 
-    fn refine_changed_cells_left(&mut self, _: &mut State) -> trace::Result<()> {
-        Ok(())
+    fn refine_changed_cells_left(&mut self, s: &mut State) -> trace::Result<()> {
+        self.generic_refine(s, "changed", "left")
     }
 
     fn refine_begin_right(&mut self, s: &mut State) -> trace::Result<()> {
-        self.refine_begin_left(s)
+        self.generic_refine(s, "begin", "right")
     }
 
     fn refine_fixed_points_right(&mut self, s: &mut State) -> trace::Result<()> {
-        self.refine_fixed_points_left(s)
+        self.generic_refine(s, "fixed", "right")
     }
 
     fn refine_changed_cells_right(&mut self, s: &mut State) -> trace::Result<()> {
-        self.refine_changed_cells_left(s)
+        self.generic_refine(s, "changed", "right")
     }
 }
 

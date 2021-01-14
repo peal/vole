@@ -66,11 +66,26 @@ impl RefinerDescription for TupleStab {
         self.points.iter_mut().for_each(|x| *x -= 1)
     }
 }
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct GapRefiner {
+    gap_id: usize,
+}
+
+impl RefinerDescription for GapRefiner {
+    fn build_refiner(&self) -> Box<dyn Refiner> {
+        Box::new(super::refiners::gaprefiner::GapRefiner::new(self.gap_id))
+    }
+
+    fn one_index_to_zero(&mut self) {}
+}
+
 #[derive(Debug, Deserialize, Serialize)]
 pub enum Constraint {
     DigraphStab(DigraphStab),
     SetStab(SetStab),
     TupleStab(TupleStab),
+    GapRefiner(GapRefiner),
 }
 
 impl RefinerDescription for Constraint {
@@ -79,6 +94,7 @@ impl RefinerDescription for Constraint {
             Self::DigraphStab(c) => c.build_refiner(),
             Self::SetStab(c) => c.build_refiner(),
             Self::TupleStab(c) => c.build_refiner(),
+            Self::GapRefiner(c) => c.build_refiner(),
         }
     }
 
@@ -87,6 +103,7 @@ impl RefinerDescription for Constraint {
             Self::DigraphStab(c) => c.one_index_to_zero(),
             Self::SetStab(c) => c.one_index_to_zero(),
             Self::TupleStab(c) => c.one_index_to_zero(),
+            Self::GapRefiner(c) => c.one_index_to_zero(),
         }
     }
 }

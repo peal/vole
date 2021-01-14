@@ -77,6 +77,7 @@ impl GapChatType {
     {
         let gap_channel = &mut GAP_CHAT.lock().unwrap();
         serde_json::to_writer(&mut gap_channel.out_file, request).unwrap();
+        gap_channel.out_file.flush().unwrap();
 
         let mut line = String::new();
         let _ = gap_channel.in_file.read_line(&mut line).unwrap();

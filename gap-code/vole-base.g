@@ -1,6 +1,6 @@
-LoadPackage("json");
-LoadPackage("io");
-LoadPackage("digraphs");
+LoadPackage("json", false);
+LoadPackage("io", false);
+LoadPackage("digraphs", false);
 
 IO_Pipe := function()
     local ret;
@@ -17,8 +17,8 @@ if not IsBound(InfoVole) then
 fi;
 
 
-ExecuteVole := function(obj)
-    local ret, rustpipe, gappipe,str, args;
+ExecuteVole := function(obj, callbacks)
+    local ret, rustpipe, gappipe,str, args, result;
     rustpipe := IO_Pipe();
     gappipe := IO_Pipe();
     Info(InfoVole, 2, "PreFork\n");
@@ -45,13 +45,23 @@ ExecuteVole := function(obj)
         IO_Close(gappipe.towrite);
         IO_WriteLine(rustpipe.towrite, GapToJsonString(obj));
         IO_Flush(rustpipe.towrite);
-        Info(InfoVole, 2, "Reading..\n");
-        str := IO_ReadLine(gappipe.toread);
-        Info(InfoVole, 2, "Read: '",str,"'\n");
-        Info(InfoVole, 2, "P: Read:",JsonStringToGap(str),":\n");
-        IO_Close(rustpipe.towrite);
-        IO_Close(gappipe.toread);
-        return JsonStringToGap(str);
+        while true do
+            Info(InfoVole, 2, "Reading..\n");
+            str := IO_ReadLine(gappipe.toread);
+            Info(InfoVole, 2, "Read: '",str,"'\n");
+            result := JsonStringToGap(str);
+            if result[1] = "end" then
+                IO_Close(rustpipe.towrite);
+                IO_Close(gappipe.toread);
+                return result[2];
+            elif result[1] = "refiner" then
+                result := CallFuncList(callbacks[2], callbacks{[3..Length(callbacks)]});
+                Info(InfoVole, 2, "Refiner returned: ", result);
+                IO_WriteLine(rustpipe.towrite, GapToJsonString(result)); 
+            else
+                ErrorNoReturn("Invalid return value from Vole: ", result);
+            fi;
+        od;
     fi;
 end;
 
@@ -59,7 +69,7 @@ Solve := function(points, findgens, constraints)
     local ret;
     ret := ExecuteVole(rec(config := rec(points := points, findgens := findgens),
                 constraints := constraints,
-                debug := true));
+                debug := true), []);
     return rec(raw := ret, group := Group(List(ret.sols, PermList)));
 end;
 
