@@ -43,17 +43,14 @@ impl GapRefiner {
 }
 
 impl Refiner for GapRefiner {
-    // A human readable name for the refiners
     fn name(&self) -> String {
         GapChatType::send_request(&("refiner", &self.gap_id, "name"))
     }
 
-    /// Check if this refiner represents a group (as opposed to a coset)
     fn is_group(&self) -> bool {
         GapChatType::send_request(&("refiner", &self.gap_id, "is_group"))
     }
 
-    /// Check is [p] is in group/coset represented by the refiner
     fn check(&self, p: &Permutation) -> bool {
         GapChatType::send_request(&("refiner", &self.gap_id, "check", p))
     }

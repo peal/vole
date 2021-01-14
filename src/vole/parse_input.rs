@@ -11,7 +11,9 @@ use anyhow::Result;
 
 use std::io::BufRead;
 
+/// Translate a GAP description of a refiner to a [Refiner] object
 trait RefinerDescription {
+    /// Build a [Box<dyn Refiner>]
     fn build_refiner(&self) -> Box<dyn Refiner>;
     fn one_index_to_zero(&mut self);
 }

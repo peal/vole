@@ -9,13 +9,13 @@ use crate::vole::trace;
 use super::state::State;
 
 pub trait Refiner: Backtrack {
-    // A human readable name for the refiners
+    /// A human readable name for the refiner
     fn name(&self) -> String;
 
     /// Check if this refiner represents a group (as opposed to a coset)
     fn is_group(&self) -> bool;
 
-    /// Check is [p] is in group/coset represented by the refiner
+    /// Check is permutation is in group/coset represented by the refiner
     fn check(&self, p: &Permutation) -> bool;
 
     fn refine_begin_left(&mut self, _: &mut State) -> trace::Result<()> {
