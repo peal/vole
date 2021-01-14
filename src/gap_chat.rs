@@ -68,3 +68,20 @@ lazy_static! {
         })
     };
 }
+
+impl GapChatType {
+    pub fn send_request<T, U>(request: &T) -> U
+    where
+        T: serde::Serialize,
+        U: serde::de::DeserializeOwned,
+    {
+        let gap_channel = &mut GAP_CHAT.lock().unwrap();
+        serde_json::to_writer(&mut gap_channel.out_file, request).unwrap();
+
+        let mut line = String::new();
+        let _ = gap_channel.in_file.read_line(&mut line).unwrap();
+
+        let out: U = serde_json::from_str(&line).unwrap();
+        out
+    }
+}

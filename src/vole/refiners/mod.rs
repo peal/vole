@@ -1,4 +1,5 @@
 pub mod digraph;
+pub mod gaprefiner;
 pub mod simple;
 
 use crate::perm::Permutation;

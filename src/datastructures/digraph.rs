@@ -2,6 +2,7 @@
 //!
 //! This crate implements edge-coloured graphs.
 
+use serde::{Deserialize, Serialize};
 use std::{num::Wrapping, slice, sync::Arc};
 
 use crate::{
@@ -15,7 +16,7 @@ use tracing::trace;
 use super::hash::do_hash;
 
 type Neighbours = IndexMap<usize, Wrapping<usize>>;
-#[derive(Clone, Debug, Eq)]
+#[derive(Clone, Debug, Eq, Deserialize, Serialize)]
 pub struct Digraph {
     edges: Vec<Neighbours>,
 }
