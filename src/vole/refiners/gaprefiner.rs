@@ -15,7 +15,7 @@ pub struct GapRefiner {
 #[derive(Debug, Deserialize, Serialize)]
 struct GapRefinerReturn {
     digraphs: Option<Vec<Digraph>>,
-    partition: Option<Vec<isize>>,
+    partition: Option<Vec<usize>>,
 }
 
 impl GapRefiner {
@@ -25,19 +25,25 @@ impl GapRefiner {
 
     fn generic_refine(
         &mut self,
-        s: &mut State,
+        state: &mut State,
         refiner_type: &str,
         side: &str,
     ) -> trace::Result<()> {
-        let _ret: GapRefinerReturn = GapChatType::send_request(&(
+        let ret: GapRefinerReturn = GapChatType::send_request(&(
             "refiner",
             &self.gap_id,
-            "refine",
             refiner_type,
             side,
-            s.partition().as_indicator(),
+            state.partition().as_indicator(),
         ));
 
+        if let Some(part) = ret.partition {
+            state.refine_partition_by(|x| part.get(*x).unwrap_or(&usize::MAX))?;
+        }
+
+        if let Some(graphs) = ret.digraphs {
+            state.add_graphs(&graphs);
+        }
         Ok(())
     }
 }

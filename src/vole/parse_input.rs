@@ -15,7 +15,6 @@ use std::io::BufRead;
 trait RefinerDescription {
     /// Build a [Box<dyn Refiner>]
     fn build_refiner(&self) -> Box<dyn Refiner>;
-    fn one_index_to_zero(&mut self);
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -25,15 +24,13 @@ pub struct DigraphStab {
 
 impl RefinerDescription for DigraphStab {
     fn build_refiner(&self) -> Box<dyn Refiner> {
-        Box::new(DigraphStabilizer::new(Digraph::from_vec(
-            self.edges.clone(),
-        )))
-    }
+        let edges = self
+            .edges
+            .iter()
+            .map(|v| v.iter().map(|x| *x - 1).collect())
+            .collect();
 
-    fn one_index_to_zero(&mut self) {
-        self.edges
-            .iter_mut()
-            .for_each(|v| v.iter_mut().for_each(|x| *x -= 1))
+        Box::new(DigraphStabilizer::new(Digraph::from_vec(edges)))
     }
 }
 
@@ -44,13 +41,8 @@ pub struct SetStab {
 
 impl RefinerDescription for SetStab {
     fn build_refiner(&self) -> Box<dyn Refiner> {
-        Box::new(SetStabilizer::new_stabilizer(
-            self.points.iter().cloned().collect(),
-        ))
-    }
-
-    fn one_index_to_zero(&mut self) {
-        self.points.iter_mut().for_each(|x| *x -= 1)
+        let points = self.points.iter().map(|&x| x - 1).collect();
+        Box::new(SetStabilizer::new_stabilizer(points))
     }
 }
 
@@ -61,11 +53,8 @@ pub struct TupleStab {
 
 impl RefinerDescription for TupleStab {
     fn build_refiner(&self) -> Box<dyn Refiner> {
-        Box::new(TupleStabilizer::new(self.points.clone()))
-    }
-
-    fn one_index_to_zero(&mut self) {
-        self.points.iter_mut().for_each(|x| *x -= 1)
+        let points = self.points.iter().map(|&x| x - 1).collect();
+        Box::new(TupleStabilizer::new(points))
     }
 }
 
@@ -78,8 +67,6 @@ impl RefinerDescription for GapRefiner {
     fn build_refiner(&self) -> Box<dyn Refiner> {
         Box::new(super::refiners::gaprefiner::GapRefiner::new(self.gap_id))
     }
-
-    fn one_index_to_zero(&mut self) {}
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -97,15 +84,6 @@ impl RefinerDescription for Constraint {
             Self::SetStab(c) => c.build_refiner(),
             Self::TupleStab(c) => c.build_refiner(),
             Self::GapRefiner(c) => c.build_refiner(),
-        }
-    }
-
-    fn one_index_to_zero(&mut self) {
-        match self {
-            Self::DigraphStab(c) => c.one_index_to_zero(),
-            Self::SetStab(c) => c.one_index_to_zero(),
-            Self::TupleStab(c) => c.one_index_to_zero(),
-            Self::GapRefiner(c) => c.one_index_to_zero(),
         }
     }
 }
@@ -129,9 +107,6 @@ pub fn build_constraints(constraints: &[Constraint]) -> Vec<Box<dyn Refiner>> {
 pub fn read_problem<R: BufRead>(prob: &mut R) -> Result<Problem> {
     let mut line = String::new();
     let _ = prob.read_line(&mut line)?;
-    let mut parsed: Problem = serde_json::from_str(&line)?;
-    for c in &mut parsed.constraints {
-        c.one_index_to_zero();
-    }
+    let parsed: Problem = serde_json::from_str(&line)?;
     Ok(parsed)
 }

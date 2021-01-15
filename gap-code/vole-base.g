@@ -1,6 +1,7 @@
 LoadPackage("json", false);
 LoadPackage("io", false);
 LoadPackage("digraphs", false);
+LoadPackage("GraphBacktracking", false);
 
 IO_Pipe := function()
     local ret;
@@ -16,8 +17,39 @@ if not IsBound(InfoVole) then
     InfoVole := NewInfoClass("InfoVole");
 fi;
 
+CallRefiner := function(state, type, args)
+    local saved, tracer, is_left, indicator, c, i, retval;
+    if type = "name" then
+        return state!.conlist[1]!.name;
+    elif type = "is_group" then
+        return BTKit_CheckPermutation((), state!.conlist[1]);
+    elif type = "check" then
+        Info(InfoVole, 2, "Checking ", args[1]);
+        return BTKit_CheckPermutation(PermList(List(args[1].values, x -> x+1)), state!.conlist[1]);
+    else
+        is_left := (args[1] = "left");
+        saved := SaveState(state);
+        tracer := RecordingTracer();
+        PS_SplitCellsByFunction(state!.ps, tracer, x -> args[2][x]);
+        if type = "begin" then
+            InitialiseConstraints(state, tracer, is_left);
+        else
+            RefineConstraints(state, tracer, is_left);
+        fi;
+        indicator := [];
+        for c in [1..PS_Cells(state!.ps)] do
+            for i in PS_CellSlice(state!.ps, c) do
+                indicator[i] := c;
+            od;
+        od;
+        retval := rec(partition := indicator, digraphs := state!.graphs);
+        RestoreState(state, saved);
+        return retval;
+    fi; 
+end;
 
-ExecuteVole := function(obj, callbacks)
+
+ExecuteVole := function(obj, refiners)
     local ret, rustpipe, gappipe,str, args, result;
     rustpipe := IO_Pipe();
     gappipe := IO_Pipe();
@@ -43,6 +75,7 @@ ExecuteVole := function(obj, callbacks)
         Info(InfoVole, 2, "P: In parent");
         IO_Close(rustpipe.toread);
         IO_Close(gappipe.towrite);
+        Info(InfoVole, 4, "Sending", GapToJsonString(obj));
         IO_WriteLine(rustpipe.towrite, GapToJsonString(obj));
         IO_Flush(rustpipe.towrite);
         while true do
@@ -55,7 +88,7 @@ ExecuteVole := function(obj, callbacks)
                 IO_Close(gappipe.toread);
                 return result[2];
             elif result[1] = "refiner" then
-                result := CallFuncList(callbacks[2], callbacks{[3..Length(callbacks)]});
+                result := CallRefiner(refiners[result[2]], result[3], result{[4..Length(result)]});
                 Info(InfoVole, 2, "Refiner returned: ", result);
                 IO_WriteLine(rustpipe.towrite, GapToJsonString(result)); 
             else
@@ -65,11 +98,20 @@ ExecuteVole := function(obj, callbacks)
     fi;
 end;
 
-Solve := function(points, findgens, constraints)
-    local ret;
+VoleSolve := function(points, findgens, constraints)
+    local ret, gapcons,i;
+    gapcons := [];
+    constraints := ShallowCopy(constraints);
+    for i in [1..Length(constraints)] do
+        if IsRefiner(constraints[i]) then
+            gapcons[i] := _GB.BuildProblem(PartitionStack(points), [constraints[i]], []);
+            constraints[i] := rec(GapRefiner := rec(gap_id := i));
+        fi;
+    od;
+
     ret := ExecuteVole(rec(config := rec(points := points, findgens := findgens),
                 constraints := constraints,
-                debug := true), []);
+                debug := true), gapcons);
     return rec(raw := ret, group := Group(List(ret.sols, PermList)));
 end;
 
@@ -80,10 +122,12 @@ con := rec(
 );
 
 GAPSolve := function(p, gens, l)
-    local c, g;
+    local c, g, lmp;
     g := SymmetricGroup(p);
     for c in l do
-        if IsBound(c.SetStab) then
+        if IsRefiner(c) then
+            g := GB_SimpleSearch(PartitionStack(p), [GB_Con.InGroup(p, g), c]);
+        elif IsBound(c.SetStab) then
             g := Stabilizer(g, c.SetStab.points, OnSets);
         elif IsBound(c.TupleStab) then
             g := Stabilizer(g, c.TupleStab.points, OnTuples);
@@ -99,7 +143,7 @@ end;
 
 Comp := function(p,c)
     local ret1,ret2;
-    ret1 := Solve(p, true, c);
+    ret1 := VoleSolve(p, true, c);
     ret2 := GAPSolve(p, true, c);
     if ret2 <> ret1.group then
         Error("\nError!!",p,c,ret1,ret2,"!!\n");
