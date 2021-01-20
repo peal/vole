@@ -74,14 +74,12 @@ impl RefinerStore {
 
         let sol = partition_stack::perm_between(state.rbase_partition(), part);
 
-        info!("Checking solution: {:?}", sol);
-
         let is_sol = self.refiners.iter().all(|x| x.check(&sol));
         if is_sol {
-            info!("Found solution");
+            info!("Found solution: {:?}", sol);
             sols.add(&sol);
         } else {
-            info!("Not solution");
+            info!("Not solution: {:?}", sol);
         }
         is_sol
     }
@@ -118,17 +116,17 @@ pub fn select_branching_cell(state: &State) -> usize {
     cell
 }
 
+#[must_use]
 pub fn simple_search_recurse(
     state: &mut State,
     sols: &mut Solutions,
     refiners: &mut RefinerStore,
     first_branch_in: bool,
-) {
+) -> bool {
     let part = state.partition();
 
     if part.cells() == part.domain_size() {
-        if refiners.check_solution(state, sols) {}
-        return;
+        return refiners.check_solution(state, sols);
     }
 
     let cell_num = select_branching_cell(state);
@@ -141,30 +139,45 @@ pub fn simple_search_recurse(
     }
 
     let mut doing_first_branch = first_branch_in;
+
+    let span = trace_span!("B", cell = debug(&cell));
+    let _o = span.enter();
+
     for c in cell {
+        let span = trace_span!("C", value = c);
+        let _o = span.enter();
         // Skip search if we are in the first branch, not on the first thing, and not min in orbit
         let skip = first_branch_in && !doing_first_branch && !sols.min_in_orbit(c);
         if !skip {
             state.save_state();
+            let cell_count = state.partition().cells();
             if state
                 .refine_partition_cell_by(cell_num, |x| *x == c)
                 .is_ok()
-                && refiners.do_refine(state).is_ok()
             {
-                simple_search_recurse(state, sols, refiners, doing_first_branch);
+                assert!(state.partition().cells() == cell_count + 1);
+                if refiners.do_refine(state).is_ok() {
+                    let ret = simple_search_recurse(state, sols, refiners, doing_first_branch);
+                    if !first_branch_in && ret {
+                        info!("Backtracking to special node");
+                        state.restore_state();
+                        return true;
+                    }
+                }
             }
             state.restore_state();
         }
         doing_first_branch = false;
     }
     info!("Returning");
+    false
 }
 
 pub fn simple_search(state: &mut State, sols: &mut Solutions, refiners: &mut RefinerStore) {
-    trace!("CHECK");
+    trace!("Starting Search");
     let ret = refiners.init_refine(state);
     if ret.is_err() {
         return;
     }
-    simple_search_recurse(state, sols, refiners, true);
+    let _ = simple_search_recurse(state, sols, refiners, true);
 }

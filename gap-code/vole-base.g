@@ -146,6 +146,6 @@ Comp := function(p,c)
     ret1 := VoleSolve(p, true, c);
     ret2 := GAPSolve(p, true, c);
     if ret2 <> ret1.group then
-        Error("\nError!!",p,c,ret1,ret2,"!!\n");
+        Error("\nError!!","\n",p,"\n",c,"\n",ret1,"\n",ret2,"!!\n");
     fi;
 end;
