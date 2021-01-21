@@ -99,7 +99,7 @@ ExecuteVole := function(obj, refiners)
     fi;
 end;
 
-VoleSolve := function(points, findgens, constraints)
+VoleSolve := function(points, find_single, constraints)
     local ret, gapcons,i;
     gapcons := [];
     constraints := ShallowCopy(constraints);
@@ -110,7 +110,7 @@ VoleSolve := function(points, findgens, constraints)
         fi;
     od;
 
-    ret := ExecuteVole(rec(config := rec(points := points, findgens := findgens),
+    ret := ExecuteVole(rec(config := rec(points := points, find_single := find_single),
                 constraints := constraints,
                 debug := true), gapcons);
     return rec(raw := ret, group := Group(List(ret.sols, PermList)));
@@ -125,7 +125,7 @@ con := rec(
     DigraphTransport := {e,f} -> rec(DigraphStab := rec(left_edges := e, right_edges := f))
 );
 
-GAPSolve := function(p, gens, l)
+GAPSolve := function(p, l)
     local c, g, lmp;
     g := SymmetricGroup(p);
     for c in l do
@@ -147,8 +147,8 @@ end;
 
 Comp := function(p,c)
     local ret1,ret2;
-    ret1 := VoleSolve(p, true, c);
-    ret2 := GAPSolve(p, true, c);
+    ret1 := VoleSolve(p, false, c);
+    ret2 := GAPSolve(p, c);
     if ret2 <> ret1.group then
         Error("\nError!!","\n",p,"\n",c,"\n",ret1,"\n",ret2,"!!\n");
     fi;

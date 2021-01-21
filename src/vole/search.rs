@@ -173,6 +173,15 @@ pub fn simple_search_recurse(
     false
 }
 
+pub fn simple_single_search(state: &mut State, sols: &mut Solutions, refiners: &mut RefinerStore) {
+    trace!("Starting Single Permutation Search");
+    let ret = refiners.init_refine(state, Side::Right);
+    if ret.is_err() {
+        return;
+    }
+    let _ = simple_search_recurse(state, sols, refiners, false);
+}
+
 pub fn simple_search(state: &mut State, sols: &mut Solutions, refiners: &mut RefinerStore) {
     trace!("Starting Search");
     let ret = refiners.init_refine(state, Side::Right);

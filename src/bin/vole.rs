@@ -1,6 +1,6 @@
 use std::fs::File;
 
-use rust_peal::vole::search::simple_search;
+use rust_peal::vole::search::{simple_search, simple_single_search};
 use rust_peal::vole::solutions::Solutions;
 use rust_peal::vole::state::State;
 use rust_peal::vole::trace;
@@ -30,7 +30,12 @@ fn main() -> anyhow::Result<()> {
 
     let mut state = State::new(problem.config.points, tracer);
     let mut solutions = Solutions::default();
-    simple_search(&mut state, &mut solutions, &mut constraints);
+
+    if problem.config.find_single {
+        simple_single_search(&mut state, &mut solutions, &mut constraints);
+    } else {
+        simple_search(&mut state, &mut solutions, &mut constraints);
+    }
 
     solutions.write_one_indexed(&mut GAP_CHAT.lock().unwrap().out_file)?;
     Ok(())

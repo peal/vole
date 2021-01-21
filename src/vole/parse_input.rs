@@ -154,7 +154,7 @@ impl RefinerDescription for Constraint {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
     pub points: usize,
-    pub findgens: bool,
+    pub find_single: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
