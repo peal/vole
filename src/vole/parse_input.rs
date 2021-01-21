@@ -2,14 +2,14 @@ use serde::{Deserialize, Serialize};
 
 use crate::datastructures::digraph::Digraph;
 
-use super::refiners::digraph::DigraphStabilizer;
-use super::refiners::simple::SetStabilizer;
-use super::refiners::simple::TupleStabilizer;
+use super::refiners::digraph::DigraphTransporter;
+use super::refiners::simple::SetTransporter;
+use super::refiners::simple::TupleTransporter;
 use super::refiners::Refiner;
 
 use anyhow::Result;
 
-use std::io::BufRead;
+use std::{io::BufRead, sync::Arc};
 
 /// Translate a GAP description of a refiner to a [Refiner] object
 trait RefinerDescription {
@@ -30,7 +30,9 @@ impl RefinerDescription for DigraphStab {
             .map(|v| v.iter().map(|x| *x - 1).collect())
             .collect();
 
-        Box::new(DigraphStabilizer::new(Digraph::from_vec(edges)))
+        Box::new(DigraphTransporter::new_stabilizer(Arc::new(
+            Digraph::from_vec(edges),
+        )))
     }
 }
 
@@ -42,7 +44,21 @@ pub struct SetStab {
 impl RefinerDescription for SetStab {
     fn build_refiner(&self) -> Box<dyn Refiner> {
         let points = self.points.iter().map(|&x| x - 1).collect();
-        Box::new(SetStabilizer::new_stabilizer(points))
+        Box::new(SetTransporter::new_stabilizer(points))
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SetTransport {
+    left_points: Vec<usize>,
+    right_points: Vec<usize>,
+}
+
+impl RefinerDescription for SetTransport {
+    fn build_refiner(&self) -> Box<dyn Refiner> {
+        let left_points = self.left_points.iter().map(|&x| x - 1).collect();
+        let right_points = self.right_points.iter().map(|&x| x - 1).collect();
+        Box::new(SetTransporter::new_transporter(left_points, right_points))
     }
 }
 
@@ -54,7 +70,21 @@ pub struct TupleStab {
 impl RefinerDescription for TupleStab {
     fn build_refiner(&self) -> Box<dyn Refiner> {
         let points = self.points.iter().map(|&x| x - 1).collect();
-        Box::new(TupleStabilizer::new(points))
+        Box::new(TupleTransporter::new_stabilizer(points))
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct TupleTransport {
+    left_points: Vec<usize>,
+    right_points: Vec<usize>,
+}
+
+impl RefinerDescription for TupleTransport {
+    fn build_refiner(&self) -> Box<dyn Refiner> {
+        let left_points = self.left_points.iter().map(|&x| x - 1).collect();
+        let right_points = self.right_points.iter().map(|&x| x - 1).collect();
+        Box::new(TupleTransporter::new_transporter(left_points, right_points))
     }
 }
 

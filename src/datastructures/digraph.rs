@@ -139,6 +139,11 @@ impl DigraphStack {
         &**self.digraph
     }
 
+    pub fn add_arc_graph(&mut self, d: &Arc<Digraph>) {
+        // TODO: Make this more efficient, when this is the first graph
+        self.add_graph(d.as_ref())
+    }
+
     pub fn add_graph(&mut self, d: &Digraph) {
         trace!("Adding digraph");
         let digraph: &mut Digraph = Arc::make_mut(&mut (*self.digraph));

@@ -1,4 +1,4 @@
-use std::hash::Hash;
+use std::{hash::Hash, sync::Arc};
 
 use tracing::info;
 
@@ -66,6 +66,12 @@ impl State {
         F: Fn(&usize) -> T,
     {
         self.stack.refine_partition_by(&mut self.tracer, f)
+    }
+
+    pub fn add_arc_graph(&mut self, d: &Arc<Digraph>) {
+        self.digraph_stack.add_arc_graph(d);
+        // Need to refine whole graph
+        *self.digraph_stack_cells_refined = 0;
     }
 
     pub fn add_graph(&mut self, d: &Digraph) {

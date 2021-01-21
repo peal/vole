@@ -7,12 +7,12 @@ use std::{
     rc::Rc,
 };
 
-pub struct SetStabilizer {
+pub struct SetTransporter {
     set_left: Rc<HashSet<usize>>,
     set_right: Rc<HashSet<usize>>,
 }
 
-impl SetStabilizer {
+impl SetTransporter {
     pub fn new_transporter(set_left: HashSet<usize>, set_right: HashSet<usize>) -> Self {
         Self {
             set_left: Rc::new(set_left),
@@ -29,10 +29,9 @@ impl SetStabilizer {
     }
 }
 
-impl Refiner for SetStabilizer {
+impl Refiner for SetTransporter {
     fn name(&self) -> String {
-        let g: bool = self.is_group();
-        if g {
+        if self.is_group() {
             format!("SetStabilizer of {:?}", self.set_left)
         } else {
             format!(
@@ -64,50 +63,86 @@ impl Refiner for SetStabilizer {
     }
 }
 
-impl Backtrack for SetStabilizer {
+impl Backtrack for SetTransporter {
     fn save_state(&mut self) {}
     fn restore_state(&mut self) {}
 }
 
 // Tuple is stored as a hash map, from value to position in list
-pub struct TupleStabilizer {
-    tuplemap: HashMap<usize, usize>,
-    tuple: Vec<usize>,
+pub struct TupleTransporter {
+    tuplemap_left: HashMap<usize, usize>,
+    tuple_left: Vec<usize>,
+    tuplemap_right: HashMap<usize, usize>,
+    tuple_right: Vec<usize>,
 }
 
-impl TupleStabilizer {
-    pub fn new(tuple: Vec<usize>) -> Self {
-        let mut tuplemap = HashMap::<usize, usize>::new();
+impl TupleTransporter {
+    pub fn new_stabilizer(tuple: Vec<usize>) -> Self {
+        Self::new_transporter(tuple.clone(), tuple)
+    }
+
+    pub fn new_transporter(tuple_left: Vec<usize>, tuple_right: Vec<usize>) -> Self {
+        let mut tuplemap_left = HashMap::<usize, usize>::new();
+        let mut tuplemap_right = HashMap::<usize, usize>::new();
+
         // If a value occurs multiple times, only the last one will be stored,
-        // but this will lead to the same result anyway.
-        // We use '+1', so 0 is free to use in refine_begin_left as a blank value
-        for (i, val) in tuple.iter().enumerate() {
-            tuplemap.insert(*val, i + 1);
+        // but this will lead to the same result anyway once checking occurs
+        for (i, val) in tuple_left.iter().enumerate() {
+            tuplemap_left.insert(*val, i + 1);
         }
-        Self { tuplemap, tuple }
+
+        for (i, val) in tuple_right.iter().enumerate() {
+            tuplemap_right.insert(*val, i + 1);
+        }
+
+        Self {
+            tuplemap_left,
+            tuple_left,
+            tuplemap_right,
+            tuple_right,
+        }
     }
 }
 
-impl Refiner for TupleStabilizer {
+impl Refiner for TupleTransporter {
     fn name(&self) -> String {
-        format!("TupleStabilizer of {:?}", self.tuple)
+        if self.is_group() {
+            format!("TupleTransporter of {:?}", self.tuple_left)
+        } else {
+            format!(
+                "TupleTransporter of {:?} -> {:?}",
+                self.tuple_left, self.tuple_right
+            )
+        }
     }
 
     fn check(&self, p: &Permutation) -> bool {
-        self.tuple.iter().cloned().all(|x| p.apply(x) == x)
+        if self.tuple_left.len() != self.tuple_right.len() {
+            return false;
+        }
+
+        self.tuple_left
+            .iter()
+            .zip(self.tuple_right.iter())
+            .all(|(&x, &y)| p.apply(x) == y)
     }
 
     fn refine_begin_left(&mut self, state: &mut State) -> trace::Result<()> {
-        state.refine_partition_by(|x| self.tuplemap.get(x).unwrap_or(&0))?;
+        state.refine_partition_by(|x| self.tuplemap_left.get(x).unwrap_or(&0))?;
+        Ok(())
+    }
+
+    fn refine_begin_right(&mut self, state: &mut State) -> trace::Result<()> {
+        state.refine_partition_by(|x| self.tuplemap_right.get(x).unwrap_or(&0))?;
         Ok(())
     }
 
     fn is_group(&self) -> bool {
-        true
+        self.tuple_left == self.tuple_right
     }
 }
 
-impl Backtrack for TupleStabilizer {
+impl Backtrack for TupleTransporter {
     fn save_state(&mut self) {}
     fn restore_state(&mut self) {}
 }
