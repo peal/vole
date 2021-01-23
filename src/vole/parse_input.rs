@@ -11,7 +11,8 @@ use anyhow::Result;
 
 use std::{io::BufRead, sync::Arc};
 
-/// Translate a GAP description of a refiner to a [Refiner] object
+/// Translate a GAP description of a refiner to a [Refiner] object. This mainly
+/// involves moving from GAP's 1-indexed structures to a 0-indexed structure.
 trait RefinerDescription {
     /// Build a [Box<dyn Refiner>]
     fn build_refiner(&self) -> Box<dyn Refiner>;
@@ -36,6 +37,32 @@ impl RefinerDescription for DigraphStab {
     }
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+pub struct DigraphTransport {
+    edges_left: Vec<Vec<usize>>,
+    edges_right: Vec<Vec<usize>>
+}
+
+impl RefinerDescription for DigraphTransport {
+    fn build_refiner(&self) -> Box<dyn Refiner> {
+        let edges_left = self
+            .edges_left
+            .iter()
+            .map(|v| v.iter().map(|x| *x - 1).collect())
+            .collect();
+
+            let edges_right = self
+            .edges_right
+            .iter()
+            .map(|v| v.iter().map(|x| *x - 1).collect())
+            .collect();
+
+        Box::new(DigraphTransporter::new_transporter(Arc::new(
+            Digraph::from_vec(edges_left)), Arc::new(
+                Digraph::from_vec(edges_right)
+        )))
+    }
+}
 #[derive(Debug, Deserialize, Serialize)]
 pub struct SetStab {
     points: Vec<usize>,
@@ -102,8 +129,11 @@ impl RefinerDescription for GapRefiner {
 #[derive(Debug, Deserialize, Serialize)]
 pub enum Constraint {
     DigraphStab(DigraphStab),
+    DigraphTransport(DigraphTransport),
     SetStab(SetStab),
+    SetTransport(SetTransport),
     TupleStab(TupleStab),
+    TupleTransport(TupleTransport),
     GapRefiner(GapRefiner),
 }
 
@@ -114,6 +144,9 @@ impl RefinerDescription for Constraint {
             Self::SetStab(c) => c.build_refiner(),
             Self::TupleStab(c) => c.build_refiner(),
             Self::GapRefiner(c) => c.build_refiner(),
+            Constraint::DigraphTransport(c) => c.build_refiner(),
+            Constraint::SetTransport(c) => c.build_refiner(),
+            Constraint::TupleTransport(c) => c.build_refiner()
         }
     }
 }

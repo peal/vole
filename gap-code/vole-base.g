@@ -117,8 +117,11 @@ end;
 
 con := rec(
     SetStab := {s} -> rec(SetStab := rec(points := s)),
+    SetTransport := {s,t} -> rec(SetTransport := rec(left_points := s, right_points := t)),
     TupleStab := {s} -> rec(TupleStab := rec(points := s)),
-    DigraphStab := {e} -> rec(DigraphStab := rec(edges := e))
+    TupleTransport := {s,t} -> rec(TupleTransport :=  rec(left_points := s, right_points := t)),
+    DigraphStab := {e} -> rec(DigraphStab := rec(edges := e)),
+    DigraphTransport := {e,f} -> rec(DigraphStab := rec(left_edges := e, right_edges := f))
 );
 
 GAPSolve := function(p, gens, l)
