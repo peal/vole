@@ -144,9 +144,9 @@ impl RefinerDescription for Constraint {
             Self::SetStab(c) => c.build_refiner(),
             Self::TupleStab(c) => c.build_refiner(),
             Self::GapRefiner(c) => c.build_refiner(),
-            Constraint::DigraphTransport(c) => c.build_refiner(),
-            Constraint::SetTransport(c) => c.build_refiner(),
-            Constraint::TupleTransport(c) => c.build_refiner(),
+            Self::DigraphTransport(c) => c.build_refiner(),
+            Self::SetTransport(c) => c.build_refiner(),
+            Self::TupleTransport(c) => c.build_refiner(),
         }
     }
 }
