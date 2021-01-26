@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::Refiner;
+use super::{Refiner, Side};
 use crate::{
     datastructures::digraph::Digraph,
     gap_chat::GapChatType,
@@ -27,7 +27,7 @@ impl GapRefiner {
         &mut self,
         state: &mut State,
         refiner_type: &str,
-        side: &str,
+        side: Side,
     ) -> trace::Result<()> {
         let ret: GapRefinerReturn = GapChatType::send_request(&(
             "refiner",
@@ -61,28 +61,16 @@ impl Refiner for GapRefiner {
         GapChatType::send_request(&("refiner", &self.gap_id, "check", p))
     }
 
-    fn refine_begin_left(&mut self, s: &mut State) -> trace::Result<()> {
-        self.generic_refine(s, "begin", "left")
+    fn refine_begin(&mut self, s: &mut State, side: Side) -> trace::Result<()> {
+        self.generic_refine(s, "begin", side)
     }
 
-    fn refine_fixed_points_left(&mut self, s: &mut State) -> trace::Result<()> {
-        self.generic_refine(s, "fixed", "left")
+    fn refine_fixed_points(&mut self, s: &mut State, side: Side) -> trace::Result<()> {
+        self.generic_refine(s, "fixed", side)
     }
 
-    fn refine_changed_cells_left(&mut self, s: &mut State) -> trace::Result<()> {
-        self.generic_refine(s, "changed", "left")
-    }
-
-    fn refine_begin_right(&mut self, s: &mut State) -> trace::Result<()> {
-        self.generic_refine(s, "begin", "right")
-    }
-
-    fn refine_fixed_points_right(&mut self, s: &mut State) -> trace::Result<()> {
-        self.generic_refine(s, "fixed", "right")
-    }
-
-    fn refine_changed_cells_right(&mut self, s: &mut State) -> trace::Result<()> {
-        self.generic_refine(s, "changed", "right")
+    fn refine_changed_cells(&mut self, s: &mut State, side: Side) -> trace::Result<()> {
+        self.generic_refine(s, "changed", side)
     }
 }
 

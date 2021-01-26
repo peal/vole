@@ -27,7 +27,8 @@ CallRefiner := function(state, type, args)
         Info(InfoVole, 2, "Checking ", args[1]);
         return BTKit_CheckPermutation(PermList(List(args[1].values, x -> x+1)), state!.conlist[1]);
     else
-        is_left := (args[1] = "left");
+        Assert(2, args[1] = "Left" or args[1] = "Right");
+        is_left := (args[1] = "Left");
         saved := SaveState(state);
         tracer := RecordingTracer();
         PS_SplitCellsByFunction(state!.ps, tracer, x -> args[2][x]);

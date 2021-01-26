@@ -1,4 +1,4 @@
-use super::refiners::Refiner;
+use super::refiners::{Refiner, Side};
 use super::solutions::Solutions;
 use super::state::State;
 use super::{
@@ -23,16 +23,16 @@ impl RefinerStore {
         }
     }
 
-    pub fn init_refine(&mut self, state: &mut State) -> trace::Result<()> {
-        let span = trace_span!("init_refine");
+    pub fn init_refine(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
+        let span = trace_span!("init_refine:", side = debug(side));
         let _e = span.enter();
         for r in self.refiners.iter_mut() {
-            r.refine_begin_left(state)?
+            r.refine_begin(state, side)?
         }
-        self.do_refine(state)
+        self.do_refine(state, side)
     }
 
-    pub fn do_refine(&mut self, state: &mut State) -> trace::Result<()> {
+    pub fn do_refine(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
         let span = trace_span!("do_refine");
         let _e = span.enter();
         loop {
@@ -42,7 +42,7 @@ impl RefinerStore {
             assert!(fixed_points >= *self.fixed_values_considered);
             if fixed_points > *self.fixed_values_considered {
                 for refiner in &mut self.refiners {
-                    refiner.refine_fixed_points_left(state)?
+                    refiner.refine_fixed_points(state, side)?
                 }
             }
 
@@ -50,7 +50,7 @@ impl RefinerStore {
             assert!(cells >= *self.cells_considered);
             if cells > *self.cells_considered {
                 for refiner in &mut self.refiners {
-                    refiner.refine_changed_cells_left(state)?
+                    refiner.refine_changed_cells(state, side)?
                 }
             }
 
@@ -156,7 +156,7 @@ pub fn simple_search_recurse(
                 .is_ok()
             {
                 assert!(state.partition().cells() == cell_count + 1);
-                if refiners.do_refine(state).is_ok() {
+                if refiners.do_refine(state, Side::Right).is_ok() {
                     let ret = simple_search_recurse(state, sols, refiners, doing_first_branch);
                     if !first_branch_in && ret {
                         info!("Backtracking to special node");
@@ -175,7 +175,7 @@ pub fn simple_search_recurse(
 
 pub fn simple_search(state: &mut State, sols: &mut Solutions, refiners: &mut RefinerStore) {
     trace!("Starting Search");
-    let ret = refiners.init_refine(state);
+    let ret = refiners.init_refine(state, Side::Right);
     if ret.is_err() {
         return;
     }

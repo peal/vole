@@ -1,5 +1,5 @@
-use super::super::state::State;
 use super::Refiner;
+use super::{super::state::State, Side};
 use crate::vole::trace;
 use crate::{perm::Permutation, vole::backtracking::Backtrack};
 use std::{
@@ -48,13 +48,13 @@ impl Refiner for SetTransporter {
             .all(|x| self.set_right.contains(&(p.apply(x))))
     }
 
-    fn refine_begin_left(&mut self, state: &mut State) -> trace::Result<()> {
-        state.refine_partition_by(|x| self.set_left.contains(x))?;
-        Ok(())
-    }
+    fn refine_begin(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
+        let set = match side {
+            Side::Left => &self.set_left,
+            Side::Right => &self.set_right,
+        };
 
-    fn refine_begin_right(&mut self, state: &mut State) -> trace::Result<()> {
-        state.refine_partition_by(|x| self.set_right.contains(x))?;
+        state.refine_partition_by(|x| set.contains(x))?;
         Ok(())
     }
 
@@ -127,13 +127,12 @@ impl Refiner for TupleTransporter {
             .all(|(&x, &y)| p.apply(x) == y)
     }
 
-    fn refine_begin_left(&mut self, state: &mut State) -> trace::Result<()> {
-        state.refine_partition_by(|x| self.tuplemap_left.get(x).unwrap_or(&0))?;
-        Ok(())
-    }
-
-    fn refine_begin_right(&mut self, state: &mut State) -> trace::Result<()> {
-        state.refine_partition_by(|x| self.tuplemap_right.get(x).unwrap_or(&0))?;
+    fn refine_begin(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
+        let tuplemap = match side {
+            Side::Left => &self.tuplemap_left,
+            Side::Right => &self.tuplemap_right,
+        };
+        state.refine_partition_by(|x| tuplemap.get(x).unwrap_or(&0))?;
         Ok(())
     }
 

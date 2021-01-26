@@ -40,7 +40,7 @@ impl RefinerDescription for DigraphStab {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DigraphTransport {
     edges_left: Vec<Vec<usize>>,
-    edges_right: Vec<Vec<usize>>
+    edges_right: Vec<Vec<usize>>,
 }
 
 impl RefinerDescription for DigraphTransport {
@@ -51,16 +51,16 @@ impl RefinerDescription for DigraphTransport {
             .map(|v| v.iter().map(|x| *x - 1).collect())
             .collect();
 
-            let edges_right = self
+        let edges_right = self
             .edges_right
             .iter()
             .map(|v| v.iter().map(|x| *x - 1).collect())
             .collect();
 
-        Box::new(DigraphTransporter::new_transporter(Arc::new(
-            Digraph::from_vec(edges_left)), Arc::new(
-                Digraph::from_vec(edges_right)
-        )))
+        Box::new(DigraphTransporter::new_transporter(
+            Arc::new(Digraph::from_vec(edges_left)),
+            Arc::new(Digraph::from_vec(edges_right)),
+        ))
     }
 }
 #[derive(Debug, Deserialize, Serialize)]
@@ -146,7 +146,7 @@ impl RefinerDescription for Constraint {
             Self::GapRefiner(c) => c.build_refiner(),
             Constraint::DigraphTransport(c) => c.build_refiner(),
             Constraint::SetTransport(c) => c.build_refiner(),
-            Constraint::TupleTransport(c) => c.build_refiner()
+            Constraint::TupleTransport(c) => c.build_refiner(),
         }
     }
 }
