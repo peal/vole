@@ -63,6 +63,12 @@ impl RefinerStore {
         }
     }
 
+    // TODO: This shouldn't be here
+    pub fn capture_rbase(&mut self, state: &mut State) {
+        assert!(!state.has_rbase());
+        state.snapshot_rbase();
+    }
+
     pub fn check_solution(&mut self, state: &mut State, sols: &mut Solutions) -> bool {
         if !state.has_rbase() {
             info!("Taking rbase snapshot");
@@ -114,6 +120,50 @@ pub fn select_branching_cell(state: &State) -> usize {
         state.partition().as_list_set()
     );
     cell
+}
+
+pub fn build_rbase(state: &mut State, refiners: &mut RefinerStore) {
+    let part = state.partition();
+
+    if part.cells() == part.domain_size() {
+        refiners.capture_rbase(state);
+        return;
+    }
+
+    let cell_num = select_branching_cell(state);
+    info!("Partition: {:?}", state.partition().as_list_set());
+    info!("Branching on {}", cell_num);
+    let mut cell: Vec<usize> = part.cell(cell_num).to_vec();
+
+    cell.sort();
+
+    let span = trace_span!("B", cell = debug(&cell));
+    let _o = span.enter();
+
+    let c = cell[0];
+
+    let span = trace_span!("C", value = c);
+    let _o = span.enter();
+
+    state.save_state();
+
+    let cell_count = state.partition().cells();
+    if state
+        .refine_partition_cell_by(cell_num, |x| *x == c)
+        .is_err()
+    {
+        panic!("RBase Build Failure 1");
+    }
+
+    assert!(state.partition().cells() == cell_count + 1);
+
+    if refiners.do_refine(state, Side::Right).is_err() {
+        panic!("RBase Build Failure 2");
+    }
+
+    build_rbase(state, refiners);
+
+    state.restore_state();
 }
 
 #[must_use]
@@ -169,17 +219,34 @@ pub fn simple_search_recurse(
         }
         doing_first_branch = false;
     }
-    info!("Returning");
     false
 }
 
 pub fn simple_single_search(state: &mut State, sols: &mut Solutions, refiners: &mut RefinerStore) {
     trace!("Starting Single Permutation Search");
+
+    // First build RBase
+
+    state.save_state();
+    if refiners.init_refine(state, Side::Left).is_err() {
+        panic!("RBase Build Failures 0");
+    }
+
+    build_rbase(state, refiners);
+
+    state.restore_state();
+
+    trace!("RBase Built");
+
+    // Now do search
+    state.save_state();
+
     let ret = refiners.init_refine(state, Side::Right);
     if ret.is_err() {
         return;
     }
     let _ = simple_search_recurse(state, sols, refiners, false);
+    state.restore_state();
 }
 
 pub fn simple_search(state: &mut State, sols: &mut Solutions, refiners: &mut RefinerStore) {

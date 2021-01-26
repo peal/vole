@@ -7,9 +7,9 @@ use rust_peal::vole::trace;
 use rust_peal::vole::{parse_input, search::RefinerStore};
 
 use tracing::Level;
-use tracing_subscriber::{self, fmt::format::FmtSpan};
 
 use rust_peal::gap_chat::GAP_CHAT;
+use tracing_subscriber::fmt::format::FmtSpan;
 
 fn main() -> anyhow::Result<()> {
     // Set up debugging output

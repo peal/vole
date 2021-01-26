@@ -23,5 +23,11 @@ Comp(5, [BTKit_Con.SetStab(5, [2,3])]);
 
 Comp(12, [con.DigraphStab(neigh)]);
 
+r := VoleSolve(5, true, [con.TupleTransport([2,3,4,5],[1,3,5,4])]);
+Assert(0,r.sol = [(1,2)(4,5)]);
+
+r := VoleSolve(5, true, [con.SetTransport([2,3,4],[1,4,5])]);
+Assert(0, OnSets([2,3,4], r.sol[1]) = [1,4,5]);
+
 Print("Tests passed\n");
 QUIT_GAP(0);
