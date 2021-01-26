@@ -251,6 +251,10 @@ impl Backtrack for PartitionStack {
         let depth = self.saved_depths.pop().unwrap();
         self.unsplit_cells_to(depth);
     }
+
+    fn saved_depths(&self) -> usize {
+        self.saved_depths.len()
+    }
 }
 
 impl PartitionStack {
@@ -382,11 +386,15 @@ mod tests {
     use super::perm_between;
     use super::PartitionStack;
     use super::Permutation;
-    use crate::{datastructures::digraph::Digraph, vole::trace};
+    use crate::{
+        datastructures::digraph::Digraph,
+        vole::{backtracking::Backtrack, trace},
+    };
 
     #[test]
     fn basic() {
         let p = PartitionStack::new(5);
+        assert_eq!(p.saved_depths(), 0);
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.as_indicator(), vec![0, 0, 0, 0, 0]);
         assert_eq!(p.domain_size(), 5);
@@ -431,6 +439,43 @@ mod tests {
         p.unsplit_cell();
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2], vec![3, 4]]);
         p.unsplit_cell();
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        assert_eq!(p.as_indicator(), vec![0, 0, 0, 0, 0]);
+    }
+
+    #[test]
+    fn test_split_state() {
+        let mut p = PartitionStack::new(5);
+        p.sanity_check();
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        assert_eq!(p.as_indicator(), vec![0, 0, 0, 0, 0]);
+        p.save_state();
+        assert_eq!(p.saved_depths(), 1);
+        p.split_cell(0, 2);
+        assert_eq!(p.as_list_set(), vec![vec![0, 1], vec![2, 3, 4]]);
+        assert_eq!(p.as_indicator(), vec![0, 0, 1, 1, 1]);
+        p.sanity_check();
+        p.restore_state();
+        assert_eq!(p.saved_depths(), 0);
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        assert_eq!(p.as_indicator(), vec![0, 0, 0, 0, 0]);
+        p.sanity_check();
+        p.save_state();
+        p.save_state();
+        assert_eq!(p.saved_depths(), 2);
+        p.split_cell(0, 3);
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 2], vec![3, 4]]);
+        p.sanity_check();
+        p.split_cell(0, 1);
+        assert_eq!(p.as_list_set(), vec![vec![0], vec![3, 4], vec![1, 2]]);
+        p.split_cell(1, 1);
+        p.sanity_check();
+        assert_eq!(p.as_list_set(), vec![vec![0], vec![3], vec![1, 2], vec![4]]);
+        assert_eq!(p.as_indicator(), vec![0, 2, 2, 1, 3]);
+        p.restore_state();
+        assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        assert_eq!(p.as_indicator(), vec![0, 0, 0, 0, 0]);
+        p.restore_state();
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.as_indicator(), vec![0, 0, 0, 0, 0]);
     }

@@ -9,6 +9,9 @@ pub trait Backtrack {
     fn save_state(&mut self);
     /// Revert to a previous saved state
     fn restore_state(&mut self);
+    fn saved_depths(&self) -> usize {
+        panic!("No saved_depths");
+    }
 }
 
 /// A 'smart pointer' which implements [Backtrack]
@@ -34,6 +37,10 @@ impl<T: Clone + fmt::Debug> Backtrack for Backtracking<T> {
 
     fn restore_state(&mut self) {
         self.value = self.stack.pop().unwrap();
+    }
+
+    fn saved_depths(&self) -> usize {
+        self.stack.len()
     }
 }
 
@@ -83,6 +90,10 @@ impl<T: Clone + fmt::Debug> Backtrack for BacktrackingStack<T> {
     fn restore_state(&mut self) {
         let depth = self.saved_depths.pop().unwrap();
         self.stack.truncate(depth);
+    }
+
+    fn saved_depths(&self) -> usize {
+        self.saved_depths.len()
     }
 }
 
