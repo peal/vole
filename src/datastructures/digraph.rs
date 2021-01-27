@@ -169,11 +169,6 @@ impl Backtrack for DigraphStack {
         self.digraph.restore_state();
         self.depth.restore_state();
     }
-
-    fn saved_depths(&self) -> usize {
-        assert!(self.digraph.saved_depths() == self.depth.saved_depths());
-        self.depth.saved_depths()
-    }
 }
 
 #[allow(clippy::eq_op, clippy::neg_cmp_op_on_partial_ord)]
