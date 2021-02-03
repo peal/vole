@@ -122,6 +122,7 @@ impl std::ops::BitXor<&Permutation> for &Digraph {
     }
 }
 
+#[derive(Clone, Debug)]
 pub struct DigraphStack {
     digraph: Backtracking<Arc<Digraph>>,
     depth: Backtracking<usize>,
@@ -156,6 +157,14 @@ impl DigraphStack {
         let digraph: &mut Digraph = Arc::make_mut(&mut (*self.digraph));
         digraph.merge(digraphs, *self.depth);
         *self.depth += digraphs.len();
+    }
+
+    pub fn saved_depths(&self) -> usize {
+        self.digraph.saved_depths()
+    }
+
+    pub fn get_depth(&self, d: usize) -> &Arc<Digraph> {
+        self.digraph.get_depth(d)
     }
 }
 

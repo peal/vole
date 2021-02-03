@@ -12,7 +12,7 @@ pub trait Backtrack {
 }
 
 /// A 'smart pointer' which implements [Backtrack]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Backtracking<T: Clone + fmt::Debug> {
     value: T,
     stack: Vec<T>,
@@ -51,8 +51,18 @@ impl<T: Clone + fmt::Debug> DerefMut for Backtracking<T> {
     }
 }
 
+impl<T: Clone + fmt::Debug> Backtracking<T> {
+    pub fn saved_depths(&self) -> usize {
+        self.stack.len()
+    }
+
+    pub fn get_depth(&self, d: usize) -> &T {
+        &self.stack[d]
+    }
+}
+
 /// A stack which implements [Backtrack]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct BacktrackingStack<T: Clone + fmt::Debug> {
     stack: Vec<T>,
     saved_depths: Vec<usize>,
