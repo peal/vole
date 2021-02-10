@@ -20,9 +20,7 @@ struct MarkStore {
 
 impl MarkStore {
     fn new(n: usize) -> Self {
-        Self {
-            marks: vec![0; n + 1],
-        }
+        Self { marks: vec![0; n] }
     }
 
     fn mark_of(&self, i: usize) -> usize {
@@ -33,6 +31,15 @@ impl MarkStore {
         for i in start..start + len {
             self.marks[i] = cell;
         }
+    }
+
+    fn extend_marks(&mut self, extra: usize, cell: usize) {
+        self.marks.resize(self.marks.len() + extra, cell);
+    }
+
+    fn remove_marks(&mut self, extra: usize) {
+        debug_assert!(self.marks.len() >= extra);
+        self.marks.truncate(self.marks.len() - extra);
     }
 }
 
@@ -97,6 +104,46 @@ impl PartitionStack {
             splits: vec![],
             saved_depths: vec![],
         }
+    }
+
+    pub fn extend(&mut self, extra: usize) {
+        assert!(extra > 0);
+        let cur_size = self.extended_size;
+        let new_size = cur_size + extra;
+        let new_cell = self.cells.starts.len();
+        self.extended_size += extra;
+        self.cells.values.extend(cur_size..new_size);
+        self.cells.inv_values.extend(cur_size..new_size);
+        self.cells.starts.push(cur_size);
+        self.cells.lengths.push(extra);
+        // Don't add to 'base_cells'
+        self.cells.extended_cells.push(new_cell);
+        self.marks.extend_marks(extra, new_cell);
+        debug_assert!(self.sanity_check());
+
+        // usize::MAX denotes the extra cell was created by adding to the partition
+        self.splits.push(usize::MAX);
+    }
+
+    fn revert_extend(&mut self) {
+        // Get the size of the extra added cell
+        let extra = self.cells.lengths.pop().unwrap();
+
+        let cur_size = self.extended_size;
+        let new_size = cur_size - extra;
+
+        self.extended_size -= extra;
+
+        let cell = self.cells.starts.len() - 1;
+
+        self.cells.values.truncate(self.extended_size);
+        self.cells.inv_values.truncate(self.extended_size);
+        let pop_starts = self.cells.starts.pop();
+        assert_eq!(pop_starts.unwrap(), new_size);
+
+        self.marks.remove_marks(extra);
+        let pop_extended_cells = self.cells.extended_cells.pop();
+        assert_eq!(pop_extended_cells.unwrap(), cell);
     }
 
     pub fn base_domain_size(&self) -> usize {
@@ -168,21 +215,29 @@ impl PartitionStack {
         self.marks.mark_of(self.cells.inv_values[i])
     }
 
-    fn sanity_check(&self) {
+    fn sanity_check(&self) -> bool {
+        // Check values is a permutation
         {
             let mut values_cpy = self.cells.values.clone();
             values_cpy.sort();
-            assert_eq!(values_cpy, (0..self.base_size).collect::<Vec<usize>>());
+            assert_eq!(values_cpy, (0..self.extended_size).collect::<Vec<usize>>());
         }
+        // Check inv_values is a permutation
         {
             let mut inv_values_cpy = self.cells.inv_values.clone();
             inv_values_cpy.sort();
-            assert_eq!(inv_values_cpy, (0..self.base_size).collect::<Vec<usize>>());
+            assert_eq!(
+                inv_values_cpy,
+                (0..self.extended_size).collect::<Vec<usize>>()
+            );
         }
+        // Check values[inv_values[i]] == i
         for i in 0..self.base_size {
             assert_eq!(self.cells.values[self.cells.inv_values[i]], i);
         }
 
+        // check base_fixed and base_fixed_values contain the cells of size 1,
+        // and the value in those cells respectively (only in the original 'base')
         assert_eq!(
             self.cells.base_fixed.len(),
             self.cells.base_fixed_values.len()
@@ -197,39 +252,55 @@ impl PartitionStack {
         let mut fixed_count = 0;
         for &i in self.base_cells() {
             if self.cell(i).len() == 1 {
-                fixed_count += 1;
-                assert!(self.cells.base_fixed.contains(&i));
+                let val = self.cell(i)[0];
+                if val < self.base_size {
+                    fixed_count += 1;
+                    assert!(self.cells.base_fixed.contains(&i));
+                } else {
+                    assert!(!self.cells.base_fixed.contains(&i));
+                }
             }
         }
 
         assert_eq!(self.cells.base_fixed.len(), fixed_count);
 
+        // Check the cell starts, and lengths, have the same size
         assert_eq!(self.cells.starts.len(), self.cells.lengths.len());
 
         let mut starts: HashSet<usize> = self.cells.starts.iter().cloned().collect();
         assert_eq!(starts.len(), self.cells.starts.len());
-        starts.insert(self.base_size);
+        // This is so we have the end of every cell
+        starts.insert(self.extended_size);
 
+        // Check some cell starts at position 0
         assert!(starts.contains(&0));
-        assert_eq!(self.cells.lengths.iter().sum::<usize>(), self.base_size);
-        for &i in self.base_cells() {
+        // Check the sum of the sizes of cells is correct
+        assert_eq!(self.cells.lengths.iter().sum::<usize>(), self.extended_size);
+        // Make sure a cell starts wherever another ends
+        for &i in self.extended_cells() {
             assert!(starts.contains(&(self.cells.starts[i] + self.cells.lengths[i])));
         }
-        for &i in self.base_cells() {
+        // Check every value is in the correct cell
+        for &i in self.extended_cells() {
             for j in self.cell(i) {
                 assert_eq!(self.cell_of(*j), i);
             }
         }
+        true
     }
 
     fn split_cell(&mut self, cell: usize, pos: usize) {
         debug_assert!(pos > 0 && pos < self.cells.lengths[cell]);
 
+        let splitting_a_base_cell = self.cells.values[cell] < self.base_size;
+
         self.splits.push(cell);
 
         let new_cell_num = self.cells.starts.len();
 
-        self.cells.base_cells.push(new_cell_num);
+        if splitting_a_base_cell {
+            self.cells.base_cells.push(new_cell_num);
+        }
         self.cells.extended_cells.push(new_cell_num);
 
         let new_cell_start = self.cells.starts[cell] + pos;
@@ -240,13 +311,13 @@ impl PartitionStack {
         self.cells.starts.push(new_cell_start);
         self.cells.lengths.push(new_cell_size);
 
-        if new_cell_size == 1 {
+        if new_cell_size == 1 && splitting_a_base_cell {
             self.cells.base_fixed.push(new_cell_num);
             self.cells
                 .base_fixed_values
                 .push(self.cells.values[new_cell_start]);
         }
-        if old_cell_new_size == 1 {
+        if old_cell_new_size == 1 && splitting_a_base_cell {
             self.cells.base_fixed.push(cell);
             self.cells
                 .base_fixed_values
@@ -260,7 +331,17 @@ impl PartitionStack {
     fn unsplit_cell(&mut self) {
         let unsplit = self.splits.pop().unwrap();
 
-        let _ = self.cells.base_cells.pop().unwrap();
+        if unsplit == usize::MAX {
+            // This was a newly created cell
+            self.revert_extend();
+            return;
+        }
+
+        let splitting_a_base_cell = self.cells.values[unsplit] < self.base_size;
+
+        if splitting_a_base_cell {
+            let _ = self.cells.base_cells.pop().unwrap();
+        }
         let _ = self.cells.extended_cells.pop().unwrap();
 
         let cell_start = self.cells.starts.pop().unwrap();
@@ -268,12 +349,12 @@ impl PartitionStack {
 
         self.marks.set_marks(cell_start, cell_length, unsplit);
 
-        if cell_length == 1 {
+        if cell_length == 1 && splitting_a_base_cell {
             self.cells.base_fixed_values.pop();
             self.cells.base_fixed.pop();
         }
 
-        if self.cells.lengths[unsplit] == 1 {
+        if self.cells.lengths[unsplit] == 1 && splitting_a_base_cell {
             self.cells.base_fixed_values.pop();
             self.cells.base_fixed.pop();
         }
@@ -281,9 +362,9 @@ impl PartitionStack {
         self.cells.lengths[unsplit] += cell_length;
     }
 
-    fn unsplit_cells_to(&mut self, cells: usize) {
-        debug_assert!(self.base_cells().len() >= cells);
-        while self.base_cells().len() > cells {
+    fn extended_unsplit_cells_to(&mut self, cells: usize) {
+        debug_assert!(self.extended_cells().len() >= cells);
+        while self.extended_cells().len() > cells {
             self.unsplit_cell();
         }
     }
@@ -291,12 +372,12 @@ impl PartitionStack {
 
 impl Backtrack for PartitionStack {
     fn save_state(&mut self) {
-        self.saved_depths.push(self.base_cells().len());
+        self.saved_depths.push(self.extended_cells().len());
     }
 
     fn restore_state(&mut self) {
         let depth = self.saved_depths.pop().unwrap();
-        self.unsplit_cells_to(depth);
+        self.extended_unsplit_cells_to(depth);
     }
 }
 
@@ -572,7 +653,7 @@ mod tests {
             vec![vec![2, 4], vec![3], vec![0], vec![1]]
         );
         p.sanity_check();
-        p.unsplit_cells_to(2);
+        p.extended_unsplit_cells_to(2);
         // Do twice, as splitting rearranges internal values
         assert_eq!(p.base_as_list_set(), vec![vec![0, 2, 4], vec![1, 3]]);
         p.sanity_check();
@@ -582,7 +663,7 @@ mod tests {
             vec![vec![2, 4], vec![3], vec![0], vec![1]]
         );
         p.sanity_check();
-        p.unsplit_cells_to(2);
+        p.extended_unsplit_cells_to(2);
         assert_eq!(p.base_as_list_set(), vec![vec![0, 2, 4], vec![1, 3]]);
         p.sanity_check();
         p.refine_partition_by(&mut tracer, |x| *x >= 2)?;
@@ -640,5 +721,42 @@ mod tests {
             Permutation::from_vec(vec![4, 3, 2, 1, 0])
         );
         Ok(())
+    }
+
+    #[test]
+    fn test_extend() {
+        let mut p = PartitionStack::new(5);
+        assert!(p.sanity_check());
+        assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        assert_eq!(p.extended_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+
+        p.extend(2);
+        assert!(p.sanity_check());
+        assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        assert_eq!(
+            p.extended_as_list_set(),
+            vec![vec![0, 1, 2, 3, 4], vec![5, 6]]
+        );
+
+        p.extend(1);
+        assert!(p.sanity_check());
+        assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        assert_eq!(
+            p.extended_as_list_set(),
+            vec![vec![0, 1, 2, 3, 4], vec![5, 6], vec![7]]
+        );
+
+        p.unsplit_cell();
+        assert!(p.sanity_check());
+        assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        assert_eq!(
+            p.extended_as_list_set(),
+            vec![vec![0, 1, 2, 3, 4], vec![5, 6]]
+        );
+
+        p.unsplit_cell();
+        assert!(p.sanity_check());
+        assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        assert_eq!(p.extended_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
     }
 }
