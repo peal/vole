@@ -43,7 +43,7 @@ pub struct CellData {
     inv_values: Vec<usize>,
 
     /// Fixed cells, in order of creation
-    fixed: Vec<usize>,
+    base_fixed: Vec<usize>,
 
     /// Contents of fixed cells, in order of creation
     base_fixed_values: Vec<usize>,
@@ -79,7 +79,7 @@ impl PartitionStack {
             cells: CellData {
                 values: (0..n).collect(),
                 inv_values: (0..n).collect(),
-                fixed: vec![],
+                base_fixed: vec![],
                 base_fixed_values: vec![],
                 starts: vec![0],
                 lengths: vec![n],
@@ -97,7 +97,7 @@ impl PartitionStack {
 
     pub fn as_list_set(&self) -> Vec<Vec<usize>> {
         let mut p = vec![];
-        for &i in self.cells() {
+        for &i in self.base_cells() {
             let mut vec: Vec<usize> = self.cell(i).to_vec();
             vec.sort();
             p.push(vec);
@@ -107,14 +107,14 @@ impl PartitionStack {
 
     pub fn as_indicator(&self) -> Vec<usize> {
         let mut p = vec![0; self.base_domain_size()];
-        for &i in self.cells() {
+        for &i in self.base_cells() {
             for &c in self.cell(i) {
                 p[c] = i;
             }
         }
         p
     }
-    pub fn cells(&self) -> &[usize] {
+    pub fn base_cells(&self) -> &[usize] {
         self.cells.base_cells.as_slice()
     }
 
@@ -122,8 +122,8 @@ impl PartitionStack {
         &self.cells.values[self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i]]
     }
 
-    pub fn base_base_fixed_cells(&self) -> &[usize] {
-        &self.cells.fixed
+    pub fn base_fixed_cells(&self) -> &[usize] {
+        &self.cells.base_fixed
     }
 
     pub fn base_fixed_values(&self) -> &[usize] {
@@ -149,23 +149,26 @@ impl PartitionStack {
             assert_eq!(self.cells.values[self.cells.inv_values[i]], i);
         }
 
-        assert_eq!(self.cells.fixed.len(), self.cells.base_fixed_values.len());
+        assert_eq!(
+            self.cells.base_fixed.len(),
+            self.cells.base_fixed_values.len()
+        );
 
-        for i in 0..self.cells.fixed.len() {
-            let cell = self.cells.fixed[i];
+        for i in 0..self.cells.base_fixed.len() {
+            let cell = self.cells.base_fixed[i];
             assert_eq!(self.cells.lengths[cell], 1);
             assert_eq!(self.cells.base_fixed_values[i], self.cell(cell)[0]);
         }
 
         let mut fixed_count = 0;
-        for &i in self.cells() {
+        for &i in self.base_cells() {
             if self.cell(i).len() == 1 {
                 fixed_count += 1;
-                assert!(self.cells.fixed.contains(&i));
+                assert!(self.cells.base_fixed.contains(&i));
             }
         }
 
-        assert_eq!(self.cells.fixed.len(), fixed_count);
+        assert_eq!(self.cells.base_fixed.len(), fixed_count);
 
         assert_eq!(self.cells.starts.len(), self.cells.lengths.len());
 
@@ -175,10 +178,10 @@ impl PartitionStack {
 
         assert!(starts.contains(&0));
         assert_eq!(self.cells.lengths.iter().sum::<usize>(), self.base_size);
-        for &i in self.cells() {
+        for &i in self.base_cells() {
             assert!(starts.contains(&(self.cells.starts[i] + self.cells.lengths[i])));
         }
-        for &i in self.cells() {
+        for &i in self.base_cells() {
             for j in self.cell(i) {
                 assert_eq!(self.cell_of(*j), i);
             }
@@ -203,13 +206,13 @@ impl PartitionStack {
         self.cells.lengths.push(new_cell_size);
 
         if new_cell_size == 1 {
-            self.cells.fixed.push(new_cell_num);
+            self.cells.base_fixed.push(new_cell_num);
             self.cells
                 .base_fixed_values
                 .push(self.cells.values[new_cell_start]);
         }
         if old_cell_new_size == 1 {
-            self.cells.fixed.push(cell);
+            self.cells.base_fixed.push(cell);
             self.cells
                 .base_fixed_values
                 .push(self.cells.values[self.cells.starts[cell]]);
@@ -231,20 +234,20 @@ impl PartitionStack {
 
         if cell_length == 1 {
             self.cells.base_fixed_values.pop();
-            self.cells.fixed.pop();
+            self.cells.base_fixed.pop();
         }
 
         if self.cells.lengths[unsplit] == 1 {
             self.cells.base_fixed_values.pop();
-            self.cells.fixed.pop();
+            self.cells.base_fixed.pop();
         }
 
         self.cells.lengths[unsplit] += cell_length;
     }
 
     fn unsplit_cells_to(&mut self, cells: usize) {
-        debug_assert!(self.cells().len() >= cells);
-        while self.cells().len() > cells {
+        debug_assert!(self.base_cells().len() >= cells);
+        while self.base_cells().len() > cells {
             self.unsplit_cell();
         }
     }
@@ -252,7 +255,7 @@ impl PartitionStack {
 
 impl Backtrack for PartitionStack {
     fn save_state(&mut self) {
-        self.saved_depths.push(self.cells().len());
+        self.saved_depths.push(self.base_cells().len());
     }
 
     fn restore_state(&mut self) {
@@ -323,8 +326,8 @@ impl PartitionStack {
         F: Fn(&usize) -> O,
     {
         let mut pos = 0;
-        while pos < self.cells().len() {
-            let c = self.cells()[pos];
+        while pos < self.base_cells().len() {
+            let c = self.base_cells()[pos];
             self.refine_partition_cell_by(tracer, c, f)?;
             pos += 1;
         }
@@ -342,8 +345,8 @@ impl PartitionStack {
         let mut points = vec![Wrapping(0usize); self.base_domain_size()];
 
         let mut pos = first_cell;
-        while pos < self.cells().len() {
-            let c = self.cells()[pos];
+        while pos < self.base_cells().len() {
+            let c = self.base_cells()[pos];
             for p in self.cell(c) {
                 for (&neighbour, &colour) in d.neighbours(*p) {
                     points[neighbour] += do_hash((c, colour));
@@ -369,8 +372,8 @@ impl PartitionStack {
 }
 
 pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> Permutation {
-    assert!(lhs.cells().len() == lhs.base_domain_size());
-    assert!(rhs.cells().len() == rhs.base_domain_size());
+    assert!(lhs.base_cells().len() == lhs.base_domain_size());
+    assert!(rhs.base_cells().len() == rhs.base_domain_size());
     assert!(lhs.base_domain_size() == rhs.base_domain_size());
     let mut perm = vec![0; rhs.base_domain_size()];
     info!(
@@ -404,7 +407,7 @@ mod tests {
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.as_indicator(), vec![0, 0, 0, 0, 0]);
         assert_eq!(p.base_domain_size(), 5);
-        assert_eq!(p.cells(), vec![0]);
+        assert_eq!(p.base_cells(), vec![0]);
         for i in 0..5 {
             assert_eq!(p.cell_of(i), 0);
         }

@@ -100,7 +100,7 @@ impl State {
             self.digraph_stack.digraph(),
             *self.digraph_stack_cells_refined,
         )?;
-        *self.digraph_stack_cells_refined = self.partition().cells().len();
+        *self.digraph_stack_cells_refined = self.partition().base_cells().len();
         Ok(())
     }
 }
