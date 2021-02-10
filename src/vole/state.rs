@@ -94,19 +94,13 @@ impl State {
     }
 
     pub fn refine_graphs(&mut self) -> trace::Result<()> {
-        while self.stack.cells() > *self.digraph_stack_cells_refined {
-            let max_cells = self.stack.cells();
-            info!(
-                "Refining graph: {:?}",
-                *self.digraph_stack_cells_refined..max_cells
-            );
-            self.stack.refine_partition_cells_by_graph(
-                &mut self.tracer,
-                self.digraph_stack.digraph(),
-                *self.digraph_stack_cells_refined..max_cells,
-            )?;
-            *self.digraph_stack_cells_refined = max_cells;
-        }
+        info!("Refining graph cells");
+        self.stack.refine_partition_cells_by_graph(
+            &mut self.tracer,
+            self.digraph_stack.digraph(),
+            *self.digraph_stack_cells_refined,
+        )?;
+        *self.digraph_stack_cells_refined = self.partition().cells().len();
         Ok(())
     }
 }

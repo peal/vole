@@ -46,7 +46,9 @@ impl RefinerStore {
                 }
             }
 
-            let cells = state.partition().cells();
+            // TODO: Check base_fixed_values_considered and cells_considered are updated
+
+            let cells = state.partition().cells().len();
             assert!(cells >= *self.cells_considered);
             if cells > *self.cells_considered {
                 for refiner in &mut self.refiners {
@@ -55,7 +57,7 @@ impl RefinerStore {
             }
 
             if fixed_points == state.partition().base_fixed_values().len()
-                && cells == state.partition().cells()
+                && cells == state.partition().cells().len()
             {
                 // Made no progress
                 return Ok(());
@@ -76,7 +78,7 @@ impl RefinerStore {
         }
 
         let part = state.partition();
-        assert!(part.cells() == part.base_domain_size());
+        assert!(part.cells().len() == part.base_domain_size());
 
         let sol = partition_stack::perm_between(state.rbase_partition(), part);
 
@@ -106,7 +108,7 @@ impl Backtrack for RefinerStore {
 pub fn select_branching_cell(state: &State) -> usize {
     let mut cell = std::usize::MAX;
     let mut cell_size = std::usize::MAX;
-    for i in 0..state.partition().cells() {
+    for &i in state.partition().cells() {
         let size = state.partition().cell(i).len();
         if size < cell_size && size > 1 {
             cell = i;
@@ -125,7 +127,7 @@ pub fn select_branching_cell(state: &State) -> usize {
 pub fn build_rbase(state: &mut State, refiners: &mut RefinerStore) {
     let part = state.partition();
 
-    if part.cells() == part.base_domain_size() {
+    if part.cells().len() == part.base_domain_size() {
         refiners.capture_rbase(state);
         return;
     }
@@ -147,7 +149,7 @@ pub fn build_rbase(state: &mut State, refiners: &mut RefinerStore) {
 
     state.save_state();
 
-    let cell_count = state.partition().cells();
+    let cell_count = state.partition().cells().len();
     if state
         .refine_partition_cell_by(cell_num, |x| *x == c)
         .is_err()
@@ -155,7 +157,7 @@ pub fn build_rbase(state: &mut State, refiners: &mut RefinerStore) {
         panic!("RBase Build Failure 1");
     }
 
-    assert!(state.partition().cells() == cell_count + 1);
+    assert!(state.partition().cells().len() == cell_count + 1);
 
     if refiners.do_refine(state, Side::Right).is_err() {
         panic!("RBase Build Failure 2");
@@ -175,7 +177,7 @@ pub fn simple_search_recurse(
 ) -> bool {
     let part = state.partition();
 
-    if part.cells() == part.base_domain_size() {
+    if part.cells().len() == part.base_domain_size() {
         return refiners.check_solution(state, sols);
     }
 
@@ -200,12 +202,12 @@ pub fn simple_search_recurse(
         let skip = first_branch_in && !doing_first_branch && !sols.min_in_orbit(c);
         if !skip {
             state.save_state();
-            let cell_count = state.partition().cells();
+            let cell_count = state.partition().cells().len();
             if state
                 .refine_partition_cell_by(cell_num, |x| *x == c)
                 .is_ok()
             {
-                assert!(state.partition().cells() == cell_count + 1);
+                assert!(state.partition().cells().len() == cell_count + 1);
                 if refiners.do_refine(state, Side::Right).is_ok() {
                     let ret = simple_search_recurse(state, sols, refiners, doing_first_branch);
                     if !first_branch_in && ret {

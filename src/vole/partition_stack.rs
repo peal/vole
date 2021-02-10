@@ -53,6 +53,9 @@ pub struct CellData {
 
     /// Length of cells
     lengths: Vec<usize>,
+
+    /// Cells in the base partition
+    base_cells: Vec<usize>,
 }
 
 #[derive(Clone, Debug)]
@@ -80,6 +83,7 @@ impl PartitionStack {
                 base_fixed_values: vec![],
                 starts: vec![0],
                 lengths: vec![n],
+                base_cells: vec![0],
             },
             marks: MarkStore::new(n),
             splits: vec![],
@@ -93,7 +97,7 @@ impl PartitionStack {
 
     pub fn as_list_set(&self) -> Vec<Vec<usize>> {
         let mut p = vec![];
-        for i in 0..self.cells() {
+        for &i in self.cells() {
             let mut vec: Vec<usize> = self.cell(i).to_vec();
             vec.sort();
             p.push(vec);
@@ -103,15 +107,15 @@ impl PartitionStack {
 
     pub fn as_indicator(&self) -> Vec<usize> {
         let mut p = vec![0; self.base_domain_size()];
-        for i in 0..self.cells() {
+        for &i in self.cells() {
             for &c in self.cell(i) {
                 p[c] = i;
             }
         }
         p
     }
-    pub fn cells(&self) -> usize {
-        self.cells.starts.len()
+    pub fn cells(&self) -> &[usize] {
+        self.cells.base_cells.as_slice()
     }
 
     pub fn cell(&self, i: usize) -> &[usize] {
@@ -154,7 +158,7 @@ impl PartitionStack {
         }
 
         let mut fixed_count = 0;
-        for i in 0..self.cells() {
+        for &i in self.cells() {
             if self.cell(i).len() == 1 {
                 fixed_count += 1;
                 assert!(self.cells.fixed.contains(&i));
@@ -171,10 +175,10 @@ impl PartitionStack {
 
         assert!(starts.contains(&0));
         assert_eq!(self.cells.lengths.iter().sum::<usize>(), self.base_size);
-        for i in 0..self.cells() {
+        for &i in self.cells() {
             assert!(starts.contains(&(self.cells.starts[i] + self.cells.lengths[i])));
         }
-        for i in 0..self.cells() {
+        for &i in self.cells() {
             for j in self.cell(i) {
                 assert_eq!(self.cell_of(*j), i);
             }
@@ -187,6 +191,8 @@ impl PartitionStack {
         self.splits.push(cell);
 
         let new_cell_num = self.cells.starts.len();
+
+        self.cells.base_cells.push(new_cell_num);
 
         let new_cell_start = self.cells.starts[cell] + pos;
         let old_cell_new_size = pos;
@@ -216,6 +222,8 @@ impl PartitionStack {
     fn unsplit_cell(&mut self) {
         let unsplit = self.splits.pop().unwrap();
 
+        let _ = self.cells.base_cells.pop().unwrap();
+
         let cell_start = self.cells.starts.pop().unwrap();
         let cell_length = self.cells.lengths.pop().unwrap();
 
@@ -235,8 +243,8 @@ impl PartitionStack {
     }
 
     fn unsplit_cells_to(&mut self, cells: usize) {
-        debug_assert!(self.cells() >= cells);
-        while self.cells() > cells {
+        debug_assert!(self.cells().len() >= cells);
+        while self.cells().len() > cells {
             self.unsplit_cell();
         }
     }
@@ -244,7 +252,7 @@ impl PartitionStack {
 
 impl Backtrack for PartitionStack {
     fn save_state(&mut self) {
-        self.saved_depths.push(self.cells());
+        self.saved_depths.push(self.cells().len());
     }
 
     fn restore_state(&mut self) {
@@ -314,32 +322,35 @@ impl PartitionStack {
     where
         F: Fn(&usize) -> O,
     {
-        for i in 0..self.cells() {
-            self.refine_partition_cell_by(tracer, i, f)?;
+        let mut pos = 0;
+        while pos < self.cells().len() {
+            let c = self.cells()[pos];
+            self.refine_partition_cell_by(tracer, c, f)?;
+            pos += 1;
         }
         Ok(())
     }
 
-    pub fn refine_partition_cells_by_graph<I>(
+    pub fn refine_partition_cells_by_graph(
         &mut self,
         tracer: &mut trace::Tracer,
         d: &Digraph,
-        cells: I,
-    ) -> trace::Result<()>
-    where
-        I: IntoIterator<Item = usize>,
-    {
+        first_cell: usize,
+    ) -> trace::Result<()> {
         let mut seen_cells = HashSet::<usize>::new();
 
         let mut points = vec![Wrapping(0usize); self.base_domain_size()];
 
-        for c in cells {
+        let mut pos = first_cell;
+        while pos < self.cells().len() {
+            let c = self.cells()[pos];
             for p in self.cell(c) {
                 for (&neighbour, &colour) in d.neighbours(*p) {
                     points[neighbour] += do_hash((c, colour));
                     seen_cells.insert(self.cell_of(neighbour));
                 }
             }
+            pos += 1;
         }
 
         for s in seen_cells {
@@ -353,13 +364,13 @@ impl PartitionStack {
         tracer: &mut trace::Tracer,
         d: &Digraph,
     ) -> trace::Result<()> {
-        self.refine_partition_cells_by_graph(tracer, d, 0..self.cells())
+        self.refine_partition_cells_by_graph(tracer, d, 0)
     }
 }
 
 pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> Permutation {
-    assert!(lhs.cells() == lhs.base_domain_size());
-    assert!(rhs.cells() == rhs.base_domain_size());
+    assert!(lhs.cells().len() == lhs.base_domain_size());
+    assert!(rhs.cells().len() == rhs.base_domain_size());
     assert!(lhs.base_domain_size() == rhs.base_domain_size());
     let mut perm = vec![0; rhs.base_domain_size()];
     info!(
@@ -393,7 +404,7 @@ mod tests {
         assert_eq!(p.as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.as_indicator(), vec![0, 0, 0, 0, 0]);
         assert_eq!(p.base_domain_size(), 5);
-        assert_eq!(p.cells(), 1);
+        assert_eq!(p.cells(), vec![0]);
         for i in 0..5 {
             assert_eq!(p.cell_of(i), 0);
         }
