@@ -10,7 +10,7 @@ use tracing::{info, trace, trace_span};
 
 pub struct RefinerStore {
     refiners: Vec<Box<dyn Refiner>>,
-    fixed_values_considered: Backtracking<usize>,
+    base_fixed_values_considered: Backtracking<usize>,
     cells_considered: Backtracking<usize>,
 }
 
@@ -18,7 +18,7 @@ impl RefinerStore {
     pub fn new_from_refiners(refiners: Vec<Box<dyn Refiner>>) -> Self {
         Self {
             refiners,
-            fixed_values_considered: Backtracking::new(0),
+            base_fixed_values_considered: Backtracking::new(0),
             cells_considered: Backtracking::new(0),
         }
     }
@@ -38,9 +38,9 @@ impl RefinerStore {
         loop {
             state.refine_graphs()?;
 
-            let fixed_points = state.partition().fixed_values().len();
-            assert!(fixed_points >= *self.fixed_values_considered);
-            if fixed_points > *self.fixed_values_considered {
+            let fixed_points = state.partition().base_fixed_values().len();
+            assert!(fixed_points >= *self.base_fixed_values_considered);
+            if fixed_points > *self.base_fixed_values_considered {
                 for refiner in &mut self.refiners {
                     refiner.refine_fixed_points(state, side)?
                 }
@@ -54,7 +54,7 @@ impl RefinerStore {
                 }
             }
 
-            if fixed_points == state.partition().fixed_values().len()
+            if fixed_points == state.partition().base_fixed_values().len()
                 && cells == state.partition().cells()
             {
                 // Made no progress
@@ -76,7 +76,7 @@ impl RefinerStore {
         }
 
         let part = state.partition();
-        assert!(part.cells() == part.domain_size());
+        assert!(part.cells() == part.base_domain_size());
 
         let sol = partition_stack::perm_between(state.rbase_partition(), part);
 
@@ -93,12 +93,12 @@ impl RefinerStore {
 
 impl Backtrack for RefinerStore {
     fn save_state(&mut self) {
-        self.fixed_values_considered.save_state();
+        self.base_fixed_values_considered.save_state();
         self.cells_considered.save_state();
     }
 
     fn restore_state(&mut self) {
-        self.fixed_values_considered.restore_state();
+        self.base_fixed_values_considered.restore_state();
         self.cells_considered.restore_state();
     }
 }
@@ -125,7 +125,7 @@ pub fn select_branching_cell(state: &State) -> usize {
 pub fn build_rbase(state: &mut State, refiners: &mut RefinerStore) {
     let part = state.partition();
 
-    if part.cells() == part.domain_size() {
+    if part.cells() == part.base_domain_size() {
         refiners.capture_rbase(state);
         return;
     }
@@ -175,7 +175,7 @@ pub fn simple_search_recurse(
 ) -> bool {
     let part = state.partition();
 
-    if part.cells() == part.domain_size() {
+    if part.cells() == part.base_domain_size() {
         return refiners.check_solution(state, sols);
     }
 
