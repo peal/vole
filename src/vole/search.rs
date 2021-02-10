@@ -119,7 +119,7 @@ pub fn select_branching_cell(state: &State) -> usize {
     info!(
         "Choosing to branch on cell {:?} from {:?}",
         cell,
-        state.partition().as_list_set()
+        state.partition().extended_as_list_set()
     );
     cell
 }
@@ -133,7 +133,7 @@ pub fn build_rbase(state: &mut State, refiners: &mut RefinerStore) {
     }
 
     let cell_num = select_branching_cell(state);
-    info!("Partition: {:?}", state.partition().as_list_set());
+    info!("Partition: {:?}", state.partition().extended_as_list_set());
     info!("Branching on {}", cell_num);
     let mut cell: Vec<usize> = part.cell(cell_num).to_vec();
 
@@ -182,7 +182,7 @@ pub fn simple_search_recurse(
     }
 
     let cell_num = select_branching_cell(state);
-    info!("Partition: {:?}", state.partition().as_list_set());
+    info!("Partition: {:?}", state.partition().extended_as_list_set());
     info!("Branching on {}", cell_num);
     let mut cell: Vec<usize> = part.cell(cell_num).to_vec();
 

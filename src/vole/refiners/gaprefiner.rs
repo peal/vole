@@ -34,7 +34,7 @@ impl GapRefiner {
             &self.gap_id,
             refiner_type,
             side,
-            state.partition().as_indicator(),
+            state.partition().base_as_indicator(),
         ));
 
         if let Some(part) = ret.partition {
