@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use tracing::info;
 
 use super::{Refiner, Side};
 use crate::{
@@ -10,6 +11,11 @@ use crate::{
 
 pub struct GapRefiner {
     gap_id: usize,
+}
+
+struct GapDigraph {
+    graph: Digraph,
+    vertlabels: Vec<usize>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -37,8 +43,25 @@ impl GapRefiner {
             state.partition().base_as_indicator(),
         ));
 
+        let mut max_val = 0;
+        if let Some(part) = &ret.partition {
+            max_val = max_val.max(part.len());
+        }
+
+        if let Some(graphs) = &ret.digraphs {
+            for g in graphs {
+                max_val = max_val.max(g.vertices());
+            }
+        }
+
+        if max_val > state.partition().base_domain_size() {
+            let extra_points = max_val - state.partition().base_domain_size();
+            info!("Sent info from GAP with {:?} extra points", extra_points);
+            // TODO
+        }
+
         if let Some(part) = ret.partition {
-            state.refine_partition_by(|x| part.get(*x).unwrap_or(&usize::MAX))?;
+            state.base_refine_partition_by(|x| part.get(*x).unwrap_or(&usize::MAX))?;
         }
 
         if let Some(graphs) = ret.digraphs {

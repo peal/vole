@@ -54,7 +54,7 @@ impl Refiner for SetTransporter {
             Side::Right => &self.set_right,
         };
 
-        state.refine_partition_by(|x| set.contains(x))?;
+        state.base_refine_partition_by(|x| set.contains(x))?;
         Ok(())
     }
 
@@ -132,7 +132,7 @@ impl Refiner for TupleTransporter {
             Side::Left => &self.tuplemap_left,
             Side::Right => &self.tuplemap_right,
         };
-        state.refine_partition_by(|x| tuplemap.get(x).unwrap_or(&0))?;
+        state.base_refine_partition_by(|x| tuplemap.get(x).unwrap_or(&0))?;
         Ok(())
     }
 

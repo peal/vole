@@ -68,11 +68,21 @@ impl State {
         self.stack.refine_partition_cell_by(&mut self.tracer, i, f)
     }
 
-    pub fn refine_partition_by<F: Copy, T: Ord + Hash>(&mut self, f: F) -> trace::Result<()>
+    pub fn base_refine_partition_by<F: Copy, T: Ord + Hash>(&mut self, f: F) -> trace::Result<()>
     where
         F: Fn(&usize) -> T,
     {
-        self.stack.refine_partition_by(&mut self.tracer, f)
+        self.stack.base_refine_partition_by(&mut self.tracer, f)
+    }
+
+    pub fn extended_refine_partition_by<F: Copy, T: Ord + Hash>(
+        &mut self,
+        f: F,
+    ) -> trace::Result<()>
+    where
+        F: Fn(&usize) -> T,
+    {
+        self.stack.extended_refine_partition_by(&mut self.tracer, f)
     }
 
     pub fn add_arc_graph(&mut self, d: &Arc<Digraph>) {
