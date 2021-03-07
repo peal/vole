@@ -25,6 +25,40 @@ struct GapRefinerReturn {
 }
 
 impl GapRefiner {
+    fn extend_part(
+        part: &Vec<usize>,
+        max_val: usize,
+        base_size: usize,
+        extended_start: usize,
+    ) -> Vec<usize> {
+        // Points we have to move
+        let extra_points = max_val - base_size;
+        let mut new_vertlabels = vec![usize::MAX; extended_start + extra_points];
+        for i in 0..base_size {
+            new_vertlabels[i] = *part.get(i).unwrap_or(&usize::MAX);
+        }
+        for i in 0..extra_points {
+            new_vertlabels[i + extended_start] = *part.get(i + base_size).unwrap_or(&usize::MAX);
+        }
+        new_vertlabels
+    }
+
+    fn extend_digraph(
+        digraph: &Digraph,
+        max_val: usize,
+        base_size: usize,
+        extended_start: usize,
+    ) -> Digraph {
+        // Points we have to move
+
+        let base_verts = 0..base_size;
+        let more_verts = extended_start..(extended_start + (max_val - base_size));
+        let v = base_verts.chain(more_verts).collect();
+        let mut d_clone = digraph.clone();
+        d_clone.remap_vertices(&v);
+        d_clone
+    }
+
     pub fn new(gap_id: usize) -> Self {
         Self { gap_id }
     }
@@ -35,7 +69,7 @@ impl GapRefiner {
         refiner_type: &str,
         side: Side,
     ) -> trace::Result<()> {
-        let ret: GapRefinerReturn = GapChatType::send_request(&(
+        let mut ret: GapRefinerReturn = GapChatType::send_request(&(
             "refiner",
             &self.gap_id,
             refiner_type,
@@ -54,10 +88,30 @@ impl GapRefiner {
             }
         }
 
-        if max_val > state.partition().base_domain_size() {
-            let extra_points = max_val - state.partition().base_domain_size();
+        let base_size = state.partition().base_domain_size();
+        let extended_size = state.partition().extended_domain_size();
+        if max_val > base_size {
+            // First, update partition
+            let extra_points = max_val - base_size;
             info!("Sent info from GAP with {:?} extra points", extra_points);
-            // TODO
+            state.extend_partition(extra_points);
+
+            if let Some(part) = ret.partition {
+                ret.partition = Some(GapRefiner::extend_part(
+                    &part,
+                    max_val,
+                    base_size,
+                    extended_size,
+                ));
+            }
+
+            if let Some(digraphs) = ret.digraphs {
+                let v = digraphs
+                    .into_iter()
+                    .map(|d| Self::extend_digraph(&d, max_val, base_size, extended_size))
+                    .collect();
+                ret.digraphs = Some(v);
+            }
         }
 
         if let Some(part) = ret.partition {

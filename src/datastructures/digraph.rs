@@ -15,7 +15,7 @@ use tracing::trace;
 
 use super::hash::do_hash;
 
-type Neighbours = IndexMap<usize, Wrapping<usize>>;
+pub type Neighbours = IndexMap<usize, Wrapping<usize>>;
 #[derive(Clone, Debug, Eq, Deserialize, Serialize)]
 pub struct Digraph {
     edges: Vec<Neighbours>,
@@ -102,6 +102,21 @@ impl Digraph {
         for i in 0..self.edges.len() {
             self.edges[i].sort_keys();
         }
+    }
+
+    pub fn remap_vertices(&mut self, map: &Vec<usize>) {
+        assert!(map.len() == self.edges.len());
+        let max_val = *map.iter().max().unwrap_or(&0);
+        let mut new_edges: Vec<Neighbours> = vec![Neighbours::new(); max_val];
+
+        for (loc, e) in self.edges.iter().enumerate() {
+            let image = map[loc];
+            for (&vert, &label) in e {
+                new_edges[image].insert(map[vert], label);
+            }
+        }
+
+        self.edges = new_edges;
     }
 }
 
