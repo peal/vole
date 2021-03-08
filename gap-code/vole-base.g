@@ -53,7 +53,7 @@ end;
 VOLE_MODE := "opt";
 
 ExecuteVole := function(obj, refiners)
-    local ret, rustpipe, gappipe,str, args, result;
+    local ret, rustpipe, gappipe,str, args, result, prog;
     rustpipe := IO_Pipe();
     gappipe := IO_Pipe();
     Info(InfoVole, 2, "PreFork\n");
@@ -67,17 +67,21 @@ ExecuteVole := function(obj, refiners)
         IO_Close(rustpipe.towrite);
         IO_Close(gappipe.toread);
         Info(InfoVole, 2, "C: In child\n");
+        prog := "cargo";
         if VOLE_MODE = "trace" then
             args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--trace", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
         elif VOLE_MODE = "opt" then
             args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
         elif VOLE_MODE = "flamegraph" then
             args :=  ["flamegraph", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+        elif VOLE_MODE = "valgrind" then
+            args := ["--tool=callgrind", "target/debug/vole", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+            prog := "valgrind";
         else
             Error("Invalid VOLE_MODE");
         fi;
         Info(InfoVole, 2, "C:", args,"\n");
-        IO_execvp("cargo", args);
+        IO_execvp(prog, args);
         Info(InfoVole, 2, "Fatal error");
         QUIT_GAP();
     else
@@ -149,7 +153,11 @@ GAPSolve := function(p, l)
         elif IsBound(c.TupleStab) then
             g := Stabilizer(g, c.TupleStab.points, OnTuples);
         elif IsBound(c.DigraphStab) then
-            g := Intersection(g, AutomorphismGroup(Digraph(c.DigraphStab.edges)));
+            if g = SymmetricGroup(p) then
+                g := AutomorphismGroup(Digraph(c.DigraphStab.edges));
+            else
+                g := Intersection(g, AutomorphismGroup(Digraph(c.DigraphStab.edges)));
+            fi;
         else
             Error("Unknown Constraint", g);
         fi;

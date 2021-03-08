@@ -40,6 +40,10 @@ fn main() -> anyhow::Result<()> {
         simple_search(&mut state, &mut solutions, &mut constraints);
     }
 
-    solutions.write_one_indexed(&mut GAP_CHAT.lock().unwrap().out_file)?;
+    GAP_CHAT
+        .lock()
+        .unwrap()
+        .send_results(&solutions, state.rbase_partition().base_fixed_values())?;
+
     Ok(())
 }

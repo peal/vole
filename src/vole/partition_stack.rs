@@ -9,6 +9,7 @@ use crate::{
 use std::hash::Hash;
 use std::{collections::HashSet, num::Wrapping};
 
+use itertools::Itertools;
 use tracing::info;
 
 use super::backtracking::Backtrack;
@@ -405,6 +406,14 @@ impl PartitionStack {
         tracer.add(trace::TraceEvent::Start())?;
         {
             let cell_slice = self.mut_cell(i);
+            if cell_slice.iter().map(|x| f(x)).all_equal() {
+                // Early Exit for cell of size 1
+                tracer.add(trace::TraceEvent::NoSplit {
+                    cell: i,
+                    reason: trace::hash(&f(&cell_slice[0])),
+                })?;
+                return Ok(());
+            }
             cell_slice.sort_by_key(f);
         }
         self.mut_fix_cell_inverses(i);

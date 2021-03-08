@@ -104,7 +104,7 @@ impl Digraph {
         }
     }
 
-    pub fn remap_vertices(&mut self, map: &Vec<usize>) {
+    pub fn remap_vertices(&mut self, map: &[usize]) {
         assert!(map.len() == self.edges.len());
         let max_val = *map.iter().max().unwrap_or(&0);
         let mut new_edges: Vec<Neighbours> = vec![Neighbours::new(); max_val];

@@ -6,9 +6,13 @@ use std::{
     sync::Mutex,
 };
 
+use serde::{Deserialize, Serialize};
+
 use std::io::Write;
 
 use structopt::StructOpt;
+
+use crate::vole::solutions::Solutions;
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "basic")]
@@ -85,5 +89,27 @@ impl GapChatType {
 
         let out: U = serde_json::from_str(&line).unwrap();
         out
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+struct Results {
+    sols: Vec<Vec<usize>>,
+    base: Vec<usize>,
+}
+
+impl GapChatType {
+    pub fn send_results(&mut self, solutions: &Solutions, rbase: &[usize]) -> anyhow::Result<()> {
+        let sols: Vec<Vec<usize>> = solutions
+            .get()
+            .iter()
+            .map(|s| s.as_vec().iter().map(|x| x + 1).collect())
+            .collect();
+
+        let base = rbase.iter().map(|&x| x + 1).collect();
+
+        serde_json::to_writer(&mut self.out_file, &("end", Results { sols, base }))?;
+        self.out_file.flush()?;
+        Ok(())
     }
 }

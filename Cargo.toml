@@ -30,3 +30,6 @@ test-env-log = { version = "0.2", default-features = false, features=["trace"] }
 [[bench]]
 name = "permutation"
 harness = false
+
+[profile.release]
+debug = 1

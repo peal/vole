@@ -26,7 +26,7 @@ struct GapRefinerReturn {
 
 impl GapRefiner {
     fn extend_part(
-        part: &Vec<usize>,
+        part: &[usize],
         max_val: usize,
         base_size: usize,
         extended_start: usize,
@@ -53,7 +53,7 @@ impl GapRefiner {
 
         let base_verts = 0..base_size;
         let more_verts = extended_start..(extended_start + (max_val - base_size));
-        let v = base_verts.chain(more_verts).collect();
+        let v = base_verts.chain(more_verts).collect::<Vec<usize>>();
         let mut d_clone = digraph.clone();
         d_clone.remap_vertices(&v);
         d_clone
@@ -97,12 +97,7 @@ impl GapRefiner {
             state.extend_partition(extra_points);
 
             if let Some(part) = ret.partition {
-                ret.partition = Some(GapRefiner::extend_part(
-                    &part,
-                    max_val,
-                    base_size,
-                    extended_size,
-                ));
+                ret.partition = Some(Self::extend_part(&part, max_val, base_size, extended_size));
             }
 
             if let Some(digraphs) = ret.digraphs {
