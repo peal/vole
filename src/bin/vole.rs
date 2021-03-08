@@ -13,14 +13,17 @@ use tracing_subscriber::fmt::format::FmtSpan;
 
 fn main() -> anyhow::Result<()> {
     // Set up debugging output
+
     let (non_block, _guard) = tracing_appender::non_blocking(File::create("vole.trace")?);
 
-    tracing_subscriber::fmt()
-        .with_span_events(FmtSpan::ACTIVE)
-        .with_max_level(Level::TRACE)
-        //.pretty()
-        .with_writer(non_block)
-        .init();
+    if rust_peal::gap_chat::OPTIONS.trace {
+        tracing_subscriber::fmt()
+            .with_span_events(FmtSpan::ACTIVE)
+            .with_max_level(Level::TRACE)
+            //.pretty()
+            .with_writer(non_block)
+            .init();
+    }
 
     let problem = parse_input::read_problem(&mut GAP_CHAT.lock().unwrap().in_file)?;
 

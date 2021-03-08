@@ -49,6 +49,8 @@ CallRefiner := function(state, type, args)
     fi; 
 end;
 
+# Can be "trace", "flamegraph" or "opt"
+VOLE_MODE := "opt";
 
 ExecuteVole := function(obj, refiners)
     local ret, rustpipe, gappipe,str, args, result;
@@ -65,8 +67,15 @@ ExecuteVole := function(obj, refiners)
         IO_Close(rustpipe.towrite);
         IO_Close(gappipe.toread);
         Info(InfoVole, 2, "C: In child\n");
-        args := ["echo", "hello", "world"];
-        args :=  ["run", "-q", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+        if VOLE_MODE = "trace" then
+            args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--trace", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+        elif VOLE_MODE = "opt" then
+            args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+        elif VOLE_MODE = "flamegraph" then
+            args :=  ["flamegraph", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+        else
+            Error("Invalid VOLE_MODE");
+        fi;
         Info(InfoVole, 2, "C:", args,"\n");
         IO_execvp("cargo", args);
         Info(InfoVole, 2, "Fatal error");
@@ -150,11 +159,16 @@ end;
 
 
 Comp := function(p,c)
-    local ret1,ret2;
+    local ret1,ret2, time1, time2;
+    time1 := NanosecondsSinceEpoch();
     ret1 := VoleSolve(p, false, c);
+    time1 := NanosecondsSinceEpoch() - time1;
+    time2 := NanosecondsSinceEpoch();
     ret2 := GAPSolve(p, c);
+    time2 := NanosecondsSinceEpoch() - time2;
     if ret2 <> ret1.group then
         Error("\nError!!","\n",p,"\n",c,"\n",ret1,"\n",ret2,"!!\n");
     fi;
+    return rec(voletime := time1, gaptime := time2);
 end;
 

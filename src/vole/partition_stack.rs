@@ -473,24 +473,28 @@ impl PartitionStack {
         d: &Digraph,
         first_cell: usize,
     ) -> trace::Result<()> {
-        let mut seen_cells = HashSet::<usize>::new();
+        let mut cells_done = first_cell;
+        while cells_done < self.base_cells().len() {
+            let mut seen_cells = HashSet::<usize>::new();
 
-        let mut points = vec![Wrapping(0usize); self.base_domain_size()];
+            let mut points = vec![Wrapping(0usize); self.base_domain_size()];
 
-        let mut pos = first_cell;
-        while pos < self.base_cells().len() {
-            let c = self.base_cells()[pos];
-            for p in self.cell(c) {
-                for (&neighbour, &colour) in d.neighbours(*p) {
-                    points[neighbour] += do_hash((c, colour));
-                    seen_cells.insert(self.cell_of(neighbour));
+            // TODO: Should this be extended_cells?
+            while cells_done < self.base_cells().len() {
+                let c = self.base_cells()[cells_done];
+                for p in self.cell(c) {
+                    for (&neighbour, &colour) in d.neighbours(*p) {
+                        points[neighbour] += do_hash((c, colour));
+                        seen_cells.insert(self.cell_of(neighbour));
+                    }
                 }
+                cells_done += 1;
             }
-            pos += 1;
-        }
 
-        for s in seen_cells {
-            self.refine_partition_cell_by(tracer, s, |x| points[*x])?;
+            // This may increment self.base_cells().len(), which is why we look around
+            for s in seen_cells {
+                self.refine_partition_cell_by(tracer, s, |x| points[*x])?;
+            }
         }
         Ok(())
     }
