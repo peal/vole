@@ -18,7 +18,7 @@ if not IsBound(InfoVole) then
 fi;
 
 CallRefiner := function(state, type, args)
-    local saved, tracer, is_left, indicator, c, i, retval;
+    local saved, tracer, is_left, indicator, c, i, retval, filters;
     if type = "name" then
         return state!.conlist[1]!.name;
     elif type = "is_group" then
@@ -32,18 +32,38 @@ CallRefiner := function(state, type, args)
         saved := SaveState(state);
         tracer := RecordingTracer();
         PS_SplitCellsByFunction(state!.ps, tracer, x -> args[2][x]);
+        
+        Assert(2, Length(state!.conlist) = 1);
+        filters := [];
         if type = "begin" then
-            InitialiseConstraints(state, tracer, is_left);
+            if IsBound(state!.conlist[1]!.refine.initialise) then
+                filters := state!.conlist[1]!.refine.initialise(state!.ps, is_left);
+            fi;
         else
-            RefineConstraints(state, tracer, is_left);
+            if IsBound(state!.conlist[1]!.refine.changed) then
+                filters := state!.conlist[1]!.refine.changed(state!.ps, is_left);
+            fi;
         fi;
-        indicator := [];
-        for c in [1..PS_Cells(state!.ps)] do
-            for i in PS_CellSlice(state!.ps, c) do
-                indicator[i] := c;
-            od;
+
+        if not IsList(filters) then
+            filters := [filters];
+        fi;
+
+        for i in [1..Length(filters)] do
+            if IsFunction(filters[i]) then
+                # Call these 'vertlabels' just for consistency, to make it easier to read in GAP
+                filters[i] := rec(vertlabels := List([1..PS_Points(state!.ps)], {x} -> HashBasic(filters[i](x))));
+            else
+                if IsBound(filters[i].graph) then
+                    filters[i].graph := OutNeighbours(filters[i].graph);
+                fi;
+                if IsBound(filters[i].vertlabels) then
+                    filters[i].vertlabels := List([1..Length(filters[i].graph)], {x} -> HashBasic(filters[i].vertlabels(x)));
+                fi;
+            fi;
         od;
-        retval := rec(partition := indicator, digraphs := state!.graphs);
+
+        retval := filters;
         RestoreState(state, saved);
         return retval;
     fi; 

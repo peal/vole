@@ -21,6 +21,17 @@ pub struct Digraph {
     edges: Vec<Neighbours>,
 }
 
+impl std::hash::Hash for Digraph {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        for (i, row) in self.edges.iter().enumerate() {
+            i.hash(state);
+            for r in row {
+                r.hash(state);
+            }
+        }
+    }
+}
+
 impl PartialEq<Digraph> for Digraph {
     fn eq(&self, other: &Self) -> bool {
         // Check edges are sorted and unique
@@ -76,6 +87,16 @@ impl Digraph {
         Self { edges }
     }
 
+    /// vec where vertices are 1 indexed.
+    pub fn from_one_indexed_vec(mut in_edges: Vec<Vec<usize>>) -> Self {
+        for line in &mut in_edges {
+            for v in line {
+                *v -= 1;
+            }
+        }
+        Self::from_vec(in_edges)
+    }
+
     pub fn vertices(&self) -> usize {
         self.edges.len()
     }
@@ -107,7 +128,7 @@ impl Digraph {
     pub fn remap_vertices(&mut self, map: &[usize]) {
         assert!(map.len() == self.edges.len());
         let max_val = *map.iter().max().unwrap_or(&0);
-        let mut new_edges: Vec<Neighbours> = vec![Neighbours::new(); max_val];
+        let mut new_edges: Vec<Neighbours> = vec![Neighbours::new(); max_val + 1];
 
         for (loc, e) in self.edges.iter().enumerate() {
             let image = map[loc];

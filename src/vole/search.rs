@@ -139,9 +139,9 @@ pub fn build_rbase(state: &mut State, refiners: &mut RefinerStore) {
 
     cell.sort();
 
-    let span = trace_span!("B", cell = debug(&cell));
+    let span = trace_span!("B");
     let _o = span.enter();
-
+    trace!("On cell: {:?}", debug(&cell));
     let c = cell[0];
 
     let span = trace_span!("C", value = c);
@@ -192,9 +192,10 @@ pub fn simple_search_recurse(
 
     let mut doing_first_branch = first_branch_in;
 
-    let span = trace_span!("B", cell = debug(&cell));
+    let span = trace_span!("B");
     let _o = span.enter();
 
+    trace!("Branching on cell: {:?}", debug(&cell));
     for c in cell {
         let span = trace_span!("C", value = c);
         let _o = span.enter();

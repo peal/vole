@@ -7,6 +7,7 @@ use std::{
 };
 
 use serde::{Deserialize, Serialize};
+use tracing::debug;
 
 use std::io::Write;
 
@@ -76,10 +77,11 @@ lazy_static! {
 impl GapChatType {
     pub fn send_request<T, U>(request: &T) -> U
     where
-        T: serde::Serialize,
-        U: serde::de::DeserializeOwned,
+        T: serde::Serialize + std::fmt::Debug,
+        U: serde::de::DeserializeOwned + std::fmt::Debug,
     {
         let gap_channel = &mut GAP_CHAT.lock().unwrap();
+        debug!("Sending to GAP: {:?}", request);
         serde_json::to_writer(&mut gap_channel.out_file, request).unwrap();
         writeln!(gap_channel.out_file).unwrap();
         gap_channel.out_file.flush().unwrap();
@@ -88,6 +90,7 @@ impl GapChatType {
         let _ = gap_channel.in_file.read_line(&mut line).unwrap();
 
         let out: U = serde_json::from_str(&line).unwrap();
+        debug!("Recieving from GAP: {:?}", out);
         out
     }
 }

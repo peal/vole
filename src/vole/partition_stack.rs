@@ -483,14 +483,13 @@ impl PartitionStack {
         first_cell: usize,
     ) -> trace::Result<()> {
         let mut cells_done = first_cell;
-        while cells_done < self.base_cells().len() {
+        while cells_done < self.extended_cells().len() {
             let mut seen_cells = HashSet::<usize>::new();
 
-            let mut points = vec![Wrapping(0usize); self.base_domain_size()];
+            let mut points = vec![Wrapping(0usize); self.extended_domain_size()];
 
-            // TODO: Should this be extended_cells?
-            while cells_done < self.base_cells().len() {
-                let c = self.base_cells()[cells_done];
+            while cells_done < self.extended_cells().len() {
+                let c = self.extended_cells()[cells_done];
                 for p in self.cell(c) {
                     for (&neighbour, &colour) in d.neighbours(*p) {
                         points[neighbour] += do_hash((c, colour));
@@ -500,7 +499,7 @@ impl PartitionStack {
                 cells_done += 1;
             }
 
-            // This may increment self.base_cells().len(), which is why we look around
+            // This may increment self.extended_cells().len(), which is why we look around
             for s in seen_cells {
                 self.refine_partition_cell_by(tracer, s, |x| points[*x])?;
             }

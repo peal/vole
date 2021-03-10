@@ -1,27 +1,29 @@
+use std::{collections::HashSet, num::Wrapping};
+
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
 use super::{Refiner, Side};
 use crate::{
-    datastructures::digraph::Digraph,
+    datastructures::{digraph::Digraph, hash::do_hash},
     gap_chat::GapChatType,
     perm::Permutation,
-    vole::{backtracking::Backtrack, state::State, trace},
+    vole::{
+        backtracking::{Backtrack, Backtracking},
+        state::State,
+        trace,
+    },
 };
 
 pub struct GapRefiner {
     gap_id: usize,
+    seen_results: Backtracking<HashSet<Wrapping<usize>>>,
 }
 
-struct GapDigraph {
-    graph: Digraph,
-    vertlabels: Vec<usize>,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Hash)]
 struct GapRefinerReturn {
-    digraphs: Option<Vec<Digraph>>,
-    partition: Option<Vec<usize>>,
+    graph: Option<Vec<Vec<usize>>>,
+    vertlabels: Option<Vec<usize>>,
 }
 
 impl GapRefiner {
@@ -60,7 +62,10 @@ impl GapRefiner {
     }
 
     pub fn new(gap_id: usize) -> Self {
-        Self { gap_id }
+        Self {
+            gap_id,
+            seen_results: Backtracking::new(HashSet::new()),
+        }
     }
 
     fn generic_refine(
@@ -69,7 +74,7 @@ impl GapRefiner {
         refiner_type: &str,
         side: Side,
     ) -> trace::Result<()> {
-        let mut ret: GapRefinerReturn = GapChatType::send_request(&(
+        let ret_list: Vec<GapRefinerReturn> = GapChatType::send_request(&(
             "refiner",
             &self.gap_id,
             refiner_type,
@@ -77,44 +82,62 @@ impl GapRefiner {
             state.partition().base_as_indicator(),
         ));
 
-        let mut max_val = 0;
-        if let Some(part) = &ret.partition {
-            max_val = max_val.max(part.len());
-        }
+        let mut keep: Vec<GapRefinerReturn> = vec![];
 
-        if let Some(graphs) = &ret.digraphs {
-            for g in graphs {
-                max_val = max_val.max(g.vertices());
+        for ret in ret_list {
+            let hash = do_hash(&ret);
+            info!("Run GAP refiner - recieved hash {:?}", hash);
+            if !self.seen_results.contains(&hash) {
+                info!("Found new graph");
+                keep.push(ret);
             }
+            self.seen_results.insert(hash);
         }
 
-        let base_size = state.partition().base_domain_size();
-        let extended_size = state.partition().extended_domain_size();
-        if max_val > base_size {
-            // First, update partition
-            let extra_points = max_val - base_size;
-            info!("Sent info from GAP with {:?} extra points", extra_points);
-            state.extend_partition(extra_points);
+        for ret in keep {
+            let mut max_val = state.partition().base_domain_size();
 
-            if let Some(part) = ret.partition {
-                ret.partition = Some(Self::extend_part(&part, max_val, base_size, extended_size));
+            if let Some(part) = &ret.vertlabels {
+                max_val = max_val.max(part.len());
             }
 
-            if let Some(digraphs) = ret.digraphs {
-                let v = digraphs
-                    .into_iter()
-                    .map(|d| Self::extend_digraph(&d, max_val, base_size, extended_size))
-                    .collect();
-                ret.digraphs = Some(v);
+            if let Some(graph) = &ret.graph {
+                max_val = max_val.max(graph.len());
             }
-        }
 
-        if let Some(part) = ret.partition {
-            state.base_refine_partition_by(|x| part.get(*x).unwrap_or(&usize::MAX))?;
-        }
+            let base_size = state.partition().base_domain_size();
+            let extended_size = state.partition().extended_domain_size();
 
-        if let Some(graphs) = ret.digraphs {
-            state.add_graphs(&graphs);
+            let mut vertlabels = ret.vertlabels;
+            let mut digraph = ret.graph.map(Digraph::from_one_indexed_vec);
+
+            if max_val > base_size {
+                // First, update partition
+                let extra_points = max_val - base_size;
+                info!("Sent info from GAP with {:?} extra points", extra_points);
+                state.extend_partition(extra_points);
+
+                if let Some(part) = vertlabels {
+                    vertlabels = Some(Self::extend_part(&part, max_val, base_size, extended_size));
+                }
+
+                if let Some(raw_digraph) = digraph {
+                    digraph = Some(Self::extend_digraph(
+                        &raw_digraph,
+                        max_val,
+                        base_size,
+                        extended_size,
+                    ));
+                };
+            }
+
+            if let Some(part) = vertlabels {
+                state.extended_refine_partition_by(|x| part.get(*x).unwrap_or(&usize::MAX))?;
+            }
+
+            if let Some(graphs) = digraph {
+                state.add_graph(&graphs);
+            }
         }
         Ok(())
     }
@@ -147,7 +170,11 @@ impl Refiner for GapRefiner {
 }
 
 impl Backtrack for GapRefiner {
-    fn save_state(&mut self) {}
+    fn save_state(&mut self) {
+        self.seen_results.save_state();
+    }
 
-    fn restore_state(&mut self) {}
+    fn restore_state(&mut self) {
+        self.seen_results.restore_state();
+    }
 }
