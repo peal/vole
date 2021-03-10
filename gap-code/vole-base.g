@@ -3,6 +3,7 @@ LoadPackage("io", false);
 LoadPackage("digraphs", false);
 LoadPackage("GraphBacktracking", false);
 
+# Simple high level wrapper around IO_pipe -- this could be moved to IO.
 IO_Pipe := function()
     local ret;
     ret := IO_pipe();
@@ -17,6 +18,18 @@ if not IsBound(InfoVole) then
     InfoVole := NewInfoClass("InfoVole");
 fi;
 
+#####################################################################################################
+# Wrapper around GraphBacktracking, allowing a refiner to be queried
+# First argument should be a GraphBacktrack state, second argument is operation, final argument is
+# input to the operations.
+# Valid operations are:
+#   "name": Return name of refiner
+#   "is_group": Does this refiner represent a group (as opposed to a coset)
+#   "check": Check if a permutation satisfies the refiner (given as a 0-indexed list)
+#   "begin" or "refine": Run the refiner. "begin" reuns the 'initialise' function, 'refine' runs the 'changed' function.
+#     Here, args is:
+#     args[1]: "Left" or "Right", for if refiner is being run in 'Left' or 'Right' mode.
+#     args[2]: Current state of partition (where values in the same cell have the same value)
 CallRefiner := function(state, type, args)
     local saved, tracer, is_left, indicator, c, i, retval, filters;
     if type = "name" then
@@ -69,9 +82,15 @@ CallRefiner := function(state, type, args)
     fi; 
 end;
 
-# Can be "trace", "flamegraph" or "opt"
+# Choose how vole is run:
+# "opt": Run as optimised as possible
+# "trace": Output a trace in "trace.log"
+# "flamegraph": Output a flamegraph of where CPU is used in "flamegraph.svg"
 VOLE_MODE := "opt";
 
+# Run vole
+# obj contains the problem to run. 'refiners' is an optional list of GraphBacktracking refiners, which vole can "call back"
+# and query
 ExecuteVole := function(obj, refiners)
     local ret, rustpipe, gappipe,str, args, result, prog;
     rustpipe := IO_Pipe();
@@ -132,6 +151,21 @@ ExecuteVole := function(obj, refiners)
     fi;
 end;
 
+# The list of constraints which vole understands (not including GraphBacktracking refiners)
+con := rec(
+    SetStab := {s} -> rec(SetStab := rec(points := s)),
+    SetTransport := {s,t} -> rec(SetTransport := rec(left_points := s, right_points := t)),
+    TupleStab := {s} -> rec(TupleStab := rec(points := s)),
+    TupleTransport := {s,t} -> rec(TupleTransport :=  rec(left_points := s, right_points := t)),
+    DigraphStab := {e} -> rec(DigraphStab := rec(edges := e)),
+    DigraphTransport := {e,f} -> rec(DigraphStab := rec(left_edges := e, right_edges := f))
+);
+
+
+# Solve a problem using vole
+# 'points': Search will be done in the set [1..points]
+# 'find_single': Find a single solution (equivalent to 'this is a coset problem')
+# 'constraints': List of constraints to solve
 VoleSolve := function(points, find_single, constraints)
     local ret, gapcons,i;
     gapcons := [];
@@ -153,15 +187,9 @@ VoleSolve := function(points, find_single, constraints)
     fi;
 end;
 
-con := rec(
-    SetStab := {s} -> rec(SetStab := rec(points := s)),
-    SetTransport := {s,t} -> rec(SetTransport := rec(left_points := s, right_points := t)),
-    TupleStab := {s} -> rec(TupleStab := rec(points := s)),
-    TupleTransport := {s,t} -> rec(TupleTransport :=  rec(left_points := s, right_points := t)),
-    DigraphStab := {e} -> rec(DigraphStab := rec(edges := e)),
-    DigraphTransport := {e,f} -> rec(DigraphStab := rec(left_edges := e, right_edges := f))
-);
 
+# Simple GAP wrapper which implements the same interface as VoleSolve, for problems
+# which return a group
 GAPSolve := function(p, l)
     local c, g, lmp;
     g := SymmetricGroup(p);
@@ -185,7 +213,8 @@ GAPSolve := function(p, l)
     return g;
 end;
 
-
+# Check (and simply benchmark) that VoleSolve(p,false,c) and GAPSolve(p,c) produce the
+# same answer
 Comp := function(p,c)
     local ret1,ret2, time1, time2;
     time1 := NanosecondsSinceEpoch();
