@@ -1,10 +1,13 @@
 use std::fs::File;
 
-use rust_peal::vole::search::{simple_search, simple_single_search};
+use rust_peal::vole::parse_input;
 use rust_peal::vole::solutions::Solutions;
 use rust_peal::vole::state::State;
 use rust_peal::vole::trace;
-use rust_peal::vole::{parse_input, search::RefinerStore};
+use rust_peal::vole::{
+    refiners::refiner_store::RefinerStore,
+    search::{simple_search, simple_single_search},
+};
 
 use tracing::Level;
 

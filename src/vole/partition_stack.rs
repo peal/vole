@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::vole::trace;
+use crate::{datastructures::small_int_set::SmallIntSet, vole::trace};
 use crate::{
     datastructures::{digraph::Digraph, hash::do_hash},
     perm::Permutation,
@@ -44,6 +44,7 @@ impl MarkStore {
     }
 }
 
+/// Data about the partition
 #[derive(Clone, Debug)]
 pub struct CellData {
     /// The partition, and it's inverse
@@ -69,12 +70,21 @@ pub struct CellData {
     extended_cells: Vec<usize>,
 }
 
+/// An ordered partition of a set [1..n], which support many operations, including:
+/// * Split cells
+/// * Which which cell a value is contained in
+/// * Save the current state of the partition (to be reverted to later)
+/// * (Non-standard) - Extend the partition with a new cell, containing new integers
+///
+/// Several functions refer to 'base' and 'extended'. 'base' refers to the original
+/// values [1..n] which the partition was originally created with, while 'extended'
+/// functions also include any values added after the partition is created.
 #[derive(Clone, Debug)]
 pub struct PartitionStack {
     /// Initial size of partition
     pub base_size: usize,
 
-    // Extended size of partition
+    /// Extended size of partition
     pub extended_size: usize,
 
     cells: CellData,
@@ -87,6 +97,7 @@ pub struct PartitionStack {
 }
 
 impl PartitionStack {
+    /// Create a new partition which contains a single cell with [1..`n`]
     pub fn new(n: usize) -> Self {
         Self {
             base_size: n,
@@ -107,6 +118,7 @@ impl PartitionStack {
         }
     }
 
+    /// Add a new cell which contains `extra` new numbers.
     pub fn extend(&mut self, extra: usize) {
         assert!(extra > 0);
         let cur_size = self.extended_size;
@@ -147,10 +159,12 @@ impl PartitionStack {
         assert_eq!(pop_extended_cells.unwrap(), cell);
     }
 
+    /// Original size of partition when it was created
     pub fn base_domain_size(&self) -> usize {
         self.base_size
     }
 
+    /// Size of partition with any extra values added since creation.
     pub fn extended_domain_size(&self) -> usize {
         self.extended_size
     }
@@ -164,24 +178,18 @@ impl PartitionStack {
         }
         p
     }
+
+    /// Convert partition to a list of ordered lists (include only 'base' values)
     pub fn base_as_list_set(&self) -> Vec<Vec<usize>> {
         self.as_list_set(self.base_cells())
     }
 
+    /// Convert partition to a list of ordered lists (include 'extended' values)
     pub fn extended_as_list_set(&self) -> Vec<Vec<usize>> {
         self.as_list_set(self.extended_cells())
     }
 
-    pub fn extended_as_indicator(&self) -> Vec<usize> {
-        let mut p = vec![0; self.extended_domain_size()];
-        for &i in self.extended_cells() {
-            for &c in self.cell(i) {
-                p[c] = i;
-            }
-        }
-        p
-    }
-
+    /// Convert partition to an indicator function (include only 'base' values)
     pub fn base_as_indicator(&self) -> Vec<usize> {
         let mut p = vec![0; self.base_domain_size()];
         for &i in self.base_cells() {
@@ -192,26 +200,43 @@ impl PartitionStack {
         p
     }
 
+    /// Convert partition to an indicator function (include 'extended' values)
+    pub fn extended_as_indicator(&self) -> Vec<usize> {
+        let mut p = vec![0; self.extended_domain_size()];
+        for &i in self.extended_cells() {
+            for &c in self.cell(i) {
+                p[c] = i;
+            }
+        }
+        p
+    }
+
+    /// Get list of all cells including 'base' values (which many not be a contigous list)
     pub fn base_cells(&self) -> &[usize] {
         self.cells.base_cells.as_slice()
     }
 
+    /// Get list of all cells including 'extended' values (which many not be a contigous list)
     pub fn extended_cells(&self) -> &[usize] {
         self.cells.extended_cells.as_slice()
     }
 
+    /// Contents of cell `i`
     pub fn cell(&self, i: usize) -> &[usize] {
         &self.cells.values[self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i]]
     }
 
+    /// Cells containing base values which are of size 1
     pub fn base_fixed_cells(&self) -> &[usize] {
         &self.cells.base_fixed
     }
 
+    /// The values in cells containins base values which are of size 1
     pub fn base_fixed_values(&self) -> &[usize] {
         &self.cells.base_fixed_values
     }
 
+    /// Cell which contains `i`
     pub fn cell_of(&self, i: usize) -> usize {
         self.marks.mark_of(self.cells.inv_values[i])
     }
@@ -484,7 +509,7 @@ impl PartitionStack {
     ) -> trace::Result<()> {
         let mut cells_done = first_cell;
         while cells_done < self.extended_cells().len() {
-            let mut seen_cells = HashSet::<usize>::new();
+            let mut seen_cells = SmallIntSet::new(self.extended_domain_size());
 
             let mut points = vec![Wrapping(0usize); self.extended_domain_size()];
 
@@ -500,7 +525,7 @@ impl PartitionStack {
             }
 
             // This may increment self.extended_cells().len(), which is why we look around
-            for s in seen_cells {
+            for &s in seen_cells.iter() {
                 self.refine_partition_cell_by(tracer, s, |x| points[*x])?;
             }
         }

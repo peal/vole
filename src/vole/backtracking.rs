@@ -19,6 +19,7 @@ pub struct Backtracking<T: Clone + fmt::Debug> {
 }
 
 impl<T: Clone + fmt::Debug> Backtracking<T> {
+    /// Create a new Backtracking object, initialised to `t`
     pub fn new(t: T) -> Self {
         Self {
             value: t,
@@ -52,10 +53,12 @@ impl<T: Clone + fmt::Debug> DerefMut for Backtracking<T> {
 }
 
 impl<T: Clone + fmt::Debug> Backtracking<T> {
+    /// Total number of saved depths
     pub fn saved_depths(&self) -> usize {
         self.stack.len()
     }
 
+    /// Get object at depth `d` (as returned from [saved_depths])
     pub fn get_depth(&self, d: usize) -> &T {
         &self.stack[d]
     }

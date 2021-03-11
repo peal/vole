@@ -15,9 +15,15 @@ use tracing::trace;
 
 use super::hash::do_hash;
 
+/// The neighbours of a vertex in a directed graph.
+/// The keys are the neighbours, the image of the keys the "colour" of the edge
+/// Directed graphs have edges in both directions, but with different colours.
 pub type Neighbours = IndexMap<usize, Wrapping<usize>>;
+
+/// A directed graph
 #[derive(Clone, Debug, Eq, Deserialize, Serialize)]
 pub struct Digraph {
+    /// The neighbours of each vertex, stored as a list
     edges: Vec<Neighbours>,
 }
 
@@ -63,13 +69,14 @@ impl PartialOrd<Digraph> for Digraph {
 }
 
 impl Digraph {
-    /// Get the empty digraph on n vertices
+    /// The empty digraph on n vertices
     pub fn empty(n: usize) -> Self {
         Self {
             edges: vec![Neighbours::new(); n],
         }
     }
 
+    /// Make a digraph from a vector of vector of neighbours
     pub fn from_vec(in_edges: Vec<Vec<usize>>) -> Self {
         let mut edges: Vec<Neighbours> = vec![Neighbours::new(); in_edges.len()];
 
@@ -87,7 +94,7 @@ impl Digraph {
         Self { edges }
     }
 
-    /// vec where vertices are 1 indexed.
+    /// [Digraph::from_vec], where the vertices are 1-indexed.
     pub fn from_one_indexed_vec(mut in_edges: Vec<Vec<usize>>) -> Self {
         for line in &mut in_edges {
             for v in line {
@@ -97,14 +104,27 @@ impl Digraph {
         Self::from_vec(in_edges)
     }
 
+    /// Number of vertices
     pub fn vertices(&self) -> usize {
         self.edges.len()
     }
 
+    /// Neighbours of vertex `i`
     pub fn neighbours(&self, i: usize) -> &Neighbours {
         &self.edges[i]
     }
 
+    /// Merge a list of digraphs into this graph. This new graph
+    /// will contain all edges both from the original graph, and
+    /// from all elements of `digraphs`. It's automorphism group
+    /// should be the intersection of the automorphism groups of
+    /// itself, and the elements of digraphs, but it may be larger
+    /// in some cases (due to hash collisions).
+    /// The `in_depth` argument is used to "stack" calls to merge,
+    /// so merging [a,b,c,d,e] at depth 0 will produce the same graph
+    /// as first mergeing [a,b] at depth 0, the [c,d,e] at depth 2.
+    /// whereas merging [a,b] at depth 0, then [c,d,e] at depth 0 will
+    /// produce a different graph
     pub fn merge(&mut self, digraphs: &[Self], in_depth: usize) {
         for (size, d) in digraphs.iter().enumerate() {
             let depth = in_depth + size;
@@ -125,6 +145,8 @@ impl Digraph {
         }
     }
 
+    /// Relabel the vertices of a graph, possibly introducing some new unused vertices
+    /// in the process. `map` should be as long as `self.vertices()`.
     pub fn remap_vertices(&mut self, map: &[usize]) {
         assert!(map.len() == self.edges.len());
         let max_val = *map.iter().max().unwrap_or(&0);
@@ -141,6 +163,7 @@ impl Digraph {
     }
 }
 
+/// Apply a Permutation to a Digraph
 impl std::ops::BitXor<&Permutation> for &Digraph {
     type Output = Digraph;
 
@@ -158,6 +181,7 @@ impl std::ops::BitXor<&Permutation> for &Digraph {
     }
 }
 
+/// A backtrackable Digraph, which can be merged with other Digraphs
 #[derive(Clone, Debug)]
 pub struct DigraphStack {
     digraph: Backtracking<Arc<Digraph>>,
@@ -165,6 +189,7 @@ pub struct DigraphStack {
 }
 
 impl DigraphStack {
+    /// Create an initial empty digraph on `n` vertices
     pub fn empty(n: usize) -> Self {
         Self {
             digraph: Backtracking::new(Arc::new(Digraph::empty(n))),
@@ -172,15 +197,19 @@ impl DigraphStack {
         }
     }
 
+    /// Get current digraph
     pub fn digraph(&self) -> &Digraph {
         &**self.digraph
     }
 
+    /// Merge in a digraph stored in an Arc
     pub fn add_arc_graph(&mut self, d: &Arc<Digraph>) {
         // TODO: Make this more efficient, when this is the first graph
-        self.add_graph(d.as_ref())
+        self.add_graph(d.as_ref());
+        *self.depth += 1;
     }
 
+    /// Merge in a digraph
     pub fn add_graph(&mut self, d: &Digraph) {
         trace!("Adding digraph");
         let digraph: &mut Digraph = Arc::make_mut(&mut (*self.digraph));
@@ -188,6 +217,7 @@ impl DigraphStack {
         *self.depth += 1;
     }
 
+    /// Merge in a list of digraphs
     pub fn add_graphs(&mut self, digraphs: &[Digraph]) {
         trace!("Adding {} digraphs", digraphs.len());
         let digraph: &mut Digraph = Arc::make_mut(&mut (*self.digraph));
@@ -195,10 +225,12 @@ impl DigraphStack {
         *self.depth += digraphs.len();
     }
 
+    /// Total depth of stack (which is the number of merged in digraphs)
     pub fn saved_depths(&self) -> usize {
         self.digraph.saved_depths()
     }
 
+    /// Get digraph at depth `d`
     pub fn get_depth(&self, d: usize) -> &Arc<Digraph> {
         self.digraph.get_depth(d)
     }

@@ -1,3 +1,6 @@
+//! Communicate with GAP, both to recieve original problem and ask
+//! mathematical questions during search
+
 use std::{
     fs::File,
     io::prelude::*,
@@ -15,20 +18,27 @@ use structopt::StructOpt;
 
 use crate::vole::solutions::Solutions;
 
+/// Store command line arguments
 #[derive(StructOpt, Debug)]
 #[structopt(name = "basic")]
 pub struct Opt {
+    /// Input file
     #[structopt(parse(from_os_str))]
     pub input: Option<PathBuf>,
 
+    /// Output file
     #[structopt(parse(from_os_str))]
     pub output: Option<PathBuf>,
 
+    /// Input pipe (as a POSIX file id)
     #[structopt(short, long)]
     pub inpipe: Option<i32>,
+
+    /// Output pipe (as a POSIX file id)
     #[structopt(short, long)]
     pub outpipe: Option<i32>,
 
+    /// Enable tracing
     #[structopt(short, long)]
     pub trace: bool,
 }
@@ -58,13 +68,18 @@ impl Opt {
     }
 }
 
+/// Store communication channels with GAP
 pub struct GapChatType {
+    /// Communication channel to GAP
     pub in_file: Box<dyn BufRead + Send>,
+    /// Communication channel from GAP
     pub out_file: Box<dyn Write + Send>,
 }
 
 lazy_static! {
+    /// Global command line arguments
     pub static ref OPTIONS: Opt = Opt::from_args();
+    /// Global communication channel with GAP
     pub static ref GAP_CHAT: Mutex<GapChatType> = {
         let opt = &OPTIONS;
         Mutex::new(GapChatType {
@@ -75,6 +90,8 @@ lazy_static! {
 }
 
 impl GapChatType {
+    /// Send an object to GAP, and receieve a reply. `T` is serialised
+    /// to JSON, and the reply is deserialised into type `U`.
     pub fn send_request<T, U>(request: &T) -> U
     where
         T: serde::Serialize + std::fmt::Debug,
@@ -94,7 +111,6 @@ impl GapChatType {
         out
     }
 }
-
 #[derive(Debug, Deserialize, Serialize)]
 struct Results {
     sols: Vec<Vec<usize>>,
@@ -102,6 +118,8 @@ struct Results {
 }
 
 impl GapChatType {
+    /// Send results (list of permutations) and rbase (which can be used as a redundant base)
+    /// to GAP
     pub fn send_results(&mut self, solutions: &Solutions, rbase: &[usize]) -> anyhow::Result<()> {
         let sols: Vec<Vec<usize>> = solutions
             .get()

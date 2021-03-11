@@ -178,8 +178,7 @@ VoleSolve := function(points, find_single, constraints)
     od;
 
     ret := ExecuteVole(rec(config := rec(points := points, find_single := find_single),
-                constraints := constraints,
-                debug := true), gapcons);
+                constraints := constraints), gapcons);
     if find_single then
         return rec(raw := ret, sol := List(ret.sols, PermList));
     else

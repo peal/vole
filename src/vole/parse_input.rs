@@ -18,6 +18,7 @@ trait RefinerDescription {
     fn build_refiner(&self) -> Box<dyn Refiner>;
 }
 
+/// Store a Digraph Stabilizer constraint sent from GAP
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DigraphStab {
     edges: Vec<Vec<usize>>,
@@ -37,6 +38,7 @@ impl RefinerDescription for DigraphStab {
     }
 }
 
+/// Store a Digraph Transporter constraint sent from GAP
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DigraphTransport {
     edges_left: Vec<Vec<usize>>,
@@ -63,6 +65,8 @@ impl RefinerDescription for DigraphTransport {
         ))
     }
 }
+
+/// Store a Set Stabilizer constraint sent from GAP
 #[derive(Debug, Deserialize, Serialize)]
 pub struct SetStab {
     points: Vec<usize>,
@@ -75,6 +79,7 @@ impl RefinerDescription for SetStab {
     }
 }
 
+/// Store a Set Transporter constraint sent from GAP
 #[derive(Debug, Deserialize, Serialize)]
 pub struct SetTransport {
     left_points: Vec<usize>,
@@ -89,6 +94,7 @@ impl RefinerDescription for SetTransport {
     }
 }
 
+/// Store a Tuple Stabilizer constraint sent from GAP
 #[derive(Debug, Deserialize, Serialize)]
 pub struct TupleStab {
     points: Vec<usize>,
@@ -101,6 +107,7 @@ impl RefinerDescription for TupleStab {
     }
 }
 
+/// Store a Tuple Transporter constraint sent from GAP
 #[derive(Debug, Deserialize, Serialize)]
 pub struct TupleTransport {
     left_points: Vec<usize>,
@@ -115,6 +122,7 @@ impl RefinerDescription for TupleTransport {
     }
 }
 
+/// Store a Refiner represented a GraphBacktracking GAP object, sent from GAP
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GapRefiner {
     gap_id: usize,
@@ -126,6 +134,8 @@ impl RefinerDescription for GapRefiner {
     }
 }
 
+/// Store all constraints which can come from GAP
+#[allow(missing_docs)]
 #[derive(Debug, Deserialize, Serialize)]
 pub enum Constraint {
     DigraphStab(DigraphStab),
@@ -151,22 +161,30 @@ impl RefinerDescription for Constraint {
     }
 }
 
+/// Overall configuration for problem to be solved
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
+    /// The problem should be solved on the set [1..`points`]
     pub points: usize,
+    /// Find only a single solution
     pub find_single: bool,
 }
 
+/// The Problem to be solved
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Problem {
+    /// Configuration
     pub config: Config,
+    /// List of constraints
     pub constraints: Vec<Constraint>,
-    pub debug: bool,
 }
 
+/// Convert GAP definition of Constraints into Vole objects
 pub fn build_constraints(constraints: &[Constraint]) -> Vec<Box<dyn Refiner>> {
     constraints.iter().map(|x| x.build_refiner()).collect()
 }
+
+/// Read a `Problem` from an input stream (Problem should be in JSON)
 pub fn read_problem<R: BufRead>(prob: &mut R) -> Result<Problem> {
     let mut line = String::new();
     let _ = prob.read_line(&mut line)?;
