@@ -2,7 +2,7 @@ use tracing::{info, trace_span};
 
 use crate::vole::refiners::{Refiner, Side};
 use crate::vole::solutions::Solutions;
-use crate::vole::state::State;
+use crate::vole::domain_state::DomainState;
 use crate::vole::{
     backtracking::{Backtrack, Backtracking},
     partition_stack, trace,
@@ -23,7 +23,7 @@ impl RefinerStore {
         }
     }
 
-    pub fn init_refine(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
+    pub fn init_refine(&mut self, state: &mut DomainState, side: Side) -> trace::Result<()> {
         let span = trace_span!("init_refine:", side = debug(side));
         let _e = span.enter();
         for r in self.refiners.iter_mut() {
@@ -32,7 +32,7 @@ impl RefinerStore {
         self.do_refine(state, side)
     }
 
-    pub fn do_refine(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
+    pub fn do_refine(&mut self, state: &mut DomainState, side: Side) -> trace::Result<()> {
         let span = trace_span!("do_refine");
         let _e = span.enter();
         loop {
@@ -66,12 +66,12 @@ impl RefinerStore {
     }
 
     // TODO: This shouldn't be here
-    pub fn capture_rbase(&mut self, state: &mut State) {
+    pub fn capture_rbase(&mut self, state: &mut DomainState) {
         assert!(!state.has_rbase());
         state.snapshot_rbase();
     }
 
-    pub fn check_solution(&mut self, state: &mut State, sols: &mut Solutions) -> bool {
+    pub fn check_solution(&mut self, state: &mut DomainState, sols: &mut Solutions) -> bool {
         if !state.has_rbase() {
             info!("Taking rbase snapshot");
             state.snapshot_rbase();

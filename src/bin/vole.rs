@@ -2,7 +2,7 @@ use std::fs::File;
 
 use rust_peal::vole::parse_input;
 use rust_peal::vole::solutions::Solutions;
-use rust_peal::vole::state::State;
+use rust_peal::vole::domain_state::DomainState;
 use rust_peal::vole::trace;
 use rust_peal::vole::{
     refiners::refiner_store::RefinerStore,
@@ -34,7 +34,7 @@ fn main() -> anyhow::Result<()> {
         RefinerStore::new_from_refiners(parse_input::build_constraints(&problem.constraints));
     let tracer = trace::Tracer::new();
 
-    let mut state = State::new(problem.config.points, tracer);
+    let mut state = DomainState::new(problem.config.points, tracer);
     let mut solutions = Solutions::default();
 
     if problem.config.find_single {

@@ -1,5 +1,5 @@
 use super::Refiner;
-use super::{super::state::State, Side};
+use super::{super::domain_state::DomainState, Side};
 use crate::{datastructures::digraph::Digraph, vole::trace};
 use crate::{perm::Permutation, vole::backtracking::Backtrack};
 use std::{
@@ -48,7 +48,7 @@ impl Refiner for SetTransporter {
             .all(|x| self.set_right.contains(&(p.apply(x))))
     }
 
-    fn refine_begin(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
+    fn refine_begin(&mut self, state: &mut DomainState, side: Side) -> trace::Result<()> {
         let set = match side {
             Side::Left => &self.set_left,
             Side::Right => &self.set_right,
@@ -127,7 +127,7 @@ impl Refiner for TupleTransporter {
             .all(|(&x, &y)| p.apply(x) == y)
     }
 
-    fn refine_begin(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
+    fn refine_begin(&mut self, state: &mut DomainState, side: Side) -> trace::Result<()> {
         let tuplemap = match side {
             Side::Left => &self.tuplemap_left,
             Side::Right => &self.tuplemap_right,
@@ -190,7 +190,7 @@ impl Refiner for SetSetTransporter {
         true
     }
 
-    fn refine_begin(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
+    fn refine_begin(&mut self, state: &mut DomainState, side: Side) -> trace::Result<()> {
         let set = match side {
             Side::Left => &self.set_left,
             Side::Right => &self.set_right,
@@ -266,7 +266,7 @@ impl Refiner for SetTupleTransporter {
         true
     }
 
-    fn refine_begin(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
+    fn refine_begin(&mut self, state: &mut DomainState, side: Side) -> trace::Result<()> {
         let set = match side {
             Side::Left => &self.set_left,
             Side::Right => &self.set_right,

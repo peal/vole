@@ -7,7 +7,7 @@ use crate::perm::Permutation;
 use crate::vole::backtracking::Backtrack;
 use crate::vole::trace;
 
-use super::state::State;
+use super::domain_state::DomainState;
 
 use serde::Serialize;
 
@@ -27,15 +27,15 @@ pub trait Refiner: Backtrack {
     /// Check is permutation is in group/coset represented by the refiner
     fn check(&self, p: &Permutation) -> bool;
 
-    fn refine_begin(&mut self, _: &mut State, _: Side) -> trace::Result<()> {
+    fn refine_begin(&mut self, _: &mut DomainState, _: Side) -> trace::Result<()> {
         Ok(())
     }
 
-    fn refine_fixed_points(&mut self, _: &mut State, _: Side) -> trace::Result<()> {
+    fn refine_fixed_points(&mut self, _: &mut DomainState, _: Side) -> trace::Result<()> {
         Ok(())
     }
 
-    fn refine_changed_cells(&mut self, _: &mut State, _: Side) -> trace::Result<()> {
+    fn refine_changed_cells(&mut self, _: &mut DomainState, _: Side) -> trace::Result<()> {
         Ok(())
     }
 }

@@ -4,5 +4,5 @@ pub mod partition_stack;
 pub mod refiners;
 pub mod search;
 pub mod solutions;
-pub mod state;
+pub mod domain_state;
 pub mod trace;

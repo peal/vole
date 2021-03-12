@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use super::Refiner;
-use super::{super::state::State, Side};
+use super::{super::domain_state::DomainState, Side};
 use crate::perm::Permutation;
 use crate::vole::trace;
 use crate::{datastructures::digraph::Digraph, vole::backtracking::Backtrack};
@@ -40,7 +40,7 @@ impl Refiner for DigraphTransporter {
         &(*self.digraph_left) ^ p == *self.digraph_right
     }
 
-    fn refine_begin(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
+    fn refine_begin(&mut self, state: &mut DomainState, side: Side) -> trace::Result<()> {
         state.add_arc_graph(match side {
             Side::Left => &self.digraph_left,
             Side::Right => &self.digraph_right,

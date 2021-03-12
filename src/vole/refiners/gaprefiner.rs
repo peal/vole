@@ -10,7 +10,7 @@ use crate::{
     perm::Permutation,
     vole::{
         backtracking::{Backtrack, Backtracking},
-        state::State,
+        domain_state::DomainState,
         trace,
     },
 };
@@ -71,7 +71,7 @@ impl GapRefiner {
 
     fn generic_refine(
         &mut self,
-        state: &mut State,
+        state: &mut DomainState,
         refiner_type: &str,
         side: Side,
     ) -> trace::Result<()> {
@@ -159,15 +159,15 @@ impl Refiner for GapRefiner {
         GapChatType::send_request(&("refiner", &self.gap_id, "check", p))
     }
 
-    fn refine_begin(&mut self, s: &mut State, side: Side) -> trace::Result<()> {
+    fn refine_begin(&mut self, s: &mut DomainState, side: Side) -> trace::Result<()> {
         self.generic_refine(s, "begin", side)
     }
 
-    fn refine_fixed_points(&mut self, s: &mut State, side: Side) -> trace::Result<()> {
+    fn refine_fixed_points(&mut self, s: &mut DomainState, side: Side) -> trace::Result<()> {
         self.generic_refine(s, "fixed", side)
     }
 
-    fn refine_changed_cells(&mut self, s: &mut State, side: Side) -> trace::Result<()> {
+    fn refine_changed_cells(&mut self, s: &mut DomainState, side: Side) -> trace::Result<()> {
         self.generic_refine(s, "changed", side)
     }
 }

@@ -1,11 +1,11 @@
 use super::backtracking::Backtrack;
 use super::refiners::{refiner_store::RefinerStore, Side};
 use super::solutions::Solutions;
-use super::state::State;
+use super::domain_state::DomainState;
 
 use tracing::{info, trace, trace_span};
 
-pub fn select_branching_cell(state: &State) -> usize {
+pub fn select_branching_cell(state: &DomainState) -> usize {
     let mut cell = std::usize::MAX;
     let mut cell_size = std::usize::MAX;
     for &i in state.partition().base_cells() {
@@ -24,7 +24,7 @@ pub fn select_branching_cell(state: &State) -> usize {
     cell
 }
 
-pub fn build_rbase(state: &mut State, refiners: &mut RefinerStore) {
+pub fn build_rbase(state: &mut DomainState, refiners: &mut RefinerStore) {
     let part = state.partition();
 
     if part.base_cells().len() == part.base_domain_size() {
@@ -70,7 +70,7 @@ pub fn build_rbase(state: &mut State, refiners: &mut RefinerStore) {
 
 #[must_use]
 pub fn simple_search_recurse(
-    state: &mut State,
+    state: &mut DomainState,
     sols: &mut Solutions,
     refiners: &mut RefinerStore,
     first_branch_in: bool,
@@ -122,7 +122,7 @@ pub fn simple_search_recurse(
     false
 }
 
-pub fn simple_single_search(state: &mut State, sols: &mut Solutions, refiners: &mut RefinerStore) {
+pub fn simple_single_search(state: &mut DomainState, sols: &mut Solutions, refiners: &mut RefinerStore) {
     trace!("Starting Single Permutation Search");
 
     // First build RBase
@@ -149,7 +149,7 @@ pub fn simple_single_search(state: &mut State, sols: &mut Solutions, refiners: &
     state.restore_state();
 }
 
-pub fn simple_search(state: &mut State, sols: &mut Solutions, refiners: &mut RefinerStore) {
+pub fn simple_search(state: &mut DomainState, sols: &mut Solutions, refiners: &mut RefinerStore) {
     trace!("Starting Search");
     let ret = refiners.init_refine(state, Side::Right);
     if ret.is_err() {
