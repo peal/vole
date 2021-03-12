@@ -1,8 +1,8 @@
 use tracing::{info, trace_span};
 
+use crate::vole::domain_state::DomainState;
 use crate::vole::refiners::{Refiner, Side};
 use crate::vole::solutions::Solutions;
-use crate::vole::domain_state::DomainState;
 use crate::vole::{
     backtracking::{Backtrack, Backtracking},
     partition_stack, trace,

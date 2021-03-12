@@ -174,12 +174,10 @@ impl Refiner for GapRefiner {
 
 impl Backtrack for GapRefiner {
     fn save_state(&mut self) {
-        dbg!("SAVED");
         self.seen_results.save_state();
     }
 
     fn restore_state(&mut self) {
-        dbg!("RESTORED");
         self.seen_results.restore_state();
     }
 }

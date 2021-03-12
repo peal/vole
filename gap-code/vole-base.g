@@ -245,6 +245,7 @@ Benchmark := function(p,c)
     return rec(voletime := time1, gaptime := time2);
 end;
 
+# For use with QuickCheck
 QuickChecker := function(p,c)
     local ret1,ret2, time1, time2;
     time1 := NanosecondsSinceEpoch();
@@ -254,4 +255,11 @@ QuickChecker := function(p,c)
     ret2 := GAPSolve(p, c);
     time2 := NanosecondsSinceEpoch() - time2;
     return ret2 = ret1.group;
+end;
+
+# For quick mini-tests
+Comp := function(p,c)
+    if not QuickChecker(p,c) then
+        Error("!! ",p,c);
+    fi;
 end;

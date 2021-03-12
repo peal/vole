@@ -35,7 +35,7 @@ for i in [2..6] do
     od;
 od;
 
-QC_Check([ QC_SetOf(QC_SetOf(IsPosInt)) ], {s} -> Comp(Maximum(Flat(s)), [con.SetSetStab(s)]));
+QC_Check([ QC_SetOf(QC_SetOf(IsPosInt)) ], {s} -> QuickChecker(Maximum(Flat(s)), [con.SetSetStab(s)]));
 
 QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)) ], {s} -> QuickChecker(Maximum(Flat(s)), [con.SetTupleStab(s)]));
 
