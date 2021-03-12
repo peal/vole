@@ -29,7 +29,7 @@ Assert(0,r.sol = [(1,2)(4,5)]);
 r := VoleSolve(5, true, [con.SetTransport([2,3,4],[1,4,5])]);
 Assert(0, OnSets([2,3,4], r.sol[1]) = [1,4,5]);
 
-for i in [2..8] do
+for i in [2..6] do
     for j in [1..NrTransitiveGroups(i)] do
         Comp(i, [GB_Con.NormaliserSimple(i,TransitiveGroup(i,j))]);
     od;

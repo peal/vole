@@ -45,6 +45,7 @@ impl Refiner for DigraphTransporter {
             Side::Left => &self.digraph_left,
             Side::Right => &self.digraph_right,
         });
+
         Ok(())
     }
 

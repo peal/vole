@@ -32,15 +32,14 @@ pub fn build_rbase(state: &mut State, refiners: &mut RefinerStore) {
         return;
     }
 
+    let span = trace_span!("B");
+    let _o = span.enter();
+
     let cell_num = select_branching_cell(state);
-    info!("Partition: {:?}", state.partition().extended_as_list_set());
-    info!("Branching on {}", cell_num);
     let mut cell: Vec<usize> = part.cell(cell_num).to_vec();
 
     cell.sort();
 
-    let span = trace_span!("B");
-    let _o = span.enter();
     trace!("On cell: {:?}", debug(&cell));
     let c = cell[0];
 
@@ -50,6 +49,7 @@ pub fn build_rbase(state: &mut State, refiners: &mut RefinerStore) {
     state.save_state();
 
     let cell_count = state.partition().base_cells().len();
+
     if state
         .refine_partition_cell_by(cell_num, |x| *x == c)
         .is_err()
@@ -59,7 +59,7 @@ pub fn build_rbase(state: &mut State, refiners: &mut RefinerStore) {
 
     assert!(state.partition().base_cells().len() == cell_count + 1);
 
-    if refiners.do_refine(state, Side::Right).is_err() {
+    if refiners.do_refine(state, Side::Left).is_err() {
         panic!("RBase Build Failure 2");
     }
 
@@ -81,9 +81,10 @@ pub fn simple_search_recurse(
         return refiners.check_solution(state, sols);
     }
 
+    let span = trace_span!("B");
+    let _o = span.enter();
+
     let cell_num = select_branching_cell(state);
-    info!("Partition: {:?}", state.partition().extended_as_list_set());
-    info!("Branching on {}", cell_num);
     let mut cell: Vec<usize> = part.cell(cell_num).to_vec();
 
     if first_branch_in {
@@ -92,10 +93,6 @@ pub fn simple_search_recurse(
 
     let mut doing_first_branch = first_branch_in;
 
-    let span = trace_span!("B");
-    let _o = span.enter();
-
-    trace!("Branching on cell: {:?}", debug(&cell));
     for c in cell {
         let span = trace_span!("C", value = c);
         let _o = span.enter();

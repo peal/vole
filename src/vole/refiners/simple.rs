@@ -1,6 +1,6 @@
 use super::Refiner;
 use super::{super::state::State, Side};
-use crate::vole::trace;
+use crate::{datastructures::digraph::Digraph, vole::trace};
 use crate::{perm::Permutation, vole::backtracking::Backtrack};
 use std::{
     collections::{HashMap, HashSet},
@@ -142,6 +142,176 @@ impl Refiner for TupleTransporter {
 }
 
 impl Backtrack for TupleTransporter {
+    fn save_state(&mut self) {}
+    fn restore_state(&mut self) {}
+}
+
+pub struct SetSetTransporter {
+    set_left: Rc<Vec<HashSet<usize>>>,
+    set_right: Rc<Vec<HashSet<usize>>>,
+}
+
+impl SetSetTransporter {
+    pub fn new_transporter(set_left: Vec<HashSet<usize>>, set_right: Vec<HashSet<usize>>) -> Self {
+        Self {
+            set_left: Rc::new(set_left),
+            set_right: Rc::new(set_right),
+        }
+    }
+
+    pub fn new_stabilizer(set: Vec<HashSet<usize>>) -> Self {
+        let r = Rc::new(set);
+        Self {
+            set_left: r.clone(),
+            set_right: r,
+        }
+    }
+}
+
+impl Refiner for SetSetTransporter {
+    fn name(&self) -> String {
+        if self.is_group() {
+            format!("SetSetStabilizer of {:?}", self.set_left)
+        } else {
+            format!(
+                "SetSetTransporter of {:?} -> {:?}",
+                self.set_left, self.set_right
+            )
+        }
+    }
+
+    fn check(&self, p: &Permutation) -> bool {
+        for set in &*self.set_left {
+            let image: HashSet<usize> = set.iter().map(|&x| p.apply(x)).collect();
+            if !self.set_right.contains(&image) {
+                return false;
+            }
+        }
+        true
+    }
+
+    fn refine_begin(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
+        let set = match side {
+            Side::Left => &self.set_left,
+            Side::Right => &self.set_right,
+        };
+
+        let base = state.partition().base_domain_size();
+        let extended = state.partition().extended_domain_size();
+        let _ = state.extend_partition(set.len());
+
+        let mut v: Vec<Vec<usize>> = vec![vec![]; extended + set.len()];
+        for (s, i) in set.iter().enumerate() {
+            for &val in i {
+                debug_assert!(val < base);
+                v[val].push(s + extended);
+            }
+        }
+
+        state.add_graph(&Digraph::from_vec(v));
+        Ok(())
+    }
+
+    fn is_group(&self) -> bool {
+        self.check(&Permutation::id())
+    }
+}
+
+impl Backtrack for SetSetTransporter {
+    fn save_state(&mut self) {}
+    fn restore_state(&mut self) {}
+}
+
+pub struct SetTupleTransporter {
+    set_left: Rc<Vec<Vec<usize>>>,
+    set_right: Rc<Vec<Vec<usize>>>,
+}
+
+impl SetTupleTransporter {
+    pub fn new_transporter(set_left: Vec<Vec<usize>>, set_right: Vec<Vec<usize>>) -> Self {
+        Self {
+            set_left: Rc::new(set_left),
+            set_right: Rc::new(set_right),
+        }
+    }
+
+    pub fn new_stabilizer(set: Vec<Vec<usize>>) -> Self {
+        let r = Rc::new(set);
+        Self {
+            set_left: r.clone(),
+            set_right: r,
+        }
+    }
+}
+
+impl Refiner for SetTupleTransporter {
+    fn name(&self) -> String {
+        if self.is_group() {
+            format!("SetTupleStabilizer of {:?}", self.set_left)
+        } else {
+            format!(
+                "SetTupleTransporter of {:?} -> {:?}",
+                self.set_left, self.set_right
+            )
+        }
+    }
+
+    fn check(&self, p: &Permutation) -> bool {
+        for set in &*self.set_left {
+            let image: Vec<usize> = set.iter().map(|&x| p.apply(x)).collect();
+            if !self.set_right.contains(&image) {
+                return false;
+            }
+        }
+        true
+    }
+
+    fn refine_begin(&mut self, state: &mut State, side: Side) -> trace::Result<()> {
+        let set = match side {
+            Side::Left => &self.set_left,
+            Side::Right => &self.set_right,
+        };
+
+        let base = state.partition().base_domain_size();
+        let extended = state.partition().extended_domain_size();
+
+        // We build graph first, then we count number of vertices we used
+        // We will start colouring just pass end of previous vertices
+        let extra_points = set.iter().map(|x| x.len()).sum();
+        let total_new_size = extended + extra_points;
+        let mut colouring = vec![0usize; total_new_size];
+        let mut graph: Vec<Vec<usize>> = vec![vec![]; total_new_size];
+
+        let mut new_vert = extended;
+
+        for tuple in set.iter() {
+            for (pos, &val) in tuple.iter().enumerate() {
+                debug_assert!(val < base);
+                colouring[new_vert] = pos + 1;
+                graph[val].push(new_vert);
+                if pos > 0 {
+                    graph[new_vert].push(new_vert - 1)
+                }
+                new_vert += 1;
+            }
+        }
+
+        assert!(new_vert == total_new_size);
+
+        let new_part = state.extend_partition(extra_points);
+
+        state.refine_partition_cell_by(new_part, |x| colouring[*x])?;
+
+        state.add_graph(&Digraph::from_vec(graph));
+        Ok(())
+    }
+
+    fn is_group(&self) -> bool {
+        self.check(&Permutation::id())
+    }
+}
+
+impl Backtrack for SetTupleTransporter {
     fn save_state(&mut self) {}
     fn restore_state(&mut self) {}
 }

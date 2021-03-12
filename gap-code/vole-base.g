@@ -157,6 +157,10 @@ con := rec(
     SetTransport := {s,t} -> rec(SetTransport := rec(left_points := s, right_points := t)),
     TupleStab := {s} -> rec(TupleStab := rec(points := s)),
     TupleTransport := {s,t} -> rec(TupleTransport :=  rec(left_points := s, right_points := t)),
+    SetSetStab := {s} -> rec(SetSetStab := rec(points := s)),
+    SetSetTransport := {s,t} -> rec(SetSetTransport := rec(left_points := s, right_points := t)),
+    SetTupleStab := {s} -> rec(SetTupleStab := rec(points := s)),
+    SetTupleTransport := {s,t} -> rec(SetTupleTransport := rec(left_points := s, right_points := t)),
     DigraphStab := {e} -> rec(DigraphStab := rec(edges := e)),
     DigraphTransport := {e,f} -> rec(DigraphStab := rec(left_edges := e, right_edges := f))
 );
@@ -199,6 +203,10 @@ GAPSolve := function(p, l)
             g := Stabilizer(g, c.SetStab.points, OnSets);
         elif IsBound(c.TupleStab) then
             g := Stabilizer(g, c.TupleStab.points, OnTuples);
+        elif IsBound(c.SetSetStab) then
+            g := Stabilizer(g, c.SetSetStab.points, OnSetsSets);
+        elif IsBound(c.SetTupleStab) then
+            g := Stabilizer(g, c.SetTupleStab.points, OnSetsTuples);
         elif IsBound(c.DigraphStab) then
             if g = SymmetricGroup(p) then
                 g := AutomorphismGroup(Digraph(c.DigraphStab.edges));

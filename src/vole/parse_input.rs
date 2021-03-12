@@ -2,10 +2,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::datastructures::digraph::Digraph;
 
-use super::refiners::digraph::DigraphTransporter;
 use super::refiners::simple::SetTransporter;
 use super::refiners::simple::TupleTransporter;
 use super::refiners::Refiner;
+use super::refiners::{
+    digraph::DigraphTransporter,
+    simple::{SetSetTransporter, SetTupleTransporter},
+};
 
 use anyhow::Result;
 
@@ -122,6 +125,92 @@ impl RefinerDescription for TupleTransport {
     }
 }
 
+/// Store a Set Set Stabilizer constraint sent from GAP
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SetSetStab {
+    points: Vec<Vec<usize>>,
+}
+
+impl RefinerDescription for SetSetStab {
+    fn build_refiner(&self) -> Box<dyn Refiner> {
+        let points = self
+            .points
+            .iter()
+            .map(|x| x.iter().map(|&y| y - 1).collect())
+            .collect();
+        Box::new(SetSetTransporter::new_stabilizer(points))
+    }
+}
+
+/// Store a Set Set Transporter constraint sent from GAP
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SetSetTransport {
+    left_points: Vec<Vec<usize>>,
+    right_points: Vec<Vec<usize>>,
+}
+
+impl RefinerDescription for SetSetTransport {
+    fn build_refiner(&self) -> Box<dyn Refiner> {
+        let left_points = self
+            .left_points
+            .iter()
+            .map(|x| x.iter().map(|&y| y - 1).collect())
+            .collect();
+        let right_points = self
+            .right_points
+            .iter()
+            .map(|x| x.iter().map(|&y| y - 1).collect())
+            .collect();
+        Box::new(SetSetTransporter::new_transporter(
+            left_points,
+            right_points,
+        ))
+    }
+}
+
+/// Store a Set Tuple Stabilizer constraint sent from GAP
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SetTupleStab {
+    points: Vec<Vec<usize>>,
+}
+
+impl RefinerDescription for SetTupleStab {
+    fn build_refiner(&self) -> Box<dyn Refiner> {
+        let points = self
+            .points
+            .iter()
+            .map(|x| x.iter().map(|&y| y - 1).collect())
+            .collect();
+        Box::new(SetTupleTransporter::new_stabilizer(points))
+    }
+}
+
+/// Store a Set Set Transporter constraint sent from GAP
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SetTupleTransport {
+    left_points: Vec<Vec<usize>>,
+    right_points: Vec<Vec<usize>>,
+}
+
+impl RefinerDescription for SetTupleTransport {
+    fn build_refiner(&self) -> Box<dyn Refiner> {
+        let left_points = self
+            .left_points
+            .iter()
+            .map(|x| x.iter().map(|&y| y - 1).collect())
+            .collect();
+        let right_points = self
+            .right_points
+            .iter()
+            .map(|x| x.iter().map(|&y| y - 1).collect())
+            .collect();
+        Box::new(SetTupleTransporter::new_transporter(
+            left_points,
+            right_points,
+        ))
+    }
+}
+
 /// Store a Refiner represented a GraphBacktracking GAP object, sent from GAP
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GapRefiner {
@@ -144,6 +233,10 @@ pub enum Constraint {
     SetTransport(SetTransport),
     TupleStab(TupleStab),
     TupleTransport(TupleTransport),
+    SetSetStab(SetSetStab),
+    SetSetTransport(SetSetTransport),
+    SetTupleStab(SetTupleStab),
+    SetTupleTransport(SetTupleTransport),
     GapRefiner(GapRefiner),
 }
 
@@ -153,10 +246,14 @@ impl RefinerDescription for Constraint {
             Self::DigraphStab(c) => c.build_refiner(),
             Self::SetStab(c) => c.build_refiner(),
             Self::TupleStab(c) => c.build_refiner(),
+            Self::SetTupleStab(c) => c.build_refiner(),
+            Self::SetSetStab(c) => c.build_refiner(),
             Self::GapRefiner(c) => c.build_refiner(),
             Self::DigraphTransport(c) => c.build_refiner(),
             Self::SetTransport(c) => c.build_refiner(),
             Self::TupleTransport(c) => c.build_refiner(),
+            Self::SetSetTransport(c) => c.build_refiner(),
+            Self::SetTupleTransport(c) => c.build_refiner(),
         }
     }
 }

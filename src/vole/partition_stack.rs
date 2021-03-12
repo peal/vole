@@ -118,8 +118,8 @@ impl PartitionStack {
         }
     }
 
-    /// Add a new cell which contains `extra` new numbers.
-    pub fn extend(&mut self, extra: usize) {
+    /// Add a new cell which contains `extra` new numbers, returns id of new partition
+    pub fn extend(&mut self, extra: usize) -> usize {
         assert!(extra > 0);
         let cur_size = self.extended_size;
         let new_size = cur_size + extra;
@@ -136,6 +136,7 @@ impl PartitionStack {
 
         // usize::MAX denotes the extra cell was created by adding to the partition
         self.splits.push(usize::MAX);
+        new_cell
     }
 
     fn revert_extend(&mut self) {
@@ -515,8 +516,8 @@ impl PartitionStack {
 
             while cells_done < self.extended_cells().len() {
                 let c = self.extended_cells()[cells_done];
-                for p in self.cell(c) {
-                    for (&neighbour, &colour) in d.neighbours(*p) {
+                for &p in self.cell(c) {
+                    for (&neighbour, &colour) in d.neighbours(p) {
                         points[neighbour] += do_hash((c, colour));
                         seen_cells.insert(self.cell_of(neighbour));
                     }

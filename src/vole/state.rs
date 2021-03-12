@@ -85,7 +85,8 @@ impl State {
         self.stack.extended_refine_partition_by(&mut self.tracer, f)
     }
 
-    pub fn extend_partition(&mut self, extra: usize) {
+    /// Extend partition with `extra` points (return label of new partition)
+    pub fn extend_partition(&mut self, extra: usize) -> usize {
         self.stack.extend(extra)
     }
 
