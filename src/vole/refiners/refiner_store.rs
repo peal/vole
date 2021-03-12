@@ -97,10 +97,16 @@ impl Backtrack for RefinerStore {
     fn save_state(&mut self) {
         self.base_fixed_values_considered.save_state();
         self.cells_considered.save_state();
+        for c in &mut self.refiners {
+            c.save_state();
+        }
     }
 
     fn restore_state(&mut self) {
         self.base_fixed_values_considered.restore_state();
         self.cells_considered.restore_state();
+        for c in &mut self.refiners {
+            c.restore_state();
+        }
     }
 }

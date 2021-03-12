@@ -286,5 +286,9 @@ pub fn read_problem<R: BufRead>(prob: &mut R) -> Result<Problem> {
     let mut line = String::new();
     let _ = prob.read_line(&mut line)?;
     let parsed: Problem = serde_json::from_str(&line)?;
+    assert!(
+        parsed.config.points > 1,
+        "Problems must have at least two points"
+    );
     Ok(parsed)
 }

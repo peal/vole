@@ -54,7 +54,6 @@ impl GapRefiner {
         extended_start: usize,
     ) -> Digraph {
         // Points we have to move
-
         let base_verts = 0..base_size;
         let more_verts = extended_start..(extended_start + (max_val - base_size));
         let v = base_verts.chain(more_verts).collect::<Vec<usize>>();
@@ -92,6 +91,8 @@ impl GapRefiner {
             if !self.seen_results.contains(&hash) {
                 info!("Found new graph");
                 keep.push(ret);
+            } else {
+                info!("Seen before");
             }
             self.seen_results.insert(hash);
         }
@@ -173,10 +174,12 @@ impl Refiner for GapRefiner {
 
 impl Backtrack for GapRefiner {
     fn save_state(&mut self) {
+        dbg!("SAVED");
         self.seen_results.save_state();
     }
 
     fn restore_state(&mut self) {
+        dbg!("RESTORED");
         self.seen_results.restore_state();
     }
 }

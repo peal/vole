@@ -86,6 +86,7 @@ end;
 # "opt": Run as optimised as possible
 # "trace": Output a trace in "trace.log"
 # "flamegraph": Output a flamegraph of where CPU is used in "flamegraph.svg"
+# "debug": Run inside the debugger
 VOLE_MODE := "opt";
 
 # Run vole
@@ -116,6 +117,8 @@ ExecuteVole := function(obj, refiners)
         elif VOLE_MODE = "valgrind" then
             args := ["--tool=callgrind", "target/debug/vole", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
             prog := "valgrind";
+        elif VOLE_MODE = "debug" then
+            args :=  ["with", "gdb --args {bin} {args}", "--", "run" ,"--bin", "vole" ,"--", "--trace", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
         else
             Error("Invalid VOLE_MODE");
         fi;
@@ -139,6 +142,7 @@ ExecuteVole := function(obj, refiners)
             if result[1] = "end" then
                 IO_Close(rustpipe.towrite);
                 IO_Close(gappipe.toread);
+                IO_WaitPid(ret, true);
                 return result[2];
             elif result[1] = "refiner" then
                 result := CallRefiner(refiners[result[2]], result[3], result{[4..Length(result)]});
@@ -181,6 +185,11 @@ VoleSolve := function(points, find_single, constraints)
         fi;
     od;
 
+    # Get rid of trivial cases
+    if points < 2 then
+        points := 2;
+    fi;
+
     ret := ExecuteVole(rec(config := rec(points := points, find_single := find_single),
                 constraints := constraints), gapcons);
     if find_single then
@@ -222,7 +231,7 @@ end;
 
 # Check (and simply benchmark) that VoleSolve(p,false,c) and GAPSolve(p,c) produce the
 # same answer
-Comp := function(p,c)
+Benchmark := function(p,c)
     local ret1,ret2, time1, time2;
     time1 := NanosecondsSinceEpoch();
     ret1 := VoleSolve(p, false, c);
@@ -236,3 +245,13 @@ Comp := function(p,c)
     return rec(voletime := time1, gaptime := time2);
 end;
 
+QuickChecker := function(p,c)
+    local ret1,ret2, time1, time2;
+    time1 := NanosecondsSinceEpoch();
+    ret1 := VoleSolve(p, false, c);
+    time1 := NanosecondsSinceEpoch() - time1;
+    time2 := NanosecondsSinceEpoch();
+    ret2 := GAPSolve(p, c);
+    time2 := NanosecondsSinceEpoch() - time2;
+    return ret2 = ret1.group;
+end;

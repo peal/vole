@@ -99,6 +99,8 @@ pub struct PartitionStack {
 impl PartitionStack {
     /// Create a new partition which contains a single cell with [1..`n`]
     pub fn new(n: usize) -> Self {
+        // Don't want to handle 0 and 1, as such problems are trivial anyway
+        assert!(n > 1);
         Self {
             base_size: n,
             extended_size: n,
@@ -525,10 +527,13 @@ impl PartitionStack {
                 cells_done += 1;
             }
 
+            //dbg!(format!("{:?}",&points));
             // This may increment self.extended_cells().len(), which is why we look around
-            for &s in seen_cells.iter() {
+            //dbg!(format!("{:?}",self.extended_as_list_set()));
+            for &s in seen_cells.sorted_iter() {
                 self.refine_partition_cell_by(tracer, s, |x| points[*x])?;
             }
+            //dbg!(format!("{:?}",self.extended_as_list_set()));
         }
         Ok(())
     }

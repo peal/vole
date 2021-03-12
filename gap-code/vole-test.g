@@ -1,5 +1,5 @@
 Read("gap-code/vole-base.g");
-
+LoadPackage("quickcheck");
 
 frucht := [[1,2], [1,3], [1,4], [2,5], [2,6], [4,7], [4,8], [5,9], [5,10], [6,11],
            [6,12], [3,7], [7,8], [8,12], [12,11], [11,9], [9,10], [10,3]];
@@ -34,6 +34,24 @@ for i in [2..6] do
         Comp(i, [GB_Con.NormaliserSimple(i,TransitiveGroup(i,j))]);
     od;
 od;
+
+QC_Check([ QC_SetOf(QC_SetOf(IsPosInt)) ], {s} -> Comp(Maximum(Flat(s)), [con.SetSetStab(s)]));
+
+QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)) ], {s} -> QuickChecker(Maximum(Flat(s)), [con.SetTupleStab(s)]));
+
+QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
+    local s2, max, res, p;
+    max := Maximum(Maximum(Flat(s)), LargestMovedPoint(g));
+    p := Random(g);
+    s2 := OnSetsTuples(s,p);
+    res := VoleSolve(max, true, [con.SetTupleTransport(s,s2), BTKit_Con.InGroupSimple(max, g)]);
+    if IsEmpty(res.sol) or OnSetsTuples(res.sol[1],s) <> s2 then
+        return StringFormatted("Failure: {} {} {}", s2, p, OnSetsTuples(res.sol[1],s));
+    fi;
+    return true;
+end);
+
+{s} -> QuickChecker(Maximum(Flat(s)), [con.SetTupleStab(s)]));
 
 Print("Tests passed\n");
 QUIT_GAP(0);

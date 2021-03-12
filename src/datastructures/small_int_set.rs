@@ -31,8 +31,10 @@ impl SmallIntSet {
         }
     }
 
-    /// Return an iterator to iterate through the set (in insertion order)
-    pub fn iter(&self) -> ::std::slice::Iter<usize> {
+    /// Return an iterator to iterate through the set (in sorted order)
+    pub fn sorted_iter(&mut self) -> ::std::slice::Iter<usize> {
+        // Sort lazily
+        self.values.sort();
         self.values.iter()
     }
 }
