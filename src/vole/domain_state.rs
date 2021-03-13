@@ -39,6 +39,10 @@ impl DomainState {
         &self.stack
     }
 
+    pub fn tracer(&self) -> &trace::Tracer {
+        &self.tracer
+    }
+
     pub fn has_rbase(&self) -> bool {
         self.rbase_stack.is_some()
     }

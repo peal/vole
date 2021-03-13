@@ -1,20 +1,19 @@
+use crate::perm::Permutation;
 use disjoint_sets::UnionFind;
 use serde::{Deserialize, Serialize};
-
-use crate::perm::Permutation;
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct Solutions {
     sols: Vec<Permutation>,
     orbits: UnionFind<usize>,
-    //    canonical: Option<Permutation>,
+    canonical: Option<Permutation>,
     nodes: u64,
     tracefails: u64,
     solsfails: u64,
 }
 
 impl Solutions {
-    pub fn add(&mut self, p: &Permutation) {
+    pub fn add_solution(&mut self, p: &Permutation) {
         self.sols.push(p.clone());
         let max_p = p.lmp().unwrap_or(1);
         while max_p >= self.orbits.len() {

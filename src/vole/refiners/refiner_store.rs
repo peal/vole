@@ -1,12 +1,13 @@
 use tracing::{info, trace_span};
 
-use crate::vole::domain_state::DomainState;
 use crate::vole::refiners::{Refiner, Side};
 use crate::vole::solutions::Solutions;
+use crate::vole::trace::TracingType;
 use crate::vole::{
     backtracking::{Backtrack, Backtracking},
     partition_stack, trace,
 };
+use crate::{gap_chat::GapChatType, perm::Permutation, vole::domain_state::DomainState};
 
 pub struct RefinerStore {
     refiners: Vec<Box<dyn Refiner>>,
@@ -78,17 +79,43 @@ impl RefinerStore {
         }
 
         let part = state.partition();
-        assert!(part.base_cells().len() == part.base_domain_size());
+        let pnts = part.base_domain_size();
+        assert!(part.base_cells().len() == pnts);
 
-        let sol = partition_stack::perm_between(state.rbase_partition(), part);
+        let tracing_type = state.tracer().tracing_type();
 
-        let is_sol = self.refiners.iter().all(|x| x.check(&sol));
-        if is_sol {
-            info!("Found solution: {:?}", sol);
-            sols.add(&sol);
-        } else {
-            info!("Not solution: {:?}", sol);
+        let mut is_sol = false;
+        if tracing_type.contains(TracingType::SYMMETRY) {
+            let sol = partition_stack::perm_between(state.rbase_partition(), part);
+
+            is_sol = self.refiners.iter().all(|x| x.check(&sol));
+            if is_sol {
+                info!("Found solution: {:?}", sol);
+                sols.add_solution(&sol);
+            } else {
+                info!("Not solution: {:?}", sol);
+            }
         }
+
+        if tracing_type.contains(TracingType::CANONICAL) {
+            let preimage: Vec<usize> = part
+                .base_cells()
+                .into_iter()
+                .map(|&x| part.cell(x)[0])
+                .collect();
+            // GAP needs 1 indexed
+            let preimagegap: Vec<usize> = preimage.iter().map(|&x| x + 1).collect();
+            let postimagegap: Vec<usize> =
+                GapChatType::send_request(&("canonicalmin", &preimagegap));
+            let postimage: Vec<usize> = postimagegap.into_iter().map(|x| x - 1).collect();
+            let mut image: Vec<usize> = vec![0; pnts];
+            for i in 0..pnts {
+                image[preimage[i]] = postimage[i];
+            }
+            let perm = Permutation::from_vec(image);
+            info!("Considering new canonical image: {:?}", perm);
+        }
+
         is_sol
     }
 }

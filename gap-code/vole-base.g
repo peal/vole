@@ -92,8 +92,8 @@ VOLE_MODE := "opt";
 # Run vole
 # obj contains the problem to run. 'refiners' is an optional list of GraphBacktracking refiners, which vole can "call back"
 # and query
-ExecuteVole := function(obj, refiners)
-    local ret, rustpipe, gappipe,str, args, result, prog;
+ExecuteVole := function(obj, refiners, canonicalgroup)
+    local ret, rustpipe, gappipe,str, args, result, prog, postimage;
     rustpipe := IO_Pipe();
     gappipe := IO_Pipe();
     Info(InfoVole, 2, "PreFork\n");
@@ -118,7 +118,7 @@ ExecuteVole := function(obj, refiners)
             args := ["--tool=callgrind", "target/debug/vole", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
             prog := "valgrind";
         elif VOLE_MODE = "debug" then
-            args :=  ["with", "gdb --args {bin} {args}", "--", "run" ,"--bin", "vole" ,"--", "--trace", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+            args :=  ["with", "rust-gdb --args {bin} {args}", "--", "run" ,"--bin", "vole" ,"--", "--trace", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
         else
             Error("Invalid VOLE_MODE");
         fi;
@@ -144,6 +144,15 @@ ExecuteVole := function(obj, refiners)
                 IO_Close(gappipe.toread);
                 IO_WaitPid(ret, true);
                 return result[2];
+            elif result[1] = "canonicalmin" then
+                if canonicalgroup = false then
+                    IO_WriteLine(rustpipe.towrite, GapToJsonString([1..Length(result[2])]));
+                else
+                    Assert(0, false);
+                    # TODO - fix 0/1 indexing
+                    postimage := MinimalImage(canonicalgroup, result[2], OnTuples);
+                    IO_WriteLine(rustpipe.towrite, GapToJsonString(postimage));
+                fi;
             elif result[1] = "refiner" then
                 result := CallRefiner(refiners[result[2]], result[3], result{[4..Length(result)]});
                 Info(InfoVole, 2, "Refiner returned: ", result);
@@ -151,6 +160,7 @@ ExecuteVole := function(obj, refiners)
             else
                 ErrorNoReturn("Invalid return value from Vole: ", result);
             fi;
+            IO_Flush(rustpipe.towrite);
         od;
     fi;
 end;
@@ -174,7 +184,8 @@ con := rec(
 # 'points': Search will be done in the set [1..points]
 # 'find_single': Find a single solution (equivalent to 'this is a coset problem')
 # 'constraints': List of constraints to solve
-VoleSolve := function(points, find_single, constraints)
+# TODO: Add Canonical group
+_VoleSolve := function(points, find_single, find_canonical, constraints)
     local ret, gapcons,i;
     gapcons := [];
     constraints := ShallowCopy(constraints);
@@ -190,14 +201,17 @@ VoleSolve := function(points, find_single, constraints)
         points := 2;
     fi;
 
-    ret := ExecuteVole(rec(config := rec(points := points, find_single := find_single),
-                constraints := constraints), gapcons);
+    ret := ExecuteVole(rec(config := rec(points := points, find_single := find_single, find_canonical := find_canonical),
+                constraints := constraints), gapcons, false);
     if find_single then
         return rec(raw := ret, sol := List(ret.sols, PermList));
     else
         return rec(raw := ret, group := Group(List(ret.sols, PermList)));
     fi;
 end;
+
+VoleSolve := {points, find_single, constraints} -> _VoleSolve(points, find_single, false, constraints);
+VoleCanonicalSolve := {points, constraints} -> _VoleSolve(points, false, true, constraints);
 
 
 # Simple GAP wrapper which implements the same interface as VoleSolve, for problems

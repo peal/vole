@@ -265,6 +265,8 @@ pub struct Config {
     pub points: usize,
     /// Find only a single solution
     pub find_single: bool,
+    /// Find canonical image
+    pub find_canonical: bool,
 }
 
 /// The Problem to be solved

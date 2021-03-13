@@ -59,7 +59,7 @@ impl Tracer {
     }
 
     pub fn new() -> Self {
-        Self::new_with_type(TracingType::SYMMETRY)
+        Self::new_with_type(TracingType::BOTH)
     }
 
     pub fn add(&mut self, t: TraceEvent) -> Result<()> {
@@ -103,6 +103,10 @@ impl Tracer {
         } else {
             Ok(())
         }
+    }
+
+    pub fn tracing_type(&self) -> TracingType {
+        *self.tracing_type
     }
 }
 
