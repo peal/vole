@@ -38,7 +38,7 @@ impl std::hash::Hash for Digraph {
     }
 }
 
-impl PartialEq<Digraph> for Digraph {
+impl PartialEq<Self> for Digraph {
     fn eq(&self, other: &Self) -> bool {
         // Check edges are sorted and unique
         assert!(self
@@ -49,7 +49,7 @@ impl PartialEq<Digraph> for Digraph {
     }
 }
 
-impl PartialOrd<Digraph> for Digraph {
+impl PartialOrd<Self> for Digraph {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         // Check edges are sorted and unique
         assert!(self
