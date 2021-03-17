@@ -85,7 +85,14 @@ impl GapRefiner {
 
         let mut keep: Vec<GapRefinerReturn> = vec![];
 
-        for ret in ret_list {
+        for mut ret in ret_list {
+            // Normalise graph, so hash will return same value
+            if let Some(graph) = &mut ret.graph {
+                for neighbour in graph {
+                    neighbour.sort();
+                }
+            }
+
             let hash = do_hash(&ret);
             info!("Run GAP refiner - recieved hash {:?}", hash);
             if !self.seen_results.contains(&hash) {
@@ -135,6 +142,7 @@ impl GapRefiner {
             }
 
             if let Some(part) = vertlabels {
+                info!("Refining Partition by {:?}", part);
                 state.extended_refine_partition_by(|x| part.get(*x).unwrap_or(&usize::MAX))?;
             }
 
