@@ -51,7 +51,5 @@ QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
     return true;
 end);
 
-{s} -> QuickChecker(Maximum(Flat(s)), [con.SetTupleStab(s)]));
-
 Print("Tests passed\n");
 QUIT_GAP(0);
