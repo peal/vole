@@ -45,8 +45,8 @@ QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
     p := Random(g);
     s2 := OnSetsTuples(s,p);
     res := VoleSolve(max, true, [con.SetTupleTransport(s,s2), BTKit_Con.InGroupSimple(max, g)]);
-    if IsEmpty(res.sol) or OnSetsTuples(res.sol[1],s) <> s2 then
-        return StringFormatted("Failure: {} {} {}", s2, p, OnSetsTuples(res.sol[1],s));
+    if IsEmpty(res.sol) or OnSetsTuples(s,res.sol[1]) <> s2 then
+        return StringFormatted("Failure: {} {} {}", s2, p, OnSetsTuples(s,res.sol[1]));
     fi;
     return true;
 end);
