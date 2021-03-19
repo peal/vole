@@ -23,6 +23,9 @@ Comp(5, [BTKit_Con.SetStab(5, [2,3])]);
 
 Comp(12, [con.DigraphStab(neigh)]);
 
+# Bug found by Mun See Chang and fixed in commit 11e06f
+Comp(7, [GB_Con.NormaliserSimple(7, Group([(1,2,3,4), (1,2), (5,6,7)]))]);
+
 r := VoleSolve(5, true, [con.TupleTransport([2,3,4,5],[1,3,5,4])]);
 Assert(0,r.sol = [(1,2)(4,5)]);
 
