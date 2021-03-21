@@ -1,4 +1,5 @@
 gap> Read("gap-code/vole-base.g");
+gap> LoadPackage("ferret", false);;
 gap> LoadPackage("quickcheck", false);;
 gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 >      local s2, max, res, p;

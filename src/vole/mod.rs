@@ -6,4 +6,5 @@ pub mod refiners;
 pub mod search;
 pub mod solutions;
 pub mod state;
+pub mod stats;
 pub mod trace;

@@ -93,7 +93,8 @@ VOLE_MODE := "opt";
 # obj contains the problem to run. 'refiners' is an optional list of GraphBacktracking refiners, which vole can "call back"
 # and query
 ExecuteVole := function(obj, refiners, canonicalgroup)
-    local ret, rustpipe, gappipe,str, args, result, prog, postimage;
+    local ret, rustpipe, gappipe,str, args, result, prog, postimage, gapcallbacks;
+    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0);
     rustpipe := IO_Pipe();
     gappipe := IO_Pipe();
     Info(InfoVole, 2, "PreFork\n");
@@ -143,6 +144,7 @@ ExecuteVole := function(obj, refiners, canonicalgroup)
                 IO_Close(rustpipe.towrite);
                 IO_Close(gappipe.toread);
                 IO_WaitPid(ret, true);
+                result[2].stats.gap_callbacks := gapcallbacks;
                 return result[2];
             elif result[1] = "canonicalmin" then
                 if canonicalgroup = false then
@@ -154,6 +156,7 @@ ExecuteVole := function(obj, refiners, canonicalgroup)
                     IO_WriteLine(rustpipe.towrite, GapToJsonString(postimage));
                 fi;
             elif result[1] = "refiner" then
+                gapcallbacks.(result[3]) := gapcallbacks.(result[3]) + 1;
                 result := CallRefiner(refiners[result[2]], result[3], result{[4..Length(result)]});
                 Info(InfoVole, 2, "Refiner returned: ", result);
                 IO_WriteLine(rustpipe.towrite, GapToJsonString(result)); 

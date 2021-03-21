@@ -8,7 +8,7 @@ use super::backtracking::{Backtrack, Backtracking};
 bitflags! {
     pub struct TracingType : u8 {
         const SYMMETRY = 0b01;
-        const CANONICAL = 0b1;
+        const CANONICAL = 0b10;
         const BOTH = 0b11;
         const NONE = 0b00;
     }

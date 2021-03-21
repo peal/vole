@@ -25,6 +25,7 @@ pub fn select_branching_cell(state: &State) -> usize {
 }
 
 pub fn build_rbase(state: &mut State) {
+    state.stats.rbase_nodes += 1;
     let part = state.domain.partition();
 
     if part.base_cells().len() == part.base_domain_size() {
@@ -62,7 +63,7 @@ pub fn build_rbase(state: &mut State) {
 
     if state
         .refiners
-        .do_refine(&mut state.domain, Side::Left)
+        .do_refine(&mut state.domain, Side::Left, &mut state.stats)
         .is_err()
     {
         panic!("RBase Build Failure 2");
@@ -79,10 +80,13 @@ pub fn simple_search_recurse(
     sols: &mut Solutions,
     first_branch_in: bool,
 ) -> bool {
+    state.stats.search_nodes += 1;
     let part = state.domain.partition();
 
     if part.base_cells().len() == part.base_domain_size() {
-        return state.refiners.check_solution(&mut state.domain, sols);
+        return state
+            .refiners
+            .check_solution(&mut state.domain, sols, &mut state.stats);
     }
 
     let span = trace_span!("B");
@@ -113,7 +117,7 @@ pub fn simple_search_recurse(
                 assert!(state.domain.partition().base_cells().len() == cell_count + 1);
                 if state
                     .refiners
-                    .do_refine(&mut state.domain, Side::Right)
+                    .do_refine(&mut state.domain, Side::Right, &mut state.stats)
                     .is_ok()
                 {
                     let ret = simple_search_recurse(state, sols, doing_first_branch);
@@ -139,7 +143,7 @@ pub fn simple_single_search(state: &mut State, sols: &mut Solutions) {
     state.save_state();
     if state
         .refiners
-        .init_refine(&mut state.domain, Side::Left)
+        .init_refine(&mut state.domain, Side::Left, &mut state.stats)
         .is_err()
     {
         panic!("RBase Build Failures 0");
@@ -154,7 +158,9 @@ pub fn simple_single_search(state: &mut State, sols: &mut Solutions) {
     // Now do search
     state.save_state();
 
-    let ret = state.refiners.init_refine(&mut state.domain, Side::Right);
+    let ret = state
+        .refiners
+        .init_refine(&mut state.domain, Side::Right, &mut state.stats);
     if ret.is_err() {
         return;
     }
@@ -164,7 +170,9 @@ pub fn simple_single_search(state: &mut State, sols: &mut Solutions) {
 
 pub fn simple_search(state: &mut State, sols: &mut Solutions) {
     trace!("Starting Search");
-    let ret = state.refiners.init_refine(&mut state.domain, Side::Right);
+    let ret = state
+        .refiners
+        .init_refine(&mut state.domain, Side::Right, &mut state.stats);
     if ret.is_err() {
         return;
     }

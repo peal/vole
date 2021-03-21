@@ -1,11 +1,14 @@
 use tracing::{info, trace_span};
 
-use crate::vole::refiners::{Refiner, Side};
 use crate::vole::solutions::Solutions;
 use crate::vole::trace::TracingType;
 use crate::vole::{
     backtracking::{Backtrack, Backtracking},
     partition_stack, trace,
+};
+use crate::vole::{
+    refiners::{Refiner, Side},
+    stats::Stats,
 };
 use crate::{gap_chat::GapChatType, perm::Permutation, vole::domain_state::DomainState};
 
@@ -24,16 +27,27 @@ impl RefinerStore {
         }
     }
 
-    pub fn init_refine(&mut self, state: &mut DomainState, side: Side) -> trace::Result<()> {
+    pub fn init_refine(
+        &mut self,
+        state: &mut DomainState,
+        side: Side,
+        stats: &mut Stats,
+    ) -> trace::Result<()> {
         let span = trace_span!("init_refine:", side = debug(side));
         let _e = span.enter();
         for r in self.refiners.iter_mut() {
-            r.refine_begin(state, side)?
+            r.refine_begin(state, side)?;
+            stats.refiner_calls += 1;
         }
-        self.do_refine(state, side)
+        self.do_refine(state, side, stats)
     }
 
-    pub fn do_refine(&mut self, state: &mut DomainState, side: Side) -> trace::Result<()> {
+    pub fn do_refine(
+        &mut self,
+        state: &mut DomainState,
+        side: Side,
+        stats: &mut Stats,
+    ) -> trace::Result<()> {
         let span = trace_span!("do_refine");
         let _e = span.enter();
         loop {
@@ -43,7 +57,8 @@ impl RefinerStore {
             assert!(fixed_points >= *self.base_fixed_values_considered);
             if fixed_points > *self.base_fixed_values_considered {
                 for refiner in &mut self.refiners {
-                    refiner.refine_fixed_points(state, side)?
+                    refiner.refine_fixed_points(state, side)?;
+                    stats.refiner_calls += 1;
                 }
             }
 
@@ -53,7 +68,8 @@ impl RefinerStore {
             assert!(cells >= *self.cells_considered);
             if cells > *self.cells_considered {
                 for refiner in &mut self.refiners {
-                    refiner.refine_changed_cells(state, side)?
+                    refiner.refine_changed_cells(state, side)?;
+                    stats.refiner_calls += 1;
                 }
             }
 
@@ -72,7 +88,12 @@ impl RefinerStore {
         state.snapshot_rbase();
     }
 
-    pub fn check_solution(&mut self, state: &mut DomainState, sols: &mut Solutions) -> bool {
+    pub fn check_solution(
+        &mut self,
+        state: &mut DomainState,
+        sols: &mut Solutions,
+        stats: &mut Stats,
+    ) -> bool {
         if !state.has_rbase() {
             info!("Taking rbase snapshot");
             state.snapshot_rbase();
@@ -91,18 +112,16 @@ impl RefinerStore {
             is_sol = self.refiners.iter().all(|x| x.check(&sol));
             if is_sol {
                 info!("Found solution: {:?}", sol);
+                stats.good_iso += 1;
                 sols.add_solution(&sol);
             } else {
+                stats.bad_iso += 1;
                 info!("Not solution: {:?}", sol);
             }
         }
 
         if tracing_type.contains(TracingType::CANONICAL) {
-            let preimage: Vec<usize> = part
-                .base_cells()
-                .into_iter()
-                .map(|&x| part.cell(x)[0])
-                .collect();
+            let preimage: Vec<usize> = part.base_cells().iter().map(|&x| part.cell(x)[0]).collect();
             // GAP needs 1 indexed
             let preimagegap: Vec<usize> = preimage.iter().map(|&x| x + 1).collect();
             let postimagegap: Vec<usize> =
@@ -114,6 +133,7 @@ impl RefinerStore {
             }
             let perm = Permutation::from_vec(image);
             info!("Considering new canonical image: {:?}", perm);
+            stats.bad_canonical += 1;
         }
 
         is_sol

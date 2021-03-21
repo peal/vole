@@ -42,7 +42,11 @@ fn main() -> anyhow::Result<()> {
     let domain = DomainState::new(problem.config.points, tracer);
     let mut solutions = Solutions::default();
 
-    let mut state = State { domain, refiners };
+    let mut state = State {
+        domain,
+        refiners,
+        stats: Default::default(),
+    };
     if problem.config.find_single {
         simple_single_search(&mut state, &mut solutions);
     } else {
@@ -52,6 +56,7 @@ fn main() -> anyhow::Result<()> {
     GAP_CHAT.lock().unwrap().send_results(
         &solutions,
         state.domain.rbase_partition().base_fixed_values(),
+        state.stats,
     )?;
 
     Ok(())

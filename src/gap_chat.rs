@@ -16,7 +16,7 @@ use std::io::Write;
 
 use structopt::StructOpt;
 
-use crate::vole::solutions::Solutions;
+use crate::vole::{solutions::Solutions, stats::Stats};
 
 /// Store command line arguments
 #[derive(StructOpt, Debug)]
@@ -115,12 +115,18 @@ impl GapChatType {
 struct Results {
     sols: Vec<Vec<usize>>,
     base: Vec<usize>,
+    stats: Stats,
 }
 
 impl GapChatType {
     /// Send results (list of permutations) and rbase (which can be used as a redundant base)
     /// to GAP
-    pub fn send_results(&mut self, solutions: &Solutions, rbase: &[usize]) -> anyhow::Result<()> {
+    pub fn send_results(
+        &mut self,
+        solutions: &Solutions,
+        rbase: &[usize],
+        stats: Stats,
+    ) -> anyhow::Result<()> {
         let sols: Vec<Vec<usize>> = solutions
             .get()
             .iter()
@@ -129,7 +135,7 @@ impl GapChatType {
 
         let base = rbase.iter().map(|&x| x + 1).collect();
 
-        serde_json::to_writer(&mut self.out_file, &("end", Results { sols, base }))?;
+        serde_json::to_writer(&mut self.out_file, &("end", Results { sols, base, stats }))?;
         self.out_file.flush()?;
         Ok(())
     }

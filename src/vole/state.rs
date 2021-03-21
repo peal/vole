@@ -1,10 +1,12 @@
 use super::{
     backtracking::Backtrack, domain_state::DomainState, refiners::refiner_store::RefinerStore,
+    stats::Stats,
 };
 
 pub struct State {
     pub domain: DomainState,
     pub refiners: RefinerStore,
+    pub stats: Stats,
 }
 
 impl Backtrack for State {
