@@ -230,12 +230,12 @@ impl PartitionStack {
         &self.cells.values[self.cells.starts[i]..self.cells.starts[i] + self.cells.lengths[i]]
     }
 
-    /// Cells containing base values which are of size 1
+    /// Cells containing base values which are of size 1, in the order they were fixed
     pub fn base_fixed_cells(&self) -> &[usize] {
         &self.cells.base_fixed
     }
 
-    /// The values in cells containins base values which are of size 1
+    /// The values in cells containins base values which are of size 1, in the order they were fixed
     pub fn base_fixed_values(&self) -> &[usize] {
         &self.cells.base_fixed_values
     }
