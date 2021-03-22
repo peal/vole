@@ -51,27 +51,27 @@ impl RefinerStore {
         let span = trace_span!("do_refine");
         let _e = span.enter();
         loop {
-            state.refine_graphs()?;
-
             let fixed_points = state.partition().base_fixed_values().len();
             assert!(fixed_points >= *self.base_fixed_values_considered);
             if fixed_points > *self.base_fixed_values_considered {
+                *self.base_fixed_values_considered = fixed_points;
                 for refiner in &mut self.refiners {
                     refiner.refine_fixed_points(state, side)?;
                     stats.refiner_calls += 1;
                 }
             }
 
-            // TODO: Check base_fixed_values_considered and cells_considered are updated
-
             let cells = state.partition().base_cells().len();
             assert!(cells >= *self.cells_considered);
             if cells > *self.cells_considered {
+                *self.cells_considered = cells;
                 for refiner in &mut self.refiners {
                     refiner.refine_changed_cells(state, side)?;
                     stats.refiner_calls += 1;
                 }
             }
+
+            state.refine_graphs()?;
 
             if fixed_points == state.partition().base_fixed_values().len()
                 && cells == state.partition().base_cells().len()
