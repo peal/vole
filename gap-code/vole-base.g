@@ -189,7 +189,7 @@ con := rec(
 # 'constraints': List of constraints to solve
 # TODO: Add Canonical group
 _VoleSolve := function(points, find_single, find_canonical, constraints)
-    local ret, gapcons,i;
+    local ret, gapcons,i, grp, sc, gens, group;
     gapcons := [];
     constraints := ShallowCopy(constraints);
     for i in [1..Length(constraints)] do
@@ -209,7 +209,18 @@ _VoleSolve := function(points, find_single, find_canonical, constraints)
     if find_single then
         return rec(raw := ret, sol := List(ret.sols, PermList));
     else
-        return rec(raw := ret, group := Group(List(ret.sols, PermList)));
+        gens := List(ret.sols, PermList);
+        if IsEmpty(gens) then
+            gens := [()];
+        fi;
+        sc := StabChainBaseStrongGenerators(ret.base, gens);
+        # Knock out unneeded elements
+        ReduceStabChain(sc);
+        group := Group(gens);
+        SetStabChainMutable(group, sc);
+        #Assert(0, SizeStabChain(sc) = Size(Group(gens)));
+
+        return rec(raw := ret, group := group);
     fi;
 end;
 
