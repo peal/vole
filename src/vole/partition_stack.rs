@@ -6,6 +6,7 @@ use crate::{
     perm::Permutation,
 };
 
+use std::fmt::Debug;
 use std::hash::Hash;
 use std::{collections::HashSet, num::Wrapping};
 
@@ -422,7 +423,7 @@ impl PartitionStack {
         }
     }
 
-    pub fn refine_partition_cell_by<F: Copy, O: Ord + Hash>(
+    pub fn refine_partition_cell_by<F: Copy, O: Ord + Hash + Debug>(
         &mut self,
         tracer: &mut trace::Tracer,
         i: usize,
@@ -435,15 +436,21 @@ impl PartitionStack {
         {
             let cell_slice = self.mut_cell(i);
             if cell_slice.iter().map(|x| f(x)).all_equal() {
+                let hash = trace::hash(&f(&cell_slice[0]));
+                // Reduce info size
+                if cell_slice.len() > 1 {
+                    info!(target: "tracer", "Trace all equal: {:?}, len {:?}", hash, cell_slice.len());
+                }
                 // Early Exit for cell of size 1
                 tracer.add(trace::TraceEvent::NoSplit {
                     cell: i,
-                    reason: trace::hash(&f(&cell_slice[0])),
+                    reason: hash,
                 })?;
                 return Ok(());
             }
             cell_slice.sort_by_key(f);
         }
+        info!(target: "tracer", "Traces: {:?}", (self.cell(i).iter().map(|x| f(x)).collect::<Vec<_>>()));
         self.mut_fix_cell_inverses(i);
         {
             let cell_start = self.cells.starts[i];
@@ -467,11 +474,12 @@ impl PartitionStack {
                 }
             }
         }
+        // TODO: Often missing.. required?
         tracer.add(trace::TraceEvent::End())?;
         Ok(())
     }
 
-    pub fn base_refine_partition_by<F: Copy, O: Ord + Hash>(
+    pub fn base_refine_partition_by<F: Copy, O: Ord + Hash + Debug>(
         &mut self,
         tracer: &mut trace::Tracer,
         f: F,
@@ -488,7 +496,7 @@ impl PartitionStack {
         Ok(())
     }
 
-    pub fn extended_refine_partition_by<F: Copy, O: Ord + Hash>(
+    pub fn extended_refine_partition_by<F: Copy, O: Ord + Hash + Debug>(
         &mut self,
         tracer: &mut trace::Tracer,
         f: F,

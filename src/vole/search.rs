@@ -109,12 +109,14 @@ pub fn simple_search_recurse(
         if !skip {
             state.save_state();
             let cell_count = state.domain.partition().base_cells().len();
+            info!("Try branching on {:?} in cell {:?}", c, cell_num);
             if state
                 .domain
                 .refine_partition_cell_by(cell_num, |x| *x == c)
                 .is_ok()
             {
                 assert!(state.domain.partition().base_cells().len() == cell_count + 1);
+                info!("Run refiners");
                 if state
                     .refiners
                     .do_refine(&mut state.domain, Side::Right, &mut state.stats)
@@ -172,7 +174,7 @@ pub fn simple_search(state: &mut State, sols: &mut Solutions) {
     trace!("Starting Search");
     let ret = state
         .refiners
-        .init_refine(&mut state.domain, Side::Right, &mut state.stats);
+        .init_refine(&mut state.domain, Side::Left, &mut state.stats);
     if ret.is_err() {
         return;
     }

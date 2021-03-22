@@ -95,6 +95,8 @@ impl GapRefiner {
 
             let hash = do_hash(&ret);
             info!("Run GAP refiner - recieved hash {:?}", hash);
+            /* Have to accept all graphs (for now), as we graphs can have ordering of
+               the extra vertices, while being "the same"
             if !self.seen_results.contains(&hash) {
                 info!("Found new graph");
                 keep.push(ret);
@@ -102,6 +104,8 @@ impl GapRefiner {
                 info!("Seen before");
             }
             self.seen_results.insert(hash);
+            */
+            keep.push(ret);
         }
 
         for ret in keep {

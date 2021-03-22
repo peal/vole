@@ -66,10 +66,13 @@ impl Tracer {
         if self.tracing_type.contains(TracingType::SYMMETRY) {
             if *self.pos < self.symmetry_trace.len() {
                 if self.symmetry_trace[*self.pos] != t {
-                    info!("Violating Symmetry Trace");
+                    info!(target: "tracer", "Violating Symmetry Trace: found {:?}, expected {:?}", t, self.symmetry_trace[*self.pos]);
                     *self.tracing_type -= TracingType::SYMMETRY;
+                } else {
+                    info!(target: "tracer", "Matching trace event: {:?}, depth {:?}", t, *self.pos);
                 }
             } else {
+                info!(target: "tracer", "Adding trace event: {:?}, depth {:?}", t, *self.pos);
                 assert!(self.symmetry_trace.len() == *self.pos);
                 self.symmetry_trace.push(t);
             }
@@ -79,13 +82,13 @@ impl Tracer {
             if *self.pos < self.canonical_trace.len() {
                 match self.canonical_trace[*self.pos].cmp(&t) {
                     Ordering::Less => {
-                        info!("Found a new best minimal canonical trace");
+                        info!(target: "tracer", "Found a new best minimal canonical trace");
                         self.canonical_trace.truncate(*self.pos);
                         self.canonical_trace.push(t);
                     }
                     Ordering::Equal => {}
                     Ordering::Greater => {
-                        info!("Violating canonical trace");
+                        info!(target: "tracer", "Violating canonical trace");
                         *self.tracing_type -= TracingType::CANONICAL;
                     }
                 }
@@ -98,7 +101,7 @@ impl Tracer {
         *self.pos += 1;
 
         if *self.tracing_type == TracingType::NONE {
-            info!("Trace fail");
+            info!(target: "tracer", "Trace fail");
             Err(TraceFailure {})
         } else {
             Ok(())
@@ -118,6 +121,7 @@ impl Default for Tracer {
 
 impl Backtrack for Tracer {
     fn save_state(&mut self) {
+        info!(target: "tracer", "Save tracer state: {:?}", *self.pos);
         self.pos.save_state();
         self.tracing_type.save_state();
     }
@@ -125,5 +129,6 @@ impl Backtrack for Tracer {
     fn restore_state(&mut self) {
         self.pos.restore_state();
         self.tracing_type.restore_state();
+        info!(target: "tracer", "Restore tracer state: {:?}", *self.pos);
     }
 }

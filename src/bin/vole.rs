@@ -23,6 +23,7 @@ fn main() -> anyhow::Result<()> {
         tracing_subscriber::fmt()
             .with_span_events(FmtSpan::ACTIVE)
             .with_max_level(Level::TRACE)
+            .with_env_filter("trace,tracer=off")
             //.pretty()
             .with_writer(non_block)
             .init();

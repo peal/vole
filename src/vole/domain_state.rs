@@ -8,6 +8,8 @@ use crate::{
     vole::partition_stack,
 };
 
+use std::fmt::Debug;
+
 use crate::vole::backtracking::Backtrack;
 
 use super::backtracking::Backtracking;
@@ -61,7 +63,7 @@ impl DomainState {
         self.rbase_digraph_stack.as_ref().unwrap()
     }
 
-    pub fn refine_partition_cell_by<F: Copy, T: Ord + Hash>(
+    pub fn refine_partition_cell_by<F: Copy, T: Ord + Hash + Debug>(
         &mut self,
         i: usize,
         f: F,
@@ -72,14 +74,17 @@ impl DomainState {
         self.stack.refine_partition_cell_by(&mut self.tracer, i, f)
     }
 
-    pub fn base_refine_partition_by<F: Copy, T: Ord + Hash>(&mut self, f: F) -> trace::Result<()>
+    pub fn base_refine_partition_by<F: Copy, T: Ord + Hash + Debug>(
+        &mut self,
+        f: F,
+    ) -> trace::Result<()>
     where
         F: Fn(&usize) -> T,
     {
         self.stack.base_refine_partition_by(&mut self.tracer, f)
     }
 
-    pub fn extended_refine_partition_by<F: Copy, T: Ord + Hash>(
+    pub fn extended_refine_partition_by<F: Copy, T: Ord + Hash + Debug>(
         &mut self,
         f: F,
     ) -> trace::Result<()>
