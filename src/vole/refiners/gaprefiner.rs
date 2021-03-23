@@ -33,13 +33,12 @@ impl GapRefiner {
         base_size: usize,
         extended_start: usize,
     ) -> Vec<usize> {
-        // Shut up clippy
-        // #[allow(clippy::needless_range_loop)]
         // Points we have to move
         let extra_points = max_val - base_size;
         let mut new_vertlabels = vec![usize::MAX; extended_start + extra_points];
-        for i in 0..base_size {
-            new_vertlabels[i] = *part.get(i).unwrap_or(&usize::MAX);
+
+        for (i, label) in new_vertlabels[0..base_size].iter_mut().enumerate() {
+            *label = *part.get(i).unwrap_or(&usize::MAX);
         }
         for i in 0..extra_points {
             new_vertlabels[i + extended_start] = *part.get(i + base_size).unwrap_or(&usize::MAX);
