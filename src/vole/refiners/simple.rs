@@ -1,26 +1,27 @@
 use super::Refiner;
+
 use super::{super::domain_state::DomainState, Side};
-use crate::{datastructures::digraph::Digraph, vole::trace};
-use crate::{perm::Permutation, vole::backtracking::Backtrack};
-use std::{
-    collections::{HashMap, HashSet},
-    rc::Rc,
+use crate::{
+    datastructures::{digraph::Digraph, sortedvec::SortedVec},
+    vole::trace,
 };
+use crate::{perm::Permutation, vole::backtracking::Backtrack};
+use std::{collections::HashMap, rc::Rc};
 
 pub struct SetTransporter {
-    set_left: Rc<HashSet<usize>>,
-    set_right: Rc<HashSet<usize>>,
+    set_left: Rc<SortedVec<usize>>,
+    set_right: Rc<SortedVec<usize>>,
 }
 
 impl SetTransporter {
-    pub fn new_transporter(set_left: HashSet<usize>, set_right: HashSet<usize>) -> Self {
+    pub fn new_transporter(set_left: SortedVec<usize>, set_right: SortedVec<usize>) -> Self {
         Self {
             set_left: Rc::new(set_left),
             set_right: Rc::new(set_right),
         }
     }
 
-    pub fn new_stabilizer(set: HashSet<usize>) -> Self {
+    pub fn new_stabilizer(set: SortedVec<usize>) -> Self {
         let r = Rc::new(set);
         Self {
             set_left: r.clone(),
@@ -43,9 +44,9 @@ impl Refiner for SetTransporter {
 
     fn check(&self, p: &Permutation) -> bool {
         self.set_left
-            .iter()
-            .cloned()
-            .all(|x| self.set_right.contains(&(p.apply(x))))
+            .as_ref()
+            .into_iter()
+            .all(|x| self.set_right.contains(&(p.apply(*x))))
     }
 
     fn refine_begin(&mut self, state: &mut DomainState, side: Side) -> trace::Result<()> {
@@ -147,19 +148,22 @@ impl Backtrack for TupleTransporter {
 }
 
 pub struct SetSetTransporter {
-    set_left: Rc<Vec<HashSet<usize>>>,
-    set_right: Rc<Vec<HashSet<usize>>>,
+    set_left: Rc<SortedVec<SortedVec<usize>>>,
+    set_right: Rc<SortedVec<SortedVec<usize>>>,
 }
 
 impl SetSetTransporter {
-    pub fn new_transporter(set_left: Vec<HashSet<usize>>, set_right: Vec<HashSet<usize>>) -> Self {
+    pub fn new_transporter(
+        set_left: SortedVec<SortedVec<usize>>,
+        set_right: SortedVec<SortedVec<usize>>,
+    ) -> Self {
         Self {
             set_left: Rc::new(set_left),
             set_right: Rc::new(set_right),
         }
     }
 
-    pub fn new_stabilizer(set: Vec<HashSet<usize>>) -> Self {
+    pub fn new_stabilizer(set: SortedVec<SortedVec<usize>>) -> Self {
         let r = Rc::new(set);
         Self {
             set_left: r.clone(),
@@ -182,7 +186,7 @@ impl Refiner for SetSetTransporter {
 
     fn check(&self, p: &Permutation) -> bool {
         for set in &*self.set_left {
-            let image: HashSet<usize> = set.iter().map(|&x| p.apply(x)).collect();
+            let image: SortedVec<usize> = set.iter().map(|&x| p.apply(x)).collect();
             if !self.set_right.contains(&image) {
                 return false;
             }
@@ -223,19 +227,22 @@ impl Backtrack for SetSetTransporter {
 }
 
 pub struct SetTupleTransporter {
-    set_left: Rc<Vec<Vec<usize>>>,
-    set_right: Rc<Vec<Vec<usize>>>,
+    set_left: Rc<SortedVec<Vec<usize>>>,
+    set_right: Rc<SortedVec<Vec<usize>>>,
 }
 
 impl SetTupleTransporter {
-    pub fn new_transporter(set_left: Vec<Vec<usize>>, set_right: Vec<Vec<usize>>) -> Self {
+    pub fn new_transporter(
+        set_left: SortedVec<Vec<usize>>,
+        set_right: SortedVec<Vec<usize>>,
+    ) -> Self {
         Self {
             set_left: Rc::new(set_left),
             set_right: Rc::new(set_right),
         }
     }
 
-    pub fn new_stabilizer(set: Vec<Vec<usize>>) -> Self {
+    pub fn new_stabilizer(set: SortedVec<Vec<usize>>) -> Self {
         let r = Rc::new(set);
         Self {
             set_left: r.clone(),
