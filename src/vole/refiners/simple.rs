@@ -6,7 +6,7 @@ use crate::{
     vole::trace,
 };
 use crate::{perm::Permutation, vole::backtracking::Backtrack};
-use std::{collections::HashMap, rc::Rc};
+use std::{cmp::Ordering, collections::HashMap, rc::Rc};
 
 pub struct SetTransporter {
     set_left: Rc<SortedVec<usize>>,
@@ -28,9 +28,19 @@ impl SetTransporter {
             set_right: r,
         }
     }
+
+    fn image(&self, p: &Permutation) -> SortedVec<usize> {
+        self.set_left.iter().map(|&x| p.apply(x)).collect()
+    }
+
+    fn compare(&self, lhs: &SortedVec<usize>, rhs: &SortedVec<usize>) -> Ordering {
+        lhs.cmp(rhs)
+    }
 }
 
 impl Refiner for SetTransporter {
+    gen_any_image_compare!(SortedVec<usize>);
+
     fn name(&self) -> String {
         if self.is_group() {
             format!("SetStabilizer of {:?}", self.set_left)
@@ -103,9 +113,19 @@ impl TupleTransporter {
             tuple_right,
         }
     }
+
+    fn image(&self, p: &Permutation) -> Vec<usize> {
+        self.tuple_left.iter().map(|&x| p.apply(x)).collect()
+    }
+
+    fn compare(&self, lhs: &[usize], rhs: &[usize]) -> Ordering {
+        lhs.cmp(rhs)
+    }
 }
 
 impl Refiner for TupleTransporter {
+    gen_any_image_compare!(Vec<usize>);
+
     fn name(&self) -> String {
         if self.is_group() {
             format!("TupleTransporter of {:?}", self.tuple_left)
@@ -170,9 +190,26 @@ impl SetSetTransporter {
             set_right: r,
         }
     }
+
+    fn image(&self, p: &Permutation) -> SortedVec<SortedVec<usize>> {
+        self.set_left
+            .iter()
+            .map(|x| x.iter().map(|&y| p.apply(y)).collect())
+            .collect()
+    }
+
+    fn compare(
+        &self,
+        lhs: &SortedVec<SortedVec<usize>>,
+        rhs: &SortedVec<SortedVec<usize>>,
+    ) -> Ordering {
+        lhs.cmp(rhs)
+    }
 }
 
 impl Refiner for SetSetTransporter {
+    gen_any_image_compare!(SortedVec<SortedVec<usize>>);
+
     fn name(&self) -> String {
         if self.is_group() {
             format!("SetSetStabilizer of {:?}", self.set_left)
@@ -249,9 +286,22 @@ impl SetTupleTransporter {
             set_right: r,
         }
     }
+
+    fn image(&self, p: &Permutation) -> SortedVec<Vec<usize>> {
+        self.set_left
+            .iter()
+            .map(|x| x.iter().map(|&y| p.apply(y)).collect())
+            .collect()
+    }
+
+    fn compare(&self, lhs: &SortedVec<Vec<usize>>, rhs: &SortedVec<Vec<usize>>) -> Ordering {
+        lhs.cmp(rhs)
+    }
 }
 
 impl Refiner for SetTupleTransporter {
+    gen_any_image_compare!(SortedVec<Vec<usize>>);
+
     fn name(&self) -> String {
         if self.is_group() {
             format!("SetTupleStabilizer of {:?}", self.set_left)

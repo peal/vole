@@ -6,7 +6,7 @@ use tracing::info;
 use super::{Refiner, Side};
 use crate::{
     datastructures::{digraph::Digraph, hash::do_hash},
-    gap_chat::GapChatType,
+    gap_chat::{GapChatType, GapRef},
     perm::Permutation,
     vole::{
         backtracking::{Backtrack, Backtracking},
@@ -155,9 +155,25 @@ impl GapRefiner {
         }
         Ok(())
     }
+
+    fn image(&self, p: &Permutation) -> GapRef {
+        GapChatType::send_request(&("refiner", &self.gap_id, "image", p))
+    }
+
+    fn compare(&self, lhs: &GapRef, rhs: &GapRef) -> std::cmp::Ordering {
+        let ret: isize = GapChatType::send_request(&("refiner", &self.gap_id, "compare", lhs, rhs));
+        match ret {
+            -1 => std::cmp::Ordering::Less,
+            0 => std::cmp::Ordering::Equal,
+            1 => std::cmp::Ordering::Greater,
+            _ => panic!(),
+        }
+    }
 }
 
 impl Refiner for GapRefiner {
+    gen_any_image_compare!(GapRef);
+
     fn name(&self) -> String {
         GapChatType::send_request(&("refiner", &self.gap_id, "name"))
     }

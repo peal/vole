@@ -49,8 +49,8 @@ impl PartialEq<Self> for Digraph {
     }
 }
 
-impl PartialOrd<Self> for Digraph {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+impl Ord for Digraph {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         // Check edges are sorted and unique
         assert!(self
             .edges
@@ -61,10 +61,16 @@ impl PartialOrd<Self> for Digraph {
         for (left, right) in self.edges.iter().zip(other.edges.iter()) {
             let c = left.iter().cmp(right.iter());
             if c != std::cmp::Ordering::Equal {
-                return Some(c);
+                return c;
             }
         }
-        Some(std::cmp::Ordering::Equal)
+        std::cmp::Ordering::Equal
+    }
+}
+
+impl PartialOrd<Self> for Digraph {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
     }
 }
 

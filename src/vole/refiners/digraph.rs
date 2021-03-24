@@ -22,9 +22,19 @@ impl DigraphTransporter {
             digraph_right,
         }
     }
+
+    fn image(&self, p: &Permutation) -> Digraph {
+        &(*self.digraph_left) ^ p
+    }
+
+    fn compare(&self, lhs: &Digraph, rhs: &Digraph) -> std::cmp::Ordering {
+        lhs.cmp(rhs)
+    }
 }
 
 impl Refiner for DigraphTransporter {
+    gen_any_image_compare!(Digraph);
+
     fn name(&self) -> String {
         if self.is_group() {
             format!("DigraphTransporter of {:?}", self.digraph_left)

@@ -140,3 +140,16 @@ impl GapChatType {
         Ok(())
     }
 }
+
+/// Represent a variable stored in GAP
+#[derive(Debug, Deserialize, Serialize, Hash)]
+pub struct GapRef {
+    id: isize,
+}
+
+impl Drop for GapRef {
+    fn drop(&mut self) {
+        // We do not expect a return from this
+        let _: () = GapChatType::send_request(&("DropGapRef", self.id));
+    }
+}
