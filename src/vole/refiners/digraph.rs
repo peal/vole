@@ -23,8 +23,12 @@ impl DigraphTransporter {
         }
     }
 
-    fn image(&self, p: &Permutation) -> Digraph {
-        &(*self.digraph_left) ^ p
+    fn image(&self, p: &Permutation, side: Side) -> Digraph {
+        let digraph = match side {
+            Side::Left => &self.digraph_left,
+            Side::Right => &self.digraph_right,
+        };
+        &(**digraph) ^ p
     }
 
     fn compare(&self, lhs: &Digraph, rhs: &Digraph) -> std::cmp::Ordering {

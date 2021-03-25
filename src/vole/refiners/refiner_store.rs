@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 use tracing::{info, trace_span};
 
 use crate::vole::solutions::Solutions;
@@ -108,6 +110,37 @@ impl RefinerStore {
         let mut is_sol = false;
         if tracing_type.contains(TracingType::SYMMETRY) {
             let sol = partition_stack::perm_between(state.rbase_partition(), part);
+
+            for r in self.refiners.iter() {
+                let x = r.check(&sol);
+                let y = r.any_image(&sol, Side::Left);
+                let z = r.any_image(&Permutation::id(), Side::Right);
+                if x != (r.any_compare(&y, &z) == Ordering::Equal) {
+                    eprintln!(
+                        "\n\n!!!! {:?} {:?} {:?} {:?} {:?} {:?} !!!!\n\n",
+                        x,
+                        &sol,
+                        r.name(),
+                        r.any_to_string(&y),
+                        r.any_to_string(&z),
+                        r.any_compare(&y, &z)
+                    );
+                }
+
+                assert!(
+                    r.check(&sol)
+                        == (r.any_compare(
+                            &r.any_image(&sol, Side::Left),
+                            &r.any_image(&Permutation::id(), Side::Right)
+                        ) == Ordering::Equal)
+                );
+            }
+            // This line checks that the 'check' function, cand the canonical image code, agree
+            assert!(self.refiners.iter().all(|x| x.check(&sol)
+                == (x.any_compare(
+                    &x.any_image(&sol, Side::Left),
+                    &x.any_image(&Permutation::id(), Side::Right)
+                ) == Ordering::Equal)));
 
             is_sol = self.refiners.iter().all(|x| x.check(&sol));
             if is_sol {

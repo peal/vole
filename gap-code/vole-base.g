@@ -30,8 +30,8 @@ fi;
 #     Here, args is:
 #     args[1]: "Left" or "Right", for if refiner is being run in 'Left' or 'Right' mode.
 #     args[2]: Current state of partition (where values in the same cell have the same value)
-CallRefiner := function(state, type, args)
-    local saved, tracer, is_left, indicator, c, i, retval, filters;
+CallRefiner := function(savedvals, state, type, args)
+    local saved, tracer, is_left, indicator, c, i, retval, filters, val;
     if type = "name" then
         return state!.conlist[1]!.name;
     elif type = "is_group" then
@@ -39,7 +39,31 @@ CallRefiner := function(state, type, args)
     elif type = "check" then
         Info(InfoVole, 2, "Checking ", args[1]);
         return BTKit_CheckPermutation(PermList(List(args[1].values, x -> x+1)), state!.conlist[1]);
+    elif type = "image" then
+        Info(InfoVole, 2, "Generating image", args[1]);
+        Assert(2, args[1] in ["Left", "Right"]);
+        if args[1] = "Left" then
+            val := state!.conlist[1]!.image(PermList(List(args[2].values, x -> x+1)));
+        else
+            Assert(2, args[2].values = []);
+            val := state!.conlist[1]!.result();
+        fi;
+        savedvals.map[savedvals.count] := val;
+        Info(InfoVole, 2, "Saving: ", val , " as ", savedvals.count);
+        retval := rec(id := savedvals.count);
+        savedvals.count := savedvals.count + 1;
+        return retval;
+    elif type = "compare" then
+        Info(InfoVole, 2, "Comparing", args[1], args[2], savedvals.map[args[1].id], savedvals.map[args[2].id]);
+        if savedvals.map[args[1].id] < savedvals.map[args[2].id] then
+            return -1;
+        elif savedvals.map[args[1].id] = savedvals.map[args[2].id] then
+            return 0;
+        else
+            return 1;
+        fi;
     else
+        Assert(2, type in ["begin", "fixed", "changed"]);
         Assert(2, args[1] = "Left" or args[1] = "Right");
         is_left := (args[1] = "Left");
         saved := SaveState(state);
@@ -93,8 +117,8 @@ VOLE_MODE := "opt";
 # obj contains the problem to run. 'refiners' is an optional list of GraphBacktracking refiners, which vole can "call back"
 # and query
 ExecuteVole := function(obj, refiners, canonicalgroup)
-    local ret, rustpipe, gappipe,str, args, result, prog, postimage, gapcallbacks;
-    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0);
+    local ret, rustpipe, gappipe,str, args, result, prog, postimage, gapcallbacks, savedvals;
+    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, image := 0, compare := 0);
     rustpipe := IO_Pipe();
     gappipe := IO_Pipe();
     Info(InfoVole, 2, "PreFork\n");
@@ -132,6 +156,9 @@ ExecuteVole := function(obj, refiners, canonicalgroup)
         Info(InfoVole, 2, "P: In parent");
         IO_Close(rustpipe.toread);
         IO_Close(gappipe.towrite);
+        # Set up cache
+        savedvals := rec(map := HashMap(), count := 1);
+
         Info(InfoVole, 4, "Sending", GapToJsonString(obj));
         IO_WriteLine(rustpipe.towrite, GapToJsonString(obj));
         IO_Flush(rustpipe.towrite);
@@ -157,9 +184,18 @@ ExecuteVole := function(obj, refiners, canonicalgroup)
                 fi;
             elif result[1] = "refiner" then
                 gapcallbacks.(result[3]) := gapcallbacks.(result[3]) + 1;
-                result := CallRefiner(refiners[result[2]], result[3], result{[4..Length(result)]});
+                result := CallRefiner(savedvals, refiners[result[2]], result[3], result{[4..Length(result)]});
                 Info(InfoVole, 2, "Refiner returned: ", result);
                 IO_WriteLine(rustpipe.towrite, GapToJsonString(result)); 
+            elif result[1] = "stringGapRef" then
+                Info(InfoVole, 2, "Print cached object: ", result);
+                IO_WriteLine(rustpipe.towrite, Concatenation("\"",String(savedvals.map[result[2].id]),"\""));
+            elif result[1] = "dropGapRef" then
+                Info(InfoVole, 2, "Dropping cached object: ", result);
+                Assert(2, IsBound(savedvals.map[result[2].id]));
+                Unbind(savedvals.map[result[2].id]);
+                # Need to still send something, as Rust expects a response
+                IO_WriteLine(rustpipe.towrite, "[]");
             else
                 ErrorNoReturn("Invalid return value from Vole: ", result);
             fi;

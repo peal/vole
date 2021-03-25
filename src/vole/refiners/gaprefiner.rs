@@ -156,8 +156,8 @@ impl GapRefiner {
         Ok(())
     }
 
-    fn image(&self, p: &Permutation) -> GapRef {
-        GapChatType::send_request(&("refiner", &self.gap_id, "image", p))
+    fn image(&self, p: &Permutation, side: Side) -> GapRef {
+        GapChatType::send_request(&("refiner", &self.gap_id, "image", side, p))
     }
 
     fn compare(&self, lhs: &GapRef, rhs: &GapRef) -> std::cmp::Ordering {

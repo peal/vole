@@ -2,6 +2,7 @@
 //! mathematical questions during search
 
 use std::{
+    fmt,
     fs::File,
     io::prelude::*,
     io::{BufReader, BufWriter},
@@ -142,7 +143,7 @@ impl GapChatType {
 }
 
 /// Represent a variable stored in GAP
-#[derive(Debug, Deserialize, Serialize, Hash)]
+#[derive(Deserialize, Serialize, Hash)]
 pub struct GapRef {
     id: isize,
 }
@@ -150,6 +151,17 @@ pub struct GapRef {
 impl Drop for GapRef {
     fn drop(&mut self) {
         // We do not expect a return from this
-        let _: () = GapChatType::send_request(&("DropGapRef", self.id));
+        let v: Vec<usize> = GapChatType::send_request(&("dropGapRef", self));
+        assert!(v.is_empty());
+    }
+}
+
+impl fmt::Debug for GapRef {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s: String = GapChatType::send_request(&("stringGapRef", self));
+        f.debug_struct("GapRef")
+            .field("id", &self.id)
+            .field("value", &s)
+            .finish()
     }
 }

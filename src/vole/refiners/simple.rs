@@ -29,8 +29,13 @@ impl SetTransporter {
         }
     }
 
-    fn image(&self, p: &Permutation) -> SortedVec<usize> {
-        self.set_left.iter().map(|&x| p.apply(x)).collect()
+    fn image(&self, p: &Permutation, side: Side) -> SortedVec<usize> {
+        let set = match side {
+            Side::Left => &self.set_left,
+            Side::Right => &self.set_right,
+        };
+
+        set.iter().map(|&x| p.apply(x)).collect()
     }
 
     fn compare(&self, lhs: &SortedVec<usize>, rhs: &SortedVec<usize>) -> Ordering {
@@ -114,8 +119,12 @@ impl TupleTransporter {
         }
     }
 
-    fn image(&self, p: &Permutation) -> Vec<usize> {
-        self.tuple_left.iter().map(|&x| p.apply(x)).collect()
+    fn image(&self, p: &Permutation, side: Side) -> Vec<usize> {
+        let tuple = match side {
+            Side::Left => &self.tuple_left,
+            Side::Right => &self.tuple_right,
+        };
+        tuple.iter().map(|&x| p.apply(x)).collect()
     }
 
     fn compare(&self, lhs: &[usize], rhs: &[usize]) -> Ordering {
@@ -191,9 +200,13 @@ impl SetSetTransporter {
         }
     }
 
-    fn image(&self, p: &Permutation) -> SortedVec<SortedVec<usize>> {
-        self.set_left
-            .iter()
+    fn image(&self, p: &Permutation, side: Side) -> SortedVec<SortedVec<usize>> {
+        let set = match side {
+            Side::Left => &self.set_left,
+            Side::Right => &self.set_right,
+        };
+
+        set.iter()
             .map(|x| x.iter().map(|&y| p.apply(y)).collect())
             .collect()
     }
@@ -287,9 +300,13 @@ impl SetTupleTransporter {
         }
     }
 
-    fn image(&self, p: &Permutation) -> SortedVec<Vec<usize>> {
-        self.set_left
-            .iter()
+    fn image(&self, p: &Permutation, side: Side) -> SortedVec<Vec<usize>> {
+        let set = match side {
+            Side::Left => &self.set_left,
+            Side::Right => &self.set_right,
+        };
+
+        set.iter()
             .map(|x| x.iter().map(|&y| p.apply(y)).collect())
             .collect()
     }
