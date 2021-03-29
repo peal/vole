@@ -225,7 +225,7 @@ con := rec(
 # 'constraints': List of constraints to solve
 # TODO: Add Canonical group
 _VoleSolve := function(points, find_single, find_canonical, constraints)
-    local ret, gapcons,i, grp, sc, gens, group;
+    local ret, gapcons,i, grp, sc, gens, group, result;
     gapcons := [];
     constraints := ShallowCopy(constraints);
     for i in [1..Length(constraints)] do
@@ -242,8 +242,11 @@ _VoleSolve := function(points, find_single, find_canonical, constraints)
 
     ret := ExecuteVole(rec(config := rec(points := points, find_single := find_single, find_canonical := find_canonical),
                 constraints := constraints), gapcons, false);
+
+    result := rec(raw := ret);
+
     if find_single then
-        return rec(raw := ret, sol := List(ret.sols, PermList));
+        result.sol := List(ret.sols, PermList);
     else
         gens := List(ret.sols, PermList);
         if IsEmpty(gens) then
@@ -256,11 +259,18 @@ _VoleSolve := function(points, find_single, find_canonical, constraints)
         SetStabChainMutable(group, sc);
         #Assert(0, SizeStabChain(sc) = Size(Group(gens)));
 
-        return rec(raw := ret, group := group);
+        result.group := group;
     fi;
+
+    if find_canonical then
+        result.canonical := PermList(ret.canonical);
+    fi;
+    return result;
 end;
 
 VoleSolve := {points, find_single, constraints} -> _VoleSolve(points, find_single, false, constraints);
+VoleGroupSolve := {points, constraints} -> _VoleSolve(points, false, false, constraints);
+VoleCosetSolve := {points, constraints} -> _VoleSolve(points, true, false, constraints);
 VoleCanonicalSolve := {points, constraints} -> _VoleSolve(points, false, true, constraints);
 
 

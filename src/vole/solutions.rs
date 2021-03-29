@@ -1,12 +1,19 @@
+use std::any::Any;
+
 use crate::perm::Permutation;
 use disjoint_sets::UnionFind;
-use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[derive(Debug)]
+pub struct Canonical {
+    pub perm: Permutation,
+    pub images: Vec<Box<dyn Any>>,
+}
+
+#[derive(Debug, Default)]
 pub struct Solutions {
     sols: Vec<Permutation>,
     orbits: UnionFind<usize>,
-    canonical: Option<Permutation>,
+    canonical: Option<Canonical>,
     nodes: u64,
     tracefails: u64,
     solsfails: u64,
@@ -33,5 +40,13 @@ impl Solutions {
 
     pub fn get(&self) -> &Vec<Permutation> {
         &self.sols
+    }
+
+    pub fn get_canonical(&self) -> &Option<Canonical> {
+        &self.canonical
+    }
+
+    pub fn set_canonical(&mut self, c: Option<Canonical>) {
+        self.canonical = c
     }
 }

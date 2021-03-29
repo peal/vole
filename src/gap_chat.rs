@@ -115,6 +115,7 @@ impl GapChatType {
 #[derive(Debug, Deserialize, Serialize)]
 struct Results {
     sols: Vec<Vec<usize>>,
+    canonical: Option<Vec<usize>>,
     base: Vec<usize>,
     stats: Stats,
 }
@@ -136,7 +137,24 @@ impl GapChatType {
 
         let base = rbase.iter().map(|&x| x + 1).collect();
 
-        serde_json::to_writer(&mut self.out_file, &("end", Results { sols, base, stats }))?;
+        let canonical = solutions
+            .get_canonical()
+            .as_ref()
+            .map(|c| c.perm.as_vec().iter().map(|&x| x + 1).collect());
+
+        serde_json::to_writer(
+            &mut self.out_file,
+            &(
+                "end",
+                Results {
+                    sols,
+                    base,
+                    canonical,
+                    stats,
+                },
+            ),
+        )?;
+        writeln!(&mut self.out_file).unwrap();
         self.out_file.flush()?;
         Ok(())
     }

@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 
 use tracing::{info, trace_span};
 
-use crate::vole::solutions::Solutions;
+use crate::vole::solutions::{Canonical, Solutions};
 use crate::vole::trace::TracingType;
 use crate::vole::{
     backtracking::{Backtrack, Backtracking},
@@ -13,6 +13,8 @@ use crate::vole::{
     stats::Stats,
 };
 use crate::{gap_chat::GapChatType, perm::Permutation, vole::domain_state::DomainState};
+
+use std::any::Any;
 
 pub struct RefinerStore {
     refiners: Vec<Box<dyn Refiner>>,
@@ -90,6 +92,79 @@ impl RefinerStore {
         state.snapshot_rbase();
     }
 
+    pub fn get_canonical_images(&self, p: &Permutation) -> Vec<Box<dyn Any>> {
+        return self
+            .refiners
+            .iter()
+            .map(|r| r.any_image(p, Side::Left))
+            .collect();
+    }
+
+    pub fn get_smaller_canonical_image(
+        &self,
+        p: &Permutation,
+        prev: &Vec<Box<dyn Any>>,
+        stats: &mut Stats,
+    ) -> Option<Vec<Box<dyn Any>>> {
+        // TODO: Speed up
+        let image = self.get_canonical_images(p);
+        for i in 0..prev.len() {
+            let ord = self.refiners[i].any_compare(&image[i], &prev[i]);
+            match ord {
+                std::cmp::Ordering::Less => {
+                    return Some(image);
+                }
+                std::cmp::Ordering::Equal => {}
+                std::cmp::Ordering::Greater => {
+                    stats.bad_canonical += 1;
+                    return None;
+                }
+            }
+        }
+        info!("Found identical canonical image");
+        stats.equal_canonical += 1;
+        None
+    }
+
+    pub fn check_canonical(
+        &mut self,
+        state: &mut DomainState,
+        sols: &mut Solutions,
+        stats: &mut Stats,
+    ) {
+        let part = state.partition();
+        let pnts = part.base_domain_size();
+
+        // Get canonical permutation
+        let preimage: Vec<usize> = part.base_cells().iter().map(|&x| part.cell(x)[0]).collect();
+        // GAP needs 1 indexed
+        let preimagegap: Vec<usize> = preimage.iter().map(|&x| x + 1).collect();
+        let postimagegap: Vec<usize> = GapChatType::send_request(&("canonicalmin", &preimagegap));
+        let postimage: Vec<usize> = postimagegap.into_iter().map(|x| x - 1).collect();
+        let mut image: Vec<usize> = vec![0; pnts];
+        for i in 0..pnts {
+            image[preimage[i]] = postimage[i];
+        }
+        let perm = Permutation::from_vec(image);
+
+        info!("Considering new canonical image: {:?}", perm);
+
+        match sols.get_canonical() {
+            None => {
+                info!("First canonical candidate: {:?}", perm);
+                let images = self.get_canonical_images(&perm);
+                sols.set_canonical(Some(Canonical { perm, images }))
+            }
+            Some(canonical) => {
+                let o = self.get_smaller_canonical_image(&perm, &canonical.images, stats);
+                if let Some(images) = o {
+                    info!("Found new canonical image: {:?}", perm);
+                    sols.set_canonical(Some(Canonical { perm, images }));
+                }
+            }
+        }
+    }
+
     pub fn check_solution(
         &mut self,
         state: &mut DomainState,
@@ -154,19 +229,7 @@ impl RefinerStore {
         }
 
         if tracing_type.contains(TracingType::CANONICAL) {
-            let preimage: Vec<usize> = part.base_cells().iter().map(|&x| part.cell(x)[0]).collect();
-            // GAP needs 1 indexed
-            let preimagegap: Vec<usize> = preimage.iter().map(|&x| x + 1).collect();
-            let postimagegap: Vec<usize> =
-                GapChatType::send_request(&("canonicalmin", &preimagegap));
-            let postimage: Vec<usize> = postimagegap.into_iter().map(|x| x - 1).collect();
-            let mut image: Vec<usize> = vec![0; pnts];
-            for i in 0..pnts {
-                image[preimage[i]] = postimage[i];
-            }
-            let perm = Permutation::from_vec(image);
-            info!("Considering new canonical image: {:?}", perm);
-            stats.bad_canonical += 1;
+            self.check_canonical(state, sols, stats);
         }
 
         is_sol
