@@ -108,14 +108,26 @@ impl RefinerStore {
     ) -> Option<Vec<Box<dyn Any>>> {
         // TODO: Speed up
         let image = self.get_canonical_images(p);
+        let len = image.len();
+        info!(
+            "Comparing Canonical. prev: {:?} image: {:?}",
+            (0..len)
+                .map(|i| self.refiners[i].any_to_string(&prev[i]))
+                .collect::<Vec<_>>(),
+            (0..len)
+                .map(|i| self.refiners[i].any_to_string(&image[i]))
+                .collect::<Vec<_>>()
+        );
         for i in 0..prev.len() {
             let ord = self.refiners[i].any_compare(&image[i], &prev[i]);
             match ord {
                 std::cmp::Ordering::Less => {
+                    info!("Improved Canonical");
                     return Some(image);
                 }
                 std::cmp::Ordering::Equal => {}
                 std::cmp::Ordering::Greater => {
+                    info!("Worse Canonical");
                     stats.bad_canonical += 1;
                     return None;
                 }
@@ -139,7 +151,8 @@ impl RefinerStore {
         let preimage: Vec<usize> = part.base_cells().iter().map(|&x| part.cell(x)[0]).collect();
         // GAP needs 1 indexed
         let preimagegap: Vec<usize> = preimage.iter().map(|&x| x + 1).collect();
-        let postimagegap: Vec<usize> = GapChatType::send_request(&("canonicalmin", &preimagegap));
+        let postimagegap: Vec<usize> =
+            GapChatType::send_request(&("canonicalmin", &preimagegap)).unwrap();
         let postimage: Vec<usize> = postimagegap.into_iter().map(|x| x - 1).collect();
         let mut image: Vec<usize> = vec![0; pnts];
         for i in 0..pnts {
@@ -149,17 +162,33 @@ impl RefinerStore {
 
         info!("Considering new canonical image: {:?}", perm);
 
+        // If we have found a better trace, then clear the old canonical solution
+        if let Some(canonical) = sols.get_canonical() {
+            if canonical.trace_version < state.tracer().canonical_trace_version() {
+                info!("New canonical trace found, clearing old canonical image");
+                sols.set_canonical(None);
+            }
+        }
+
         match sols.get_canonical() {
             None => {
                 info!("First canonical candidate: {:?}", perm);
                 let images = self.get_canonical_images(&perm);
-                sols.set_canonical(Some(Canonical { perm, images }))
+                sols.set_canonical(Some(Canonical {
+                    perm,
+                    images,
+                    trace_version: state.tracer().canonical_trace_version(),
+                }))
             }
             Some(canonical) => {
                 let o = self.get_smaller_canonical_image(&perm, &canonical.images, stats);
                 if let Some(images) = o {
                     info!("Found new canonical image: {:?}", perm);
-                    sols.set_canonical(Some(Canonical { perm, images }));
+                    sols.set_canonical(Some(Canonical {
+                        perm,
+                        images,
+                        trace_version: state.tracer().canonical_trace_version(),
+                    }));
                 }
             }
         }

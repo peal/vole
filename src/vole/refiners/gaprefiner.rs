@@ -80,7 +80,8 @@ impl GapRefiner {
             refiner_type,
             side,
             state.partition().base_as_indicator(),
-        ));
+        ))
+        .unwrap();
 
         let mut keep: Vec<GapRefinerReturn> = vec![];
 
@@ -157,11 +158,12 @@ impl GapRefiner {
     }
 
     fn image(&self, p: &Permutation, side: Side) -> GapRef {
-        GapChatType::send_request(&("refiner", &self.gap_id, "image", side, p))
+        GapChatType::send_request(&("refiner", &self.gap_id, "image", side, p)).unwrap()
     }
 
     fn compare(&self, lhs: &GapRef, rhs: &GapRef) -> std::cmp::Ordering {
-        let ret: isize = GapChatType::send_request(&("refiner", &self.gap_id, "compare", lhs, rhs));
+        let ret: isize =
+            GapChatType::send_request(&("refiner", &self.gap_id, "compare", lhs, rhs)).unwrap();
         match ret {
             -1 => std::cmp::Ordering::Less,
             0 => std::cmp::Ordering::Equal,
@@ -175,15 +177,15 @@ impl Refiner for GapRefiner {
     gen_any_image_compare!(GapRef);
 
     fn name(&self) -> String {
-        GapChatType::send_request(&("refiner", &self.gap_id, "name"))
+        GapChatType::send_request(&("refiner", &self.gap_id, "name")).unwrap()
     }
 
     fn is_group(&self) -> bool {
-        GapChatType::send_request(&("refiner", &self.gap_id, "is_group"))
+        GapChatType::send_request(&("refiner", &self.gap_id, "is_group")).unwrap()
     }
 
     fn check(&self, p: &Permutation) -> bool {
-        GapChatType::send_request(&("refiner", &self.gap_id, "check", p))
+        GapChatType::send_request(&("refiner", &self.gap_id, "check", p)).unwrap()
     }
 
     fn refine_begin(&mut self, s: &mut DomainState, side: Side) -> trace::Result<()> {

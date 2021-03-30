@@ -94,9 +94,6 @@ CallRefiner := function(savedvals, state, type, args)
                 if IsBound(filters[i].graph) then
                     filters[i].graph := OutNeighbours(filters[i].graph);
                 fi;
-                if IsBound(filters[i].vertlabels) then
-                    filters[i].vertlabels := List([1..Length(filters[i].graph)], {x} -> HashBasic(filters[i].vertlabels(x)));
-                fi;
             fi;
         od;
 
@@ -117,7 +114,7 @@ VOLE_MODE := "opt";
 # obj contains the problem to run. 'refiners' is an optional list of GraphBacktracking refiners, which vole can "call back"
 # and query
 ExecuteVole := function(obj, refiners, canonicalgroup)
-    local ret, rustpipe, gappipe,str, args, result, prog, postimage, gapcallbacks, savedvals;
+    local ret, rustpipe, gappipe,str, args, result, prog, preimage, postimage, gapcallbacks, savedvals, flush;
     gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, image := 0, compare := 0);
     rustpipe := IO_Pipe();
     gappipe := IO_Pipe();
@@ -177,15 +174,13 @@ ExecuteVole := function(obj, refiners, canonicalgroup)
                 if canonicalgroup = false then
                     IO_WriteLine(rustpipe.towrite, GapToJsonString([1..Length(result[2])]));
                 else
-                    Assert(0, false);
-                    # TODO - fix 0/1 indexing
                     postimage := MinimalImage(canonicalgroup, result[2], OnTuples);
                     IO_WriteLine(rustpipe.towrite, GapToJsonString(postimage));
                 fi;
             elif result[1] = "refiner" then
                 gapcallbacks.(result[3]) := gapcallbacks.(result[3]) + 1;
                 result := CallRefiner(savedvals, refiners[result[2]], result[3], result{[4..Length(result)]});
-                Info(InfoVole, 2, "Refiner returned: ", result);
+                Info(InfoVole, 2, "Refiner returned: ", GapToJsonString(result));
                 IO_WriteLine(rustpipe.towrite, GapToJsonString(result)); 
             elif result[1] = "stringGapRef" then
                 Info(InfoVole, 2, "Print cached object: ", result);
@@ -197,9 +192,13 @@ ExecuteVole := function(obj, refiners, canonicalgroup)
                 # Need to still send something, as Rust expects a response
                 IO_WriteLine(rustpipe.towrite, "[]");
             else
+                IO_Close(rustpipe.towrite);
+                IO_Close(gappipe.toread);
+                IO_WaitPid(ret, true);
                 ErrorNoReturn("Invalid return value from Vole: ", result);
             fi;
-            IO_Flush(rustpipe.towrite);
+            flush := IO_Flush(rustpipe.towrite);
+            Assert(2, flush <> fail);
         od;
     fi;
 end;
@@ -224,8 +223,17 @@ con := rec(
 # 'find_single': Find a single solution (equivalent to 'this is a coset problem')
 # 'constraints': List of constraints to solve
 # TODO: Add Canonical group
-_VoleSolve := function(points, find_single, find_canonical, constraints)
+_VoleSolve := function(points, find_single, find_canonical, constraints, canonical_group)
     local ret, gapcons,i, grp, sc, gens, group, result;
+    # Get rid of trivial cases
+    if points < 2 then
+        points := 2;
+    fi;
+
+    if canonical_group <> false then
+        constraints := Concatenation([BTKit_Con.InGroupSimple(points, canonical_group)], constraints);
+    fi;
+
     gapcons := [];
     constraints := ShallowCopy(constraints);
     for i in [1..Length(constraints)] do
@@ -235,13 +243,9 @@ _VoleSolve := function(points, find_single, find_canonical, constraints)
         fi;
     od;
 
-    # Get rid of trivial cases
-    if points < 2 then
-        points := 2;
-    fi;
 
     ret := ExecuteVole(rec(config := rec(points := points, find_single := find_single, find_canonical := find_canonical),
-                constraints := constraints), gapcons, false);
+                constraints := constraints), gapcons, canonical_group);
 
     result := rec(raw := ret);
 
@@ -268,16 +272,19 @@ _VoleSolve := function(points, find_single, find_canonical, constraints)
     return result;
 end;
 
-VoleSolve := {points, find_single, constraints} -> _VoleSolve(points, find_single, false, constraints);
-VoleGroupSolve := {points, constraints} -> _VoleSolve(points, false, false, constraints);
-VoleCosetSolve := {points, constraints} -> _VoleSolve(points, true, false, constraints);
-VoleCanonicalSolve := {points, constraints} -> _VoleSolve(points, false, true, constraints);
+VoleSolve := {points, find_single, constraints} -> _VoleSolve(points, find_single, false, constraints, false);
+VoleGroupSolve := {points, constraints} -> _VoleSolve(points, false, false, constraints, false);
+VoleCosetSolve := {points, constraints} -> _VoleSolve(points, true, false, constraints, false);
+VoleCanonicalSolve := {points, grp, constraints} -> _VoleSolve(points, false, true, constraints, grp);
 
 
 # Simple GAP wrapper which implements the same interface as VoleSolve, for problems
 # which return a group
 GAPSolve := function(p, l)
     local c, g, lmp;
+    if p < 1 then
+        p := 1;
+    fi;
     g := SymmetricGroup(p);
     for c in l do
         if IsRefiner(c) then

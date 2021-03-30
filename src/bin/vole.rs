@@ -23,7 +23,9 @@ fn main() -> anyhow::Result<()> {
         tracing_subscriber::fmt()
             .with_span_events(FmtSpan::ACTIVE)
             .with_max_level(Level::TRACE)
-            .with_env_filter("trace,tracer=off")
+            //.with_env_filter("trace,tracer=off")
+            .with_ansi(false)
+            .without_time()
             //.pretty()
             .with_writer(non_block)
             .init();
@@ -35,7 +37,7 @@ fn main() -> anyhow::Result<()> {
         RefinerStore::new_from_refiners(parse_input::build_constraints(&problem.constraints));
 
     let tracer = if problem.config.find_canonical {
-        trace::Tracer::new()
+        trace::Tracer::new_with_type(TracingType::CANONICAL)
     } else {
         trace::Tracer::new_with_type(TracingType::SYMMETRY)
     };

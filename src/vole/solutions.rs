@@ -5,6 +5,7 @@ use disjoint_sets::UnionFind;
 
 #[derive(Debug)]
 pub struct Canonical {
+    pub trace_version: usize,
     pub perm: Permutation,
     pub images: Vec<Box<dyn Any>>,
 }

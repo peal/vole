@@ -46,6 +46,7 @@ pub struct Tracer {
     tracing_type: Backtracking<TracingType>,
     symmetry_trace: Vec<TraceEvent>,
     canonical_trace: Vec<TraceEvent>,
+    canonical_trace_version: usize,
 }
 
 impl Tracer {
@@ -55,6 +56,7 @@ impl Tracer {
             tracing_type: Backtracking::new(tt),
             symmetry_trace: Default::default(),
             canonical_trace: Default::default(),
+            canonical_trace_version: Default::default(),
         }
     }
 
@@ -62,6 +64,7 @@ impl Tracer {
         Self::new_with_type(TracingType::BOTH)
     }
 
+    /// Add new event to trace, returns an Err if search should backtrack
     pub fn add(&mut self, t: TraceEvent) -> Result<()> {
         if self.tracing_type.contains(TracingType::SYMMETRY) {
             if *self.pos < self.symmetry_trace.len() {
@@ -85,6 +88,7 @@ impl Tracer {
                         info!(target: "tracer", "Found a new best minimal canonical trace");
                         self.canonical_trace.truncate(*self.pos);
                         self.canonical_trace.push(t);
+                        self.canonical_trace_version += 1;
                     }
                     Ordering::Equal => {}
                     Ordering::Greater => {
@@ -108,8 +112,15 @@ impl Tracer {
         }
     }
 
+    /// The current type of the trace (SYMMETRY and CANONICAL) -- can change as search progresses
     pub fn tracing_type(&self) -> TracingType {
         *self.tracing_type
+    }
+
+    /// The version of the canonical trace -- this is incremented every time a new
+    /// better canonical trace is found
+    pub fn canonical_trace_version(&self) -> usize {
+        self.canonical_trace_version
     }
 }
 

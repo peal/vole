@@ -7,9 +7,11 @@ use std::{
     io::prelude::*,
     io::{BufReader, BufWriter},
     path::PathBuf,
-    sync::Mutex,
+    sync::{Mutex, MutexGuard},
 };
 
+use anyhow::anyhow;
+use anyhow::Error;
 use serde::{Deserialize, Serialize};
 use tracing::debug;
 
@@ -93,23 +95,49 @@ lazy_static! {
 impl GapChatType {
     /// Send an object to GAP, and receieve a reply. `T` is serialised
     /// to JSON, and the reply is deserialised into type `U`.
-    pub fn send_request<T, U>(request: &T) -> U
+    pub fn send_request<T, U>(request: &T) -> Result<U, Error>
     where
         T: serde::Serialize + std::fmt::Debug,
         U: serde::de::DeserializeOwned + std::fmt::Debug,
     {
-        let gap_channel = &mut GAP_CHAT.lock().unwrap();
-        debug!("Sending to GAP: {:?}", request);
-        serde_json::to_writer(&mut gap_channel.out_file, request).unwrap();
-        writeln!(gap_channel.out_file).unwrap();
-        gap_channel.out_file.flush().unwrap();
+        let gap_channel = GAP_CHAT.lock().unwrap();
+        GapChatType::send_request_internal(request, gap_channel)
+    }
 
+    /// A variant of send_request where, if communication is always in progress
+    /// will return fail instead.
+    pub fn try_send_request<T, U>(request: &T) -> Result<U, Error>
+    where
+        T: serde::Serialize + std::fmt::Debug,
+        U: serde::de::DeserializeOwned + std::fmt::Debug,
+    {
+        let gap_channel = GAP_CHAT.try_lock();
+        if gap_channel.is_ok() {
+            GapChatType::send_request_internal(request, gap_channel.unwrap())
+        } else {
+            Err(anyhow!("<GAP busy>"))
+        }
+    }
+
+    pub fn send_request_internal<T, U>(
+        request: &T,
+        mut gap_channel: MutexGuard<GapChatType>,
+    ) -> Result<U, Error>
+    where
+        T: serde::Serialize + std::fmt::Debug,
+        U: serde::de::DeserializeOwned + std::fmt::Debug,
+    {
+        debug!("Sending to GAP: {:?}", serde_json::to_string(request));
+        serde_json::to_writer(&mut gap_channel.out_file, request)?;
+        writeln!(gap_channel.out_file)?;
+        gap_channel.out_file.flush()?;
+        debug!("Sent to GAP, now reading");
         let mut line = String::new();
-        let _ = gap_channel.in_file.read_line(&mut line).unwrap();
+        let _ = gap_channel.in_file.read_line(&mut line)?;
 
-        let out: U = serde_json::from_str(&line).unwrap();
+        let out: U = serde_json::from_str(&line)?;
         debug!("Recieving from GAP: {:?}", out);
-        out
+        Ok(out)
     }
 }
 #[derive(Debug, Deserialize, Serialize)]
@@ -169,17 +197,24 @@ pub struct GapRef {
 impl Drop for GapRef {
     fn drop(&mut self) {
         // We do not expect a return from this
-        let v: Vec<usize> = GapChatType::send_request(&("dropGapRef", self));
-        assert!(v.is_empty());
+        // We purposefully ignore any errors from this, as they can occur while
+        // the program is closing
+        let v: Result<Vec<usize>, Error> = GapChatType::send_request(&("dropGapRef", self));
+        assert!(v.is_err() || v.unwrap().is_empty());
     }
 }
 
 impl fmt::Debug for GapRef {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let s: String = GapChatType::send_request(&("stringGapRef", self));
+        let s: Result<String, Error> = GapChatType::try_send_request(&("stringGapRef", self));
+        let str = match s {
+            Ok(s) => s,
+            Err(e) => e.to_string(),
+        };
+
         f.debug_struct("GapRef")
             .field("id", &self.id)
-            .field("value", &s)
+            .field("value", &str)
             .finish()
     }
 }
