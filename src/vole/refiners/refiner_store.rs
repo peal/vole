@@ -103,7 +103,7 @@ impl RefinerStore {
     pub fn get_smaller_canonical_image(
         &self,
         p: &Permutation,
-        prev: &Vec<Box<dyn Any>>,
+        prev: &[Box<dyn Any>],
         stats: &mut Stats,
     ) -> Option<Vec<Box<dyn Any>>> {
         // TODO: Speed up

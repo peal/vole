@@ -101,7 +101,7 @@ impl GapChatType {
         U: serde::de::DeserializeOwned + std::fmt::Debug,
     {
         let gap_channel = GAP_CHAT.lock().unwrap();
-        GapChatType::send_request_internal(request, gap_channel)
+        Self::send_request_internal(request, gap_channel)
     }
 
     /// A variant of send_request where, if communication is always in progress
@@ -112,16 +112,15 @@ impl GapChatType {
         U: serde::de::DeserializeOwned + std::fmt::Debug,
     {
         let gap_channel = GAP_CHAT.try_lock();
-        if gap_channel.is_ok() {
-            GapChatType::send_request_internal(request, gap_channel.unwrap())
-        } else {
-            Err(anyhow!("<GAP busy>"))
+        match gap_channel {
+            Ok(guard) => Self::send_request_internal(request, guard),
+            Err(_) => Err(anyhow!("<GAP busy>")),
         }
     }
 
     pub fn send_request_internal<T, U>(
         request: &T,
-        mut gap_channel: MutexGuard<GapChatType>,
+        mut gap_channel: MutexGuard<Self>,
     ) -> Result<U, Error>
     where
         T: serde::Serialize + std::fmt::Debug,
@@ -176,8 +175,8 @@ impl GapChatType {
                 "end",
                 Results {
                     sols,
-                    base,
                     canonical,
+                    base,
                     stats,
                 },
             ),
