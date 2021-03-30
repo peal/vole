@@ -3,7 +3,7 @@ gap> LoadPackage("ferret", false);;
 gap> LoadPackage("quickcheck", false);;
 gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 >      local s2, max, res, p;
->      max := Maximum(Maximum(Flat(s)), LargestMovedPoint(g));
+>      max := Maximum(Maximum(Flat(s)), LargestMovedPoint(g),2);
 >      p := Random(g);
 >      s2 := OnSetsTuples(s,p);
 >      res := VoleSolve(max, true, [con.SetTupleTransport(s,s2), BTKit_Con.InGroupSimple(max, g)]);
