@@ -18,16 +18,21 @@ use std::any::Any;
 
 pub struct RefinerStore {
     refiners: Vec<Box<dyn Refiner>>,
-    base_fixed_values_considered: Backtracking<usize>,
-    cells_considered: Backtracking<usize>,
+    base_fixed_values_considered: Vec<Backtracking<usize>>,
+    cells_considered: Vec<Backtracking<usize>>,
 }
 
 impl RefinerStore {
     pub fn new_from_refiners(refiners: Vec<Box<dyn Refiner>>) -> Self {
+        let len = refiners.len();
         Self {
             refiners,
-            base_fixed_values_considered: Backtracking::new(0),
-            cells_considered: Backtracking::new(0),
+            base_fixed_values_considered: std::iter::repeat_with(|| Backtracking::new(0))
+                .take(len)
+                .collect(),
+            cells_considered: std::iter::repeat_with(|| Backtracking::new(0))
+                .take(len)
+                .collect(),
         }
     }
 
@@ -39,7 +44,9 @@ impl RefinerStore {
     ) -> trace::Result<()> {
         let span = trace_span!("init_refine:", side = debug(side));
         let _e = span.enter();
-        for r in self.refiners.iter_mut() {
+        for (i, r) in self.refiners.iter_mut().enumerate() {
+            *self.base_fixed_values_considered[i] = state.partition().base_fixed_values().len();
+            *self.cells_considered[i] = state.partition().base_cells().len();
             r.refine_begin(state, side)?;
             stats.refiner_calls += 1;
         }
@@ -55,21 +62,23 @@ impl RefinerStore {
         let span = trace_span!("do_refine");
         let _e = span.enter();
         loop {
-            let fixed_points = state.partition().base_fixed_values().len();
-            assert!(fixed_points >= *self.base_fixed_values_considered);
-            if fixed_points > *self.base_fixed_values_considered {
-                *self.base_fixed_values_considered = fixed_points;
-                for refiner in &mut self.refiners {
+            let init_fixed_points = state.partition().base_fixed_values().len();
+
+            for (i, refiner) in self.refiners.iter_mut().enumerate() {
+                let fixed_points = state.partition().base_fixed_values().len();
+                if fixed_points > *self.base_fixed_values_considered[i] {
+                    *self.base_fixed_values_considered[i] = fixed_points;
                     refiner.refine_fixed_points(state, side)?;
                     stats.refiner_calls += 1;
                 }
             }
 
-            let cells = state.partition().base_cells().len();
-            assert!(cells >= *self.cells_considered);
-            if cells > *self.cells_considered {
-                *self.cells_considered = cells;
-                for refiner in &mut self.refiners {
+            let init_cells = state.partition().base_cells().len();
+
+            for (i, refiner) in self.refiners.iter_mut().enumerate() {
+                let cells = state.partition().base_cells().len();
+                if cells > *self.cells_considered[i] {
+                    *self.cells_considered[i] = cells;
                     refiner.refine_changed_cells(state, side)?;
                     stats.refiner_calls += 1;
                 }
@@ -77,8 +86,8 @@ impl RefinerStore {
 
             state.refine_graphs()?;
 
-            if fixed_points == state.partition().base_fixed_values().len()
-                && cells == state.partition().base_cells().len()
+            if init_fixed_points == state.partition().base_fixed_values().len()
+                && init_cells == state.partition().base_cells().len()
             {
                 // Made no progress
                 return Ok(());
@@ -267,16 +276,24 @@ impl RefinerStore {
 
 impl Backtrack for RefinerStore {
     fn save_state(&mut self) {
-        self.base_fixed_values_considered.save_state();
-        self.cells_considered.save_state();
+        for v in &mut self.base_fixed_values_considered {
+            v.save_state();
+        }
+        for v in &mut self.cells_considered {
+            v.save_state();
+        }
         for c in &mut self.refiners {
             c.save_state();
         }
     }
 
     fn restore_state(&mut self) {
-        self.base_fixed_values_considered.restore_state();
-        self.cells_considered.restore_state();
+        for v in &mut self.base_fixed_values_considered {
+            v.restore_state();
+        }
+        for v in &mut self.cells_considered {
+            v.restore_state();
+        }
         for c in &mut self.refiners {
             c.restore_state();
         }

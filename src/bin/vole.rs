@@ -37,7 +37,7 @@ fn main() -> anyhow::Result<()> {
         RefinerStore::new_from_refiners(parse_input::build_constraints(&problem.constraints));
 
     let tracer = if problem.config.find_canonical {
-        trace::Tracer::new_with_type(TracingType::CANONICAL)
+        trace::Tracer::new()
     } else {
         trace::Tracer::new_with_type(TracingType::SYMMETRY)
     };
