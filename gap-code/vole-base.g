@@ -3,7 +3,6 @@ LoadPackage("io", false);
 LoadPackage("digraphs", false);
 LoadPackage("GraphBacktracking", false);
 
-Read("gap-code/stabtree.g");
 
 # Simple high level wrapper around IO_pipe -- this could be moved to IO.
 IO_Pipe := function()
