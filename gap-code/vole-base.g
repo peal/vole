@@ -3,6 +3,8 @@ LoadPackage("io", false);
 LoadPackage("digraphs", false);
 LoadPackage("GraphBacktracking", false);
 
+Read("gap-code/stabtree.g");
+
 # Simple high level wrapper around IO_pipe -- this could be moved to IO.
 IO_Pipe := function()
     local ret;
@@ -76,6 +78,10 @@ CallRefiner := function(savedvals, state, type, args)
             if IsBound(state!.conlist[1]!.refine.initialise) then
                 filters := state!.conlist[1]!.refine.initialise(state!.ps, is_left);
             fi;
+        elif type = "fixed" then
+            if IsBound(state!.conlist[1]!.refine.fixed) then
+                filters := state!.conlist[1]!.refine.fixed(state!.ps, is_left);
+            fi;
         else
             if IsBound(state!.conlist[1]!.refine.changed) then
                 filters := state!.conlist[1]!.refine.changed(state!.ps, is_left);
@@ -114,8 +120,8 @@ VOLE_MODE := "opt";
 # obj contains the problem to run. 'refiners' is an optional list of GraphBacktracking refiners, which vole can "call back"
 # and query
 ExecuteVole := function(obj, refiners, canonicalgroup)
-    local ret, rustpipe, gappipe,str, args, result, prog, preimage, postimage, gapcallbacks, savedvals, flush;
-    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, image := 0, compare := 0);
+    local ret, rustpipe, gappipe,str, st, args, result, prog, preimage, postimage, gapcallbacks, savedvals, flush, time;
+    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, image := 0, compare := 0, refiner_time := 0, canonicalmin_time := 0);
     rustpipe := IO_Pipe();
     gappipe := IO_Pipe();
     Info(InfoVole, 2, "PreFork\n");
@@ -171,17 +177,23 @@ ExecuteVole := function(obj, refiners, canonicalgroup)
                 result[2].stats.gap_callbacks := gapcallbacks;
                 return result[2];
             elif result[1] = "canonicalmin" then
+                time := NanosecondsSinceEpoch();
                 if canonicalgroup = false then
                     IO_WriteLine(rustpipe.towrite, GapToJsonString([1..Length(result[2])]));
                 else
-                    postimage := MinimalImage(canonicalgroup, result[2], OnTuples);
+                    st := StabTreeStabilizer(canonicalgroup, result[2]);
+                    postimage := st.minimage;
+                    Assert(2, MinimalImage(canonicalgroup, result[2], OnTuples) = postimage);
                     IO_WriteLine(rustpipe.towrite, GapToJsonString(postimage));
                 fi;
+                gapcallbacks.canonicalmin_time := gapcallbacks.canonicalmin_time + (NanosecondsSinceEpoch() - time);
             elif result[1] = "refiner" then
+                time := NanosecondsSinceEpoch();
                 gapcallbacks.(result[3]) := gapcallbacks.(result[3]) + 1;
                 result := CallRefiner(savedvals, refiners[result[2]], result[3], result{[4..Length(result)]});
                 Info(InfoVole, 2, "Refiner returned: ", GapToJsonString(result));
-                IO_WriteLine(rustpipe.towrite, GapToJsonString(result)); 
+                IO_WriteLine(rustpipe.towrite, GapToJsonString(result));
+                gapcallbacks.refiner_time := gapcallbacks.refiner_time + (NanosecondsSinceEpoch() - time);
             elif result[1] = "stringGapRef" then
                 Info(InfoVole, 2, "Print cached object: ", result);
                 IO_WriteLine(rustpipe.towrite, Concatenation("\"",String(savedvals.map[result[2].id]),"\""));
@@ -224,7 +236,8 @@ con := rec(
 # 'constraints': List of constraints to solve
 # TODO: Add Canonical group
 _VoleSolve := function(points, find_single, find_canonical, constraints, canonical_group)
-    local ret, gapcons,i, grp, sc, gens, group, result;
+    local ret, gapcons,i, grp, sc, gens, group, result, time;
+    time := NanosecondsSinceEpoch();
     # Get rid of trivial cases
     if points < 2 then
         points := 2;
@@ -247,7 +260,7 @@ _VoleSolve := function(points, find_single, find_canonical, constraints, canonic
     ret := ExecuteVole(rec(config := rec(points := points, find_single := find_single, find_canonical := find_canonical),
                 constraints := constraints), gapcons, canonical_group);
 
-    result := rec(raw := ret);
+    result := rec(raw := ret, time := NanosecondsSinceEpoch() - time);
 
     if find_single then
         result.sol := List(ret.sols, PermList);
