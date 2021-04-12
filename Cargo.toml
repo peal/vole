@@ -19,7 +19,7 @@ rand = "0.8.3"
 rand_chacha = "0.3.0"
 indexmap = {features=["serde"], version = "1.6.2"}
 itertools = "0.10.0"
-twox-hash = "1.6.0"
+seahash = "4.1.0"
 bitflags = "1.2"
 lazy_static = "1.4"
 disjoint-sets = {features=["serde"], version = "0.4.2"}
