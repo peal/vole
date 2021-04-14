@@ -1,0 +1,65 @@
+name: CI
+
+# Trigger the workflow on push or pull request
+on:
+  - push
+  - pull_request
+
+jobs:
+  # The CI test job
+  test:
+    name: GAP ${{ matrix.gap-branch }}
+    runs-on: ubuntu-latest
+    # Don't run this twice on PRs for branches pushed to the same repository
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
+    strategy:
+      fail-fast: false
+      matrix:
+        gap-branch:
+          - master
+          - stable-4.11
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Set up rust"
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: "Build the rust component of Vole"
+        run: cargo build --release --all-features
+      - name: "Run the rust tests for Vole"
+        run: cargo test --release -q
+      - name: "Install GAP and the necessary packages"
+        uses: gap-actions/setup-gap-for-packages@v1
+        with:
+          GAPBRANCH: ${{ matrix.gap-branch }}
+          GAP_PKGS_TO_CLONE: "datastructures ChrisJefferson/QuickCheck peal/BacktrackKit peal/GraphBacktracking"
+          GAP_PKGS_TO_BUILD: "datastructures digraphs ferret io json orb profiling"
+      - name: "Run GAP tests for Vole"
+        uses: gap-actions/run-test-for-packages@v1
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
+        timeout-minutes: 15
+
+  # The documentation job
+  manual:
+    name: Build manuals
+    runs-on: ubuntu-latest
+    # Don't run this twice on PRs for branches pushed to the same repository
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: gap-actions/setup-gap-for-packages@v1
+        with:
+          GAP_PKGS_TO_BUILD: ''
+      - uses: gap-actions/compile-documentation-for-packages@v1
+        with:
+          use-latex: 'true'
+      - name: 'Upload documentation'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Vole manual (PDF)
+          path: ./doc/manual.pdf
+          retention-days: 7

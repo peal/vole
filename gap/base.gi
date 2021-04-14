@@ -1,8 +1,12 @@
-LoadPackage("json", false);
-LoadPackage("io", false);
-LoadPackage("digraphs", false);
-LoadPackage("GraphBacktracking", false);
-
+#
+# Vole: Backtrack search in permutation groups with graphs
+#
+# Implementations
+#
+InstallGlobalFunction( Vole_Example,
+function()
+	Print( "This is a placeholder function, replace it with your own code.\n" );
+end );
 
 # Simple high level wrapper around IO_pipe -- this could be moved to IO.
 IO_Pipe := function()
