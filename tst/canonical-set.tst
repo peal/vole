@@ -1,6 +1,16 @@
-gap> Read("gap-code/vole-base.g");
-gap> Read("gap-code/tst/test_functions.g");
-gap> LoadPackage("quickcheck", false);;
+#@local
+gap> START_TEST("canonical-set.tst");
+gap> LoadPackage("vole", false);
+true
+gap> LoadPackage("quickcheck", false);
+true
+gap> ReadPackage("vole", "tst/test_functions.g");
+true
+
+#
 gap> QC_Check([IsPermGroup, QC_SetOf(IsPosInt)],
 >    {g, s} -> VoleTestCanonical(Maximum([LargestMovedPoint(g), Maximum(s),2]), g, s, con.SetStab, OnSets));
 true
+
+#
+gap> STOP_TEST("canonical-set.tst");

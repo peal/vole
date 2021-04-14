@@ -1,6 +1,13 @@
-gap> Read("gap-code/vole-base.g");
-gap> LoadPackage("ferret", false);;
-gap> LoadPackage("quickcheck", false);;
+#@local
+gap> START_TEST("settupletrans.tst");
+gap> LoadPackage("vole", false);
+true
+gap> LoadPackage("ferret", false);
+true
+gap> LoadPackage("quickcheck", false);
+true
+
+#
 gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 >      local s2, max, res, p;
 >      max := Maximum(Maximum(Flat(s)), LargestMovedPoint(g),2);
@@ -13,3 +20,6 @@ gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 >      return true;
 >  end);
 true
+
+#
+gap> STOP_TEST("settupletrans.tst");
