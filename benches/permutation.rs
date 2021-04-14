@@ -1,6 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 
-use rust_peal::perm::utils::random_permutation;
+use rust_vole::perm::utils::random_permutation;
 
 pub fn inverse_of_product(c: &mut Criterion) {
     let mut group = c.benchmark_group("Inverse of Product");

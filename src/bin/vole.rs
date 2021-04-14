@@ -1,17 +1,17 @@
 use std::fs::File;
 
-use rust_peal::vole::solutions::Solutions;
-use rust_peal::vole::trace;
-use rust_peal::vole::{domain_state::DomainState, trace::TracingType};
-use rust_peal::vole::{parse_input, state::State};
-use rust_peal::vole::{
+use rust_vole::vole::solutions::Solutions;
+use rust_vole::vole::trace;
+use rust_vole::vole::{domain_state::DomainState, trace::TracingType};
+use rust_vole::vole::{parse_input, state::State};
+use rust_vole::vole::{
     refiners::refiner_store::RefinerStore,
     search::{simple_search, simple_single_search},
 };
 
 use tracing::Level;
 
-use rust_peal::gap_chat::GAP_CHAT;
+use rust_vole::gap_chat::GAP_CHAT;
 use tracing_subscriber::fmt::format::FmtSpan;
 
 fn main() -> anyhow::Result<()> {
@@ -19,7 +19,7 @@ fn main() -> anyhow::Result<()> {
 
     let (non_block, _guard) = tracing_appender::non_blocking(File::create("vole.trace")?);
 
-    if rust_peal::gap_chat::OPTIONS.trace {
+    if rust_vole::gap_chat::OPTIONS.trace {
         tracing_subscriber::fmt()
             .with_span_events(FmtSpan::ACTIVE)
             .with_max_level(Level::TRACE)

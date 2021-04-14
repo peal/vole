@@ -1,4 +1,4 @@
-Roadmap for Rust-Peal
+Roadmap for Vole
 =====================
 
 "Basic" Permutation Algorithms

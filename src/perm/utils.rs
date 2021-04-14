@@ -3,7 +3,7 @@ use rand::seq::SliceRandom;
 
 /// Use this to generate a random permutation on n points
 /// ```
-/// let perm = rust_peal::perm::utils::random_permutation(100);
+/// let perm = rust_vole::perm::utils::random_permutation(100);
 /// ```
 pub fn random_permutation(n: usize) -> Permutation {
     let mut rng = rand::thread_rng();
