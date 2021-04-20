@@ -15,7 +15,7 @@ PackageName := "Vole",
 Subtitle := "Backtrack search in permutation groups with graphs",
 Version := "0.1.1",
 Date := "14/04/2021", # dd/mm/yyyy format
-License := "GPL-2.0-or-later",
+License := "MPL-2.0",
 
 Persons := [
   rec(
