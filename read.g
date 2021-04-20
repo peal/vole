@@ -4,3 +4,4 @@
 # Reading the implementation part of the package.
 #
 ReadPackage( "Vole", "gap/base.gi");
+ReadPackage( "Vole", "gap/helper.gi");

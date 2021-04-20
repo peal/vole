@@ -1,20 +1,15 @@
 #
 # Vole: Backtrack search in permutation groups with graphs
-#
-# This file contains package meta data. For additional information on
-# the meaning and correct usage of these fields, please consult the
-# manual of the "Example" package as well as the comments in its
-# PackageInfo.g file.
-#
 
-_STANDREWSCS := Concatenation(["Jack Cole Building, North Haugh, ",
-                               "St Andrews, Fife, KY16 9SX, Scotland"]);
+_STANDREWSCS := Concatenation("School of Computer Science, ",
+                              "University of St Andrews, ",
+                              "St Andrews, Fife, KY16 9SX, Scotland");
 SetPackageInfo( rec(
 
 PackageName := "Vole",
 Subtitle := "Backtrack search in permutation groups with graphs",
-Version := "0.1.1",
-Date := "14/04/2021", # dd/mm/yyyy format
+Version := "0.1.2",
+Date := "20/04/2021", # dd/mm/yyyy format
 License := "MPL-2.0",
 
 Persons := [
@@ -50,7 +45,6 @@ Persons := [
     Place := "St Andrews",
     PostalAddress := _STANDREWSCS,
   ),
-  # TODO Anyone else? Did "the interns" do anything?
 ],
 
 SourceRepository := rec(
@@ -77,21 +71,19 @@ ArchiveFormats := ".tar.gz",
 ##
 Status := "dev",
 
-AbstractHTML   :=  "TODO",
+AbstractHTML :=  "TODO",
 
 PackageDoc := rec(
-  BookName  := "vole",
+  BookName  := ~.PackageName,
   ArchiveURLSubset := ["doc"],
   HTMLStart := "doc/chap0.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
-  LongTitle := "Backtrack search in permutation groups with graphs",
+  LongTitle := ~.Subtitle,
 ),
 
 Dependencies := rec(
   GAP := ">= 4.11.0",
-  # TODO Move certain bits of GraphBacktracking/BacktrackKit into this package,
-  # and then those packages should require Vole
   NeededOtherPackages := [
                            [ "BacktrackKit", ">= 0.3.1" ],
                            [ "GraphBacktracking", ">= 0.3.0" ],
@@ -101,8 +93,6 @@ Dependencies := rec(
                            [ "IO", ">= 4.7.0" ],
                            [ "ferret", ">= 1.0.2" ],    # used in tests
                            [ "QuickCheck", ">= 0.1" ],  # used in tests
-                           # TODO: dependencies of dependencies? Orb...
-                           # Or at least list them so it's easy to see
                          ],
   SuggestedOtherPackages := [ ],
   ExternalConditions := [ ],
@@ -114,6 +104,24 @@ TestFile := "tst/testall.g",
 
 #Keywords := [ "TODO" ],
 
+AutoDoc := rec(
+    TitlePage := rec(
+        Copyright := Concatenation(
+            "&copyright; 20?? by ??",
+            # TODO
+            "\n"
+            ), 
+        Abstract := Concatenation( 
+            "&Vole; is a &GAP; package that...",
+            # TODO
+            "\n"
+            ), 
+        Acknowledgements := Concatenation( 
+            "GAPDoc? Autodoc? PackageMaker? Example package? People?",
+            # TODO
+            "<P/>\n"
+            ) 
+    )
+),
+
 ));
-
-

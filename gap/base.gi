@@ -1,15 +1,12 @@
 #
 # Vole: Backtrack search in permutation groups with graphs
 #
-# Implementations
+# All code to call Vole from GAP (and GAP from Vole)
 #
-InstallGlobalFunction( Vole_Example,
-function()
-	Print( "This is a placeholder function, replace it with your own code.\n" );
-end );
 
-# Simple high level wrapper around IO_pipe -- this could be moved to IO.
-IO_Pipe := function()
+# Simple high level wrapper around IO_pipe -- could be moved to the IO package.
+InstallGlobalFunction(IO_Pipe,
+function()
     local ret;
     ret := IO_pipe();
     ret.towriteRaw := ret.towrite;
@@ -17,32 +14,31 @@ IO_Pipe := function()
     ret.towrite := IO_WrapFD(ret.towrite, false, IO.DefaultBufSize);
     ret.toread := IO_WrapFD(ret.toread, IO.DefaultBufSize, false);
     return ret;
-end;
+end);
 
-if not IsBound(InfoVole) then
-    InfoVole := NewInfoClass("InfoVole");
-fi;
 
 #####################################################################################################
 # Wrapper around GraphBacktracking, allowing a refiner to be queried
-# First argument should be a GraphBacktrack state, second argument is operation, final argument is
-# input to the operations.
+# First argument should be a GraphBacktracking state, second argument is
+# operation, final argument is input to the operations.
 # Valid operations are:
 #   "name": Return name of refiner
 #   "is_group": Does this refiner represent a group (as opposed to a coset)
 #   "check": Check if a permutation satisfies the refiner (given as a 0-indexed list)
-#   "begin" or "refine": Run the refiner. "begin" reuns the 'initialise' function, 'refine' runs the 'changed' function.
+#   "begin" or "refine": Run the refiner. "begin" runs the 'initialise' function, 'refine' runs the 'changed' function.
 #     Here, args is:
 #     args[1]: "Left" or "Right", for if refiner is being run in 'Left' or 'Right' mode.
 #     args[2]: Current state of partition (where values in the same cell have the same value)
-CallRefiner := function(savedvals, state, type, args)
+# FIXME What is savedvals?
+InstallGlobalFunction(CallRefiner,
+function(savedvals, state, type, args)
     local saved, tracer, is_left, indicator, c, i, retval, filters, val;
     if type = "name" then
         return state!.conlist[1]!.name;
     elif type = "is_group" then
         return BTKit_CheckPermutation((), state!.conlist[1]);
     elif type = "check" then
-        Info(InfoVole, 2, "Checking ", args[1]);
+        Info(InfoVole,2, "Checking ", args[1]);
         return BTKit_CheckPermutation(PermList(List(args[1].values, x -> x+1)), state!.conlist[1]);
     elif type = "image" then
         Info(InfoVole, 2, "Generating image", args[1]);
@@ -110,7 +106,7 @@ CallRefiner := function(savedvals, state, type, args)
         RestoreState(state, saved);
         return retval;
     fi; 
-end;
+end);
 
 # Choose how vole is run:
 # "opt": Run as optimised as possible
@@ -122,8 +118,8 @@ VOLE_MODE := "opt";
 # Run vole
 # obj contains the problem to run. 'refiners' is an optional list of GraphBacktracking refiners, which vole can "call back"
 # and query
-ExecuteVole := function(obj, refiners, canonicalgroup)
-    local ret, rustpipe, gappipe,str, st, args, result, prog, preimage, postimage, gapcallbacks, savedvals, flush, time;
+InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
+    local ret, rustpipe, gappipe,str, st, args, result, prog, preimage, postimage, gapcallbacks, savedvals, flush, time, pwd;
     gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, image := 0, compare := 0, refiner_time := 0, canonicalmin_time := 0);
     rustpipe := IO_Pipe();
     gappipe := IO_Pipe();
@@ -154,7 +150,10 @@ ExecuteVole := function(obj, refiners, canonicalgroup)
             Error("Invalid VOLE_MODE");
         fi;
         Info(InfoVole, 2, "C:", args,"\n");
+        pwd := IO_getcwd();
+        IO_chdir(GAPInfo.PackagesInfo.vole[1].InstallationPath);
         IO_execvp(prog, args);
+        IO_chdir(pwd);
         Info(InfoVole, 2, "Fatal error");
         QUIT_GAP();
     else
@@ -216,7 +215,7 @@ ExecuteVole := function(obj, refiners, canonicalgroup)
             Assert(2, flush <> fail);
         od;
     fi;
-end;
+end);
 
 # The list of constraints which vole understands (not including GraphBacktracking refiners)
 # TODO Allow `DigraphStab` and `DigraphTransport` to accept Digraph objects
@@ -237,18 +236,20 @@ rec(
 ));
 
 
-# Solve a problem using vole
+# Solve a problem using Vole
 # 'points': Search will be done in the set [1..points]
 # 'find_single': Find a single solution (equivalent to 'this is a coset problem')
 # 'constraints': List of constraints to solve
+# 'canonical_group':
 # TODO: Add Canonical group
-_VoleSolve := function(points, find_single, find_canonical, constraints, canonical_group)
-    local ret, gapcons,i, grp, sc, gens, group, result, time;
-    time := NanosecondsSinceEpoch();
+InstallGlobalFunction(_VoleSolve,
+function(points, find_single, find_canonical, constraints, canonical_group)
+    local ret, gapcons, i, sc, gens, group, result, start_time;
+
+    start_time := NanosecondsSinceEpoch();
+
     # Get rid of trivial cases
-    if points < 2 then
-        points := 2;
-    fi;
+    points := Maximum(2, points);
 
     if canonical_group <> false then
         constraints := Concatenation([BTKit_Con.InGroupSimple(points, canonical_group)], constraints);
@@ -256,18 +257,26 @@ _VoleSolve := function(points, find_single, find_canonical, constraints, canonic
 
     gapcons := [];
     constraints := ShallowCopy(constraints);
-    for i in [1..Length(constraints)] do
+    for i in [1 .. Length(constraints)] do
         if IsRefiner(constraints[i]) then
             gapcons[i] := _GB.BuildProblem(PartitionStack(points), [constraints[i]], []);
             constraints[i] := rec(GapRefiner := rec(gap_id := i));
         fi;
     od;
 
+    ret := ExecuteVole(
+              rec(
+                  config := rec(
+                      points         := points,
+                      find_single    := find_single,
+                      find_canonical := find_canonical,
+                  ),
+                  constraints := constraints),
+              gapcons,
+              canonical_group
+          );
 
-    ret := ExecuteVole(rec(config := rec(points := points, find_single := find_single, find_canonical := find_canonical),
-                constraints := constraints), gapcons, canonical_group);
-
-    result := rec(raw := ret, time := NanosecondsSinceEpoch() - time);
+    result := rec(raw := ret, time := NanosecondsSinceEpoch() - start_time);
 
     if find_single then
         result.sol := List(ret.sols, PermList);
@@ -289,78 +298,21 @@ _VoleSolve := function(points, find_single, find_canonical, constraints, canonic
     if find_canonical then
         result.canonical := PermList(ret.canonical);
     fi;
+
     return result;
-end;
-
-VoleSolve := {points, find_single, constraints} -> _VoleSolve(points, find_single, false, constraints, false);
-VoleGroupSolve := {points, constraints} -> _VoleSolve(points, false, false, constraints, false);
-VoleCosetSolve := {points, constraints} -> _VoleSolve(points, true, false, constraints, false);
-VoleCanonicalSolve := {points, grp, constraints} -> _VoleSolve(points, false, true, constraints, grp);
+end);
 
 
-# Simple GAP wrapper which implements the same interface as VoleSolve, for problems
-# which return a group
-GAPSolve := function(p, l)
-    local c, g, lmp;
-    if p < 1 then
-        p := 1;
-    fi;
-    g := SymmetricGroup(p);
-    for c in l do
-        if IsRefiner(c) then
-            g := GB_SimpleSearch(PartitionStack(p), [GB_Con.InGroup(p, g), c]);
-        elif IsBound(c.SetStab) then
-            g := Stabilizer(g, c.SetStab.points, OnSets);
-        elif IsBound(c.TupleStab) then
-            g := Stabilizer(g, c.TupleStab.points, OnTuples);
-        elif IsBound(c.SetSetStab) then
-            g := Stabilizer(g, c.SetSetStab.points, OnSetsSets);
-        elif IsBound(c.SetTupleStab) then
-            g := Stabilizer(g, c.SetTupleStab.points, OnSetsTuples);
-        elif IsBound(c.DigraphStab) then
-            if g = SymmetricGroup(p) then
-                g := AutomorphismGroup(Digraph(c.DigraphStab.edges));
-            else
-                g := Intersection(g, AutomorphismGroup(Digraph(c.DigraphStab.edges)));
-            fi;
-        else
-            Error("Unknown Constraint", g);
-        fi;
-    od;
-    return g;
-end;
+# User-facing 'Solve' functions
 
-# Check (and simply benchmark) that VoleSolve(p,false,c) and GAPSolve(p,c) produce the
-# same answer
-Benchmark := function(p,c)
-    local ret1,ret2, time1, time2;
-    time1 := NanosecondsSinceEpoch();
-    ret1 := VoleSolve(p, false, c);
-    time1 := NanosecondsSinceEpoch() - time1;
-    time2 := NanosecondsSinceEpoch();
-    ret2 := GAPSolve(p, c);
-    time2 := NanosecondsSinceEpoch() - time2;
-    if ret2 <> ret1.group then
-        Error("\nError!!","\n",p,"\n",c,"\n",ret1,"\n",ret2,"!!\n");
-    fi;
-    return rec(voletime := time1, gaptime := time2);
-end;
+InstallGlobalFunction(VoleSolve,
+{points, find_single, constraints} -> _VoleSolve(points, find_single, false, constraints, false));
 
-# For use with QuickCheck
-QuickChecker := function(p,c)
-    local ret1,ret2, time1, time2;
-    time1 := NanosecondsSinceEpoch();
-    ret1 := VoleSolve(p, false, c);
-    time1 := NanosecondsSinceEpoch() - time1;
-    time2 := NanosecondsSinceEpoch();
-    ret2 := GAPSolve(p, c);
-    time2 := NanosecondsSinceEpoch() - time2;
-    return ret2 = ret1.group;
-end;
+InstallGlobalFunction(VoleGroupSolve,
+{points, constraints} -> _VoleSolve(points, false, false, constraints, false));
 
-# For quick mini-tests
-Comp := function(p,c)
-    if not QuickChecker(p,c) then
-        Error("!! ",p,c);
-    fi;
-end;
+InstallGlobalFunction(VoleCosetSolve,
+{points, constraints} -> _VoleSolve(points, true, false, constraints, false));
+
+InstallGlobalFunction(VoleCanonicalSolve,
+{points, group, constraints} -> _VoleSolve(points, false, true, constraints, group));

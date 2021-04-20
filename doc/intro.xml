@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Chapter Label="intro">
+  <Heading>Introduction to &Vole;</Heading>
+
+  &Vole; is a brilliant package.
+  It's based on a paper <Cite Key='GraphBacktracking'/>.
+
+  <Section>
+    <Heading>High level overview</Heading>
+
+    How high should we go?
+  </Section>
+
+  <Section>
+    <Heading>Related &GAP; packages</Heading>
+
+    Talk about how &Vole; is (or is not) related to &BacktrackKit;,
+    &GraphBacktracking;, and &ferret;.
+  </Section>
+
+</Chapter>

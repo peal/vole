@@ -4,3 +4,4 @@
 # Reading the declaration part of the package.
 #
 ReadPackage( "Vole", "gap/base.gd");
+ReadPackage( "Vole", "gap/helper.gd");

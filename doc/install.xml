@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Chapter Label="install">
+  <Heading>Setting up &Vole;</Heading>
+
+  Vole is the easiest package to set up... ever.
+
+  <Section>
+    <Heading>Dependencies</Heading>
+
+    TODO.
+    <P/>
+      
+    You need &GAP; at least version 4.11.0.
+    Also &BacktrackKit; and &GraphBacktracking; and &ferret; and &IO;.
+    Probably others too.
+    <P/>
+
+    You need Rust to be installed, and in particular you need <C>cargo</C> to be
+    in your <C>PATH</C>.
+  </Section>
+
+  <Section>
+    <Heading>Installing &Vole;</Heading>
+
+    TODO.
+  </Section>
+
+  <Section>
+    <Heading>Loading &Vole;</Heading>
+
+    TODO.
+  </Section>
+
+  <!-- TODO Mention how to compile the documentation -->
+
+</Chapter>
