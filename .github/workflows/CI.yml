@@ -40,7 +40,7 @@ jobs:
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
-        timeout-minutes: 15
+        timeout-minutes: 5
 
   # The documentation job
   manual:
@@ -57,9 +57,18 @@ jobs:
       - uses: gap-actions/compile-documentation-for-packages@v1
         with:
           use-latex: 'true'
-      - name: 'Upload documentation'
+      - name: 'Upload PDF manual'
         uses: actions/upload-artifact@v2
         with:
           name: Vole manual (PDF)
           path: ./doc/manual.pdf
-          retention-days: 7
+          retention-days: 3
+      - name: 'Upload HTML manual'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Vole manual (HTML)
+          path: |
+            doc/*.html
+            doc/*.css
+            doc/*.js
+          retention-days: 3
