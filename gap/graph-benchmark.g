@@ -1,4 +1,3 @@
-Read("gap-code/graph.g");
-
-times := List([5,10..40], {t} -> Comp(t*t, [con.DigraphStab(multicycle(t,t))]));
+multicycle := {a,b} -> OutNeighbours(DigraphDisjointUnion(ListWithIdenticalEntries(a, CycleDigraph(b))));
+times := List([5,10..40], {t} -> Comp(t*t, [VoleCon.DigraphStab(multicycle(t,t))]));
 Print(times);

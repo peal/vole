@@ -8,7 +8,7 @@ gap> LoadPackage("quickcheck", false);
 true
 
 #
-gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)) ], {s} -> QuickChecker(Maximum(Flat(s)), [con.SetTupleStab(s)]));
+gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)) ], {s} -> QuickChecker(Maximum(Flat(s)), [VoleCon.SetTupleStab(s)]));
 true
 
 #

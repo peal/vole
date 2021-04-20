@@ -2,6 +2,8 @@
 # Vole: Backtrack search in permutation groups with graphs
 #
 #! @Chapter Introduction
+DeclareGlobalVariable("VoleCon");
+# TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
 #!
 #! Vole is a package which does some
 #! interesting and cool things

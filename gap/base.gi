@@ -219,7 +219,11 @@ ExecuteVole := function(obj, refiners, canonicalgroup)
 end;
 
 # The list of constraints which vole understands (not including GraphBacktracking refiners)
-con := rec(
+# TODO Allow `DigraphStab` and `DigraphTransport` to accept Digraph objects
+# TODO When we require GAP >= 4.12, this should become:
+# BindGlobal("VoleCon", ...
+InstallValue(VoleCon,
+rec(
     SetStab := {s} -> rec(SetStab := rec(points := s)),
     SetTransport := {s,t} -> rec(SetTransport := rec(left_points := s, right_points := t)),
     TupleStab := {s} -> rec(TupleStab := rec(points := s)),
@@ -230,7 +234,7 @@ con := rec(
     SetTupleTransport := {s,t} -> rec(SetTupleTransport := rec(left_points := s, right_points := t)),
     DigraphStab := {e} -> rec(DigraphStab := rec(edges := e)),
     DigraphTransport := {e,f} -> rec(DigraphStab := rec(left_edges := e, right_edges := f))
-);
+));
 
 
 # Solve a problem using vole

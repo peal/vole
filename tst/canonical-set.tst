@@ -9,7 +9,7 @@ true
 
 #
 gap> QC_Check([IsPermGroup, QC_SetOf(IsPosInt)],
->    {g, s} -> VoleTestCanonical(Maximum([LargestMovedPoint(g), Maximum(s),2]), g, s, con.SetStab, OnSets));
+>    {g, s} -> VoleTestCanonical(Maximum([LargestMovedPoint(g), Maximum(s),2]), g, s, VoleCon.SetStab, OnSets));
 true
 
 #

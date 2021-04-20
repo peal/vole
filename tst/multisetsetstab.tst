@@ -7,7 +7,7 @@ true
 
 #
 gap> QC_Check([ QC_SetOf(QC_SetOf(IsPosInt)),QC_SetOf(QC_SetOf(IsPosInt)),QC_SetOf(QC_SetOf(IsPosInt)) ],
->  {a,b,c} -> QuickChecker(Maximum(Flat([a,b,c,2])), [con.SetSetStab(a),con.SetSetStab(b),con.SetSetStab(c)]));
+>  {a,b,c} -> QuickChecker(Maximum(Flat([a,b,c,2])), [VoleCon.SetSetStab(a),VoleCon.SetSetStab(b),VoleCon.SetSetStab(c)]));
 true
 
 #
