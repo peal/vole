@@ -1,8 +1,8 @@
-/target
+/rust/target
 **/*.rs.bk
-Cargo.lock
-vole-trace.log
-vole.trace
+/rust/Cargo.lock
+/rust/vole-trace.log
+/rust/vole.trace
 
 /doc/chap*.html
 /doc/chap*.txt

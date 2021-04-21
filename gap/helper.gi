@@ -4,8 +4,6 @@
 # Helper functions for testing and benchmarking
 #
 
-# Simple GAP wrapper which implements the same interface as VoleSolve, for problems
-# which return a group
 InstallGlobalFunction(GAPSolve,
 function(p, l)
     local c, g, lmp;
@@ -53,15 +51,6 @@ function(p, c)
               p, c, ret1, ret2));
     fi;
     return rec(voletime := time1, gaptime := time2);
-end);
-
-# For use with QuickCheck
-InstallGlobalFunction(QuickChecker,
-function(p, c)
-    local ret1, ret2;
-    ret1 := VoleSolve(p, false, c);
-    ret2 := GAPSolve(p, c);
-    return ret2 = ret1.group;
 end);
 
 # For quick mini-tests

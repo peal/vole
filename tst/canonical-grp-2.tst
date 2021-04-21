@@ -1,9 +1,5 @@
 #@local
 gap> START_TEST("canonical-grp-2.tst");
-gap> LoadPackage("vole", false);
-true
-gap> LoadPackage("quickcheck", false);
-true
 gap> ReadPackage("vole", "tst/test_functions.g");
 true
 

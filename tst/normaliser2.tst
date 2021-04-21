@@ -1,8 +1,6 @@
 #@local i, j
 gap> START_TEST("normaliser2.tst");
-gap> LoadPackage("vole", false);
-true
-gap> LoadPackage("quickcheck", false);
+gap> ReadPackage("vole", "tst/test_functions.g");
 true
 
 #

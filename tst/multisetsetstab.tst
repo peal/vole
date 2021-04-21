@@ -1,8 +1,6 @@
 #@local
 gap> START_TEST("multisetsetstab.tst");
-gap> LoadPackage("vole", false);
-true
-gap> LoadPackage("quickcheck", false);
+gap> ReadPackage("vole", "tst/test_functions.g");
 true
 
 #
