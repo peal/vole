@@ -26,9 +26,9 @@ jobs:
         with:
           toolchain: stable
       - name: "Build the rust component of Vole"
-        run: cargo build --release --all-features
+        run: cd rust && cargo build --release --all-features
       - name: "Run the rust tests for Vole"
-        run: cargo test --release -q
+        run: cd rust && cargo test --release -q
       - name: "Install GAP and the necessary packages"
         uses: gap-actions/setup-gap-for-packages@v1
         with:
