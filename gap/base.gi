@@ -109,11 +109,12 @@ function(savedvals, state, type, args)
 end);
 
 # Choose how vole is run:
+# "opt-nobuild": Run as optimised as possible, do not build the executable
 # "opt": Run as optimised as possible
 # "trace": Output a trace in "trace.log"
 # "flamegraph": Output a flamegraph of where CPU is used in "flamegraph.svg"
 # "debug": Run inside the debugger
-VOLE_MODE := "opt";
+VOLE_MODE := "opt-nobuild";
 
 InstallGlobalFunction(ForkVole, function(extraargs...)
     local rustpipe, gappipe, args, ret, prog;
@@ -131,7 +132,10 @@ InstallGlobalFunction(ForkVole, function(extraargs...)
         IO_Close(gappipe.toread);
         Info(InfoVole, 2, "C: In child\n");
         prog := "cargo";
-        if VOLE_MODE = "trace" then
+        if VOLE_MODE = "opt-nobuild" then
+            prog := "target/release/vole";
+            args :=  ["--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+        elif VOLE_MODE = "trace" then
             args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--trace", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
         elif VOLE_MODE = "opt" then
             args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
