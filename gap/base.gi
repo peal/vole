@@ -150,10 +150,8 @@ InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
             Error("Invalid VOLE_MODE");
         fi;
         Info(InfoVole, 2, "C:", args,"\n");
-        pwd := IO_getcwd();
-        IO_chdir(GAPInfo.PackagesInfo.vole[1].InstallationPath);
+        ChangeDirectoryCurrent(DirectoriesPackageLibrary("vole", "rust")[1]![1]);
         IO_execvp(prog, args);
-        IO_chdir(pwd);
         Info(InfoVole, 2, "Fatal error");
         QUIT_GAP();
     else
