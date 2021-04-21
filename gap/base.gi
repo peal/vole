@@ -115,12 +115,8 @@ end);
 # "debug": Run inside the debugger
 VOLE_MODE := "opt";
 
-# Run vole
-# obj contains the problem to run. 'refiners' is an optional list of GraphBacktracking refiners, which vole can "call back"
-# and query
-InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
-    local ret, rustpipe, gappipe,str, st, args, result, prog, preimage, postimage, gapcallbacks, savedvals, flush, time, pwd;
-    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, image := 0, compare := 0, refiner_time := 0, canonicalmin_time := 0);
+InstallGlobalFunction(ForkVole, function(extraargs...)
+    local rustpipe, gappipe, args, ret, prog;
     rustpipe := IO_Pipe();
     gappipe := IO_Pipe();
     Info(InfoVole, 2, "PreFork\n");
@@ -149,6 +145,8 @@ InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
         else
             Error("Invalid VOLE_MODE");
         fi;
+        Append(args, extraargs);
+
         Info(InfoVole, 2, "C:", args,"\n");
         ChangeDirectoryCurrent(DirectoriesPackageLibrary("vole", "rust")[1]![1]);
         IO_execvp(prog, args);
@@ -159,60 +157,72 @@ InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
         Info(InfoVole, 2, "P: In parent");
         IO_Close(rustpipe.toread);
         IO_Close(gappipe.towrite);
-        # Set up cache
-        savedvals := rec(map := HashMap(), count := 1);
-
-        Info(InfoVole, 4, "Sending", GapToJsonString(obj));
-        IO_WriteLine(rustpipe.towrite, GapToJsonString(obj));
-        IO_Flush(rustpipe.towrite);
-        while true do
-            Info(InfoVole, 2, "Reading..\n");
-            str := IO_ReadLine(gappipe.toread);
-            Info(InfoVole, 2, "Read: '",str,"'\n");
-            result := JsonStringToGap(str);
-            if result[1] = "end" then
-                IO_Close(rustpipe.towrite);
-                IO_Close(gappipe.toread);
-                IO_WaitPid(ret, true);
-                result[2].stats.gap_callbacks := gapcallbacks;
-                return result[2];
-            elif result[1] = "canonicalmin" then
-                time := NanosecondsSinceEpoch();
-                if canonicalgroup = false then
-                    IO_WriteLine(rustpipe.towrite, GapToJsonString([1..Length(result[2])]));
-                else
-                    st := StabTreeStabilizer(canonicalgroup, result[2]);
-                    postimage := st.minimage;
-                    Assert(2, MinimalImage(canonicalgroup, result[2], OnTuples) = postimage);
-                    IO_WriteLine(rustpipe.towrite, GapToJsonString(postimage));
-                fi;
-                gapcallbacks.canonicalmin_time := gapcallbacks.canonicalmin_time + (NanosecondsSinceEpoch() - time);
-            elif result[1] = "refiner" then
-                time := NanosecondsSinceEpoch();
-                gapcallbacks.(result[3]) := gapcallbacks.(result[3]) + 1;
-                result := CallRefiner(savedvals, refiners[result[2]], result[3], result{[4..Length(result)]});
-                Info(InfoVole, 2, "Refiner returned: ", GapToJsonString(result));
-                IO_WriteLine(rustpipe.towrite, GapToJsonString(result));
-                gapcallbacks.refiner_time := gapcallbacks.refiner_time + (NanosecondsSinceEpoch() - time);
-            elif result[1] = "stringGapRef" then
-                Info(InfoVole, 2, "Print cached object: ", result);
-                IO_WriteLine(rustpipe.towrite, Concatenation("\"",String(savedvals.map[result[2].id]),"\""));
-            elif result[1] = "dropGapRef" then
-                Info(InfoVole, 2, "Dropping cached object: ", result);
-                Assert(2, IsBound(savedvals.map[result[2].id]));
-                Unbind(savedvals.map[result[2].id]);
-                # Need to still send something, as Rust expects a response
-                IO_WriteLine(rustpipe.towrite, "[]");
-            else
-                IO_Close(rustpipe.towrite);
-                IO_Close(gappipe.toread);
-                IO_WaitPid(ret, true);
-                ErrorNoReturn("Invalid return value from Vole: ", result);
-            fi;
-            flush := IO_Flush(rustpipe.towrite);
-            Assert(2, flush <> fail);
-        od;
+        return rec(write := rustpipe.towrite, read := gappipe.toread, pid := ret);
     fi;
+end);
+
+# Run vole
+# obj contains the problem to run. 'refiners' is an optional list of GraphBacktracking refiners, which vole can "call back"
+# and query
+InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
+    local pipe,str, st, result, preimage, postimage, gapcallbacks, savedvals, flush, time, pwd;
+    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, image := 0, compare := 0, refiner_time := 0, canonicalmin_time := 0);
+
+    pipe := ForkVole();
+
+    # Set up cache
+    savedvals := rec(map := HashMap(), count := 1);
+
+    Info(InfoVole, 4, "Sending", GapToJsonString(obj));
+    IO_WriteLine(pipe.write, GapToJsonString(obj));
+    IO_Flush(pipe.write);
+    while true do
+        Info(InfoVole, 2, "Reading..\n");
+        str := IO_ReadLine(pipe.read);
+        Info(InfoVole, 2, "Read: '",str,"'\n");
+        result := JsonStringToGap(str);
+        if result[1] = "end" then
+            IO_Close(pipe.write);
+            IO_Close(pipe.read);
+            IO_WaitPid(pipe.pid, true);
+            result[2].stats.gap_callbacks := gapcallbacks;
+            return result[2];
+        elif result[1] = "canonicalmin" then
+            time := NanosecondsSinceEpoch();
+            if canonicalgroup = false then
+                IO_WriteLine(pipe.write, GapToJsonString([1..Length(result[2])]));
+            else
+                st := StabTreeStabilizer(canonicalgroup, result[2]);
+                postimage := st.minimage;
+                Assert(2, MinimalImage(canonicalgroup, result[2], OnTuples) = postimage);
+                IO_WriteLine(pipe.write, GapToJsonString(postimage));
+            fi;
+            gapcallbacks.canonicalmin_time := gapcallbacks.canonicalmin_time + (NanosecondsSinceEpoch() - time);
+        elif result[1] = "refiner" then
+            time := NanosecondsSinceEpoch();
+            gapcallbacks.(result[3]) := gapcallbacks.(result[3]) + 1;
+            result := CallRefiner(savedvals, refiners[result[2]], result[3], result{[4..Length(result)]});
+            Info(InfoVole, 2, "Refiner returned: ", GapToJsonString(result));
+            IO_WriteLine(pipe.write, GapToJsonString(result));
+            gapcallbacks.refiner_time := gapcallbacks.refiner_time + (NanosecondsSinceEpoch() - time);
+        elif result[1] = "stringGapRef" then
+            Info(InfoVole, 2, "Print cached object: ", result);
+            IO_WriteLine(pipe.write, Concatenation("\"",String(savedvals.map[result[2].id]),"\""));
+        elif result[1] = "dropGapRef" then
+            Info(InfoVole, 2, "Dropping cached object: ", result);
+            Assert(2, IsBound(savedvals.map[result[2].id]));
+            Unbind(savedvals.map[result[2].id]);
+            # Need to still send something, as Rust expects a response
+            IO_WriteLine(pipe.write, "[]");
+        else
+            IO_Close(pipe.write);
+            IO_Close(pipe.read);
+            IO_WaitPid(pipe.pid, true);
+            ErrorNoReturn("Invalid return value from Vole: ", result);
+        fi;
+        flush := IO_Flush(pipe.write);
+        Assert(2, flush <> fail);
+    od;
 end);
 
 # The list of constraints which vole understands (not including GraphBacktracking refiners)

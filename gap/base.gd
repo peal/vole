@@ -76,6 +76,7 @@ DeclareGlobalFunction("VoleCanonicalSolve");
 
 # Undocumented (for now, anyway)
 DeclareGlobalFunction("CallRefiner");
+DeclareGlobalFunction("ForkVole");
 DeclareGlobalFunction("ExecuteVole");
 DeclareGlobalFunction("_VoleSolve");
 
