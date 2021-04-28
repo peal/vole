@@ -264,7 +264,7 @@ function(points, find_single, find_canonical, constraints, canonical_group)
     points := Maximum(2, points);
 
     if canonical_group <> false then
-        constraints := Concatenation([BTKit_Con.InGroupSimple(points, canonical_group)], constraints);
+        constraints := Concatenation([GB_Con.InGroupSimple(points, canonical_group)], constraints);
     fi;
 
     gapcons := [];
