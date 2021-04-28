@@ -132,6 +132,7 @@ impl RefinerStore {
             match ord {
                 std::cmp::Ordering::Less => {
                     info!("Improved Canonical");
+                    stats.improve_canonical += 1;
                     return Some(image);
                 }
                 std::cmp::Ordering::Equal => {}

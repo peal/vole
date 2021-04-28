@@ -6,6 +6,7 @@ pub struct Stats {
     pub bad_iso: usize,
     pub good_iso: usize,
     pub bad_canonical: usize,
+    pub improve_canonical: usize,
     pub equal_canonical: usize,
     pub refiner_calls: usize,
 }
