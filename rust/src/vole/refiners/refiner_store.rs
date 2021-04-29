@@ -224,7 +224,7 @@ impl RefinerStore {
         let mut is_sol = false;
         if tracing_type.contains(TracingType::SYMMETRY) {
             let sol = partition_stack::perm_between(state.rbase_partition(), part);
-
+/* 
             for r in self.refiners.iter() {
                 let x = r.check(&sol);
                 let y = r.any_image(&sol, Side::Left);
@@ -249,8 +249,9 @@ impl RefinerStore {
                         ) == Ordering::Equal)
                 );
             }
+            */
             // This line checks that the 'check' function, cand the canonical image code, agree
-            assert!(self.refiners.iter().all(|x| x.check(&sol)
+            debug_assert!(self.refiners.iter().all(|x| x.check(&sol)
                 == (x.any_compare(
                     &x.any_image(&sol, Side::Left),
                     &x.any_image(&Permutation::id(), Side::Right)
