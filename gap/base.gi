@@ -142,7 +142,7 @@ InstallGlobalFunction(ForkVole, function(extraargs...)
         elif VOLE_MODE = "flamegraph" then
             args :=  ["flamegraph", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
         elif VOLE_MODE = "valgrind" then
-            args := ["--tool=callgrind", "target/debug/vole", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+            args := ["--tool=callgrind", "target/release/vole", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
             prog := "valgrind";
         elif VOLE_MODE = "debug" then
             args :=  ["with", "rust-gdb --args {bin} {args}", "--", "run" ,"--bin", "vole" ,"--", "--trace", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
@@ -201,14 +201,14 @@ InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
                 Assert(2, MinimalImage(canonicalgroup, result[2], OnTuples) = postimage);
                 IO_WriteLine(pipe.write, GapToJsonString(postimage));
             fi;
-            gapcallbacks.canonicalmin_time := gapcallbacks.canonicalmin_time + (NanosecondsSinceEpoch() - time);
+            gapcallbacks.canonicalmin_time := gapcallbacks.canonicalmin_time + Int((NanosecondsSinceEpoch() - time)/1000000);
         elif result[1] = "refiner" then
             time := NanosecondsSinceEpoch();
             gapcallbacks.(result[3]) := gapcallbacks.(result[3]) + 1;
             result := CallRefiner(savedvals, refiners[result[2]], result[3], result{[4..Length(result)]});
             Info(InfoVole, 2, "Refiner returned: ", GapToJsonString(result));
             IO_WriteLine(pipe.write, GapToJsonString(result));
-            gapcallbacks.refiner_time := gapcallbacks.refiner_time + (NanosecondsSinceEpoch() - time);
+            gapcallbacks.refiner_time := gapcallbacks.refiner_time + Int((NanosecondsSinceEpoch() - time)/1000000);
         elif result[1] = "stringGapRef" then
             Info(InfoVole, 2, "Print cached object: ", result);
             IO_WriteLine(pipe.write, Concatenation("\"",String(savedvals.map[result[2].id]),"\""));
@@ -288,7 +288,7 @@ function(points, find_single, find_canonical, constraints, canonical_group)
               canonical_group
           );
 
-    result := rec(raw := ret, time := NanosecondsSinceEpoch() - start_time);
+    result := rec(raw := ret, time := Int((NanosecondsSinceEpoch() - start_time)/1000000));
 
     if find_single then
         result.sol := List(ret.sols, PermList);
