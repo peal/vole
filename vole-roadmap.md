@@ -23,7 +23,7 @@ Refiners
 * Refiner for SetSet 🎉
 * Refiner for SetTuple 🎉 
 * Refiner from GAP 🎉
-    * Only call when it will update (TODO)
+    * Only call when it will update 🎉
     * Run as incrementally as possible (TODO)
 * Refiner for perm conjugacy (TODO)
 * Refiner for basic normaliser 🎉
@@ -38,13 +38,13 @@ Search types
 * Perform search finding only generators 🎉
 * Coset search for single element 🎉
 * Coset search for single element + generators (OPTIONAL)
-* Canonical image 🚧
+* Canonical image 🎉
 
 Support
 =======
-* GAP package
+* GAP package 🎉
 * Documentation
-* Testing
+* Testing 🎉
 * Website
 * Benchmarks
 
