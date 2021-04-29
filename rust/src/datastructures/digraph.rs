@@ -210,6 +210,7 @@ impl DigraphStack {
 
     /// Merge in a digraph stored in an Arc
     pub fn add_arc_graph(&mut self, d: &Arc<Digraph>) {
+        trace!("Adding digraph by arc");
         // TODO: Make this more efficient, when this is the first graph
         self.add_graph(d.as_ref());
         *self.depth += 1;
