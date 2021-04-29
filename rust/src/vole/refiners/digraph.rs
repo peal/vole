@@ -51,7 +51,18 @@ impl Refiner for DigraphTransporter {
     }
 
     fn check(&self, p: &Permutation) -> bool {
-        &(*self.digraph_left) ^ p == *self.digraph_right
+        // Old Slower implementation: &(*self.digraph_left) ^ p == *self.digraph_right
+
+        for i in 0..self.digraph_left.vertices() {
+            let i_img = p.apply(i);
+            let img_neighbours = self.digraph_right.neighbours(i_img);
+            for (&target, colour) in self.digraph_left.neighbours(i) {
+                if img_neighbours.get(&p.apply(target)) != Some(colour) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     fn refine_begin(&mut self, state: &mut DomainState, side: Side) -> trace::Result<()> {
