@@ -98,30 +98,44 @@ Dependencies := rec(
   ExternalConditions := [ ],
 ),
 
-AvailabilityTest := ReturnTrue,
+# FIXME: This might not work properly if the user has multiple Voles installed.
+AvailabilityTest := function()
+  if Filename(List(GAPInfo.PackagesInfo.vole, x -> Directory(Concatenation(
+      x.InstallationPath, "/rust/target/release"))), "vole.d") = fail then
+    LogPackageLoadingMessage(PACKAGE_WARNING,
+      "Vole package is not compiled; please run `make` in the Vole directory");
+    return fail;
+  fi;
+  return true;
+end,
 
 TestFile := "tst/testall.g",
 
-#Keywords := [ "TODO" ],
+# TODO: more/better keywords
+Keywords := [
+    "permutation group", "backtrack", "search", "backtracking", "graph",
+    "digraph", "normaliser", "normalizer", "stabiliser", "stabilizer",
+    "group", "subgroup", "intersection", "conjugacy", "coset", "transporter",
+],
 
 AutoDoc := rec(
-    TitlePage := rec(
-        Copyright := Concatenation(
-            "&copyright; 20?? by ??",
-            # TODO
-            "\n"
-            ), 
-        Abstract := Concatenation( 
-            "&Vole; is a &GAP; package that...",
-            # TODO
-            "\n"
-            ), 
-        Acknowledgements := Concatenation( 
-            "GAPDoc? Autodoc? PackageMaker? Example package? People?",
-            # TODO
-            "<P/>\n"
-            ) 
-    )
+   TitlePage := rec(
+    Copyright := Concatenation(
+      "&copyright; 20?? by ??",
+      # TODO
+      "\n"
+      ),
+    Abstract := Concatenation(
+      "&Vole; is a &GAP; package that...",
+      # TODO
+      "\n"
+      ),
+    Acknowledgements := Concatenation(
+      "GAPDoc? Autodoc? PackageMaker? Example package? People?",
+      # TODO
+      "<P/>\n"
+      )
+   )
 ),
 
 ));
