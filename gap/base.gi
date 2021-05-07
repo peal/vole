@@ -154,8 +154,12 @@ InstallGlobalFunction(ForkVole, function(extraargs...)
         Info(InfoVole, 2, "C:", args,"\n");
         ChangeDirectoryCurrent(DirectoriesPackageLibrary("vole", "rust")[1]![1]);
         IO_execvp(prog, args);
-        Info(InfoVole, 2, "Fatal error");
-        QUIT_GAP();
+        if prog = "cargo" then
+            Print("#I Vole: Fatal Error - 'cargo' is not installed\n");
+        else
+            Print("#I Vole: Fatal Error - Package has not been built\n");
+        fi;
+        ForceQuitGap();
     else
         # In the parent
         Info(InfoVole, 2, "P: In parent");
@@ -184,6 +188,9 @@ InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
         Info(InfoVole, 2, "Reading..\n");
         str := IO_ReadLine(pipe.read);
         Info(InfoVole, 2, "Read: '",str,"'\n");
+        if IsEmpty(str) then
+            ErrorNoReturn("No return value from 'vole'");
+        fi;
         result := JsonStringToGap(str);
         if result[1] = "end" then
             IO_Close(pipe.write);
