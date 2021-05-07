@@ -8,8 +8,8 @@ SetPackageInfo( rec(
 
 PackageName := "Vole",
 Subtitle := "Backtrack search in permutation groups with graphs",
-Version := "0.1.2",
-Date := "20/04/2021", # dd/mm/yyyy format
+Version := "0.4.0",
+Date := "07/05/2021", # dd/mm/yyyy format
 License := "MPL-2.0",
 
 Persons := [
@@ -85,8 +85,8 @@ PackageDoc := rec(
 Dependencies := rec(
   GAP := ">= 4.11.0",
   NeededOtherPackages := [
-                           [ "BacktrackKit", ">= 0.3.1" ],
-                           [ "GraphBacktracking", ">= 0.3.0" ],
+                           [ "BacktrackKit", ">= 0.4.0" ],
+                           [ "GraphBacktracking", ">= 0.4.0" ],
                            [ "Digraphs", ">= 1.1.1" ],
                            [ "datastructures", ">= 0.2.6" ],
                            [ "json", ">= 2.0.1" ],
