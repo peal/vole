@@ -43,6 +43,7 @@ pub fn build_rbase(state: &mut State) {
 
     trace!("On cell: {:?}", debug(&cell));
     let c = cell[0];
+    state.stats.rbase_branch_vals.push(c);
 
     let span = trace_span!("C", value = c);
     let _o = span.enter();

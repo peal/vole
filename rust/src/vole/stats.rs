@@ -9,4 +9,5 @@ pub struct Stats {
     pub improve_canonical: usize,
     pub equal_canonical: usize,
     pub refiner_calls: usize,
+    pub rbase_branch_vals: Vec<usize>
 }
