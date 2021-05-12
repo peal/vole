@@ -9,5 +9,11 @@ pub struct Stats {
     pub improve_canonical: usize,
     pub equal_canonical: usize,
     pub refiner_calls: usize,
-    pub rbase_branch_vals: Vec<usize>
+    rbase_branch_vals: Vec<usize>,
+}
+
+impl Stats {
+    pub fn push_rbase_branch_val(&mut self, p: usize) {
+        self.rbase_branch_vals.push(p + 1);
+    }
 }
