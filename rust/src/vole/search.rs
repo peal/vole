@@ -105,6 +105,9 @@ pub fn simple_search_recurse(
     for c in cell {
         let span = trace_span!("C", value = c);
         let _o = span.enter();
+        if doing_first_branch && first_branch_in {
+            state.stats.rbase_branch_vals.push(c);
+        }
         // Skip search if we are in the first branch, not on the first thing, and not min in orbit
         let skip = first_branch_in && !doing_first_branch && !sols.min_in_orbit(c);
         if !skip {
