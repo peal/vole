@@ -1,28 +1,8 @@
-use super::refiners::Side;
 use super::solutions::Solutions;
 use super::{backtracking::Backtrack, state::State};
+use super::{refiners::Side, selector::select_branching_cell};
 
 use tracing::{info, trace, trace_span};
-
-pub fn select_branching_cell(state: &State) -> usize {
-    let part = state.domain.partition();
-    let mut cell = std::usize::MAX;
-    let mut cell_size = std::usize::MAX;
-    for &i in part.base_cells() {
-        let size = part.cell(i).len();
-        if size < cell_size && size > 1 {
-            cell = i;
-            cell_size = part.cell(i).len();
-        }
-    }
-    assert_ne!(cell, std::usize::MAX);
-    info!(
-        "Choosing to branch on cell {:?} from {:?}",
-        cell,
-        part.extended_as_list_set()
-    );
-    cell
-}
 
 pub fn build_rbase(state: &mut State) {
     state.stats.rbase_nodes += 1;
@@ -95,6 +75,7 @@ pub fn simple_search_recurse(
 
     let cell_num = select_branching_cell(state);
     let mut cell: Vec<usize> = part.cell(cell_num).to_vec();
+    assert!(cell.len() > 1);
 
     if first_branch_in {
         cell.sort();

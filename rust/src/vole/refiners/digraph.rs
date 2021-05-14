@@ -62,7 +62,7 @@ impl Refiner for DigraphTransporter {
                 }
             }
         }
-        return true;
+        true
     }
 
     fn refine_begin(&mut self, state: &mut DomainState, side: Side) -> trace::Result<()> {
