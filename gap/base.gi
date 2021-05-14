@@ -109,15 +109,22 @@ function(savedvals, state, type, args)
 end);
 
 # Choose how vole is run:
+# "opt-first": Run as optimised as possible, rebuild on first use in any GAP session
 # "opt-nobuild": Run as optimised as possible, do not build the executable
 # "opt": Run as optimised as possible
 # "trace": Output a trace in "trace.log"
 # "flamegraph": Output a flamegraph of where CPU is used in "flamegraph.svg"
 # "debug": Run inside the debugger
-VOLE_MODE := "opt-nobuild";
+VOLE_MODE := "opt-first";
 
 InstallGlobalFunction(ForkVole, function(extraargs...)
-    local rustpipe, gappipe, args, ret, prog;
+    local rustpipe, gappipe, args, ret, prog, firsttime;
+    firsttime := false;
+    if VOLE_MODE = "opt-first" then
+        firsttime := true;
+        VOLE_MODE := "opt-nobuild";
+    fi;
+
     rustpipe := IO_Pipe();
     gappipe := IO_Pipe();
     Info(InfoVole, 2, "PreFork\n");
@@ -132,13 +139,14 @@ InstallGlobalFunction(ForkVole, function(extraargs...)
         IO_Close(gappipe.toread);
         Info(InfoVole, 2, "C: In child\n");
         prog := "cargo";
-        if VOLE_MODE = "opt-nobuild" then
+
+        if VOLE_MODE = "opt" or firsttime then
+            args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+        elif VOLE_MODE = "opt-nobuild" then
             prog := "target/release/vole";
             args :=  ["--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
         elif VOLE_MODE = "trace" then
             args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--trace", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
-        elif VOLE_MODE = "opt" then
-            args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
         elif VOLE_MODE = "flamegraph" then
             args :=  ["flamegraph", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
         elif VOLE_MODE = "valgrind" then
