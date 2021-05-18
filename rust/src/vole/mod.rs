@@ -8,4 +8,5 @@ pub mod selector;
 pub mod solutions;
 pub mod state;
 pub mod stats;
+pub mod subsearch;
 pub mod trace;

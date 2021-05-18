@@ -63,6 +63,10 @@ impl DomainState {
         self.rbase_digraph_stack.as_ref().unwrap()
     }
 
+    pub fn digraph_stack(&self) -> &DigraphStack {
+        &self.digraph_stack
+    }
+
     pub fn refine_partition_cell_by<F: Copy, T: Ord + Hash + Debug>(
         &mut self,
         i: usize,
