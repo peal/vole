@@ -232,11 +232,6 @@ impl DigraphStack {
         *self.depth += digraphs.len();
     }
 
-    /// Total depth of stack (which is the number of merged in digraphs)
-    pub fn saved_depths(&self) -> usize {
-        self.digraph.saved_depths()
-    }
-
     /// Get digraph at depth `d`
     pub fn get_depth(&self, d: usize) -> &Arc<Digraph> {
         self.digraph.get_depth(d)
