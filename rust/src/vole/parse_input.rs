@@ -260,7 +260,7 @@ impl RefinerDescription for Constraint {
 
 /// Overall configuration for problem to be solved
 #[derive(Debug, Deserialize, Serialize)]
-pub struct Config {
+pub struct ProblemConfig {
     /// The problem should be solved on the set [1..`points`]
     pub points: usize,
     /// Find only a single solution
@@ -273,7 +273,7 @@ pub struct Config {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Problem {
     /// Configuration
-    pub config: Config,
+    pub config: ProblemConfig,
     /// List of constraints
     pub constraints: Vec<Constraint>,
 }
