@@ -409,6 +409,10 @@ impl Backtrack for PartitionStack {
         let depth = self.saved_depths.pop().unwrap();
         self.extended_unsplit_cells_to(depth);
     }
+
+    fn state_depth(&self) -> usize {
+        self.saved_depths.len()
+    }
 }
 
 impl PartitionStack {
@@ -606,6 +610,7 @@ mod tests {
     #[test]
     fn test_split() {
         let mut p = PartitionStack::new(5);
+        assert_eq!(p.state_depth(), 0);
         p.sanity_check();
         assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.extended_as_indicator(), vec![0, 0, 0, 0, 0]);
@@ -645,17 +650,24 @@ mod tests {
         p.sanity_check();
         assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.extended_as_indicator(), vec![0, 0, 0, 0, 0]);
+        assert_eq!(p.state_depth(), 0);
         p.save_state();
+        assert_eq!(p.state_depth(), 1);
         p.split_cell(0, 2);
         assert_eq!(p.base_as_list_set(), vec![vec![0, 1], vec![2, 3, 4]]);
         assert_eq!(p.extended_as_indicator(), vec![0, 0, 1, 1, 1]);
         p.sanity_check();
+        assert_eq!(p.state_depth(), 1);
         p.restore_state();
+        assert_eq!(p.state_depth(), 0);
         assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.extended_as_indicator(), vec![0, 0, 0, 0, 0]);
         p.sanity_check();
+        assert_eq!(p.state_depth(), 0);
         p.save_state();
+        assert_eq!(p.state_depth(), 1);
         p.save_state();
+        assert_eq!(p.state_depth(), 2);
         p.split_cell(0, 3);
         assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2], vec![3, 4]]);
         p.sanity_check();
@@ -668,10 +680,13 @@ mod tests {
             vec![vec![0], vec![3], vec![1, 2], vec![4]]
         );
         assert_eq!(p.extended_as_indicator(), vec![0, 2, 2, 1, 3]);
+        assert_eq!(p.state_depth(), 2);
         p.restore_state();
+        assert_eq!(p.state_depth(), 1);
         assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.extended_as_indicator(), vec![0, 0, 0, 0, 0]);
         p.restore_state();
+        assert_eq!(p.state_depth(), 0);
         assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.extended_as_indicator(), vec![0, 0, 0, 0, 0]);
     }

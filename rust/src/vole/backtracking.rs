@@ -9,6 +9,10 @@ pub trait Backtrack {
     fn save_state(&mut self);
     /// Revert to a previous saved state
     fn restore_state(&mut self);
+
+    /// Current number of saved states
+    /// This may be '0' for objects which do not store depth information
+    fn state_depth(&self) -> usize;
 }
 
 /// A 'smart pointer' which implements [Backtrack]
@@ -35,6 +39,10 @@ impl<T: Clone + fmt::Debug> Backtrack for Backtracking<T> {
 
     fn restore_state(&mut self) {
         self.value = self.stack.pop().unwrap();
+    }
+
+    fn state_depth(&self) -> usize {
+        self.stack.len()
     }
 }
 
@@ -97,6 +105,10 @@ impl<T: Clone + fmt::Debug> Backtrack for BacktrackingStack<T> {
         let depth = self.saved_depths.pop().unwrap();
         self.stack.truncate(depth);
     }
+
+    fn state_depth(&self) -> usize {
+        self.saved_depths.len()
+    }
 }
 
 #[cfg(test)]
@@ -112,21 +124,28 @@ mod tests {
         assert_eq!(*bt, 2);
         *bt = 3;
         assert_eq!(*bt, 3);
+        assert_eq!(bt.state_depth(), 0);
         bt.save_state();
+        assert_eq!(bt.state_depth(), 1);
         assert_eq!(*bt, 3);
         *bt = 4;
         assert_eq!(*bt, 4);
         bt.save_state();
+        assert_eq!(bt.state_depth(), 2);
         assert_eq!(*bt, 4);
         *bt = 5;
         assert_eq!(*bt, 5);
         bt.save_state();
+        assert_eq!(bt.state_depth(), 3);
         assert_eq!(*bt, 5);
         bt.restore_state();
+        assert_eq!(bt.state_depth(), 2);
         assert_eq!(*bt, 5);
         bt.restore_state();
+        assert_eq!(bt.state_depth(), 1);
         assert_eq!(*bt, 4);
         bt.restore_state();
+        assert_eq!(bt.state_depth(), 0);
         assert_eq!(*bt, 3);
 
         // Check reverting again panics, stop backtrace being printed
@@ -137,10 +156,13 @@ mod tests {
     #[test]
     fn check_backtrackstack() {
         let mut bt = BacktrackingStack::new(2);
+        assert_eq!(bt.state_depth(), 0);
         assert_eq!(*bt.get(), vec![2]);
         bt.push(3);
         assert_eq!(*bt.get(), vec![2, 3]);
+        assert_eq!(bt.state_depth(), 0);
         bt.save_state();
+        assert_eq!(bt.state_depth(), 1);
         assert_eq!(*bt.get(), vec![2, 3]);
         bt.push(3);
         assert_eq!(*bt.get(), vec![2, 3, 3]);
@@ -148,6 +170,7 @@ mod tests {
         bt.push(5);
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5]);
         bt.save_state();
+        assert_eq!(bt.state_depth(), 2);
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5]);
         bt.push(6);
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5, 6]);
@@ -162,7 +185,9 @@ mod tests {
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5, 6]);
         bt.restore_state();
         assert_eq!(*bt.get(), vec![2, 3, 3, 4, 5]);
+        assert_eq!(bt.state_depth(), 1);
         bt.restore_state();
+        assert_eq!(bt.state_depth(), 0);
         assert_eq!(*bt.get(), vec![2, 3]);
 
         // Check reverting again panics, stop backtrace being printed

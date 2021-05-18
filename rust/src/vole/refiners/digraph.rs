@@ -82,4 +82,7 @@ impl Refiner for DigraphTransporter {
 impl Backtrack for DigraphTransporter {
     fn save_state(&mut self) {}
     fn restore_state(&mut self) {}
+    fn state_depth(&self) -> usize {
+        0
+    }
 }

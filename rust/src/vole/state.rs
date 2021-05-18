@@ -19,4 +19,9 @@ impl Backtrack for State {
         self.domain.restore_state();
         self.refiners.restore_state();
     }
+
+    fn state_depth(&self) -> usize {
+        debug_assert_eq!(self.domain.state_depth(), self.refiners.state_depth());
+        self.domain.state_depth()
+    }
 }

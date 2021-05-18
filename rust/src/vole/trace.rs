@@ -142,4 +142,9 @@ impl Backtrack for Tracer {
         self.tracing_type.restore_state();
         info!(target: "tracer", "Restore tracer state: {:?}", *self.pos);
     }
+
+    fn state_depth(&self) -> usize {
+        debug_assert_eq!(self.pos.state_depth(), self.tracing_type.state_depth());
+        self.pos.state_depth()
+    }
 }

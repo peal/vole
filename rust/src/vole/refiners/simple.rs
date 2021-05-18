@@ -82,6 +82,9 @@ impl Refiner for SetTransporter {
 impl Backtrack for SetTransporter {
     fn save_state(&mut self) {}
     fn restore_state(&mut self) {}
+    fn state_depth(&self) -> usize {
+        0
+    }
 }
 
 // Tuple is stored as a hash map, from value to position in list
@@ -174,6 +177,9 @@ impl Refiner for TupleTransporter {
 impl Backtrack for TupleTransporter {
     fn save_state(&mut self) {}
     fn restore_state(&mut self) {}
+    fn state_depth(&self) -> usize {
+        0
+    }
 }
 
 pub struct SetSetTransporter {
@@ -274,6 +280,9 @@ impl Refiner for SetSetTransporter {
 impl Backtrack for SetSetTransporter {
     fn save_state(&mut self) {}
     fn restore_state(&mut self) {}
+    fn state_depth(&self) -> usize {
+        0
+    }
 }
 
 pub struct SetTupleTransporter {
@@ -388,4 +397,7 @@ impl Refiner for SetTupleTransporter {
 impl Backtrack for SetTupleTransporter {
     fn save_state(&mut self) {}
     fn restore_state(&mut self) {}
+    fn state_depth(&self) -> usize {
+        0
+    }
 }

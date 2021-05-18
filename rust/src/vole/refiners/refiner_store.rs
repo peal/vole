@@ -20,6 +20,7 @@ pub struct RefinerStore {
     refiners: Vec<Box<dyn Refiner>>,
     base_fixed_values_considered: Vec<Backtracking<usize>>,
     cells_considered: Vec<Backtracking<usize>>,
+    saved_depth: usize,
 }
 
 impl RefinerStore {
@@ -33,6 +34,7 @@ impl RefinerStore {
             cells_considered: std::iter::repeat_with(|| Backtracking::new(0))
                 .take(len)
                 .collect(),
+            saved_depth: 0,
         }
     }
 
@@ -287,6 +289,8 @@ impl Backtrack for RefinerStore {
         for c in &mut self.refiners {
             c.save_state();
         }
+
+        self.saved_depth += 1;
     }
 
     fn restore_state(&mut self) {
@@ -299,5 +303,18 @@ impl Backtrack for RefinerStore {
         for c in &mut self.refiners {
             c.restore_state();
         }
+        self.saved_depth -= 1;
+    }
+
+    fn state_depth(&self) -> usize {
+        debug_assert!(self
+            .base_fixed_values_considered
+            .iter()
+            .all(|v| v.state_depth() == self.saved_depth));
+        debug_assert!(self
+            .cells_considered
+            .iter()
+            .all(|v| v.state_depth() == self.saved_depth));
+        self.saved_depth
     }
 }

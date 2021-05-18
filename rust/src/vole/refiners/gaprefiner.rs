@@ -209,4 +209,8 @@ impl Backtrack for GapRefiner {
     fn restore_state(&mut self) {
         self.seen_results.restore_state();
     }
+
+    fn state_depth(&self) -> usize {
+        0
+    }
 }

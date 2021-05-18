@@ -143,4 +143,14 @@ impl Backtrack for DomainState {
         self.digraph_stack.restore_state();
         self.digraph_stack_cells_refined.restore_state();
     }
+
+    fn state_depth(&self) -> usize {
+        debug_assert_eq!(self.stack.state_depth(), self.tracer.state_depth());
+        debug_assert_eq!(self.stack.state_depth(), self.digraph_stack.state_depth());
+        debug_assert_eq!(
+            self.stack.state_depth(),
+            self.digraph_stack_cells_refined.state_depth()
+        );
+        self.stack.state_depth()
+    }
 }
