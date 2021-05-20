@@ -97,12 +97,6 @@ impl RefinerStore {
         }
     }
 
-    // TODO: This shouldn't be here
-    pub fn capture_rbase(&mut self, state: &mut DomainState) {
-        assert!(!state.has_rbase());
-        state.snapshot_rbase();
-    }
-
     pub fn get_canonical_images(&self, p: &Permutation) -> Vec<Box<dyn Any>> {
         return self
             .refiners

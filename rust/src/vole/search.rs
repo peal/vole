@@ -8,7 +8,7 @@ pub fn build_rbase(state: &mut State) {
     let part = state.domain.partition();
 
     if part.base_cells().len() == part.base_domain_size() {
-        state.refiners.capture_rbase(&mut state.domain);
+        state.domain.snapshot_rbase();
         return;
     }
 
