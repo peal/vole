@@ -3,13 +3,12 @@
 //! This crate implements edge-coloured graphs.
 
 use serde::{Deserialize, Serialize};
-use std::{num::Wrapping, slice, sync::Arc};
+use std::{collections::HashSet, num::Wrapping, slice, sync::Arc};
 
 use crate::{
     perm::Permutation,
     vole::backtracking::{Backtrack, Backtracking},
 };
-use indexmap::map::IndexMap;
 use itertools::Itertools;
 use tracing::trace;
 
@@ -18,7 +17,8 @@ use super::hash::do_hash;
 /// The neighbours of a vertex in a directed graph.
 /// The keys are the neighbours, the image of the keys the "colour" of the edge
 /// Directed graphs have edges in both directions, but with different colours.
-pub type Neighbours = IndexMap<usize, Wrapping<usize>>;
+pub type Neighbours = std::collections::BTreeMap<usize, Wrapping<usize>>;
+//pub type Neighbours = indexmap::map::IndexMap<usize, Wrapping<usize>>;
 
 /// A directed graph
 #[derive(Clone, Debug, Eq, Deserialize, Serialize)]
@@ -93,9 +93,9 @@ impl Digraph {
             }
         }
 
-        for e in &mut edges {
+        /*for e in &mut edges {
             e.sort_keys();
-        }
+        }*/
 
         Self { edges }
     }
@@ -132,23 +132,27 @@ impl Digraph {
     /// whereas merging [a,b] at depth 0, then [c,d,e] at depth 0 will
     /// produce a different graph
     pub fn merge(&mut self, digraphs: &[Self], in_depth: usize) {
+        let mut resort = HashSet::new();
         for (size, d) in digraphs.iter().enumerate() {
             let depth = in_depth + size;
             if d.edges.len() > self.edges.len() {
                 self.edges.resize(d.edges.len(), Neighbours::new());
+                for i in self.edges.len()..d.edges.len() {
+                    resort.insert(i);
+                }
             }
 
             for i in 0..d.edges.len() {
                 for (&neighbour, &colour) in &d.edges[i] {
-                    *self.edges[i].entry(neighbour).or_insert(Wrapping(0)) +=
+                    *self.edges[i].entry(neighbour).or_insert_with(|| { resort.insert(i); Wrapping(0)}) +=
                         do_hash((colour, depth));
                 }
             }
         }
 
-        for i in 0..self.edges.len() {
+        /* for i in resort.into_iter() {
             self.edges[i].sort_keys();
-        }
+        }*/
     }
 
     /// Relabel the vertices of a graph, possibly introducing some new unused vertices
@@ -180,7 +184,7 @@ impl std::ops::BitXor<&Permutation> for &Digraph {
             for (&target, &colour) in &self.edges[i] {
                 edges[i_img].insert(perm.apply(target), colour);
             }
-            edges[i_img].sort_keys();
+           // edges[i_img].sort_keys();
         }
 
         Digraph { edges }
