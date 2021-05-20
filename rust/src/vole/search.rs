@@ -5,7 +5,6 @@ use super::{refiners::Side, selector::select_branching_cell};
 use tracing::{info, trace, trace_span};
 
 pub fn build_rbase(state: &mut State) {
-    state.stats.rbase_nodes += 1;
     let part = state.domain.partition();
 
     if part.base_cells().len() == part.base_domain_size() {
