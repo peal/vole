@@ -112,7 +112,11 @@ pub fn simple_search_recurse(
                         state.restore_state();
                         return true;
                     }
+                } else {
+                    state.stats.trace_fail_nodes += 1;
                 }
+            } else {
+                state.stats.trace_fail_nodes += 1;
             }
             state.restore_state();
         }
