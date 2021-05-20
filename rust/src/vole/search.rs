@@ -22,7 +22,7 @@ pub fn build_rbase(state: &mut State) {
 
     trace!("On cell: {:?}", debug(&cell));
     let c = cell[0];
-    state.stats.push_rbase_branch_val(c);
+    state.domain.push_rbase_branch_val(c);
 
     let span = trace_span!("C", value = c);
     let _o = span.enter();
@@ -86,7 +86,7 @@ pub fn simple_search_recurse(
         let span = trace_span!("C", value = c);
         let _o = span.enter();
         if doing_first_branch && first_branch_in {
-            state.stats.push_rbase_branch_val(c);
+            state.domain.push_rbase_branch_val(c);
         }
         // Skip search if we are in the first branch, not on the first thing, and not min in orbit
         let skip = first_branch_in && !doing_first_branch && !sols.min_in_orbit(c);

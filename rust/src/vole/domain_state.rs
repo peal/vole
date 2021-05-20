@@ -21,6 +21,7 @@ pub struct DomainState {
     digraph_stack: DigraphStack,
     rbase_digraph_stack: Option<DigraphStack>,
     digraph_stack_cells_refined: Backtracking<usize>,
+    rbase_branch_vals: Vec<usize>,
 }
 
 impl DomainState {
@@ -32,6 +33,7 @@ impl DomainState {
             digraph_stack: DigraphStack::empty(n),
             rbase_digraph_stack: Option::None,
             digraph_stack_cells_refined: Backtracking::new(0),
+            rbase_branch_vals: vec![],
         }
     }
 }
@@ -49,10 +51,22 @@ impl DomainState {
         self.rbase_stack.is_some()
     }
 
+    pub fn push_rbase_branch_val(&mut self, i: usize) {
+        self.rbase_branch_vals.push(i)
+    }
+
+    pub fn rbase_branch_vals(&self) -> &[usize] {
+        &self.rbase_branch_vals
+    }
+    fn inject_known_solutions(&mut self) {
+        //GapChatType::send_request(&("known_solutions"), )
+    }
+
     pub fn snapshot_rbase(&mut self) {
         assert!(self.rbase_stack.is_none());
         self.rbase_stack = Some(self.stack.clone());
         self.rbase_digraph_stack = Some(self.digraph_stack.clone());
+        self.inject_known_solutions();
     }
 
     pub fn rbase_partition(&self) -> &partition_stack::PartitionStack {

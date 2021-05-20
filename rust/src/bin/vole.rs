@@ -63,6 +63,7 @@ fn main() -> anyhow::Result<()> {
     GAP_CHAT.lock().unwrap().send_results(
         &solutions,
         state.domain.rbase_partition().base_fixed_values(),
+        state.domain.rbase_branch_vals(),
         state.stats,
     )?;
 

@@ -318,7 +318,7 @@ function(points, find_single, find_canonical, constraints, canonical_group)
         if IsEmpty(gens) then
             gens := [()];
         fi;
-        sc := StabChainBaseStrongGenerators(ret.base, gens);
+        sc := StabChainBaseStrongGenerators(ret.rbase_branches, gens);
         # Knock out unneeded elements
         ReduceStabChain(sc);
         group := Group(gens);

@@ -144,8 +144,10 @@ impl Digraph {
 
             for i in 0..d.edges.len() {
                 for (&neighbour, &colour) in &d.edges[i] {
-                    *self.edges[i].entry(neighbour).or_insert_with(|| { resort.insert(i); Wrapping(0)}) +=
-                        do_hash((colour, depth));
+                    *self.edges[i].entry(neighbour).or_insert_with(|| {
+                        resort.insert(i);
+                        Wrapping(0)
+                    }) += do_hash((colour, depth));
                 }
             }
         }
@@ -184,7 +186,7 @@ impl std::ops::BitXor<&Permutation> for &Digraph {
             for (&target, &colour) in &self.edges[i] {
                 edges[i_img].insert(perm.apply(target), colour);
             }
-           // edges[i_img].sort_keys();
+            // edges[i_img].sort_keys();
         }
 
         Digraph { edges }

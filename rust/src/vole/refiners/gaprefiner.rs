@@ -203,11 +203,12 @@ impl Refiner for GapRefiner {
 
 impl Backtrack for GapRefiner {
     fn save_state(&mut self) {
-        let _:bool = GapChatType::send_request(&("refiner", &self.gap_id, "save_state")).unwrap();
+        let _: bool = GapChatType::send_request(&("refiner", &self.gap_id, "save_state")).unwrap();
     }
 
     fn restore_state(&mut self) {
-        let _:bool = GapChatType::send_request(&("refiner", &self.gap_id, "restore_state")).unwrap();
+        let _: bool =
+            GapChatType::send_request(&("refiner", &self.gap_id, "restore_state")).unwrap();
     }
 
     fn state_depth(&self) -> usize {

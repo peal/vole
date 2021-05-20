@@ -438,7 +438,7 @@ impl PartitionStack {
     {
         let cell_slice = self.mut_cell(i);
         if cell_slice.len() == 1 {
-            return Ok(())
+            return Ok(());
         }
         tracer.add(trace::TraceEvent::Start())?;
         {

@@ -143,8 +143,9 @@ impl GapChatType {
 struct Results {
     sols: Vec<Vec<usize>>,
     canonical: Option<Vec<usize>>,
-    base: Vec<usize>,
+    search_fix_order: Vec<usize>,
     stats: Stats,
+    rbase_branches: Vec<usize>,
 }
 
 impl GapChatType {
@@ -153,7 +154,8 @@ impl GapChatType {
     pub fn send_results(
         &mut self,
         solutions: &Solutions,
-        rbase: &[usize],
+        fixed: &[usize],
+        rbase_base: &[usize],
         stats: Stats,
     ) -> anyhow::Result<()> {
         let sols: Vec<Vec<usize>> = solutions
@@ -162,8 +164,9 @@ impl GapChatType {
             .map(|s| s.as_vec().iter().map(|x| x + 1).collect())
             .collect();
 
-        let base = rbase.iter().map(|&x| x + 1).collect();
+        let search_fix_order = fixed.iter().map(|&x| x + 1).collect();
 
+        let rbase_branches = rbase_base.iter().map(|&x| x + 1).collect();
         let canonical = solutions
             .get_canonical()
             .as_ref()
@@ -176,8 +179,9 @@ impl GapChatType {
                 Results {
                     sols,
                     canonical,
-                    base,
+                    search_fix_order,
                     stats,
+                    rbase_branches,
                 },
             ),
         )?;
