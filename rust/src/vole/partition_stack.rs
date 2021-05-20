@@ -436,9 +436,12 @@ impl PartitionStack {
     where
         F: Fn(&usize) -> O,
     {
+        let cell_slice = self.mut_cell(i);
+        if cell_slice.len() == 1 {
+            return Ok(())
+        }
         tracer.add(trace::TraceEvent::Start())?;
         {
-            let cell_slice = self.mut_cell(i);
             if cell_slice.iter().map(|x| f(x)).all_equal() {
                 let hash = trace::hash(&f(&cell_slice[0]));
                 // Reduce info size
