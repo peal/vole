@@ -63,11 +63,16 @@ function(savedvals, state, type, args)
         else
             return 1;
         fi;
+    elif type = "save_state" then
+        Add(state!.saved_stack, SaveState(state));
+        return true;
+    elif type = "restore_state" then
+        RestoreState(state, Remove(state!.saved_stack));
+        return true;
     else
         Assert(2, type in ["begin", "fixed", "changed"]);
         Assert(2, args[1] = "Left" or args[1] = "Right");
         is_left := (args[1] = "Left");
-        saved := SaveState(state);
         tracer := RecordingTracer();
         PS_SplitCellsByFunction(state!.ps, tracer, x -> args[2][x]);
         
@@ -103,7 +108,6 @@ function(savedvals, state, type, args)
         od;
 
         retval := filters;
-        RestoreState(state, saved);
         return retval;
     fi; 
 end);
@@ -182,7 +186,7 @@ end);
 # and query
 InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
     local pipe,str, st, result, preimage, postimage, gapcallbacks, savedvals, flush, time, pwd;
-    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, image := 0, compare := 0, refiner_time := 0, canonicalmin_time := 0);
+    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, image := 0, compare := 0, refiner_time := 0, canonicalmin_time := 0, save_state := 0, restore_state := 0);
 
     pipe := ForkVole();
 
@@ -287,6 +291,8 @@ function(points, find_single, find_canonical, constraints, canonical_group)
     for i in [1 .. Length(constraints)] do
         if IsRefiner(constraints[i]) then
             gapcons[i] := _GB.BuildProblem(PartitionStack(points), [constraints[i]], []);
+            # We need somewhere to store the saved states for Vole
+            gapcons[i]!.saved_stack := [];
             constraints[i] := rec(GapRefiner := rec(gap_id := i));
         fi;
     od;
