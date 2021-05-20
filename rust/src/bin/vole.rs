@@ -1,5 +1,6 @@
 use std::fs::File;
 
+use cpu_time::ProcessTime;
 use rust_vole::vole::solutions::Solutions;
 use rust_vole::vole::trace;
 use rust_vole::vole::{domain_state::DomainState, trace::TracingType};
@@ -56,6 +57,9 @@ fn main() -> anyhow::Result<()> {
         simple_search(&mut state, &mut solutions);
     }
 
+    if let Ok(time) = ProcessTime::try_now() {
+        state.stats.vole_time = time.as_duration().as_millis();
+    }
     GAP_CHAT.lock().unwrap().send_results(
         &solutions,
         state.domain.rbase_partition().base_fixed_values(),

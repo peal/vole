@@ -19,6 +19,8 @@ pub struct Stats {
     pub refiner_calls: usize,
     /// Branching points of the rbase
     rbase_branch_vals: Vec<usize>,
+    /// Total time taken by vole (in ms)
+    pub vole_time: u128,
 }
 
 impl Stats {
