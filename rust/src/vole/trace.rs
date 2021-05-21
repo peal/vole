@@ -18,6 +18,8 @@ bitflags! {
 pub enum TraceEvent {
     Start(),
     End(),
+    EndRefine(),
+    EndTrace(),
     Split {
         cell: usize,
         size: usize,

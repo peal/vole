@@ -47,6 +47,10 @@ impl DomainState {
         &self.tracer
     }
 
+    pub fn add_trace_event(&mut self, e: trace::TraceEvent) -> Result<(), trace::TraceFailure> {
+        self.tracer.add(e)
+    }
+
     pub fn has_rbase(&self) -> bool {
         self.rbase_stack.is_some()
     }

@@ -2,7 +2,6 @@ use std::cmp::Ordering;
 
 use tracing::{info, trace_span};
 
-use crate::vole::solutions::{Canonical, Solutions};
 use crate::vole::trace::TracingType;
 use crate::vole::{
     backtracking::{Backtrack, Backtracking},
@@ -11,6 +10,10 @@ use crate::vole::{
 use crate::vole::{
     refiners::{Refiner, Side},
     stats::Stats,
+};
+use crate::vole::{
+    solutions::{Canonical, Solutions},
+    trace::TraceEvent,
 };
 use crate::{gap_chat::GapChatType, perm::Permutation, vole::domain_state::DomainState};
 
@@ -92,6 +95,7 @@ impl RefinerStore {
                 && init_cells == state.partition().base_cells().len()
             {
                 // Made no progress
+                state.add_trace_event(TraceEvent::EndRefine())?;
                 return Ok(());
             }
         }
@@ -206,6 +210,14 @@ impl RefinerStore {
         sols: &mut Solutions,
         stats: &mut Stats,
     ) -> bool {
+        // Make one final 'finish' event on the trace. This avoids problems where one trace
+        // is a prefix of another.
+        if state
+            .add_trace_event(trace::TraceEvent::EndTrace())
+            .is_err()
+        {
+            return false;
+        }
         if !state.has_rbase() {
             info!("Taking rbase snapshot");
             state.snapshot_rbase();

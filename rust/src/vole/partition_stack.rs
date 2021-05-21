@@ -481,7 +481,6 @@ impl PartitionStack {
                 }
             }
         }
-        // TODO: Often missing.. required?
         tracer.add(trace::TraceEvent::End())?;
         Ok(())
     }
