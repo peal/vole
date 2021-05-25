@@ -4,6 +4,9 @@
 # All code to call Vole from GAP (and GAP from Vole)
 #
 
+# Record to store private methods
+_Vole := rec();
+
 # Simple high level wrapper around IO_pipe -- could be moved to the IO package.
 InstallGlobalFunction(IO_Pipe,
 function()
@@ -248,6 +251,18 @@ InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
     od;
 end);
 
+# Turn a digraph into a list of neighbours, to allow us to accept
+# either a Digraph, or a list of neighbours
+_Vole.Digraph := function(g)
+    if IsDigraph(g) then
+        return OutNeighbours(g);
+    elif IsList(g) then
+        return g;
+    else
+        Error("Invalid graph");
+    fi;
+end; 
+
 # The list of constraints which vole understands (not including GraphBacktracking refiners)
 # TODO Allow `DigraphStab` and `DigraphTransport` to accept Digraph objects
 # TODO When we require GAP >= 4.12, this should become:
@@ -262,8 +277,8 @@ rec(
     SetSetTransport := {s,t} -> rec(SetSetTransport := rec(left_points := s, right_points := t)),
     SetTupleStab := {s} -> rec(SetTupleStab := rec(points := s)),
     SetTupleTransport := {s,t} -> rec(SetTupleTransport := rec(left_points := s, right_points := t)),
-    DigraphStab := {e} -> rec(DigraphStab := rec(edges := e)),
-    DigraphTransport := {e,f} -> rec(DigraphStab := rec(left_edges := e, right_edges := f))
+    DigraphStab := {e} -> rec(DigraphStab := rec(edges := _Vole.Digraph(e))),
+    DigraphTransport := {e,f} -> rec(DigraphStab := rec(left_edges := _Vole.Digraph(e), right_edges := _Vole.Digraph(f)))
 ));
 
 
