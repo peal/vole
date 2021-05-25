@@ -2,7 +2,7 @@
 
 use crate::{datastructures::small_int_set::SmallIntSet, vole::trace};
 use crate::{
-    datastructures::{digraph::Digraph, hash::do_hash},
+    datastructures::{digraph::Digraph, hash::QuickHashable},
     perm::Permutation,
 };
 
@@ -427,7 +427,7 @@ impl PartitionStack {
         }
     }
 
-    pub fn refine_partition_cell_by<F: Copy, O: Ord + Hash + Debug>(
+    pub fn refine_partition_cell_by<F: Copy, O: Ord + Hash + Debug + QuickHashable>(
         &mut self,
         tracer: &mut trace::Tracer,
         i: usize,
@@ -443,7 +443,7 @@ impl PartitionStack {
         tracer.add(trace::TraceEvent::Start())?;
         {
             if cell_slice.iter().map(|x| f(x)).all_equal() {
-                let hash = trace::hash(&f(&cell_slice[0]));
+                let hash = f(&cell_slice[0]).quick_hash();
                 // Reduce info size
                 if cell_slice.len() > 1 {
                     info!(target: "tracer", "Trace all equal: {:?}, len {:?}", hash, cell_slice.len());
@@ -451,7 +451,7 @@ impl PartitionStack {
                 // Early Exit for cell of size 1
                 tracer.add(trace::TraceEvent::NoSplit {
                     cell: i,
-                    reason: hash,
+                    reason: hash.0 as u64,
                 })?;
                 return Ok(());
             }
@@ -464,7 +464,7 @@ impl PartitionStack {
             // First cell is never split
             tracer.add(trace::TraceEvent::NoSplit {
                 cell: i,
-                reason: trace::hash(&f(&self.cells.values[cell_start])),
+                reason: f(&self.cells.values[cell_start]).quick_hash().0 as u64,
             })?;
             for p in (1..self.cells.lengths[i]).rev() {
                 if f(&self.cells.values[cell_start + p])
@@ -476,7 +476,7 @@ impl PartitionStack {
                     tracer.add(trace::TraceEvent::Split {
                         cell: i,
                         size: p,
-                        reason: trace::hash(&val),
+                        reason: val.quick_hash().0 as u64,
                     })?
                 }
             }
@@ -485,7 +485,7 @@ impl PartitionStack {
         Ok(())
     }
 
-    pub fn base_refine_partition_by<F: Copy, O: Ord + Hash + Debug>(
+    pub fn base_refine_partition_by<F: Copy, O: Ord + Hash + Debug + QuickHashable>(
         &mut self,
         tracer: &mut trace::Tracer,
         f: F,
@@ -502,7 +502,7 @@ impl PartitionStack {
         Ok(())
     }
 
-    pub fn extended_refine_partition_by<F: Copy, O: Ord + Hash + Debug>(
+    pub fn extended_refine_partition_by<F: Copy, O: Ord + Hash + Debug + QuickHashable>(
         &mut self,
         tracer: &mut trace::Tracer,
         f: F,
@@ -532,9 +532,11 @@ impl PartitionStack {
 
             while cells_done < self.extended_cells().len() {
                 let c = self.extended_cells()[cells_done];
+                // Use a slightly less good hashing strategy, as this bit of code is the hotest piece of code
+                let c_hash = c.quick_hash();
                 for &p in self.cell(c) {
                     for (&neighbour, &colour) in d.neighbours(p) {
-                        points[neighbour] += do_hash((c, colour));
+                        points[neighbour] += c_hash * colour; // TODO: Benchmark against (c, colour).quick_hash();
                         seen_cells.insert(self.cell_of(neighbour));
                     }
                 }

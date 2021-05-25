@@ -2,6 +2,8 @@ use std::fmt::Debug;
 
 use tracing::info;
 
+use crate::datastructures::hash::QuickHashable;
+
 use super::state::State;
 
 /// Method of choosing which cell (ignoring cells of size 1) to branch on.
@@ -19,7 +21,7 @@ pub enum Selector {
     SmallestMostConnected,
 }
 
-fn find_best_cell<F: Copy, T: Ord + Debug>(state: &State, func: F) -> usize
+fn find_best_cell<F: Copy, T: Ord + Debug + QuickHashable>(state: &State, func: F) -> usize
 where
     F: Fn(&State, usize) -> T,
 {
@@ -33,6 +35,17 @@ where
         .unwrap()
 }
 
+fn find_first_cell(state: &State) -> usize {
+    *state
+        .domain
+        .partition()
+        .base_cells() // Get cells to branch on
+        .iter()
+        .filter(|&&i| state.domain.partition().cell(i).len() > 1)
+        .next()
+        .unwrap()
+}
+
 pub fn select_branching_cell(state: &State) -> usize {
     let choice = Selector::First;
     let cell = match choice {
@@ -40,7 +53,7 @@ pub fn select_branching_cell(state: &State) -> usize {
         Selector::Largest => {
             find_best_cell(state, |s, i| -(s.domain.partition().cell(i).len() as isize))
         }
-        Selector::First => find_best_cell(state, |_, _| 0),
+        Selector::First => find_first_cell(state),
         _ => unimplemented!(),
     };
 

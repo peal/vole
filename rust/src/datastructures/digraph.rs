@@ -12,7 +12,7 @@ use crate::{
 use itertools::Itertools;
 use tracing::trace;
 
-use super::hash::do_hash;
+use super::hash::QuickHashable;
 
 /// The neighbours of a vertex in a directed graph.
 /// The keys are the neighbours, the image of the keys the "colour" of the edge
@@ -86,10 +86,13 @@ impl Digraph {
     pub fn from_vec(in_edges: Vec<Vec<usize>>) -> Self {
         let mut edges: Vec<Neighbours> = vec![Neighbours::new(); in_edges.len()];
 
+        let out_edge = 1usize.quick_hash();
+        let in_edge = 2usize.quick_hash();
+
         for (i, item) in in_edges.iter().enumerate() {
             for &edge in item {
-                *edges[i].entry(edge).or_insert(Wrapping(0)) += Wrapping(1);
-                *edges[edge].entry(i).or_insert(Wrapping(0)) += Wrapping(2);
+                *edges[i].entry(edge).or_insert(Wrapping(0)) += out_edge;
+                *edges[edge].entry(i).or_insert(Wrapping(0)) += in_edge;
             }
         }
 
@@ -147,7 +150,7 @@ impl Digraph {
                     *self.edges[i].entry(neighbour).or_insert_with(|| {
                         resort.insert(i);
                         Wrapping(0)
-                    }) += do_hash((colour, depth));
+                    }) += ((colour, depth)).quick_hash();
                 }
             }
         }

@@ -29,6 +29,6 @@ cpu-time="1.0.0"
 criterion = "0.3.4"
 test-env-log = { version = "0.2.5", default-features = false, features=["trace"] }
 
-#[profile.release]
-#debug = true
+[profile.release]
+debug = true
 #opt-level = 1

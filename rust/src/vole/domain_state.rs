@@ -2,11 +2,11 @@ use std::{hash::Hash, sync::Arc};
 
 use tracing::info;
 
-use crate::vole::trace;
 use crate::{
     datastructures::digraph::{Digraph, DigraphStack},
     vole::partition_stack,
 };
+use crate::{datastructures::hash::QuickHashable, vole::trace};
 
 use std::fmt::Debug;
 
@@ -85,7 +85,7 @@ impl DomainState {
         &self.digraph_stack
     }
 
-    pub fn refine_partition_cell_by<F: Copy, T: Ord + Hash + Debug>(
+    pub fn refine_partition_cell_by<F: Copy, T: Ord + Hash + Debug + QuickHashable>(
         &mut self,
         i: usize,
         f: F,
@@ -96,7 +96,7 @@ impl DomainState {
         self.stack.refine_partition_cell_by(&mut self.tracer, i, f)
     }
 
-    pub fn base_refine_partition_by<F: Copy, T: Ord + Hash + Debug>(
+    pub fn base_refine_partition_by<F: Copy, T: Ord + Hash + Debug + QuickHashable>(
         &mut self,
         f: F,
     ) -> trace::Result<()>
@@ -106,7 +106,7 @@ impl DomainState {
         self.stack.base_refine_partition_by(&mut self.tracer, f)
     }
 
-    pub fn extended_refine_partition_by<F: Copy, T: Ord + Hash + Debug>(
+    pub fn extended_refine_partition_by<F: Copy, T: Ord + Hash + Debug + QuickHashable>(
         &mut self,
         f: F,
     ) -> trace::Result<()>

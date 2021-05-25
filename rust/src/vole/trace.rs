@@ -1,5 +1,5 @@
-use std::hash::{Hash, Hasher};
-use std::{cmp::Ordering, collections::hash_map::DefaultHasher};
+use std::cmp::Ordering;
+use std::hash::Hash;
 
 use tracing::info;
 
@@ -29,12 +29,6 @@ pub enum TraceEvent {
         cell: usize,
         reason: u64,
     },
-}
-
-pub fn hash<T: Hash>(t: &T) -> u64 {
-    let mut s = DefaultHasher::new();
-    t.hash(&mut s);
-    s.finish()
 }
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, Hash)]
