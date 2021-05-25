@@ -12,13 +12,13 @@ use crate::{
 use itertools::Itertools;
 use tracing::trace;
 
-use super::hash::QuickHashable;
+use super::hash::{QHash, QuickHashable};
 
 /// The neighbours of a vertex in a directed graph.
 /// The keys are the neighbours, the image of the keys the "colour" of the edge
 /// Directed graphs have edges in both directions, but with different colours.
-pub type Neighbours = std::collections::BTreeMap<usize, Wrapping<usize>>;
-//pub type Neighbours = indexmap::map::IndexMap<usize, Wrapping<usize>>;
+pub type Neighbours = std::collections::BTreeMap<usize, Wrapping<QHash>>;
+//pub type Neighbours = indexmap::map::IndexMap<usize, Wrapping<QHash>>;
 
 /// A directed graph
 #[derive(Clone, Debug, Eq, Deserialize, Serialize)]

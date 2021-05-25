@@ -31,4 +31,5 @@ test-env-log = { version = "0.2.5", default-features = false, features=["trace"]
 
 [profile.release]
 debug = true
+lto = "thin"
 #opt-level = 1

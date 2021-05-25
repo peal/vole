@@ -5,7 +5,10 @@ use tracing::info;
 
 use super::{Refiner, Side};
 use crate::{
-    datastructures::{digraph::Digraph, hash::do_hash},
+    datastructures::{
+        digraph::Digraph,
+        hash::{do_hash, QHash},
+    },
     gap_chat::{GapChatType, GapRef},
     perm::Permutation,
     vole::{
@@ -17,7 +20,7 @@ use crate::{
 
 pub struct GapRefiner {
     gap_id: usize,
-    seen_results: Backtracking<HashSet<Wrapping<usize>>>,
+    seen_results: Backtracking<HashSet<Wrapping<QHash>>>,
 }
 
 #[derive(Debug, Deserialize, Serialize, Hash)]

@@ -1,9 +1,12 @@
 #![allow(dead_code)]
 
-use crate::{datastructures::small_int_set::SmallIntSet, vole::trace};
 use crate::{
     datastructures::{digraph::Digraph, hash::QuickHashable},
     perm::Permutation,
+};
+use crate::{
+    datastructures::{hash::QHash, small_int_set::SmallIntSet},
+    vole::trace,
 };
 
 use std::fmt::Debug;
@@ -451,7 +454,7 @@ impl PartitionStack {
                 // Early Exit for cell of size 1
                 tracer.add(trace::TraceEvent::NoSplit {
                     cell: i,
-                    reason: hash.0 as u64,
+                    reason: hash.0,
                 })?;
                 return Ok(());
             }
@@ -464,7 +467,7 @@ impl PartitionStack {
             // First cell is never split
             tracer.add(trace::TraceEvent::NoSplit {
                 cell: i,
-                reason: f(&self.cells.values[cell_start]).quick_hash().0 as u64,
+                reason: f(&self.cells.values[cell_start]).quick_hash().0,
             })?;
             for p in (1..self.cells.lengths[i]).rev() {
                 if f(&self.cells.values[cell_start + p])
@@ -476,7 +479,7 @@ impl PartitionStack {
                     tracer.add(trace::TraceEvent::Split {
                         cell: i,
                         size: p,
-                        reason: val.quick_hash().0 as u64,
+                        reason: val.quick_hash().0,
                     })?
                 }
             }
@@ -528,7 +531,7 @@ impl PartitionStack {
         while cells_done < self.extended_cells().len() {
             let mut seen_cells = SmallIntSet::new(self.extended_domain_size());
 
-            let mut points = vec![Wrapping(0usize); self.extended_domain_size()];
+            let mut points = vec![Wrapping(0 as QHash); self.extended_domain_size()];
 
             while cells_done < self.extended_cells().len() {
                 let c = self.extended_cells()[cells_done];

@@ -3,6 +3,8 @@ use std::hash::Hash;
 
 use tracing::info;
 
+use crate::datastructures::hash::QHash;
+
 use super::backtracking::{Backtrack, Backtracking};
 
 bitflags! {
@@ -23,11 +25,11 @@ pub enum TraceEvent {
     Split {
         cell: usize,
         size: usize,
-        reason: u64,
+        reason: QHash,
     },
     NoSplit {
         cell: usize,
-        reason: u64,
+        reason: QHash,
     },
 }
 
