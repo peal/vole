@@ -443,7 +443,6 @@ impl PartitionStack {
         if cell_slice.len() == 1 {
             return Ok(());
         }
-        tracer.add(trace::TraceEvent::Start())?;
         {
             if cell_slice.iter().map(|x| f(x)).all_equal() {
                 let hash = f(&cell_slice[0]).quick_hash();
