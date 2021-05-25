@@ -1,11 +1,9 @@
 //! A set of integers with O(1) lookup and O(1) iteration through members.
 
-use smallbitvec::SmallBitVec;
-
 /// A set of integers with O(1) lookup and iteration
 #[derive(Debug, Clone)]
 pub struct SmallIntSet {
-    bit_set: SmallBitVec,
+    bit_set: Vec<bool>,
     values: Vec<usize>,
 }
 
@@ -13,7 +11,7 @@ impl SmallIntSet {
     /// Create empty set with size `usize`
     pub fn new(size: usize) -> Self {
         Self {
-            bit_set: SmallBitVec::from_elem(size, false),
+            bit_set: vec![false; size],
             values: vec![],
         }
     }
@@ -25,8 +23,8 @@ impl SmallIntSet {
 
     /// Insert `i` into set (does nothing if `i` is already in the set)
     pub fn insert(&mut self, i: usize) {
-        if !self.bit_set.get(i).unwrap() {
-            self.bit_set.set(i, true);
+        if !self.bit_set[i] {
+            self.bit_set[i] = true;
             self.values.push(i)
         }
     }
@@ -36,6 +34,18 @@ impl SmallIntSet {
         // Sort lazily
         self.values.sort();
         self.values.iter()
+    }
+
+    pub fn clear(&mut self) {
+        for i in self.values.iter() {
+            self.bit_set[*i] = false;
+        }
+        self.values.clear();
+        assert!(self.values.is_empty());
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.values.is_empty()
     }
 }
 
@@ -65,5 +75,17 @@ mod tests {
             set.sorted_iter().cloned().collect::<Vec<_>>(),
             vec![0, 2, 3, 4]
         );
+        set.clear();
+        assert_eq!(
+            set.sorted_iter().cloned().collect::<Vec<usize>>(),
+            Vec::<usize>::new()
+        );
+        assert!(!set.contains(3));
+        assert!(!set.contains(0));
+        assert!(!set.contains(2));
+        set.insert(2);
+        assert!(set.contains(2));
+        assert!(!set.contains(3));
+        assert_eq!(set.sorted_iter().cloned().collect::<Vec<_>>(), vec![2]);
     }
 }
