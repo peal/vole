@@ -41,8 +41,7 @@ fn find_first_cell(state: &State) -> usize {
         .partition()
         .base_cells() // Get cells to branch on
         .iter()
-        .filter(|&&i| state.domain.partition().cell(i).len() > 1)
-        .next()
+        .find(|&&i| state.domain.partition().cell(i).len() > 1)
         .unwrap()
 }
 

@@ -34,7 +34,7 @@ impl QuickHashable for isize {
 impl QuickHashable for Wrapping<QHash> {
     fn quick_hash(&self) -> Wrapping<QHash> {
         let hash = seahash::hash(&self.0.to_le_bytes()) as QHash;
-        Wrapping(hash)
+        Self(hash)
     }
 }
 

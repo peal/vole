@@ -150,7 +150,7 @@ impl Digraph {
                     *self.edges[i].entry(neighbour).or_insert_with(|| {
                         resort.insert(i);
                         Wrapping(0)
-                    }) += ((colour, depth)).quick_hash();
+                    }) += (colour, depth).quick_hash();
                 }
             }
         }

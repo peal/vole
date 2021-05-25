@@ -23,16 +23,14 @@ pub fn sub_search(state: &State) {
             left_p.restore_state();
         }
 
-        let left_part: Vec<SortedVec<usize>> = left_p
+        let left_part = left_p
             .extended_as_list_set()
             .into_iter()
-            .map(SortedVec::from_unsorted)
-            .collect();
-        let right_part: Vec<SortedVec<usize>> = right_p
+            .map(SortedVec::from_unsorted);
+        let right_part = right_p
             .extended_as_list_set()
             .into_iter()
-            .map(SortedVec::from_unsorted)
-            .collect();
+            .map(SortedVec::from_unsorted);
 
         assert_eq!(part_depth, state.domain.digraph_stack().state_depth());
 
@@ -59,11 +57,10 @@ pub fn sub_search(state: &State) {
         simple_single_search(&mut state, &mut solutions);
     } else {
         let right_p = state.domain.partition();
-        let right_part: Vec<SortedVec<usize>> = right_p
+        let right_part = right_p
             .extended_as_list_set()
             .into_iter()
-            .map(SortedVec::from_unsorted)
-            .collect();
+            .map(SortedVec::from_unsorted);
 
         let right_graph = state.domain.digraph_stack().get_depth(part_depth);
 
