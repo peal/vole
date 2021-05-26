@@ -267,6 +267,8 @@ pub struct ProblemConfig {
     pub find_single: bool,
     /// Find canonical image
     pub find_canonical: bool,
+    /// Only perform root search
+    pub root_search: bool,
 }
 
 /// The Problem to be solved

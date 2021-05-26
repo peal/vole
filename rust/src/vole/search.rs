@@ -1,6 +1,6 @@
-use super::solutions::Solutions;
 use super::{backtracking::Backtrack, state::State};
 use super::{refiners::Side, selector::select_branching_cell};
+use super::{solutions::Solutions, subsearch::sub_simple_search};
 
 use tracing::{info, trace, trace_span};
 
@@ -167,4 +167,16 @@ pub fn simple_search(state: &mut State, sols: &mut Solutions) {
         return;
     }
     let _ = simple_search_recurse(state, sols, true);
+}
+
+pub fn root_search(state: &mut State, sols: &mut Solutions) {
+    if state
+        .refiners
+        .init_refine(&mut state.domain, Side::Left, &mut state.stats)
+        .is_err()
+    {
+        panic!("RBase Build Failures 0");
+    }
+
+    *sols = sub_simple_search(state);
 }

@@ -289,7 +289,7 @@ rec(
 # 'canonical_group':
 # TODO: Add Canonical group
 InstallGlobalFunction(_VoleSolve,
-function(points, find_single, find_canonical, constraints, canonical_group)
+function(points, find_single, find_canonical, constraints, canonical_group, root_search)
     local ret, gapcons, i, sc, gens, group, result, start_time;
 
     start_time := NanosecondsSinceEpoch();
@@ -318,6 +318,7 @@ function(points, find_single, find_canonical, constraints, canonical_group)
                       points         := points,
                       find_single    := find_single,
                       find_canonical := find_canonical,
+                      root_search    := root_search,
                   ),
                   constraints := constraints),
               gapcons,
@@ -333,11 +334,13 @@ function(points, find_single, find_canonical, constraints, canonical_group)
         if IsEmpty(gens) then
             gens := [()];
         fi;
-        sc := StabChainBaseStrongGenerators(ret.rbase_branches, gens);
-        # Knock out unneeded elements
-        ReduceStabChain(sc);
         group := Group(gens);
-        SetStabChainMutable(group, sc);
+        if not IsEmpty(ret.rbase_branches) then
+            sc := StabChainBaseStrongGenerators(ret.rbase_branches, gens);
+            # Knock out unneeded elements
+            ReduceStabChain(sc);
+            SetStabChainMutable(group, sc);
+        fi;
         #Assert(0, SizeStabChain(sc) = Size(Group(gens)));
 
         result.group := group;
@@ -354,13 +357,15 @@ end);
 # User-facing 'Solve' functions
 
 InstallGlobalFunction(VoleSolve,
-{points, find_single, constraints} -> _VoleSolve(points, find_single, false, constraints, false));
+{points, find_single, constraints} -> _VoleSolve(points, find_single, false, constraints, false, false));
 
 InstallGlobalFunction(VoleGroupSolve,
-{points, constraints} -> _VoleSolve(points, false, false, constraints, false));
+{points, constraints} -> _VoleSolve(points, false, false, constraints, false, false));
 
 InstallGlobalFunction(VoleCosetSolve,
-{points, constraints} -> _VoleSolve(points, true, false, constraints, false));
+{points, constraints} -> _VoleSolve(points, true, false, constraints, false, false));
 
 InstallGlobalFunction(VoleCanonicalSolve,
-{points, group, constraints} -> _VoleSolve(points, false, true, constraints, group));
+{points, group, constraints} -> _VoleSolve(points, false, true, constraints, group, false));
+
+_Vole.RootSolve := {points, constraints} -> _VoleSolve(points, false, false, constraints, false, true);

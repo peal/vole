@@ -1,7 +1,6 @@
 use std::fs::File;
 
 use cpu_time::ProcessTime;
-use rust_vole::vole::solutions::Solutions;
 use rust_vole::vole::trace;
 use rust_vole::vole::{domain_state::DomainState, trace::TracingType};
 use rust_vole::vole::{parse_input, state::State};
@@ -9,6 +8,7 @@ use rust_vole::vole::{
     refiners::refiner_store::RefinerStore,
     search::{simple_search, simple_single_search},
 };
+use rust_vole::vole::{search::root_search, solutions::Solutions};
 
 use tracing::Level;
 
@@ -51,7 +51,10 @@ fn main() -> anyhow::Result<()> {
         refiners,
         stats: Default::default(),
     };
-    if problem.config.find_single {
+
+    if problem.config.root_search {
+        root_search(&mut state, &mut solutions);
+    } else if problem.config.find_single {
         simple_single_search(&mut state, &mut solutions);
     } else {
         simple_search(&mut state, &mut solutions);
@@ -62,7 +65,10 @@ fn main() -> anyhow::Result<()> {
     }
     GAP_CHAT.lock().unwrap().send_results(
         &solutions,
-        state.domain.rbase_partition().base_fixed_values(),
+        match state.domain.rbase_partition() {
+            Some(p) => p.base_fixed_values(),
+            None => &[],
+        },
         state.domain.rbase_branch_vals(),
         state.stats,
     )?;

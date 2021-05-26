@@ -73,8 +73,8 @@ impl DomainState {
         self.inject_known_solutions();
     }
 
-    pub fn rbase_partition(&self) -> &partition_stack::PartitionStack {
-        self.rbase_stack.as_ref().unwrap()
+    pub fn rbase_partition(&self) -> &Option<partition_stack::PartitionStack> {
+        &self.rbase_stack
     }
 
     pub fn rbase_digraph_stack(&self) -> &DigraphStack {

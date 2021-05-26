@@ -49,7 +49,7 @@ impl QuickHashable for (usize, Wrapping<QHash>) {
         let (a, b) = &self;
         let hasha = seahash::hash(&a.to_le_bytes()) as QHash;
         let hashb = seahash::hash(&b.0.to_le_bytes()) as QHash;
-        Wrapping(hasha * hashb)
+        Wrapping(hasha) * Wrapping(hashb)
     }
 }
 
@@ -58,7 +58,7 @@ impl QuickHashable for (Wrapping<QHash>, usize) {
         let (a, b) = &self;
         let hasha = seahash::hash(&a.0.to_le_bytes()) as QHash;
         let hashb = seahash::hash(&b.to_le_bytes()) as QHash;
-        Wrapping(hasha * hashb)
+        Wrapping(hasha) * Wrapping(hashb)
     }
 }
 
