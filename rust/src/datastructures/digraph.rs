@@ -17,7 +17,9 @@ use super::hash::{QHash, QuickHashable};
 /// The neighbours of a vertex in a directed graph.
 /// The keys are the neighbours, the image of the keys the "colour" of the edge
 /// Directed graphs have edges in both directions, but with different colours.
-pub type Neighbours = std::collections::BTreeMap<usize, Wrapping<QHash>>;
+pub type BTNeighbours = std::collections::BTreeMap<usize, Wrapping<QHash>>;
+pub type VNeighbours = Vec<(usize, Wrapping<QHash>)>;
+pub type Neighbours = BTNeighbours;
 //pub type Neighbours = indexmap::map::IndexMap<usize, Wrapping<QHash>>;
 
 /// A directed graph
@@ -44,7 +46,7 @@ impl PartialEq<Self> for Digraph {
         assert!(self
             .edges
             .iter()
-            .all(|e| e.keys().tuple_windows().all(|(a, b)| a < b)));
+            .all(|e| e.iter().tuple_windows().all(|((a, _), (b, _))| a < b)));
         self.edges == other.edges
     }
 }
@@ -55,7 +57,7 @@ impl Ord for Digraph {
         assert!(self
             .edges
             .iter()
-            .all(|e| e.keys().tuple_windows().all(|(a, b)| a < b)));
+            .all(|e| e.iter().tuple_windows().all(|((a, _), (b, _))| a < b)));
         assert!(self.edges.len() == other.edges.len());
 
         for (left, right) in self.edges.iter().zip(other.edges.iter()) {
@@ -84,7 +86,7 @@ impl Digraph {
 
     /// Make a digraph from a vector of vector of neighbours
     pub fn from_vec(in_edges: Vec<Vec<usize>>) -> Self {
-        let mut edges: Vec<Neighbours> = vec![Neighbours::new(); in_edges.len()];
+        let mut edges: Vec<BTNeighbours> = vec![BTNeighbours::new(); in_edges.len()];
 
         let out_edge = 1usize.quick_hash();
         let in_edge = 2usize.quick_hash();
@@ -95,6 +97,8 @@ impl Digraph {
                 *edges[edge].entry(i).or_insert(Wrapping(0)) += in_edge;
             }
         }
+
+        //let ret_edges : Vec<VNeighbours> = edges.into_iter().map(|n| n.into_iter().collect::<VNeighbours>()).collect();
 
         /*for e in &mut edges {
             e.sort_keys();
