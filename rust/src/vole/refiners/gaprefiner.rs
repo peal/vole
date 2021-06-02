@@ -24,9 +24,21 @@ pub struct GapRefiner {
 }
 
 #[derive(Debug, Deserialize, Serialize, Hash)]
-struct GapRefinerReturn {
+struct GapRefinerGraph {
     graph: Option<Vec<Vec<usize>>>,
     vertlabels: Option<Vec<usize>>,
+}
+
+#[derive(Debug, Deserialize, Serialize, Hash)]
+struct GapRefinerFailed {
+    failed: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize, Hash)]
+#[serde(untagged)]
+enum GapRefinerReturn {
+    Graph(GapRefinerGraph),
+    Failed(GapRefinerFailed),
 }
 
 impl GapRefiner {
@@ -86,29 +98,39 @@ impl GapRefiner {
         ))
         .unwrap();
 
-        let mut keep: Vec<GapRefinerReturn> = vec![];
+        let mut keep: Vec<GapRefinerGraph> = vec![];
 
-        for mut ret in ret_list {
-            // Normalise graph, so hash will return same value
-            if let Some(graph) = &mut ret.graph {
-                for neighbour in graph {
-                    neighbour.sort();
+        for gap_ret in ret_list {
+            match gap_ret {
+                GapRefinerReturn::Failed(gapfailed) => {
+                    // failed should always be true here
+                    assert!(gapfailed.failed);
+                    // GAP caused search to fail
+                    return Err(trace::TraceFailure {});
+                }
+                GapRefinerReturn::Graph(mut ret) => {
+                    // Normalise graph, so hash will return same value
+                    if let Some(graph) = &mut ret.graph {
+                        for neighbour in graph {
+                            neighbour.sort();
+                        }
+                    }
+
+                    let hash = do_hash(&ret);
+                    info!("Run GAP refiner - recieved hash {:?}", hash);
+                    /* Have to accept all graphs (for now), as we graphs can have ordering of
+                       the extra vertices, while being "the same"
+                    if !self.seen_results.contains(&hash) {
+                        info!("Found new graph");
+                        keep.push(ret);
+                    } else {
+                        info!("Seen before");
+                    }
+                    self.seen_results.insert(hash);
+                    */
+                    keep.push(ret);
                 }
             }
-
-            let hash = do_hash(&ret);
-            info!("Run GAP refiner - recieved hash {:?}", hash);
-            /* Have to accept all graphs (for now), as we graphs can have ordering of
-               the extra vertices, while being "the same"
-            if !self.seen_results.contains(&hash) {
-                info!("Found new graph");
-                keep.push(ret);
-            } else {
-                info!("Seen before");
-            }
-            self.seen_results.insert(hash);
-            */
-            keep.push(ret);
         }
 
         for ret in keep {

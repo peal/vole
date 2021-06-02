@@ -38,6 +38,8 @@ Given a permutation q, another group H and another set T, we can represent coset
 (aside: Technically, these aren't always cosets, for example of $$|S| \neq |T|$$, then there are no permutations which map $$S$$ to $$T$$. To simplify things, whenever we say "coset", assume we mean "coset or empty set")
 
 
+(Note, this next bit should be somewhere else?)
+
 Full list of refiners we want for first release (G,H = group, q,r = permutation, S,T = set, SS, TT = set of set, St, Tt = set of tuple, D1, D2 = digraphs):
 
 * VoleCon.InGroup(G) - $$\{p | p in G\}$$
@@ -66,8 +68,6 @@ The main purpose of these is to replace the need to give an explicit size "cheap
 
 The upper limit is now just the "largest point" of any refiner, which is the largest moved point for a group or permutation, largest value in a set/tuple/etc, or the number of vertices in a graph.
 
-
-Given 
 
 
 # Recipes

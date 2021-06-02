@@ -100,7 +100,10 @@ function(savedvals, state, type, args)
         fi;
 
         for i in [1..Length(filters)] do
-            if IsFunction(filters[i]) then
+            # Can't convert 'fail' to JSON. Make an object we can clearly identify later
+            if filters[i] = fail then
+                filters[i] := rec(failed := true);
+            elif IsFunction(filters[i]) then
                 # Call these 'vertlabels' just for consistency, to make it easier to read in GAP
                 filters[i] := rec(vertlabels := List([1..PS_Points(state!.ps)], {x} -> HashBasic(filters[i](x))));
             else
