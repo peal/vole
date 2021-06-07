@@ -101,6 +101,12 @@ impl RefinerStore {
         }
     }
 
+    pub fn snapshot_rbase(&mut self, state: &mut DomainState) {
+        for refiner in &mut self.refiners {
+            refiner.snapshot_rbase(state);
+        }
+    }
+
     pub fn get_canonical_images(&self, p: &Permutation) -> Vec<Box<dyn Any>> {
         return self
             .refiners
@@ -220,7 +226,7 @@ impl RefinerStore {
         }
         if !state.has_rbase() {
             info!("Taking rbase snapshot");
-            state.snapshot_rbase();
+            state.snapshot_rbase(self);
         }
 
         let part = state.partition();

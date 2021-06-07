@@ -12,7 +12,7 @@ use std::fmt::Debug;
 
 use crate::vole::backtracking::Backtrack;
 
-use super::backtracking::Backtracking;
+use super::{backtracking::Backtracking, refiners::refiner_store::RefinerStore};
 
 pub struct DomainState {
     stack: partition_stack::PartitionStack,
@@ -66,11 +66,12 @@ impl DomainState {
         //GapChatType::send_request(&("known_solutions"), )
     }
 
-    pub fn snapshot_rbase(&mut self) {
+    pub fn snapshot_rbase(&mut self, refiners: &mut RefinerStore) {
         assert!(self.rbase_stack.is_none());
         self.rbase_stack = Some(self.stack.clone());
         self.rbase_digraph_stack = Some(self.digraph_stack.clone());
         self.inject_known_solutions();
+        refiners.snapshot_rbase(self);
     }
 
     pub fn rbase_partition(&self) -> &Option<partition_stack::PartitionStack> {

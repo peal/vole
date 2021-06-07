@@ -224,6 +224,12 @@ impl Refiner for GapRefiner {
     fn refine_changed_cells(&mut self, s: &mut DomainState, side: Side) -> trace::Result<()> {
         self.generic_refine(s, "changed", side)
     }
+
+    fn snapshot_rbase(&mut self, s: &mut DomainState) {
+        // The 'Side' is not used here
+        self.generic_refine(s, "rBaseFinished", Side::Left)
+            .expect("Internal Error: GAP RBase Snapshot failure");
+    }
 }
 
 impl Backtrack for GapRefiner {

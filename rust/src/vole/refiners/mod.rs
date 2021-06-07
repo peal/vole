@@ -73,6 +73,8 @@ pub trait Refiner: Backtrack {
     fn refine_changed_cells(&mut self, _: &mut DomainState, _: Side) -> trace::Result<()> {
         Ok(())
     }
+
+    fn snapshot_rbase(&mut self, _: &mut DomainState) {}
 }
 
 pub mod digraph;

@@ -73,7 +73,7 @@ function(savedvals, state, type, args)
         RestoreState(state, Remove(state!.saved_stack));
         return true;
     else
-        Assert(2, type in ["begin", "fixed", "changed"]);
+        Assert(2, type in ["begin", "fixed", "changed", "rBaseFinished"]);
         Assert(2, args[1] = "Left" or args[1] = "Right");
         is_left := (args[1] = "Left");
         tracer := RecordingTracer();
@@ -88,6 +88,12 @@ function(savedvals, state, type, args)
         elif type = "fixed" then
             if IsBound(state!.conlist[1]!.refine.fixed) then
                 filters := state!.conlist[1]!.refine.fixed(state!.ps, is_left);
+            fi;
+        elif type = "rBaseFinished" then
+            if IsBound(state!.conlist[1]!.refine.rBaseFinished) then
+                # No return value
+                # The call to 'Immutable' creates a copy
+                state!.conlist[1]!.refine.rBaseFinished(Immutable(state!.ps));
             fi;
         else
             if IsBound(state!.conlist[1]!.refine.changed) then
@@ -192,7 +198,7 @@ end);
 # and query
 InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
     local pipe,str, st, result, preimage, postimage, gapcallbacks, savedvals, flush, time, pwd;
-    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, image := 0, compare := 0, refiner_time := 0, canonicalmin_time := 0, save_state := 0, restore_state := 0);
+    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, rBaseFinished := 0, image := 0, compare := 0, refiner_time := 0, canonicalmin_time := 0, save_state := 0, restore_state := 0);
 
     pipe := ForkVole();
 

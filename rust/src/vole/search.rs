@@ -8,7 +8,7 @@ pub fn build_rbase(state: &mut State) {
     let part = state.domain.partition();
 
     if part.base_cells().len() == part.base_domain_size() {
-        state.domain.snapshot_rbase();
+        state.domain.snapshot_rbase(&mut state.refiners);
         return;
     }
 
@@ -88,6 +88,12 @@ pub fn simple_search_recurse(
         if doing_first_branch && first_branch_in {
             state.domain.push_rbase_branch_val(c);
         }
+        let side = if first_branch_in && doing_first_branch {
+            Side::Left
+        } else {
+            Side::Right
+        };
+
         // Skip search if we are in the first branch, not on the first thing, and not min in orbit
         let skip = first_branch_in && !doing_first_branch && !sols.min_in_orbit(c);
         if !skip {
@@ -103,7 +109,7 @@ pub fn simple_search_recurse(
                 info!("Run refiners");
                 if state
                     .refiners
-                    .do_refine(&mut state.domain, Side::Right, &mut state.stats)
+                    .do_refine(&mut state.domain, side, &mut state.stats)
                     .is_ok()
                 {
                     let ret = simple_search_recurse(state, sols, doing_first_branch);
