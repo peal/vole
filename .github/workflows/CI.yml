@@ -30,14 +30,16 @@ jobs:
       - name: "Run the rust tests for Vole"
         run: cd rust && cargo test --release -q
       - name: "Install GAP and the necessary packages"
-        uses: gap-actions/setup-gap-for-packages@v1
+        uses: gap-actions/setup-gap@v2
         with:
           GAPBRANCH: ${{ matrix.gap-branch }}
           GAP_PKGS_TO_CLONE: "datastructures ChrisJefferson/QuickCheck peal/BacktrackKit peal/GraphBacktracking"
           GAP_PKGS_TO_BUILD: "datastructures digraphs ferret io json orb profiling"
+      - name: "Build GAP package Vole"
+        uses: gap-actions/build-pkg@v1
       - name: "Run GAP tests for Vole"
-        uses: gap-actions/run-test-for-packages@v1
-      - name: Setup tmate session
+        uses: gap-actions/run-pkg-tests@v2
+      - name: "Setup tmate session"
         uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
         timeout-minutes: 5
@@ -46,7 +48,6 @@ jobs:
   manual:
     name: Build manuals
     runs-on: ubuntu-latest
-    # Don't run this twice on PRs for branches pushed to the same repository
     if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
 
     steps:
