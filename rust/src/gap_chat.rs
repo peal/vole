@@ -52,9 +52,9 @@ pub struct Opt {
 /// Store communication channels with GAP
 pub struct GapChatType {
     /// Communication channel to GAP
-    pub in_file: Box<dyn BufRead + Send>,
+    pub in_file: Option<Box<dyn BufRead + Send>>,
     /// Communication channel from GAP
-    pub out_file: Box<dyn Write + Send>,
+    pub out_file: Option<Box<dyn Write + Send>>,
 }
 
 impl Opt {
@@ -68,7 +68,10 @@ impl Opt {
         let out_file = Box::new(BufWriter::new(unsafe {
             std::fs::File::from_raw_fd(self.outpipe.unwrap())
         }));
-        GapChatType { in_file, out_file }
+        GapChatType {
+            in_file: Some(in_file),
+            out_file: Some(out_file),
+        }
     }
 
     #[cfg(not(target_family = "unix"))]
@@ -85,8 +88,8 @@ impl Opt {
         let t2 = t.try_clone().unwrap();
         trace!("Connecting finished");
         GapChatType {
-            in_file: Box::new(BufReader::new(t)),
-            out_file: Box::new(BufWriter::new(t2)),
+            in_file: Some(Box::new(BufReader::new(t))),
+            out_file: Some(Box::new(BufWriter::new(t2))),
         }
     }
 }
@@ -135,13 +138,18 @@ impl GapChatType {
         T: serde::Serialize + std::fmt::Debug,
         U: serde::de::DeserializeOwned + std::fmt::Debug,
     {
+        let gap_channel = &mut *gap_channel;
+        let i_file = &mut gap_channel.in_file;
+        let o_file = &mut gap_channel.out_file;
+        let mut out_file = o_file.as_mut().ok_or_else(|| anyhow!("no network"))?;
+        let in_file = i_file.as_mut().ok_or_else(|| anyhow!("no network"))?;
         debug!("Sending to GAP: {:?}", serde_json::to_string(request));
-        serde_json::to_writer(&mut gap_channel.out_file, request)?;
-        writeln!(gap_channel.out_file)?;
-        gap_channel.out_file.flush()?;
+        serde_json::to_writer(&mut out_file, request)?;
+        writeln!(&mut out_file)?;
+        out_file.flush()?;
         debug!("Sent to GAP, now reading");
         let mut line = String::new();
-        let _ = gap_channel.in_file.read_line(&mut line)?;
+        let _ = in_file.read_line(&mut line)?;
 
         let out: U = serde_json::from_str(&line)?;
         debug!("Recieving from GAP: {:?}", out);
@@ -182,7 +190,7 @@ impl GapChatType {
             .map(|c| c.perm.as_vec().iter().map(|&x| x + 1).collect());
 
         serde_json::to_writer(
-            &mut self.out_file,
+            &mut (self.out_file.as_mut().unwrap()),
             &(
                 "end",
                 Results {
@@ -194,14 +202,23 @@ impl GapChatType {
                 },
             ),
         )?;
-        writeln!(&mut self.out_file).unwrap();
-        self.out_file.flush()?;
+        writeln!(&mut self.out_file.as_mut().unwrap())?;
+        self.out_file.as_mut().unwrap().flush()?;
 
         debug!("Sent results to GAP, now reading");
         let mut closing_message = String::new();
-        let _ = self.in_file.read_line(&mut closing_message)?;
+        let _ = self
+            .in_file
+            .as_mut()
+            .unwrap()
+            .read_line(&mut closing_message)?;
         assert_eq!(closing_message.trim(), "goodbye");
         Ok(())
+    }
+
+    pub fn close(&mut self) {
+        self.in_file = None;
+        self.out_file = None;
     }
 }
 

@@ -32,7 +32,8 @@ fn main() -> anyhow::Result<()> {
             .init();
     }
 
-    let problem = parse_input::read_problem(&mut GAP_CHAT.lock().unwrap().in_file)?;
+    let problem =
+        parse_input::read_problem(&mut GAP_CHAT.lock().unwrap().in_file.as_mut().unwrap())?;
 
     let refiners =
         RefinerStore::new_from_refiners(parse_input::build_constraints(&problem.constraints));
@@ -72,6 +73,8 @@ fn main() -> anyhow::Result<()> {
         state.domain.rbase_branch_vals(),
         state.stats,
     )?;
+
+    GAP_CHAT.lock().unwrap().close();
 
     Ok(())
 }
