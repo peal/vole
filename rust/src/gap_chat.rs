@@ -3,7 +3,6 @@
 
 use std::{
     fmt,
-    fs::File,
     io::prelude::*,
     io::{BufReader, BufWriter},
     path::PathBuf,
@@ -13,7 +12,7 @@ use std::{
 use anyhow::anyhow;
 use anyhow::Error;
 use serde::{Deserialize, Serialize};
-use tracing::debug;
+use tracing::{debug, trace};
 
 use std::io::Write;
 
@@ -41,34 +40,13 @@ pub struct Opt {
     #[structopt(short, long)]
     pub outpipe: Option<i32>,
 
+    /// TCP port
+    #[structopt(short, long)]
+    pub port: Option<i32>,
+
     /// Enable tracing
     #[structopt(short, long)]
     pub trace: bool,
-}
-
-impl Opt {
-    #[cfg(target_family = "unix")]
-    fn input(&self) -> impl BufRead + Send {
-        use std::os::unix::io::FromRawFd;
-        BufReader::new(unsafe { File::from_raw_fd(self.inpipe.unwrap()) })
-    }
-
-    #[cfg(not(target_family = "unix"))]
-    fn input(&self) -> impl BufRead + Send {
-        // TODO Error handle
-        BufReader::new(File::open(&self.input).unwrap())
-    }
-
-    #[cfg(target_family = "unix")]
-    fn output(&self) -> impl Write + Send {
-        use std::os::unix::io::FromRawFd;
-        BufWriter::new(unsafe { File::from_raw_fd(self.outpipe.unwrap()) })
-    }
-
-    #[cfg(not(target_family = "unix"))]
-    fn output(&self) -> impl Write + Send {
-        BufWriter::new(File::open(&self.output).unwrap())
-    }
 }
 
 /// Store communication channels with GAP
@@ -79,16 +57,47 @@ pub struct GapChatType {
     pub out_file: Box<dyn Write + Send>,
 }
 
+impl Opt {
+    #[cfg(target_family = "unix")]
+    fn in_out(&self) -> GapChatType {
+        use std::os::unix::io::FromRawFd;
+        trace!("Linking to GAP");
+        let in_file = Box::new(BufReader::new(unsafe {
+            std::fs::File::from_raw_fd(self.inpipe.unwrap())
+        }));
+        let out_file = Box::new(BufWriter::new(unsafe {
+            std::fs::File::from_raw_fd(self.outpipe.unwrap())
+        }));
+        GapChatType { in_file, out_file }
+    }
+
+    #[cfg(not(target_family = "unix"))]
+    fn in_out(&self) -> GapChatType {
+        trace!("Making socket");
+        let socket = std::net::SocketAddr::new(
+            std::net::IpAddr::V4(std::net::Ipv4Addr::new(127, 0, 0, 1)),
+            self.port.unwrap() as u16,
+        );
+        trace!("Connecting to GAP");
+        let t = std::net::TcpStream::connect(socket)
+            .expect("Unable to make connection from ferret to GAP");
+        trace!("Cloning socket");
+        let t2 = t.try_clone().unwrap();
+        trace!("Connecting finished");
+        GapChatType {
+            in_file: Box::new(BufReader::new(t)),
+            out_file: Box::new(BufWriter::new(t2)),
+        }
+    }
+}
+
 lazy_static! {
     /// Global command line arguments
     pub static ref OPTIONS: Opt = Opt::from_args();
     /// Global communication channel with GAP
     pub static ref GAP_CHAT: Mutex<GapChatType> = {
         let opt = &OPTIONS;
-        Mutex::new(GapChatType {
-            in_file: Box::new(opt.input()),
-            out_file: Box::new(opt.output()),
-        })
+        Mutex::new(opt.in_out())
     };
 }
 
@@ -187,6 +196,11 @@ impl GapChatType {
         )?;
         writeln!(&mut self.out_file).unwrap();
         self.out_file.flush()?;
+
+        debug!("Sent results to GAP, now reading");
+        let mut closing_message = String::new();
+        let _ = self.in_file.read_line(&mut closing_message)?;
+        assert_eq!(closing_message.trim(), "goodbye");
         Ok(())
     }
 }

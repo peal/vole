@@ -19,6 +19,22 @@ function()
     return ret;
 end);
 
+_Vole.TCP_Pipe :=
+function()
+    local s, made_connection, attempts, port;
+    s := IO_socket(IO.PF_INET,IO.SOCK_STREAM,"tcp");
+    made_connection := fail;
+    attempts := 0;
+    while attempts < 1000 and made_connection = fail do
+        port := Random([20000..30000]);
+        made_connection := IO_bind(s,IO_MakeIPAddressPort("127.0.0.1",port));
+    od;
+    if made_connection = fail then
+        Error("Failed to open a TCP socket to communicate with vole");
+    fi;
+    return rec( socket := s, port := port);
+end;
+
 
 #####################################################################################################
 # Wrapper around GraphBacktracking, allowing a refiner to be queried
@@ -131,48 +147,90 @@ end);
 # "trace": Output a trace in "trace.log"
 # "flamegraph": Output a flamegraph of where CPU is used in "flamegraph.svg"
 # "debug": Run inside the debugger
-VOLE_MODE := "opt-first";
+
+# if 'cargo' exists, we will automatically build vole
+if Filename(DirectoriesSystemPrograms(), "cargo") <> fail then
+    VOLE_MODE := "opt-first";
+else
+    VOLE_MODE := "opt-nobuild";
+fi;
+
+# On Cygwin we need to use TCP rather than pipes
+if PositionSublist(GAPInfo.Architecture, "cygwin") <> fail then
+    _Vole.UsePipe := false;
+else
+    _Vole.UsePipe := true;
+fi;
 
 InstallGlobalFunction(ForkVole, function(extraargs...)
-    local rustpipe, gappipe, args, ret, prog, firsttime;
+    local rustpipe, gappipe, bind, args, ret, prog, firsttime, t, f, pipe;
     firsttime := false;
     if VOLE_MODE = "opt-first" then
         firsttime := true;
         VOLE_MODE := "opt-nobuild";
     fi;
 
-    rustpipe := IO_Pipe();
-    gappipe := IO_Pipe();
+    pipe := _Vole.UsePipe;
+
+    Info(InfoVole, 2, "Preparing to fork vole");
+    if pipe then
+        rustpipe := IO_Pipe();
+        gappipe := IO_Pipe();
+    else
+        bind := _Vole.TCP_Pipe();
+        IO_listen(bind.socket, 1);
+    fi;
+
     Info(InfoVole, 2, "PreFork\n");
     ret := IO_fork();
+
     if ret = fail then
         Error("Fork failed");
     fi;
     Info(InfoVole, 2, "PostFork\n");
     if ret = 0 then
         # In the child
-        IO_Close(rustpipe.towrite);
-        IO_Close(gappipe.toread);
+        if pipe then
+            IO_Close(rustpipe.towrite);
+            IO_Close(gappipe.toread);
+        else
+            IO_close(bind.socket);
+        fi;
+
         Info(InfoVole, 2, "C: In child\n");
         prog := "cargo";
 
         if VOLE_MODE = "opt" or firsttime then
-            args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+            args :=  ["run", "--release", "-q", "--bin", "vole", "--",];
         elif VOLE_MODE = "opt-nobuild" then
-            prog := "target/release/vole";
-            args :=  ["--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+            # Check for windows-style executable
+            if "vole.exe" in DirectoryContents(DirectoriesPackageLibrary("vole", "rust/target/release")[1]) then
+                prog := "target/release/vole.exe";
+            elif "vole" in DirectoryContents(DirectoriesPackageLibrary("vole", "rust/target/release")[1]) then
+                prog := "target/release/vole";
+            else
+                ErrorNoReturn("'vole' external program not built");
+            fi;
+            args :=  [];
         elif VOLE_MODE = "trace" then
-            args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--trace", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+            args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--trace", ];
         elif VOLE_MODE = "flamegraph" then
-            args :=  ["flamegraph", "--bin", "vole", "--", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+            args :=  ["flamegraph", "--bin", "vole", "--"];
         elif VOLE_MODE = "valgrind" then
-            args := ["--tool=callgrind", "target/release/vole", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+            args := ["--tool=callgrind", "target/release/vole"];
             prog := "valgrind";
         elif VOLE_MODE = "debug" then
-            args :=  ["with", "rust-gdb --args {bin} {args}", "--", "run" ,"--bin", "vole" ,"--", "--trace", "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)];
+            args :=  ["with", "rust-gdb --args {bin} {args}", "--", "run" ,"--bin", "vole" ,"--", "--trace"];
         else
             Error("Invalid VOLE_MODE");
         fi;
+
+        if pipe then
+            Append(args, [ "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)]);
+        else
+            Append(args, [ "--port", String(bind.port)]);
+        fi;
+
         Append(args, extraargs);
 
         Info(InfoVole, 2, "C:", args,"\n");
@@ -187,9 +245,16 @@ InstallGlobalFunction(ForkVole, function(extraargs...)
     else
         # In the parent
         Info(InfoVole, 2, "P: In parent");
-        IO_Close(rustpipe.toread);
-        IO_Close(gappipe.towrite);
-        return rec(write := rustpipe.towrite, read := gappipe.toread, pid := ret);
+        if pipe then
+            IO_Close(rustpipe.toread);
+            IO_Close(gappipe.towrite);
+            return rec(write := rustpipe.towrite, read := gappipe.toread, pid := ret);
+        else
+            t := IO_accept(bind.socket, IO_MakeIPAddressPort("127.0.0.1", 0));
+            f := IO_WrapFD(t,IO.DefaultBufSize,IO.DefaultBufSize);
+            return rec(write := f, read := f, pid := ret, socket := bind.socket, port := bind.port);
+        fi;
+
     fi;
 end);
 
@@ -217,8 +282,18 @@ InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
         fi;
         result := JsonStringToGap(str);
         if result[1] = "end" then
-            IO_Close(pipe.write);
-            IO_Close(pipe.read);
+            # This is just here to make sure we have read all output from Vole before it closes
+            IO_WriteLine(pipe.write, "goodbye");
+            IO_Flush(pipe.write);
+            if _Vole.UsePipe then
+                IO_Close(pipe.write);
+                IO_Close(pipe.read);
+            else
+                # read + write the same when using TCP
+                IO_Close(pipe.read);
+                IO_close(pipe.socket);
+            fi;
+
             IO_WaitPid(pipe.pid, true);
             result[2].stats.gap_callbacks := gapcallbacks;
             return result[2];
