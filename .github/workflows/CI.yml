@@ -44,6 +44,51 @@ jobs:
         if: ${{ failure() }}
         timeout-minutes: 5
 
+  # The Cygwin job
+  cygwin:
+    name: Cygwin / GAP master
+    runs-on: windows-latest
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
+    strategy:
+      fail-fast: false
+
+    defaults:
+      run:
+        shell: C:\cygwin64\bin\bash.exe --login -o igncr '{0}'
+
+    env:
+      CHERE_INVOKING: 1
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Install Cygwin"
+        uses: gap-actions/setup-cygwin@master
+      # with:
+      #    EXTRA_PKGS_TO_INSTALL: rust
+      # TODO: Find out whether this step is necessary
+      # (indeed work out whether it works; is this Rust usable from within the Cygwin installation?)
+      - name: "Set up rust"
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: "Build the rust component of Vole"
+        run: cd rust && cargo build --release --all-features
+      - name: "Run the rust tests for Vole"
+        run: cd rust && cargo test --release -q
+      - name: "Install GAP and the necessary packages"
+        uses: wilfwilson/setup-gap@cygwin
+        with:
+          GAP_PKGS_TO_CLONE: "datastructures ChrisJefferson/QuickCheck peal/BacktrackKit peal/GraphBacktracking"
+          GAP_PKGS_TO_BUILD: "datastructures digraphs ferret io json orb profiling"
+      - name: "Build GAP package Vole"
+        uses: gap-actions/build-pkg@ww/cygwin
+      - name: "Run GAP tests for Vole"
+        uses: wilfwilson/run-pkg-tests@cygwin
+      - name: "Setup tmate session"
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
+        timeout-minutes: 5
+
   # The documentation job
   manual:
     name: Build manuals
