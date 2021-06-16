@@ -8,7 +8,7 @@
 _Vole := rec();
 
 # Simple high level wrapper around IO_pipe -- could be moved to the IO package.
-InstallGlobalFunction(IO_Pipe,
+_Vole.IO_Pipe :=
 function()
     local ret;
     ret := IO_pipe();
@@ -17,7 +17,7 @@ function()
     ret.towrite := IO_WrapFD(ret.towrite, false, IO.DefaultBufSize);
     ret.toread := IO_WrapFD(ret.toread, IO.DefaultBufSize, false);
     return ret;
-end);
+end;
 
 _Vole.TCP_Pipe :=
 function()
@@ -174,8 +174,8 @@ InstallGlobalFunction(ForkVole, function(extraargs...)
 
     Info(InfoVole, 2, "Preparing to fork vole");
     if pipe then
-        rustpipe := IO_Pipe();
-        gappipe := IO_Pipe();
+        rustpipe :=_Vole.IO_Pipe();
+        gappipe :=_Vole.IO_Pipe();
     else
         bind := _Vole.TCP_Pipe();
         IO_listen(bind.socket, 1);

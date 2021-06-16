@@ -84,15 +84,6 @@ DeclareGlobalFunction("_VoleSolve");
 #! @Chapter Technical stuff
 
 #! @Description
-#! This returns an &IO; package pipe, with some components
-#! added or wrapped or something. This probably doesn't need to be documented,
-#! but I'll ask Chris about it.
-#!
-#! @Arguments
-#! @Returns An &IO; package pipe
-DeclareGlobalFunction("IO_Pipe");
-
-#! @Description
 #! <C>InfoVole</C> is the primary info class for &Vole;.
 #! See <Ref Sect="Info Functions" BookName="ref"/> for a description of info
 #! classes in &GAP;.
