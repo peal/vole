@@ -12,7 +12,10 @@
 
 #! @Description
 #!
-#! <C>VoleCon</C> is a record that contains all of the &Vole; refiners.
+#! <C>VoleCon</C> is a record that contains all of the constraints which &Vole; supports.
+#! When solving a 'constraint' will be mapped into one or more low-level 'refiners'.
+#! The choice of refiner(s) can vary depending on the input, and may be changed between
+#! versions of Vole as better refiners are created.
 #! @BeginExampleSession
 #! gap> VoleCon;
 #! rec( DigraphStab := function( e ) ... end,
@@ -38,6 +41,30 @@ DeclareGlobalVariable("VoleCon");
 #! * `DigraphStab`
 #! * `DigraphTransport`
 #! These will be properly documented at some point.
+
+#! @Description
+#!
+#! <C>VoleRefiners</C> is a record that contains all of the &Vole; refiners.
+#! There can be multiple refiners implemented for the same mathematical property
+#! with different tradeoffs, and also refiners implemented for special cases
+#! (such as symmetric and alternating groups). In general most users will want to
+#! use 'VoleCon', which provides a higher-level interface.
+#! @BeginExampleSession
+#! gap> VoleCon;
+#! rec( DigraphStab := function( e ) ... end,
+#!   DigraphTransport := function( e, f ) ... end,
+#!   SetSetStab := function( s ) ... end,
+#!   SetSetTransport := function( s, t ) ... end,
+#!   SetStab := function( s ) ... end, SetTransport := function( s, t ) ... end,
+#!   SetTupleStab := function( s ) ... end,
+#!   SetTupleTransport := function( s, t ) ... end,
+#!   TupleStab := function( s ) ... end,
+#!   TupleTransport := function( s, t ) ... end )
+#! @EndExampleSession
+# TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
+DeclareGlobalVariable("VoleRefiners");
+
+
 
 
 #! @Section Functions to execute a search
