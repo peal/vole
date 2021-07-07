@@ -54,7 +54,7 @@ end;
 # For use with QuickCheck
 QuickChecker := function(p, c)
     local ret1, ret2;
-    ret1 := VoleSolve(p, false, c);
+    ret1 := _Vole.Solve(p, false, c);
     ret2 := FerretSolve(p, c);
     return ret2 = ret1.group;
 end;

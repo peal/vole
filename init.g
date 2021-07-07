@@ -5,3 +5,7 @@
 #
 ReadPackage( "Vole", "gap/base.gd");
 ReadPackage( "Vole", "gap/helper.gd");
+ReadPackage( "Vole", "gap/constraints.gd");
+ReadPackage( "Vole", "gap/interface.gd");
+ReadPackage( "Vole", "gap/refiners.gd");
+ReadPackage( "Vole", "gap/wrapper.gd");

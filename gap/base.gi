@@ -4,8 +4,6 @@
 # All code to call Vole from GAP (and GAP from Vole)
 #
 
-# Record to store private methods
-_Vole := rec();
 
 # Simple high level wrapper around IO_pipe -- could be moved to the IO package.
 _Vole.IO_Pipe :=
@@ -49,7 +47,7 @@ end;
 #     args[1]: "Left" or "Right", for if refiner is being run in 'Left' or 'Right' mode.
 #     args[2]: Current state of partition (where values in the same cell have the same value)
 # FIXME What is savedvals?
-InstallGlobalFunction(CallRefiner,
+_Vole.CallRefiner :=
 function(savedvals, state, type, args)
     local saved, tracer, is_left, indicator, c, i, retval, filters, val;
     if type = "name" then
@@ -138,7 +136,7 @@ function(savedvals, state, type, args)
         retval := filters;
         return retval;
     fi; 
-end);
+end;
 
 # Choose how vole is run:
 # "opt-first": Run as optimised as possible, rebuild on first use in any GAP session
@@ -162,7 +160,7 @@ else
     _Vole.UsePipe := true;
 fi;
 
-InstallGlobalFunction(ForkVole, function(extraargs...)
+_Vole.ForkVole := function(extraargs...)
     local rustpipe, gappipe, bind, args, ret, prog, firsttime, t, f, pipe;
     firsttime := false;
     if VOLE_MODE = "opt-first" then
@@ -256,16 +254,16 @@ InstallGlobalFunction(ForkVole, function(extraargs...)
         fi;
 
     fi;
-end);
+end;
 
 # Run vole
 # obj contains the problem to run. 'refiners' is an optional list of GraphBacktracking refiners, which vole can "call back"
 # and query
-InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
+_Vole.ExecuteVole := function(obj, refiners, canonicalgroup)
     local pipe,str, st, result, preimage, postimage, gapcallbacks, savedvals, flush, time, pwd;
     gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, rBaseFinished := 0, image := 0, compare := 0, refiner_time := 0, canonicalmin_time := 0, save_state := 0, restore_state := 0);
 
-    pipe := ForkVole();
+    pipe := _Vole.ForkVole();
 
     # Set up cache
     savedvals := rec(map := HashMap(), count := 1);
@@ -311,7 +309,7 @@ InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
         elif result[1] = "refiner" then
             time := NanosecondsSinceEpoch();
             gapcallbacks.(result[3]) := gapcallbacks.(result[3]) + 1;
-            result := CallRefiner(savedvals, refiners[result[2]], result[3], result{[4..Length(result)]});
+            result := _Vole.CallRefiner(savedvals, refiners[result[2]], result[3], result{[4..Length(result)]});
             Info(InfoVole, 2, "Refiner returned: ", GapToJsonString(result));
             IO_WriteLine(pipe.write, GapToJsonString(result));
             gapcallbacks.refiner_time := gapcallbacks.refiner_time + Int((NanosecondsSinceEpoch() - time)/1000000);
@@ -333,7 +331,7 @@ InstallGlobalFunction(ExecuteVole, function(obj, refiners, canonicalgroup)
         flush := IO_Flush(pipe.write);
         Assert(2, flush <> fail);
     od;
-end);
+end;
 
 # Turn a digraph into a list of neighbours, to allow us to accept
 # either a Digraph, or a list of neighbours
@@ -347,24 +345,6 @@ _Vole.Digraph := function(g)
     fi;
 end; 
 
-# The list of constraints which vole understands (not including GraphBacktracking refiners)
-# TODO Allow `DigraphStab` and `DigraphTransport` to accept Digraph objects
-# TODO When we require GAP >= 4.12, this should become:
-# BindGlobal("VoleCon", ...
-InstallValue(VoleCon,
-rec(
-    SetStab := {s} -> rec(SetStab := rec(points := s)),
-    SetTransport := {s,t} -> rec(SetTransport := rec(left_points := s, right_points := t)),
-    TupleStab := {s} -> rec(TupleStab := rec(points := s)),
-    TupleTransport := {s,t} -> rec(TupleTransport :=  rec(left_points := s, right_points := t)),
-    SetSetStab := {s} -> rec(SetSetStab := rec(points := s)),
-    SetSetTransport := {s,t} -> rec(SetSetTransport := rec(left_points := s, right_points := t)),
-    SetTupleStab := {s} -> rec(SetTupleStab := rec(points := s)),
-    SetTupleTransport := {s,t} -> rec(SetTupleTransport := rec(left_points := s, right_points := t)),
-    DigraphStab := {e} -> rec(DigraphStab := rec(edges := _Vole.Digraph(e))),
-    DigraphTransport := {e,f} -> rec(DigraphStab := rec(left_edges := _Vole.Digraph(e), right_edges := _Vole.Digraph(f)))
-));
-
 
 # Solve a problem using Vole
 # 'points': Search will be done in the set [1..points]
@@ -372,7 +352,7 @@ rec(
 # 'constraints': List of constraints to solve
 # 'canonical_group':
 # TODO: Add Canonical group
-InstallGlobalFunction(_VoleSolve,
+_Vole.Solve :=
 function(points, find_single, find_canonical, constraints, canonical_group, root_search)
     local ret, gapcons, i, sc, gens, group, result, start_time;
 
@@ -393,10 +373,12 @@ function(points, find_single, find_canonical, constraints, canonical_group, root
             # We need somewhere to store the saved states for Vole
             gapcons[i]!.saved_stack := [];
             constraints[i] := rec(GapRefiner := rec(gap_id := i));
+        elif IsRecord(constraints[i]) and IsBound(constraints[i].con) then
+            constraints[i] := constraints[i].con;
         fi;
     od;
 
-    ret := ExecuteVole(
+    ret := _Vole.ExecuteVole(
               rec(
                   config := rec(
                       points         := points,
@@ -435,21 +417,15 @@ function(points, find_single, find_canonical, constraints, canonical_group, root
     fi;
 
     return result;
-end);
+end;
 
+_Vole.GroupSolve :=
+{points, constraints} -> _Vole.Solve(points, false, false, constraints, false, false);
 
-# User-facing 'Solve' functions
+_Vole.CosetSolve :=
+{points, constraints} -> _Vole.Solve(points, true, false, constraints, false, false);
 
-InstallGlobalFunction(VoleSolve,
-{points, find_single, constraints} -> _VoleSolve(points, find_single, false, constraints, false, false));
+_Vole.CanonicalSolve :=
+{points, group, constraints} -> _Vole.Solve(points, false, true, constraints, group, false);
 
-InstallGlobalFunction(VoleGroupSolve,
-{points, constraints} -> _VoleSolve(points, false, false, constraints, false, false));
-
-InstallGlobalFunction(VoleCosetSolve,
-{points, constraints} -> _VoleSolve(points, true, false, constraints, false, false));
-
-InstallGlobalFunction(VoleCanonicalSolve,
-{points, group, constraints} -> _VoleSolve(points, false, true, constraints, group, false));
-
-_Vole.RootSolve := {points, constraints} -> _VoleSolve(points, false, false, constraints, false, true);
+_Vole.RootSolve := {points, constraints} -> _Vole.Solve(points, false, false, constraints, false, true);

@@ -1,33 +1,40 @@
 
 
-#! @Section Simple Wrapper Functions
 
-#! Vole provides a number of reimplementations of built-in GAP functions. These try to
-#! provide the same interface as the original GAP function. Note that these functions always
-#! use graph backtracking, so may be significantly slower than GAP's built in functions when
-#! those functions can greatly simplify solving using group properties.
-#!
-#! The functions currently implemented are:
-#!
-#! * Vole.Intersection(G1,G2,..) for a list of permutation groups Gi
-#! * Vole.Normaliser(G,H) - for permutation groups G and H
-#! * Vole.IsConjugate(G,U,V) for permutation groups G,U,V
-#! * Vole.IsConjugate(G,x,y) for a permutation group G and permutations x and y
-#!
-#! The following 4 functions each take an action. The supported actions are the same for all functions, and listed below:
-#!
-#! * Vole.Stabilizer(G,o,action) for a permutation group G, and action on 'o'
-#! * Vole.RepresentativeAction(G,o1,o2,action) for a permutation group G and action on 'o1' and 'o2'.
-#! * Vole.CanonicalImage(G,o,action)
-#! * Vole.CanonicalPerm(G,o,action)
-#!
-#! The following actions are supported by Stabilizer and RepresentativeAction:
-#!
-#!    - OnPoints (for a point, or permutation)
-#!    - OnSets (for a set of integers)
-#!    - OnTuples (for a list of integers)
-#!    - OnSetsSets, OnSetsTuples, OnTuplesSets, OnTuplesTuples (for sets/lists of integers as approriate)
-#!    - OnDigraphs
-#!    - 
 
-DeclareGlobalName("Vole");
+
+
+
+Vole.Intersection := function(grps...)
+    if ForAny(grps, not IsPermGroup) then
+        ErrorNoReturn("Vole.Intersection: Input must be a list of perm groups");
+    fi;
+    if IsEmpty(grps) then
+        ErrorNoReturn("Vole.Intersection: Input must be a non-empty list");
+    fi;
+    return Vole.FindGroup(List(grps, VoleCon.InGroup));
+end;
+
+Vole.Normaliser := function(G, H)
+    if not IsPermGroup(G) then
+        ErrorNoReturn("Vole.Normaliser: First argument must be a perm group");
+    fi;
+
+    if IsPermGroup(H) then
+        return Vole.FindGroup([VoleCon.InGroup(G), VoleCon.Normalise(H)]);
+    elif IsPerm(H) then
+        return Vole.FindGroup([VoleCon.InGroup(G), VoleCon.Centraliser(H)]);
+    else
+        ErrorNoReturn("Vole.Normaliser: Second argument must a perm group or permutation");
+    fi;
+end;
+
+Vole.IsConjugate := function(G, x, y)
+    if not IsPermGroup(G) then
+        ErrorNoReturn("Vole.Normaliser: First argument must be a perm group");
+    fi;
+    if not (IsPerm(x) and IsPerm(y)) then
+        ErrorNoReturn("Vole.Normaliser: Second and Third arguments must be permutations");
+    fi;
+    Vole.FindOne([VoleCon.InGroup(G), VoleCon.Conjugate(x,y)]);
+end;

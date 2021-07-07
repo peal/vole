@@ -10,6 +10,11 @@ function(p, l)
     p := Maximum(p, 1);
     g := SymmetricGroup(p);
     for c in l do
+        # Unwrap a vole refiner first
+        if IsRecord(c) and IsBound(c.con) then
+            c := c.con;
+        fi;
+        
         if IsRefiner(c) then
             g := GB_SimpleSearch(PartitionStack(p), [GB_Con.InGroup(p, g), c]);
         elif IsBound(c.SetStab) then
@@ -27,7 +32,7 @@ function(p, l)
                 g := Intersection(g, AutomorphismGroup(Digraph(c.DigraphStab.edges)));
             fi;
         else
-            Error("Unknown constraint: ", g);
+            Error("Unknown constraint: ", c);
         fi;
     od;
     return g;
@@ -38,12 +43,12 @@ InstallGlobalFunction(VoleBenchmark,
 function(p, c)
     local ret1, ret2, time1, time2;
     time1 := NanosecondsSinceEpoch();
-    ret1 := VoleSolve(p, false, c);
+    ret1 := Vole.FindGroup(c, rec(points := p));
     time1 := NanosecondsSinceEpoch() - time1;
     time2 := NanosecondsSinceEpoch();
     ret2 := GAPSolve(p, c);
     time2 := NanosecondsSinceEpoch() - time2;
-    if ret2 <> ret1.group then
+    if ret2 <> ret1 then
         Error(StringFormatted(Concatenation(
               "inconsistency between Vole and GAP! ",
               "Given args:\n{} [and false] and {},\n",

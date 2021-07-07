@@ -1,0 +1,1 @@
+DeclareGlobalName("VoleCon");

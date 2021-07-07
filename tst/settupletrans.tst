@@ -9,7 +9,7 @@ gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 >      max := Maximum(Maximum(Flat(s)), LargestMovedPoint(g),2);
 >      p := Random(g);
 >      s2 := OnSetsTuples(s,p);
->      res := VoleSolve(max, true, [VoleCon.SetTupleTransport(s,s2), BTKit_Con.InGroupSimple(max, g)]);
+>      res := _Vole.Solve(max, true, [VoleCon.SetTupleTransport(s,s2), BTKit_Con.InGroupSimple(max, g)]);
 >      if IsEmpty(res.sol) or OnSetsTuples(s,res.sol[1]) <> s2 then
 >          return StringFormatted("Failure: {} {} {}", s2, p, OnSetsTuples(s,res.sol[1]));
 >      fi;
