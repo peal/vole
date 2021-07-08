@@ -29,4 +29,12 @@ gap> r := Vole.FindOne([VoleCon.Transport([2,3,4],[1,4,5],OnTuples)], rec(points
 gap> Assert(0, OnSets([2,3,4], r) = [1,4,5]);
 
 #
+gap> Vole.FindGroup([VoleRefiner.InSymmetricGroup([2,3,4])]) = SymmetricGroup([2,3,4]);
+true
+gap> Vole.FindGroup([VoleRefiner.InSymmetricGroup([2,4,8,6])]) = SymmetricGroup([2,4,6,8]);
+true
+gap> Vole.FindGroup([VoleRefiner.InSymmetricGroup([])]) = Group(());
+true
+
+#
 gap> STOP_TEST("basic.tst");

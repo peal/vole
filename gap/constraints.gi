@@ -52,5 +52,9 @@ end;
 
 
 VoleCon.InGroup := function(g)
+    if IsNaturalSymmetricGroup(g) then
+        return VoleRefiner.InSymmetricGroup(MovedPoints(g));
+    fi;
+    
     return rec(bounds := rec(largest_required_point :=_Vole.lmp(g), largest_moved_point := _Vole.lmp(g), con := GB_Con.InGroupSimple(g)));
 end;

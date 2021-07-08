@@ -81,3 +81,4 @@ pub mod digraph;
 pub mod gaprefiner;
 pub mod refiner_store;
 pub mod simple;
+pub mod symmetricgrp;

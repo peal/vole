@@ -4,6 +4,7 @@ use crate::datastructures::digraph::Digraph;
 
 use super::refiners::simple::SetTransporter;
 use super::refiners::simple::TupleTransporter;
+use super::refiners::symmetricgrp::InSymmetricGrp;
 use super::refiners::Refiner;
 use super::refiners::{
     digraph::DigraphTransporter,
@@ -211,6 +212,19 @@ impl RefinerDescription for SetTupleTransport {
     }
 }
 
+/// Store a Symmetric Group constraint sent from GAP
+#[derive(Debug, Deserialize, Serialize)]
+pub struct InSymmetricGroup {
+    points: Vec<usize>,
+}
+
+impl RefinerDescription for InSymmetricGroup {
+    fn build_refiner(&self) -> Box<dyn Refiner> {
+        let points = self.points.iter().map(|&x| x - 1).collect();
+        Box::new(InSymmetricGrp::new_symmetric_group(points))
+    }
+}
+
 /// Store a Refiner represented a GraphBacktracking GAP object, sent from GAP
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GapRefiner {
@@ -237,6 +251,7 @@ pub enum Constraint {
     SetSetTransport(SetSetTransport),
     SetTupleStab(SetTupleStab),
     SetTupleTransport(SetTupleTransport),
+    InSymmetricGroup(InSymmetricGroup),
     GapRefiner(GapRefiner),
 }
 
@@ -254,6 +269,7 @@ impl RefinerDescription for Constraint {
             Self::TupleTransport(c) => c.build_refiner(),
             Self::SetSetTransport(c) => c.build_refiner(),
             Self::SetTupleTransport(c) => c.build_refiner(),
+            Self::InSymmetricGroup(c) => c.build_refiner(),
         }
     }
 }

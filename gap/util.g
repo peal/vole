@@ -20,6 +20,8 @@ _Vole.lmp := function(s...)
 end;
 
 # Get the upper and lower bounds for a list of constraints
+# The list of constraints may contain permutation groups (in the event
+# we are solving a canonical problem)
 _Vole.getBound := function(constraints, initial_max)
     local min, max, this_min, this_max, c;
     min := 1;
@@ -27,7 +29,10 @@ _Vole.getBound := function(constraints, initial_max)
     for c in constraints do
         this_min := 1;
         this_max := infinity;
-        if IsRecord(c) then
+        if IsPermGroup(c) then
+            this_min := LargestMovedPoint(c);
+            this_max := LargestMovedPoint(c);
+        elif IsRecord(c) then
             if IsBound(c.bounds) then
                 this_min := c.bounds.largest_required_point;
                 if IsBound(c.bounds.largest_moved_point) then
@@ -40,6 +45,8 @@ _Vole.getBound := function(constraints, initial_max)
                 this_max := c!.largest_moved_point;
             fi;
         fi;
+        min := Maximum(min, this_min);
+        max := Minimum(max, this_max);
     od;
     max := Maximum(min, max);
     if max = infinity then

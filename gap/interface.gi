@@ -31,9 +31,8 @@ end;
 Vole.CanonicalPerm := function(G, constraints, conf...)
     local bounds,ret, max;
     conf := _Vole.getConfig(conf, rec(raw := false, points := infinity));
-    bounds := _Vole.getBound(constraints, conf.points);
-    max := Maximum(bounds.max, LargestMovedPoint(G));
-    ret := _Vole.CanonicalSolve(max, G, constraints);
+    bounds := _Vole.getBound(Concatenation(constraints, [G]), conf.points);
+    ret := _Vole.CanonicalSolve(bounds.max, G, constraints);
     if conf.raw then
         return ret;
     else

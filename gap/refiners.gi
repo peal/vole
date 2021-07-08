@@ -7,6 +7,7 @@ VoleRefiner.SetSetStab := {s} -> rec( bounds := rec(largest_required_point :=_Vo
 VoleRefiner.SetTupleStab := {s} -> rec( bounds := rec(largest_required_point :=_Vole.lmp(s)), con := rec(SetTupleStab := rec(points := s)));
 VoleRefiner.DigraphStab :=  {s} -> rec( bounds := rec(largest_required_point :=_Vole.lmp(s)), con := rec(DigraphStab := rec(edges := _Vole.Digraph(s))));
 
+VoleRefiner.InSymmetricGroup := {s} -> rec(bounds := rec(largest_required_point := _Vole.lmp(s), largest_moved_point := _Vole.lmp(s)), con := rec(InSymmetricGroup := rec(points := s)));
 
 VoleRefiner.SetTransporter := {s,t} -> rec( bounds := rec(largest_required_point :=_Vole.lmp(s,t)), con := rec(SetTransport := rec(left_points := s, right_points := t)));
 VoleRefiner.TupleTransporter := {s,t} -> rec( bounds := rec(largest_required_point :=_Vole.lmp(s,t)), con :=rec(TupleTransport := rec(left_points := s, right_points := t)));

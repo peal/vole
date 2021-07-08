@@ -2,7 +2,9 @@
 
 
 
-
+Vole.Stabilizer := function(G, object, action...)
+    return Vole.FindGroup([VoleCon.InGroup(G), CallFuncList(VoleCon.Stabilize(Concatenation([object], action)))]);
+end;
 
 
 Vole.Intersection := function(grps...)
