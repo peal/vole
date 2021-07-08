@@ -28,18 +28,15 @@ Vole.FindGroup := function(constraints, conf...)
     fi;
 end;
 
-Vole.CanonicalPerm := function(constraints, conf...)
-    local bounds,ret;
+Vole.CanonicalPerm := function(G, constraints, conf...)
+    local bounds,ret, max;
     conf := _Vole.getConfig(conf, rec(raw := false, points := infinity));
     bounds := _Vole.getBound(constraints, conf.points);
-    ret := _Vole.CanonicalSolve(bounds.max, constraints);
+    max := Maximum(bounds.max, LargestMovedPoint(G));
+    ret := _Vole.CanonicalSolve(max, G, constraints);
     if conf.raw then
         return ret;
     else
-        if Length(ret.sol) > 0 then
-            return ret.sol[1];
-        else
-            return fail;
-        fi;
+        return ret.canonical;
     fi;
 end;

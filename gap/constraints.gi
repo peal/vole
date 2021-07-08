@@ -41,7 +41,7 @@ VoleCon.Transport := function(s, t, action...)
         return VoleRefiner.TupleTransporter(s,t);
     elif action = OnSetsSets then 
         return VoleRefiner.SetSetTransporter(s,t);
-    elif action = OnTuples then
+    elif action = OnSetsTuples then
         return VoleRefiner.SetTupleTransporter(s,t);
     elif action = OnDigraphs then
         return VoleRefiner.DigraphTransporter(s,t);

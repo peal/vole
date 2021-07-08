@@ -6,19 +6,19 @@ VoleTestCanonical := function(maxpnt, grp, obj, VoleFunc, action)
     local p, newobj, ret, newret, image, newimage;
     p := Random(grp);
     newobj := action(obj, p);
-    ret := VoleCanonicalSolve(maxpnt, grp, Flat([VoleFunc(obj)]));
-    if not(ret.canonical in grp) then
-        return StringFormatted("A -Not in group! {} {} {}", grp, obj, ret.canonical);
+    ret := Vole.CanonicalPerm(grp, Flat([VoleFunc(obj)]), rec(points := maxpnt));
+    if not(ret in grp) then
+        return StringFormatted("A -Not in group! {} {} {}", grp, obj, ret);
     fi;
-    newret := VoleCanonicalSolve(maxpnt, grp, Flat([VoleFunc(newobj)]));
-    if not(newret.canonical in grp) then
+    newret := Vole.CanonicalPerm(grp, Flat([VoleFunc(newobj)]), rec(points := maxpnt));
+    if not(newret in grp) then
         return StringFormatted("B - Not in group! {} {} {}", grp, obj, ret);
     fi;
     
-    image := action(obj, ret.canonical);
-    newimage := action(newobj, newret.canonical);
+    image := action(obj, ret);
+    newimage := action(newobj, newret);
     if image <> newimage then
-        return StringFormatted("C - unequal canonical {} {} ({} {} {}) ({} {} {})", grp, p, obj, ret.canonical, image, newobj, newret.canonical, newimage);
+        return StringFormatted("C - unequal canonical {} {} ({} {} {}) ({} {} {})", grp, p, obj, ret, image, newobj, newret, newimage);
     fi;
     return true;
 end;
@@ -28,6 +28,9 @@ FerretSolve := function(p, l)
     p := Maximum(p, 1);
     g := SymmetricGroup(p);
     for c in l do
+        if IsRecord(c) and IsBound(c.con) then
+            c := c.con;
+        fi;
         if IsRefiner(c) then
             g := GB_SimpleSearch(PartitionStack(p), [GB_Con.InGroup(p, g), c]);
         elif IsBound(c.SetStab) then
@@ -45,7 +48,7 @@ FerretSolve := function(p, l)
                 g := Intersection(g, AutomorphismGroup(Digraph(c.DigraphStab.edges)));
             fi;
         else
-            Error("Unknown constraint: ", g);
+            Error("Unknown constraint for ferret: ", c);
         fi;
     od;
     return g;
@@ -54,7 +57,7 @@ end;
 # For use with QuickCheck
 QuickChecker := function(p, c)
     local ret1, ret2;
-    ret1 := _Vole.Solve(p, false, c);
+    ret1 := Vole.FindGroup(c, rec(points := p));
     ret2 := FerretSolve(p, c);
-    return ret2 = ret1.group;
+    return ret2 = ret1;
 end;

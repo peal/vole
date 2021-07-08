@@ -8,7 +8,7 @@ gap> QC_CheckEqual([ IsPermGroup, IsPermGroup ],
 > function(s,t)
 >  local lmp;
 >  lmp := Maximum(LargestMovedPoint(s), LargestMovedPoint(t), 2);
->  return VoleGroupSolve(lmp, [GB_Con.InGroupSimple(lmp, s), GB_Con.InGroupSimple(lmp, t)]).group;
+>  return Vole.FindGroup([GB_Con.InGroupSimple(lmp, s), GB_Con.InGroupSimple(lmp, t)], rec(points := lmp));
 >  end,
 > {s,t} -> Intersection(s,t) );
 true

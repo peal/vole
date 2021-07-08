@@ -5,7 +5,7 @@ true
 
 #
 gap> QC_Check([IsPermGroup, QC_SetOf(QC_SetOf(IsPosInt))],
->    {g, s} -> VoleTestCanonical(Maximum([LargestMovedPoint(g), Maximum(Flat(s)),2]), g, s, VoleCon.SetSetStab, OnSetsSets));
+>    {g, s} -> VoleTestCanonical(Maximum([LargestMovedPoint(g), Maximum(Flat(s)),2]), g, s, x -> VoleCon.Stabilize(x, OnSetsSets), OnSetsSets));
 true
 
 #
