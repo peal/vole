@@ -4,6 +4,8 @@ gap> LoadPackage("vole", false);
 true
 gap> LoadPackage("quickcheck", false);
 true
+gap> ReadPackage("vole", "tst/test_functions.g");
+true
 
 #
 gap> edges := [[1,2], [1,3], [1,4], [2,5], [2,6], [4,7], [4,8], [5,9], [5,10], [6,11],

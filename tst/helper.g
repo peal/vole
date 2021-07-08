@@ -4,7 +4,7 @@
 # Helper functions for testing and benchmarking
 #
 
-InstallGlobalFunction(GAPSolve,
+GAPSolve :=
 function(p, l)
     local c, g, lmp;
     p := Maximum(p, 1);
@@ -39,7 +39,7 @@ function(p, l)
 end);
 
 # Check (and simply benchmark) that VoleSolve(p,false,c) and GAPSolve(p,c) agree
-InstallGlobalFunction(VoleBenchmark,
+VoleBenchmark :=
 function(p, c)
     local ret1, ret2, time1, time2;
     time1 := NanosecondsSinceEpoch();
@@ -59,8 +59,8 @@ function(p, c)
 end);
 
 # For quick mini-tests
-InstallGlobalFunction(VoleComp,
+VoleComp :=
 function(p, c)
     VoleBenchmark(p, c);
     return;
-end);
+end;
