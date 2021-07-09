@@ -3,11 +3,16 @@ Vole.Stabilizer := function(G, object, action...)
 end;
 
 Vole.Intersection := function(grps...)
+    if Length(grps) = 1 and IsList(grps[1]) then
+        grps := grps[1];
+    fi;
     if not ForAll(grps, IsPermGroup) then
-        ErrorNoReturn("Vole.Intersection: Input must be a list of perm groups");
+        ErrorNoReturn("Vole.Intersection: The arguments must be perm groups ",
+                      "or a list of perm groups");
     fi;
     if IsEmpty(grps) then
-        ErrorNoReturn("Vole.Intersection: Input must be a non-empty list");
+        ErrorNoReturn("Vole.Intersection: The arguments must be (a list ",
+                      "containing) at least one perm group");
     fi;
     return Vole.FindGroup(List(grps, VoleCon.InGroup));
 end;
