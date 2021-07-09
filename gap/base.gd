@@ -5,6 +5,8 @@
 
 #! @Chapter Technical stuff
 
+#! @Section Section name TODO
+
 #! @Description
 #! <C>InfoVole</C> is the primary info class for &Vole;.
 #! See <Ref Sect="Info Functions" BookName="ref"/> for a description of info

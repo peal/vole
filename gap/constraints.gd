@@ -1,4 +1,2 @@
-
-
-#DeclareGlobalName("VoleCon");
-VoleCon := rec();
+#TODO: DeclareGlobalName("VoleCon");
+DeclareGlobalVariable("VoleCon");

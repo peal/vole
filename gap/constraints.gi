@@ -1,6 +1,4 @@
-       
-BindGlobal("VoleCon",
-rec());
+InstallValue(VoleCon, rec());
 
 VoleCon.Stabilize := function(s, action...)
     if Length(action) = 1 then

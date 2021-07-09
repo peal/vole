@@ -1,3 +1,8 @@
+#
+# Vole: Backtrack search in permutation groups with graphs
+#
+
+#! @Chapter The wrapper...
 
 
 #! @Section Simple Wrapper Functions
@@ -30,6 +35,6 @@
 #!    - OnDigraphs
 #!    - 
 
-# TODO - declare properly
-#DeclareGlobalName("Vole");
-Vole := rec();
+# TODO - declare properly with DeclareGlobalName
+DeclareGlobalVariable("Vole");
+InstallValue(Vole, rec());
