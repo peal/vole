@@ -397,13 +397,10 @@ function(points, find_single, find_canonical, constraints, canonical_group, root
     if find_single then
         result.sol := List(ret.sols, PermList);
     else
-        gens := List(ret.sols, PermList);
-        if IsEmpty(gens) then
-            gens := [()];
-        fi;
-        group := Group(gens);
+        gens := List(Filtered(ret.sols, x -> not IsEmpty(x)), PermList);
+        group := Group(gens, ());
         if not IsEmpty(ret.rbase_branches) then
-            sc := StabChainBaseStrongGenerators(ret.rbase_branches, gens);
+            sc := StabChainBaseStrongGenerators(ret.rbase_branches, gens, ());
             # Knock out unneeded elements
             ReduceStabChain(sc);
             SetStabChainMutable(group, sc);
