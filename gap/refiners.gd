@@ -6,4 +6,6 @@
 # Declarations: TODO
 
 
-VoleRefiner := rec();
+DeclareGlobalVariable("VoleRefiner");
+# TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
+InstallValue(VoleRefiner, rec());

@@ -5,6 +5,8 @@
 #
 # Implementations: Wrappers for Vole functions to emulate the GAP interface.
 
+MakeReadWriteGlobal("Vole");
+
 Vole.Stabilizer := function(G, object, action...)
     return Vole.FindGroup([VoleCon.InGroup(G), CallFuncList(VoleCon.Stabilize(Concatenation([object], action)))]);
 end;
@@ -23,8 +25,9 @@ Vole.Intersection := function(grps...)
     fi;
     return Vole.FindGroup(List(grps, VoleCon.InGroup));
 end;
+Vole.Stabiliser := Vole.Stabilizer;
 
-Vole.Normaliser := function(G, H)
+Vole.Normalizer := function(G, H)
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.Normaliser: First argument must be a perm group");
     fi;
@@ -37,6 +40,7 @@ Vole.Normaliser := function(G, H)
         ErrorNoReturn("Vole.Normaliser: Second argument must a perm group or permutation");
     fi;
 end;
+Vole.Normaliser := Vole.Normalizer;
 
 Vole.IsConjugate := function(G, x, y)
     if not IsPermGroup(G) then
@@ -47,3 +51,5 @@ Vole.IsConjugate := function(G, x, y)
     fi;
     Vole.FindOne([VoleCon.InGroup(G), VoleCon.Conjugate(x,y)]);
 end;
+
+MakeReadOnlyGlobal("Vole");

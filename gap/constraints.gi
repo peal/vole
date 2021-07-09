@@ -5,7 +5,7 @@
 #
 # Implementations: TODO
 
-InstallValue(VoleCon, rec());
+MakeReadWriteGlobal("VoleCon");
 
 VoleCon.Stabilize := function(s, action...)
     if Length(action) = 1 then
@@ -87,3 +87,5 @@ VoleCon.LargestMovedPoint := function(point)
     fi;
     return VoleRefiner.InSymmetricGroup([1 .. point]);
 end;
+
+MakeReadOnlyGlobal("VoleCon");

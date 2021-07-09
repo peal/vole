@@ -6,3 +6,4 @@
 # Declarations: TODO
 DeclareGlobalVariable("VoleCon");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
+InstallValue(VoleCon, rec());
