@@ -1,8 +1,10 @@
-#
 # Vole: Backtrack search in permutation groups with graphs
+# A GAP package by Mun See Chang, Christopher Jefferson, and Wilf A. Wilson.
+#
+# SPDX-License-Identifier: MPL-2.0
 #
 # This file is a script which compiles the package manual.
-#
+
 if LoadPackage("AutoDoc", "2019.09.04") = fail then
     Error("AutoDoc version 2019.09.04 or newer is required.");
 fi;

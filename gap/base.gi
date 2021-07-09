@@ -1,8 +1,9 @@
-#
 # Vole: Backtrack search in permutation groups with graphs
+# A GAP package by Mun See Chang, Christopher Jefferson, and Wilf A. Wilson.
 #
-# All code to call Vole from GAP (and GAP from Vole)
+# SPDX-License-Identifier: MPL-2.0
 #
+# Implementations: All code to call Vole from GAP (and GAP from Vole)
 
 
 # Simple high level wrapper around IO_pipe -- could be moved to the IO package.

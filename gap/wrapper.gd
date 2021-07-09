@@ -1,9 +1,11 @@
-#
 # Vole: Backtrack search in permutation groups with graphs
+# A GAP package by Mun See Chang, Christopher Jefferson, and Wilf A. Wilson.
 #
+# SPDX-License-Identifier: MPL-2.0
+#
+# Declarations: Wrappers for Vole functions to emulate the GAP interface.
 
 #! @Chapter The wrapper...
-
 
 #! @Section Simple Wrapper Functions
 
@@ -35,6 +37,6 @@
 #!    - OnDigraphs
 #!    - 
 
-# TODO - declare properly with DeclareGlobalName
+# TODO: DeclareGlobalName("Vole");
 DeclareGlobalVariable("Vole");
 InstallValue(Vole, rec());

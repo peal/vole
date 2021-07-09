@@ -1,3 +1,10 @@
+# Vole: Backtrack search in permutation groups with graphs
+# A GAP package by Mun See Chang, Christopher Jefferson, and Wilf A. Wilson.
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+# Implementations: Wrappers for Vole functions to emulate the GAP interface.
+
 Vole.Stabilizer := function(G, object, action...)
     return Vole.FindGroup([VoleCon.InGroup(G), CallFuncList(VoleCon.Stabilize(Concatenation([object], action)))]);
 end;
