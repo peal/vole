@@ -8,7 +8,7 @@ end;
 
 
 Vole.Intersection := function(grps...)
-    if ForAny(grps, not IsPermGroup) then
+    if not ForAll(grps, IsPermGroup) then
         ErrorNoReturn("Vole.Intersection: Input must be a list of perm groups");
     fi;
     if IsEmpty(grps) then
