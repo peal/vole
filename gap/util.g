@@ -21,7 +21,10 @@ _Vole.lmp := function(s...)
         return s;
     elif IsPerm(s) or IsPermGroup(s) then
         return LargestMovedPoint(s);
+    elif IsDigraph(s) then
+        return DigraphNrVertices(s);
     fi;
+    ErrorNoReturn("Do not recognise...");
 end;
 
 # Get the upper and lower bounds for a list of constraints

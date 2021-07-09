@@ -11,7 +11,7 @@ VoleCon.Stabilize := function(obj, action...)
     elif Length(action) = 0 then
         action := OnPoints;
     else
-        ErrorNoReturn("VoleCon.Stabilizer args: obj [, action]");
+        ErrorNoReturn("VoleCon.Stabilizer args: obj[, action]");
     fi;
 
     if action = OnSets then
@@ -24,10 +24,10 @@ VoleCon.Stabilize := function(obj, action...)
         return VoleRefiner.SetTupleStab(obj);
     elif action = OnDigraphs then
         return VoleRefiner.DigraphStab(obj);
-    else
-        ErrorNoReturn("Invalid action: ", action);
     fi;
+    ErrorNoReturn("Invalid action: ", action);
 end;
+VoleCon.Stabilise := VoleCon.Stabilize;
 
 VoleCon.Transport := function(obj1, obj2, action...)
     if Length(action) = 1 then
@@ -35,7 +35,7 @@ VoleCon.Transport := function(obj1, obj2, action...)
     elif Length(action) = 0 then
         action := OnPoints;
     else
-        ErrorNoReturn("VoleCon.Transport args: obj1, obj2 [, action]");
+        ErrorNoReturn("VoleCon.Transport args: obj1, obj2[, action]");
     fi;
 
     if action = OnSets then
@@ -48,9 +48,8 @@ VoleCon.Transport := function(obj1, obj2, action...)
         return VoleRefiner.SetTupleTransporter(obj1, obj2);
     elif action = OnDigraphs then
         return VoleRefiner.DigraphTransporter(obj1, obj2);
-    else
-        ErrorNoReturn("Unrecognised action: ", action);
     fi;
+    ErrorNoReturn("Unrecognised action: ", action);
 end;
 
 VoleCon.InGroup := function(g)
@@ -71,6 +70,19 @@ VoleCon.Normalize := function(g)
     fi;
     Error("TODO: not yet implemented");
 end;
+VoleCon.Normalise := VoleCon.Normalize;
+
+VoleCon.Centralize := function(g)
+    if IsPermGroup(g) then
+        # TODO
+    elif IsPerm(g) then
+        # TODO
+    else
+        ErrorNoReturn("TODO");
+    fi;
+    Error("TODO: not yet implemented");
+end;
+VoleCon.Centralise := VoleCon.Centralize;
 
 VoleCon.MovedPoints := function(pointlist)
     if not IsList(pointlist) or not ForAll(pointlist, IsPosInt) then
