@@ -66,13 +66,13 @@ DeclareGlobalFunction("VoleCon.InGroup");
 
 
 #! @BeginGroup StabilizeDoc
-#! @Arguments G
+#! @Arguments obj[, action]
 #! @Returns Unspecified
 #! @Description
 #! Text about `VoleCon.Stabilize`.
 DeclareGlobalFunction("VoleCon.Stabilize");
 #! @EndGroup
-#! @Arguments G
+#! @Arguments obj[, action]
 #! @Group StabilizeDoc
 #! @BeginExampleSession
 #! gap> true;
