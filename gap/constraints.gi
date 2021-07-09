@@ -52,30 +52,30 @@ VoleCon.Transport := function(obj1, obj2, action...)
     ErrorNoReturn("Unrecognised action: ", action);
 end;
 
-VoleCon.InGroup := function(g)
-    if not IsPermGroup(g) then
+VoleCon.InGroup := function(G)
+    if not IsPermGroup(G) then
         ErrorNoReturn("VoleCon.InGroup: the argument must be a perm group");
     fi;
 
-    if IsNaturalSymmetricGroup(g) then
-        return VoleRefiner.InSymmetricGroup(MovedPoints(g));
+    if IsNaturalSymmetricGroup(G) then
+        return VoleRefiner.InSymmetricGroup(MovedPoints(G));
     fi;
     
-    return rec(bounds := rec(largest_required_point :=_Vole.lmp(g), largest_moved_point := _Vole.lmp(g), con := GB_Con.InGroupSimple(g)));
+    return rec(bounds := rec(largest_required_point :=_Vole.lmp(G), largest_moved_point := _Vole.lmp(G), con := GB_Con.InGroupSimple(G)));
 end;
 
-VoleCon.Normalize := function(g)
-    if not IsPermGroup(g) then
+VoleCon.Normalize := function(G)
+    if not IsPermGroup(G) then
         ErrorNoReturn("VoleCon.Normalize: the argument must be a perm group");
     fi;
     Error("TODO: not yet implemented");
 end;
 VoleCon.Normalise := VoleCon.Normalize;
 
-VoleCon.Centralize := function(g)
-    if IsPermGroup(g) then
+VoleCon.Centralize := function(G)
+    if IsPermGroup(G) then
         # TODO
-    elif IsPerm(g) then
+    elif IsPerm(G) then
         # TODO
     else
         ErrorNoReturn("TODO");
