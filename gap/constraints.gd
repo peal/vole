@@ -1,1 +1,4 @@
-DeclareGlobalName("VoleCon");
+
+
+#DeclareGlobalName("VoleCon");
+VoleCon := rec();
