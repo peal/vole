@@ -78,7 +78,7 @@ AbstractHTML :=  "TODO",
 PackageDoc := rec(
   BookName  := ~.PackageName,
   ArchiveURLSubset := ["doc"],
-  HTMLStart := "doc/chap0.html",
+  HTMLStart := "doc/chap0_mj.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
   LongTitle := ~.Subtitle,
@@ -87,18 +87,24 @@ PackageDoc := rec(
 Dependencies := rec(
   GAP := ">= 4.11.0",
   NeededOtherPackages := [
-                           [ "BacktrackKit", ">= 0.4.0" ],
-                           [ "GraphBacktracking", ">= 0.4.0" ],
-                           [ "Digraphs", ">= 1.1.1" ],
-                           [ "datastructures", ">= 0.2.6" ],
-                           [ "json", ">= 2.0.1" ],
-                           [ "IO", ">= 4.7.0" ],
-                           [ "ferret", ">= 1.0.2" ],    # used in tests
-                           [ "QuickCheck", ">= 0.1" ],  # used in tests
-                         ],
-  SuggestedOtherPackages := [ [ "AutoDoc", ">= 2019.09.04" ],
-                         ],
-  ExternalConditions := [ ],
+    [ "BacktrackKit", ">= 0.4.0" ],
+    [ "Digraphs", ">= 1.1.1" ],
+    [ "GraphBacktracking", ">= 0.4.0" ],
+    # required by BacktrackKit and Digraphs... so we may as well include it?
+    [ "datastructures", ">= 0.2.6" ],
+    # to enable GAP and rust to talk to each other
+    [ "IO", ">= 4.7.0" ],
+    [ "json", ">= 2.0.1" ],
+  ],
+  SuggestedOtherPackages := [
+    [ "AutoDoc", ">= 2019.09.04" ], # to compile documentation
+    [ "ferret", ">= 1.0.2" ],       # used in tests
+    [ "QuickCheck", ">= 0.1" ],     # used in tests
+  ],
+  ExternalConditions := [
+    # FIXME
+    "To compile Vole, rust needs to be installed and available...",
+  ],
 ),
 
 # FIXME: This might not work properly if the user has multiple Voles installed.
@@ -134,7 +140,7 @@ AutoDoc := rec(
       "\n"
       ),
     Acknowledgements := Concatenation(
-      "GAPDoc? Autodoc? PackageMaker? Example package? People?",
+      "GAPDoc? Autodoc? PackageMaker? Example package? People? Rebecca?",
       # TODO
       "<P/>\n"
       )
