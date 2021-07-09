@@ -48,11 +48,35 @@ VoleCon.Transport := function(s, t, action...)
     fi;
 end;
 
-
 VoleCon.InGroup := function(g)
+    if not IsPermGroup(g) then
+        ErrorNoReturn("VoleCon.InGroup: the argument must be a perm group");
+    fi;
+
     if IsNaturalSymmetricGroup(g) then
         return VoleRefiner.InSymmetricGroup(MovedPoints(g));
     fi;
     
     return rec(bounds := rec(largest_required_point :=_Vole.lmp(g), largest_moved_point := _Vole.lmp(g), con := GB_Con.InGroupSimple(g)));
+end;
+
+VoleCon.Normalize := function(g)
+    if not IsPermGroup(g) then
+        ErrorNoReturn("VoleCon.Normalize: the argument must be a perm group");
+    fi;
+    Error("TODO: not yet implemented");
+end;
+
+VoleCon.MovedPoints := function(pointlist)
+    if not IsList(pointlist) or not ForAll(pointlist, IsPosInt) then
+        ErrorNoReturn("VoleCon.MovedPoints: the argument must be a list of positive integers");
+    fi;
+    return VoleRefiner.InSymmetricGroup(pointlist);
+end;
+
+VoleCon.LargestMovedPoint := function(point)
+    if not IsPosInt(point) then
+        ErrorNoReturn("VoleCon.LargestMovedPoint: the argument must be a positive integer");
+    fi;
+    return VoleRefiner.InSymmetricGroup([1 .. point]);
 end;
