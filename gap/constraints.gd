@@ -55,7 +55,7 @@ InstallValue(VoleCon, rec());
 
 
 #! @Arguments G
-#! @Returns Unspecified
+#! @Returns An object
 #! @Description
 #! Text about `VoleCon.InGroup`.
 #! @BeginExampleSession
@@ -67,7 +67,7 @@ DeclareGlobalFunction("VoleCon.InGroup");
 
 #! @BeginGroup StabilizeDoc
 #! @Arguments obj[, action]
-#! @Returns Unspecified
+#! @Returns An object
 #! @Description
 #! Text about `VoleCon.Stabilize`.
 DeclareGlobalFunction("VoleCon.Stabilize");
@@ -82,7 +82,7 @@ DeclareGlobalFunction("VoleCon.Stabilise");
 
 
 #! @Arguments obj1, obj2[, action]
-#! @Returns Unspecified
+#! @Returns An object
 #! @Description
 #! Text about `VoleCon.Transport`.
 #! @BeginExampleSession
@@ -94,7 +94,7 @@ DeclareGlobalFunction("VoleCon.Transport");
 
 #! @BeginGroup NormalizeDoc
 #! @Arguments G
-#! @Returns Unspecified
+#! @Returns An object
 #! @Description
 #! Text about `VoleCon.Normalize`.
 DeclareGlobalFunction("VoleCon.Normalize");
@@ -110,7 +110,7 @@ DeclareGlobalFunction("VoleCon.Normalise");
 
 #! @BeginGroup CentralizeDoc
 #! @Arguments G
-#! @Returns Unspecified
+#! @Returns An object
 #! @Description
 #! Text about `VoleCon.Centralize`.
 DeclareGlobalFunction("VoleCon.Centralize");
@@ -125,7 +125,7 @@ DeclareGlobalFunction("VoleCon.Centralise");
 
 
 #! @Arguments pointlist
-#! @Returns Unspecified
+#! @Returns An object
 #! @Description
 #! Text about `VoleCon.MovedPoints`.
 #! @BeginExampleSession
@@ -136,7 +136,7 @@ DeclareGlobalFunction("VoleCon.MovedPoints");
 
 
 #! @Arguments point
-#! @Returns Unspecified
+#! @Returns An object
 #! @Description
 #! Text about `VoleCon.LargestMovedPoint`.
 #! @BeginExampleSession
