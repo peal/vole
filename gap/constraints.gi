@@ -7,7 +7,7 @@
 
 MakeReadWriteGlobal("VoleCon");
 
-VoleCon.Stabilize := function(s, action...)
+VoleCon.Stabilize := function(obj, action...)
     if Length(action) = 1 then
         action := action[1];
     elif Length(action) = 0 then
@@ -17,21 +17,21 @@ VoleCon.Stabilize := function(s, action...)
     fi;
 
     if action = OnSets then
-        return VoleRefiner.SetStab(s);
+        return VoleRefiner.SetStab(obj);
     elif action = OnTuples then
-        return VoleRefiner.TupleStab(s);
+        return VoleRefiner.TupleStab(obj);
     elif action = OnSetsSets then 
-        return VoleRefiner.SetSetStab(s);
+        return VoleRefiner.SetSetStab(obj);
     elif action = OnSetsTuples then
-        return VoleRefiner.SetTupleStab(s);
+        return VoleRefiner.SetTupleStab(obj);
     elif action = OnDigraphs then
-        return VoleRefiner.DigraphStab(s);
+        return VoleRefiner.DigraphStab(obj);
     else
         ErrorNoReturn("Invalid action: ", action);
     fi;
 end;
 
-VoleCon.Transport := function(s, t, action...)
+VoleCon.Transport := function(obj1, obj2, action...)
     if Length(action) = 1 then
         action := action[1];
     elif Length(action) = 0 then
@@ -41,17 +41,17 @@ VoleCon.Transport := function(s, t, action...)
     fi;
 
     if action = OnSets then
-        return VoleRefiner.SetTransporter(s,t);
+        return VoleRefiner.SetTransporter(obj1, obj2);
     elif action = OnTuples then
-        return VoleRefiner.TupleTransporter(s,t);
+        return VoleRefiner.TupleTransporter(obj1, obj2);
     elif action = OnSetsSets then 
-        return VoleRefiner.SetSetTransporter(s,t);
+        return VoleRefiner.SetSetTransporter(obj1, obj2);
     elif action = OnSetsTuples then
-        return VoleRefiner.SetTupleTransporter(s,t);
+        return VoleRefiner.SetTupleTransporter(obj1, obj2);
     elif action = OnDigraphs then
-        return VoleRefiner.DigraphTransporter(s,t);
+        return VoleRefiner.DigraphTransporter(obj1, obj2);
     else
-        ErrorNoReturn("Invalid action: ", action);
+        ErrorNoReturn("Unrecognised action: ", action);
     fi;
 end;
 
