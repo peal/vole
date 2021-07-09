@@ -6,7 +6,8 @@
 # This file is a script which compiles the package manual.
 
 if LoadPackage("AutoDoc", "2019.09.04") = fail then
-    Error("AutoDoc version 2019.09.04 or newer is required.");
+    ErrorNoReturn("AutoDoc version 2019.09.04 or newer is required to compile ",
+                  "the manual.");
 fi;
 
 AutoDoc(
