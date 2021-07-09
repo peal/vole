@@ -4,12 +4,12 @@
   <Heading>Introduction to &Vole;</Heading>
 
   &Vole; is a brilliant package.
-  It's based on a paper <Cite Key='GraphBacktracking'/>.
+  It's based on a paper <Cite Key='GBpublished'/> / <Cite Key='GBextended'/>.
 
   <Section>
     <Heading>High level overview</Heading>
 
-    How high should we go?
+    How high should we go? Sky high...
   </Section>
 
   <Section>
