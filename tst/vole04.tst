@@ -10,38 +10,41 @@
 #
 gap> START_TEST("vole04.tst");
 
-# doc/_Chapter_Constraints.xml:60-64
+# doc/_Chapter_Constraints.xml:22-24
+gap> LoadPackage("vole", false);; # Just here temporarily
+
+# doc/_Chapter_Constraints.xml:65-69
 gap> Set(RecNames(VoleCon));
 [ "Centralise", "Centralize", "InGroup", "LargestMovedPoint", "MovedPoints", 
   "Normalise", "Normalize", "Stabilise", "Stabilize", "Transport" ]
 
-# doc/_Chapter_Constraints.xml:83-86
+# doc/_Chapter_Constraints.xml:88-91
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:100-103
+# doc/_Chapter_Constraints.xml:105-108
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:116-119
+# doc/_Chapter_Constraints.xml:121-124
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:133-136
+# doc/_Chapter_Constraints.xml:138-141
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:150-153
+# doc/_Chapter_Constraints.xml:155-158
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:166-169
+# doc/_Chapter_Constraints.xml:171-174
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:182-185
+# doc/_Chapter_Constraints.xml:187-190
 gap> true;
 true
 
 #
-gap> STOP_TEST("vole04.tst", 1 );
+gap> STOP_TEST("vole04.tst", 1);

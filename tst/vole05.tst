@@ -15,4 +15,4 @@ gap> fail;
 fail
 
 #
-gap> STOP_TEST("vole05.tst", 1 );
+gap> STOP_TEST("vole05.tst", 1);

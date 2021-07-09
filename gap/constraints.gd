@@ -24,6 +24,12 @@
 #! A constraint is a property that you can say whether or not any individual
 #! given permutation has that property.
 
+#! @BeginGroup LoadPackageGrp
+#! @BeginExampleSession
+#! gap> LoadPackage("vole", false);; # Just here temporarily
+#! @EndExampleSession
+#! @EndGroup
+
 
 #! @Section The <C>VoleCon</C> record
 
