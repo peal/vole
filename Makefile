@@ -4,3 +4,8 @@ ifeq (, $(shell which cargo))
 
 all:
 	cd rust && cargo build --bins && cargo build --release --bins
+
+doc:
+	gap makedoc.g
+
+.PHONY: doc

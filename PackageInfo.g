@@ -94,7 +94,8 @@ Dependencies := rec(
                            [ "ferret", ">= 1.0.2" ],    # used in tests
                            [ "QuickCheck", ">= 0.1" ],  # used in tests
                          ],
-  SuggestedOtherPackages := [ ],
+  SuggestedOtherPackages := [ [ "AutoDoc", ">= 2019.09.04" ],
+                         ],
   ExternalConditions := [ ],
 ),
 
