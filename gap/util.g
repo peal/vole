@@ -8,8 +8,6 @@
 DeclareGlobalVariable("_Vole");
 InstallValue(_Vole, rec());
 
-MakeReadWriteGlobal("_Vole");
-
 # Simple function to recursively find the largest value (or largest moved point)
 # in lists, sets, permutations and permutation groups
 _Vole.lmp := function(s...)
@@ -83,5 +81,3 @@ _Vole.getConfig := function(conf, default)
         ErrorNoReturn("Vole: Too many arguments");
     fi;
 end;
-
-MakeReadOnlyGlobal("_Vole");

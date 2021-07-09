@@ -5,8 +5,6 @@
 #
 # Implementations: TODO
 
-MakeReadWriteGlobal("Vole");
-
 Vole.FindOne := function(constraints, conf...)
     local bounds,ret;
     conf := _Vole.getConfig(conf, rec(raw := false, points := infinity));
@@ -46,5 +44,3 @@ Vole.CanonicalPerm := function(G, constraints, conf...)
         return ret.canonical;
     fi;
 end;
-
-MakeReadOnlyGlobal("Vole");

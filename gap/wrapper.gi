@@ -5,8 +5,6 @@
 #
 # Implementations: Wrappers for Vole functions to emulate the GAP interface.
 
-MakeReadWriteGlobal("Vole");
-
 Vole.Stabilizer := function(G, object, action...)
     return Vole.FindGroup([VoleCon.InGroup(G), CallFuncList(VoleCon.Stabilize(Concatenation([object], action)))]);
 end;
@@ -52,4 +50,3 @@ Vole.IsConjugate := function(G, x, y)
     Vole.FindOne([VoleCon.InGroup(G), VoleCon.Conjugate(x,y)]);
 end;
 
-MakeReadOnlyGlobal("Vole");
