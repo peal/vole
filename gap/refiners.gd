@@ -5,7 +5,24 @@
 #
 # Declarations: TODO
 
+#! @Chapter Refiners
 
+#! @Section Refiners
+
+#! Something.
+#! Something else.
+
+#! @Description
+#!
+#! <C>VoleRefiner</C> is a record that contains all of the &Vole; refiners.
+#! There can be multiple refiners implemented for the same mathematical property
+#! with different tradeoffs, and also refiners implemented for special cases
+#! (such as symmetric and alternating groups). In general most users will want to
+#! use <Ref Var="VoleCon"/>, which provides a higher-level interface.
+#! @BeginExampleSession
+#! gap> fail;
+#! fail
+#! @EndExampleSession
 DeclareGlobalVariable("VoleRefiner");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
 InstallValue(VoleRefiner, rec());
