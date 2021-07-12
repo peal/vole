@@ -24,7 +24,7 @@ _Vole.lmp := function(s...)
     elif IsDigraph(s) then
         return DigraphNrVertices(s);
     fi;
-    ErrorNoReturn("Do not recognise...");
+    ErrorNoReturn("Vole: Do not recognise...");
 end;
 
 # Get the upper and lower bounds for a list of constraints
@@ -58,7 +58,10 @@ _Vole.getBound := function(constraints, initial_max)
     od;
     max := Maximum(min, max);
     if max = infinity then
-        ErrorNoReturn("Error: Cannot prove an upper bound for 'vole' call. Consider adding an instance of VoleRefiner.SymmetricGroup(D) to set a group to search in");
+        ErrorNoReturn("Vole: Cannot prove an upper bound for 'vole' call. ",
+                      "Consider adding an instance of ",
+                      "VoleRefiner.SymmetricGroup(D) to set a group to search",
+                      "in");
     fi;
     return rec(min := min, max := max);
 end;
