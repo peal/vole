@@ -64,6 +64,40 @@ VoleCon.InGroup := function(G)
     return rec(bounds := rec(largest_required_point :=_Vole.lmp(G), largest_moved_point := _Vole.lmp(G), con := GB_Con.InGroupSimple(G)));
 end;
 
+# TODO Can we assign a string such that NameFunction(VoleCon.InGroup) returns
+# "VoleCon.InGroup"?
+VoleCon.InCoset := function(U)
+    if not IsRightCoset(U) then
+        ErrorNoReturn("VoleCon.InCoset: ",
+                      "the argument must be a GAP right coset object");
+    fi;
+    return VoleCon.InRightCoset(ActingDomain(U), Representative(U));
+end;
+
+VoleCon.InRightCoset := function(G, x)
+    if not IsPermGroup(G) then
+        ErrorNoReturn("VoleCon.InRightCoset: ",
+                      "the first argument must be a perm group");
+    elif not IsPerm(x) then
+        ErrorNoReturn("VoleCon.InRightCoset: ",
+                      "the second argument must be a permutation");
+    fi;
+    # TODO should we check whether x in G? And return VoleCon.InGroup if so?
+    Error("TODO: not yet implemented");
+end;
+
+VoleCon.InLeftCoset := function(G, x)
+    if not IsPermGroup(G) then
+      ErrorNoReturn("VoleCon.InLeftCoset: ",
+                    "the first argument must be a perm group");
+    elif not IsPerm(x) then
+      ErrorNoReturn("VoleCon.InRightCoset: ",
+                    "the second argument must be a permutation");
+    fi;
+    # TODO should we check whether x in G? And return VoleCon.InGroup if so?
+    Error("TODO: not yet implemented");
+end;
+
 VoleCon.Normalize := function(G)
     if not IsPermGroup(G) then
         ErrorNoReturn("VoleCon.Normalize: the argument must be a perm group");
