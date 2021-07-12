@@ -12,19 +12,33 @@ fi;
 
 AutoDoc(
     rec(
-        autodoc := true,
-        extract_examples := rec(
-            skip_empty_in_numbering := false,
+        autodoc := rec(
+            files := [
+                       "doc/intro.autodoc",
+                       "doc/install.autodoc",
+                       "doc/tutorial.autodoc",
+                       "gap/wrapper.gd",
+                       "gap/interface.gd",
+                       "gap/constraints.gd",
+                       "gap/refiners.gd",
+                       "doc/expert.autodoc",
+                     ],
+            scan_dirs := [
+                           "doc",
+                           "gap",
+                         ],
         ),
+        extract_examples := false,
+        #extract_examples := rec(
+        #    skip_empty_in_numbering := false,
+        #),
         gapdoc := rec(
             gap_root_relative_path := true,
         ),
         scaffold := rec(
+            appendix := [
+                        ],
             includes := [
-                          "intro.xml",
-                          "install.xml",
-                          "_AutoDocMainFile.xml",
-                          "tutorial.xml"
                         ],
             entities := rec(
                 BacktrackKit      := "<Package>BacktrackKit</Package>" ,
@@ -37,7 +51,8 @@ AutoDoc(
                 json              := "<Package>json</Package>",
             ),
             bib := "vole.bib",
-            #MainPage := false,
+            index := true,
+            MainPage := true,
         ),
     )
 );
