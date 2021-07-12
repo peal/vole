@@ -61,7 +61,9 @@ VoleCon.InGroup := function(G)
         return VoleRefiner.InSymmetricGroup(MovedPoints(G));
     fi;
     
-    return rec(bounds := rec(largest_required_point :=_Vole.lmp(G), largest_moved_point := _Vole.lmp(G), con := GB_Con.InGroupSimple(G)));
+    return rec(bounds := rec(largest_required_point :=_Vole.lmp(G),
+                             largest_moved_point := _Vole.lmp(G),
+               con := GB_Con.InGroupSimple(_Vole.lmp(G), G)));
 end;
 
 # TODO Can we assign a string such that NameFunction(VoleCon.InGroup) returns
