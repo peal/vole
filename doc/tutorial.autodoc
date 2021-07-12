@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
+@Chapter Tutorial
 
-<Chapter Label="tutorial">
-  <Heading>Tutorial</Heading>
+@Section Thingy
 
-  We should write a really beautiful tutorial :)
-
-</Chapter>
-
+We should write a really beautiful tutorial :)

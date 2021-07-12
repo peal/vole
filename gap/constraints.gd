@@ -7,7 +7,6 @@
 
 #! @Chapter Constraints
 
-
 #! @Section The concept of constraints
 #! @SectionLabel concept
 
@@ -31,51 +30,153 @@
 #! @EndGroup
 
 
+
 #! @Section The <C>VoleCon</C> record
+#! @SectionLabel VoleCon
 
 #! @Description
 #!
-#! `VoleCon` is a record that contains the constraints that &Vole; provides.
+#! `VoleCon` is a record that contains all of the constraints that &Vole;
+#! provides.
 #!
-#! See Section&nbsp;<Ref Sect="Section_concept"/> for...
-#!
-#! The currently-provided constraints are:
-#! * <Ref Func="VoleCon.InGroup"/>
-#! * <Ref Func="VoleCon.Stabilize"/>
-#! * <Ref Func="VoleCon.Transport"/>
-#! * <Ref Func="VoleCon.Normalize"/>
-#! * <Ref Func="VoleCon.Centralize"/>
-#! * <Ref Func="VoleCon.MovedPoints"/>
-#! * <Ref Func="VoleCon.LargestMovedPoint"/>
+#! These constraints are documented in
+#! Section&nbsp;<Ref Sect="Section_providedcons"/>.
+DeclareGlobalVariable("VoleCon");
+# TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
+InstallValue(VoleCon, rec());
+
+#! @Section Constraints provided in the <C>VoleCon</C> record
+#! @SectionLabel providedcons
+
+#! Some text.
+
 #! @BeginExampleSession
 #! gap> Set(RecNames(VoleCon));
 #! [ "Centralise", "Centralize", "InGroup", "LargestMovedPoint", "MovedPoints", 
 #!   "Normalise", "Normalize", "Stabilise", "Stabilize", "Transport" ]
 #! @EndExampleSession
-DeclareGlobalVariable("VoleCon");
-# TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
-InstallValue(VoleCon, rec());
 
+#! Some more text, explaining the following table.
 
-#! @Section Constraints provided in the <C>VoleCon</C> record
+#! <Table Align="ll">
+#! <Row>
+#!   <Item>Group version</Item>
+#!   <Item>Coset version</Item>
+#! </Row>
+#! <HorLine/>
+#! <Row>
+#!   <Item><Ref Func="VoleCon.InGroup"/></Item>
+#!   <Item>
+#!     <Ref Func="VoleCon.InCoset"/>
+#!
+#!     <Ref Func="VoleCon.InLeftCoset"/>
+#!
+#!     <Ref Func="VoleCon.InRightCoset"/>
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="VoleCon.Stabilize"/>
+#!   </Item>
+#!   <Item><Ref Func="VoleCon.Transport"/></Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="VoleCon.Normalize"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Func="VoleCon.Conjugate"/>
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="VoleCon.Centralize"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Func="VoleCon.Conjugate"/>
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item><Ref Func="VoleCon.MovedPoints"/></Item>
+#!   <Item>N/A</Item>
+#! </Row>
+#! <Row>
+#!   <Item><Ref Func="VoleCon.LargestMovedPoint"/></Item>
+#!   <Item>N/A</Item>
+#! </Row>
+#! </Table>
+
+#! Perhaps some final text?
 
 
 #! @Arguments G
-#! @Returns An object
+## @Returns An object
 #! @Description
-#! Text about `VoleCon.InGroup`.
+#! This constraint is satisfied by the elements of the permutation group
+#! <A>G</A>, and no others.
 #! @BeginExampleSession
-#! gap> true;
+#! gap> con1 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 8));
+#! gap> con2 := VoleCon.InGroup(AlternatingGroup(4));
+#! gap> Vole.FindGroup(con1, con2) = Group([(1,3)(2,4), (1,4)(2,3)]);
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.InGroup");
 
 
+#! @Arguments U
+## @Returns An object
+#! @Description
+#! A permutation satisfies this constraint if...
+#!
+#! See also <Ref Func="VoleCon.InLeftCoset"/>
+#! and <Ref Func="VoleCon.InRightCoset"/>, which allow a coset to be specifed
+#! by a subgroup and a representative element.
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("VoleCon.InCoset");
+
+
+#! @Arguments G, x
+## @Returns An object
+#! @Description
+#! A permutation satisfies this constraint if...
+#!
+#! See also <Ref Func="VoleCon.InLeftCoset"/>.
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("VoleCon.InRightCoset");
+
+
+
+#! @Arguments G, x
+## @Returns An object
+#! @Description
+#! Text about `VoleCon.InLeftCoset`.
+#! See also <Ref Func="VoleCon.InRightCoset"/>.
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("VoleCon.InLeftCoset");
+
+
 #! @BeginGroup StabilizeDoc
 #! @Arguments obj[, action]
-#! @Returns An object
+## @Returns An object
 #! @Description
 #! Text about `VoleCon.Stabilize`.
+#!
+#! If the optional argument <A>action</A> is not given, then the action
+#! <Ref Func="OnPoints" BookName="Ref"/> is used by default;
+#! this is the action obtained by the `^` operator;
+#! see <Ref Oper="\^" BookName="Ref"/>.
+#!
+#! The combinations of objects and actions that are supported by &Vole;
+#! is given in... TODO
 DeclareGlobalFunction("VoleCon.Stabilize");
 #! @EndGroup
 #! @Arguments obj[, action]
@@ -88,7 +189,7 @@ DeclareGlobalFunction("VoleCon.Stabilise");
 
 
 #! @Arguments obj1, obj2[, action]
-#! @Returns An object
+## @Returns An object
 #! @Description
 #! Text about `VoleCon.Transport`.
 #! @BeginExampleSession
@@ -100,7 +201,7 @@ DeclareGlobalFunction("VoleCon.Transport");
 
 #! @BeginGroup NormalizeDoc
 #! @Arguments G
-#! @Returns An object
+## @Returns An object
 #! @Description
 #! Text about `VoleCon.Normalize`.
 DeclareGlobalFunction("VoleCon.Normalize");
@@ -116,7 +217,7 @@ DeclareGlobalFunction("VoleCon.Normalise");
 
 #! @BeginGroup CentralizeDoc
 #! @Arguments G
-#! @Returns An object
+## @Returns An object
 #! @Description
 #! Text about `VoleCon.Centralize`.
 DeclareGlobalFunction("VoleCon.Centralize");
@@ -130,23 +231,41 @@ DeclareGlobalFunction("VoleCon.Centralize");
 DeclareGlobalFunction("VoleCon.Centralise");
 
 
-#! @Arguments pointlist
-#! @Returns An object
+#! @Arguments x, y
+## @Returns An object
 #! @Description
-#! Text about `VoleCon.MovedPoints`.
+#! Text about `VoleCon.Conjugate`.
 #! @BeginExampleSession
 #! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("VoleCon.Conjugate");
+
+
+#! @Arguments pointlist
+## @Returns An object
+#! @Description
+#! This constraint is a shorthand for
+#! `VoleCon.InGroup(SymmetricGroup(<A>pointlist</A>))`;
+#! see <Ref Func="VoleCon.InGroup"/>.
+#! @BeginExampleSession
+#! gap> con1 := VoleCon.MovedPoints([1..5]);;
+#! gap> con2 := VoleCon.MovedPoints([2,6,4,5]);;
+#! gap> Vole.FindGroup(con1, con2) = SymmetricGroup([2,3,5]);
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.MovedPoints");
 
 
 #! @Arguments point
-#! @Returns An object
+## @Returns An object
 #! @Description
-#! Text about `VoleCon.LargestMovedPoint`.
+#! This constraint is a shorthand for
+#! `VoleCon.InGroup(SymmetricGroup([1..<A>point</A>]))`;
+#! see <Ref Func="VoleCon.InGroup"/>.
 #! @BeginExampleSession
-#! gap> true;
+#! gap> con := VoleCon.LargestMovedPoint(5);;
+#! gap> Vole.FindGroup(con) = SymmetricGroup(5);
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.LargestMovedPoint");

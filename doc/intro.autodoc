@@ -1,22 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+@Chapter Introduction to &Vole;
+@ChapterLabel intro
 
-<Chapter Label="intro">
-  <Heading>Introduction to &Vole;</Heading>
+&Vole; is a brilliant package.
+It's based on a paper <Cite Key='GBpublished'/> / <Cite Key='GBextended'/>.
 
-  &Vole; is a brilliant package.
-  It's based on a paper <Cite Key='GBpublished'/> / <Cite Key='GBextended'/>.
+@Section High level overview
 
-  <Section>
-    <Heading>High level overview</Heading>
+How high should we go? Sky high...
 
-    How high should we go? Sky high...
-  </Section>
+@Section Related &GAP; packages
 
-  <Section>
-    <Heading>Related &GAP; packages</Heading>
-
-    Talk about how &Vole; is (or is not) related to &BacktrackKit;,
-    &GraphBacktracking;, and &ferret;.
-  </Section>
-
-</Chapter>
+Talk about how &Vole; is (or is not) related to &BacktrackKit;,
+&GraphBacktracking;, and &ferret;.
