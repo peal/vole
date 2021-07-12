@@ -68,22 +68,20 @@ end;
 
 
 # Fill in a configuration 'default', using user-supplied values from 'conf'
-_Vole.getConfig := function(conf, default)
-    local r;
-    if Length(conf) = 0 then
+_Vole.getConfig := function(default)
+    local r, conf;
+
+    conf := ValueOption("conf");
+    if conf = fail then
         return default;
-    elif Length(conf) = 1 then
-        if not IsRecord(conf[1]) then
-            ErrorNoReturn("Vole: configuration must be a record, not", conf[1]);
-        fi;
-        for r in RecNames(conf[1]) do
+    elif IsRecord(conf) then
+        for r in RecNames(conf) do
             if not IsBound(default.(r)) then
                 ErrorNoReturn("Vole: Invalid config key - ", r);
             fi;
-            default.(r) := conf[1].(r);
+            default.(r) := conf.(r);
         od;
         return default;
-    else
-        ErrorNoReturn("Vole: Too many arguments");
     fi;
+    ErrorNoReturn("Vole: The value option 'conf' must be a record, not ", conf);
 end;

@@ -43,7 +43,7 @@ VoleBenchmark :=
 function(p, c)
     local ret1, ret2, time1, time2;
     time1 := NanosecondsSinceEpoch();
-    ret1 := Vole.FindGroup(c, rec(points := p));
+    ret1 := Vole.FindGroup(c : conf := rec(points := p));
     time1 := NanosecondsSinceEpoch() - time1;
     time2 := NanosecondsSinceEpoch();
     ret2 := GAPSolve(p, c);

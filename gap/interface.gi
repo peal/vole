@@ -5,9 +5,15 @@
 #
 # Implementations: TODO
 
-Vole.FindOne := function(constraints, conf...)
-    local bounds,ret;
-    conf := _Vole.getConfig(conf, rec(raw := false, points := infinity));
+# TODO Better handling of one argument = list of constraints versus one argument
+# per constraint
+
+Vole.FindOne := function(constraints...)
+    local bounds, ret, conf;
+    if not IsEmpty(constraints) and IsList(constraints[1]) then
+        constraints := constraints[1];
+    fi;
+    conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBound(constraints, conf.points);
     ret := _Vole.CosetSolve(bounds.max, constraints);
     if conf.raw then
@@ -21,9 +27,12 @@ Vole.FindOne := function(constraints, conf...)
     fi;
 end;
 
-Vole.FindGroup := function(constraints, conf...)
-    local bounds,ret;
-    conf := _Vole.getConfig(conf, rec(raw := false, points := infinity));
+Vole.FindGroup := function(constraints...)
+    local bounds, ret, conf;
+    if not IsEmpty(constraints) and IsList(constraints[1]) then
+        constraints := constraints[1];
+    fi;
+    conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBound(constraints, conf.points);
     ret := _Vole.GroupSolve(bounds.max, constraints);
     if conf.raw then
@@ -33,9 +42,12 @@ Vole.FindGroup := function(constraints, conf...)
     fi;
 end;
 
-Vole.CanonicalPerm := function(G, constraints, conf...)
-    local bounds,ret, max;
-    conf := _Vole.getConfig(conf, rec(raw := false, points := infinity));
+Vole.CanonicalPerm := function(G, constraints...)
+    local bounds, ret, max, conf;
+    if not IsEmpty(constraints) and IsList(constraints[1]) then
+        constraints := constraints[1];
+    fi;
+    conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBound(Concatenation(constraints, [G]), conf.points);
     ret := _Vole.CanonicalSolve(bounds.max, G, constraints);
     if conf.raw then

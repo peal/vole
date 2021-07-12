@@ -6,11 +6,11 @@ VoleTestCanonical := function(maxpnt, grp, obj, VoleFunc, action)
     local p, newobj, ret, newret, image, newimage;
     p := Random(grp);
     newobj := action(obj, p);
-    ret := Vole.CanonicalPerm(grp, Flat([VoleFunc(obj)]), rec(points := maxpnt));
+    ret := Vole.CanonicalPerm(grp, Flat([VoleFunc(obj)]) : conf := rec(points := maxpnt));
     if not(ret in grp) then
         return StringFormatted("A -Not in group! {} {} {}", grp, obj, ret);
     fi;
-    newret := Vole.CanonicalPerm(grp, Flat([VoleFunc(newobj)]), rec(points := maxpnt));
+    newret := Vole.CanonicalPerm(grp, Flat([VoleFunc(newobj)]) : conf := rec(points := maxpnt));
     if not(newret in grp) then
         return StringFormatted("B - Not in group! {} {} {}", grp, obj, ret);
     fi;
@@ -57,7 +57,7 @@ end;
 # For use with QuickCheck
 QuickChecker := function(p, c)
     local ret1, ret2;
-    ret1 := Vole.FindGroup(c, rec(points := p));
+    ret1 := Vole.FindGroup(c : conf := rec(points := p));
     ret2 := FerretSolve(p, c);
     return ret2 = ret1;
 end;
@@ -102,7 +102,7 @@ VoleBenchmark :=
 function(p, c)
     local ret1, ret2, time1, time2;
     time1 := NanosecondsSinceEpoch();
-    ret1 := Vole.FindGroup(c, rec(points := p));
+    ret1 := Vole.FindGroup(c : conf := rec(points := p));
     time1 := NanosecondsSinceEpoch() - time1;
     time2 := NanosecondsSinceEpoch();
     ret2 := GAPSolve(p, c);
