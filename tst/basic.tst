@@ -23,17 +23,17 @@ gap> VoleComp(12, [VoleCon.Stabilize(neigh, OnDigraphs)]);
 gap> VoleComp(7, [GB_Con.NormaliserSimple(7, Group([(1,2,3,4), (1,2), (5,6,7)]))]);
 
 #
-gap> r := Vole.FindOne([VoleCon.Transport([2,3,4,5], [1,3,5,4], OnTuples)] : conf := rec(points := 5));;
+gap> r := VoleFind.Rep([VoleCon.Transport([2,3,4,5], [1,3,5,4], OnTuples)] : conf := rec(points := 5));;
 gap> Assert(0,r = (1,2)(4,5));
-gap> r := Vole.FindOne(VoleCon.Transport([2,3,4], [1,4,5], OnTuples) : conf := rec(points := 5));;
+gap> r := VoleFind.Rep(VoleCon.Transport([2,3,4], [1,4,5], OnTuples) : conf := rec(points := 5));;
 gap> Assert(0, OnSets([2,3,4], r) = [1,4,5]);
 
 #
-gap> Vole.FindGroup([VoleRefiner.InSymmetricGroup([2,3,4])]) = SymmetricGroup([2,3,4]);
+gap> VoleFind.Group(VoleRefiner.InSymmetricGroup([2,3,4])) = SymmetricGroup([2,3,4]);
 true
-gap> Vole.FindGroup([VoleRefiner.InSymmetricGroup([2,4,8,6])]) = SymmetricGroup([2,4,6,8]);
+gap> VoleFind.Group(VoleRefiner.InSymmetricGroup([2,4,8,6])) = SymmetricGroup([2,4,6,8]);
 true
-gap> Vole.FindGroup([VoleRefiner.InSymmetricGroup([])]) = Group(());
+gap> VoleFind.Group(VoleRefiner.InSymmetricGroup([])) = Group(());
 true
 
 #

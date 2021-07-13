@@ -18,8 +18,8 @@ gap> g := Group([(1,2,3,4,5,6,7), (1,2,4)(3,6,5)]);;
 gap> s := Group([(2,4,6), (1,5)(2,4), (1,4,5,2)(3,6)]);;
 gap> p := (1,3,7)(2,5,4);;
 gap> func := x -> GB_Con.NormaliserSimple(7, x);;
-gap> ret1 := Vole.CanonicalPerm(g, Flat([func(s)]));;
-gap> ret2 := Vole.CanonicalPerm(g, Flat([func(s ^ p)]));;
+gap> ret1 := VoleFind.CanonicalPerm(g, Flat([func(s)]));;
+gap> ret2 := VoleFind.CanonicalPerm(g, Flat([func(s ^ p)]));;
 gap> s ^ ret1 = (s ^ p) ^ ret2;
 true
 

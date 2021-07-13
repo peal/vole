@@ -9,44 +9,51 @@
 
 # TODO Note how these support a value option.
 
+
+#! @Section The <C>VoleFind</C> record
+#! @SectionLabel VoleFind
+
+#! @Description
+#!
+#! `VoleFind` is a record that contains...
+#!
+#! @BeginExampleSession
+#! gap> Set(RecNames(VoleFind));
+#! @EndExampleSession
+DeclareGlobalVariable("VoleFind");
+# TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
+InstallValue(VoleFind, rec());
+
+
 #! @Section Interface
 
 #! @Arguments constraints...
 #! @Returns A permutation, or <K>fail</K>
 #! @Description
-#! Text about `Vole.FindOne`.
+#! Text about `VoleFind.Representative`.
 #! @BeginExampleSession
 #! gap> true;
 #! true
 #! @EndExampleSession
-DeclareGlobalFunction("Vole.FindOne");
+DeclareGlobalFunction("VoleFind.Representative");
+DeclareGlobalFunction("VoleFind.Rep");
 
 #! @Arguments constraints...
 #! @Returns A permutation group
 #! @Description
-#! Text about `Vole.FindGroup`.
+#! Text about `VoleFind.Group`.
 #! @BeginExampleSession
 #! gap> true;
 #! true
 #! @EndExampleSession
-DeclareGlobalFunction("Vole.FindGroup");
+DeclareGlobalFunction("VoleFind.Group");
 
 #! @Arguments G, constraints...
 #! @Returns A permutation
 #! @Description
-#! Text about `Vole.CanonicalPerm`.
+#! Text about `VoleFind.CanonicalPerm`.
 #! @BeginExampleSession
 #! gap> true;
 #! true
 #! @EndExampleSession
-DeclareGlobalFunction("Vole.CanonicalPerm");
-
-#! @Arguments G, constraints...
-#! @Returns ?
-#! @Description
-#! Text about `Vole.CanonicalImage`.
-#! @BeginExampleSession
-#! gap> true;
-#! true
-#! @EndExampleSession
-DeclareGlobalFunction("Vole.CanonicalImage");
+DeclareGlobalFunction("VoleFind.CanonicalPerm");

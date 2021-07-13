@@ -13,4 +13,5 @@ ReadPackage("Vole", "gap/interface.gi");
 ReadPackage("Vole", "gap/refiners.gi");
 ReadPackage("Vole", "gap/wrapper.gi");
 
-Perform(["_Vole", "Vole", "VoleCon", "VoleRefiner"], SetNamesForFunctionsInRecord);
+Perform(["_Vole", "Vole", "VoleCon", "VoleFind", "VoleRefiner"],
+        SetNamesForFunctionsInRecord);

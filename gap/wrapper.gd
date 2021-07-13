@@ -175,3 +175,25 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #!   (for sets/lists of integers as appropriate)
 #! * `OnDigraphs`
 
+
+#! @Section other
+
+#! @Arguments G, constraints...
+#! @Returns A permutation
+#! @Description
+#! Text about `Vole.CanonicalPerm`.
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.CanonicalPerm");
+
+#! @Arguments G, constraints...
+#! @Returns ?
+#! @Description
+#! Text about `Vole.CanonicalImage`.
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.CanonicalImage");

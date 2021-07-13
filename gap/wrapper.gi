@@ -17,11 +17,11 @@ Vole.Intersection := function(grps...)
         ErrorNoReturn("Vole.Intersection: The arguments must be (a list ",
                       "containing) at least one perm group");
     fi;
-    return Vole.FindGroup(List(grps, VoleCon.InGroup));
+    return VoleFind.Group(List(grps, VoleCon.InGroup));
 end;
 
 Vole.Stabilizer := function(G, object, action...)
-    return Vole.FindGroup([VoleCon.InGroup(G), CallFuncList(VoleCon.Stabilize(Concatenation([object], action)))]);
+    return VoleFind.Group([VoleCon.InGroup(G), CallFuncList(VoleCon.Stabilize(Concatenation([object], action)))]);
 end;
 Vole.Stabiliser := Vole.Stabilizer;
 
@@ -31,11 +31,12 @@ Vole.Normalizer := function(G, H)
     fi;
 
     if IsPermGroup(H) then
-        return Vole.FindGroup([VoleCon.InGroup(G), VoleCon.Normalise(H)]);
+        return VoleFind.Group([VoleCon.InGroup(G), VoleCon.Normalise(H)]);
     elif IsPerm(H) then
-        return Vole.FindGroup([VoleCon.InGroup(G), VoleCon.Normalise(Group(H))]);
+        return VoleFind.Group([VoleCon.InGroup(G), VoleCon.Normalise(Group(H))]);
     else
-        ErrorNoReturn("Vole.Normalizer: The second argument must a perm group or a permutation");
+        ErrorNoReturn("Vole.Normalizer: The second argument must a perm group ",
+                      "or a permutation");
     fi;
 end;
 Vole.Normaliser := Vole.Normalizer;
@@ -47,7 +48,7 @@ Vole.Centralizer := function(G, x)
         ErrorNoReturn("Vole.Centralizer: The second argument must be a perm group or a permutation");
     fi;
 
-    return Vole.FindGroup([VoleCon.InGroup(G), VoleCon.Centralize(x)]);
+    return VoleFind.Group([VoleCon.InGroup(G), VoleCon.Centralize(x)]);
 end;
 Vole.Centraliser := Vole.Centralizer;
 
@@ -55,7 +56,8 @@ Vole.IsConjugate := function(G, g, h)
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.IsConjugate: The first argument must be a perm group");
     elif (not (IsPerm(g) and IsPerm(h)) and not (IsPermGroup(g) and IsPermGroup(h))) then
-        ErrorNoReturn("Vole.IsConjugate: The second and third arguments must both be either permutations or perm groups");
+        ErrorNoReturn("Vole.IsConjugate: The second and third arguments ",
+                      "must both be either permutations or perm groups");
     fi;
 
     return Vole.RepresentativeAction(G, g, h, OnPoints) <> fail;
@@ -70,5 +72,15 @@ Vole.RepresentativeAction := function(G, obj1, obj2, action...)
         ErrorNoReturn("VoleCon.RepresentativeAction args: G, obj1, obj2[, action]");
     fi;
 
-    return Vole.FindOne([VoleCon.InGroup(G), VoleCon.Transport(obj1, obj2, action)]);
+    return VoleFind.Representative(VoleCon.InGroup(G), VoleCon.Transport(obj1, obj2, action));
+end;
+
+Vole.CanonicalPerm := function(G, obj...)
+    ErrorNoReturn("not yet implemented!");
+end;
+
+Vole.CanonicalImage := function(G, obj...)
+    local perm;
+    perm := CallFuncList(Vole.CanonicalPerm, Concatenation([G], obj));
+    return obj[1] ^ perm;
 end;

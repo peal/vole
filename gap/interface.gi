@@ -8,7 +8,7 @@
 # TODO Better handling of one argument = list of constraints versus one argument
 # per constraint
 
-Vole.FindOne := function(constraints...)
+VoleFind.Representative := function(constraints...)
     local bounds, ret, conf;
     if not IsEmpty(constraints) and IsList(constraints[1]) then
         constraints := constraints[1];
@@ -26,8 +26,9 @@ Vole.FindOne := function(constraints...)
         fi;
     fi;
 end;
+VoleFind.Rep := VoleFind.Representative;
 
-Vole.FindGroup := function(constraints...)
+VoleFind.Group := function(constraints...)
     local bounds, ret, conf;
     if not IsEmpty(constraints) and IsList(constraints[1]) then
         constraints := constraints[1];
@@ -42,7 +43,7 @@ Vole.FindGroup := function(constraints...)
     fi;
 end;
 
-Vole.CanonicalPerm := function(G, constraints...)
+VoleFind.CanonicalPerm := function(G, constraints...)
     local bounds, ret, max, conf;
     if not IsEmpty(constraints) and IsList(constraints[1]) then
         constraints := constraints[1];
@@ -55,14 +56,4 @@ Vole.CanonicalPerm := function(G, constraints...)
     else
         return ret.canonical;
     fi;
-end;
-
-# TODO: work in progress - this does not currently work
-Vole.CanonicalImage := function(G, constraints...)
-    local perm;
-    if not IsEmpty(constraints) and IsList(constraints[1]) then
-        constraints := constraints[1];
-    fi;
-    perm := Vole.CanonicalPerm(G, constraints);
-    return constraints[1] ^ perm;
 end;

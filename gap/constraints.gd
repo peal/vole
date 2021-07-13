@@ -117,7 +117,7 @@ InstallValue(VoleCon, rec());
 #! @BeginExampleSession
 #! gap> con1 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 8));
 #! gap> con2 := VoleCon.InGroup(AlternatingGroup(4));
-#! gap> Vole.FindGroup(con1, con2) = Group([(1,3)(2,4), (1,4)(2,3)]);
+#! gap> VoleFind.Group(con1, con2) = Group([(1,3)(2,4), (1,4)(2,3)]);
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.InGroup");
@@ -251,7 +251,7 @@ DeclareGlobalFunction("VoleCon.Conjugate");
 #! @BeginExampleSession
 #! gap> con1 := VoleCon.MovedPoints([1..5]);;
 #! gap> con2 := VoleCon.MovedPoints([2,6,4,5]);;
-#! gap> Vole.FindGroup(con1, con2) = SymmetricGroup([2,3,5]);
+#! gap> VoleFind.Group(con1, con2) = SymmetricGroup([2,3,5]);
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.MovedPoints");
@@ -265,7 +265,7 @@ DeclareGlobalFunction("VoleCon.MovedPoints");
 #! see <Ref Func="VoleCon.InGroup"/>.
 #! @BeginExampleSession
 #! gap> con := VoleCon.LargestMovedPoint(5);;
-#! gap> Vole.FindGroup(con) = SymmetricGroup(5);
+#! gap> VoleFind.Group(con) = SymmetricGroup(5);
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.LargestMovedPoint");
