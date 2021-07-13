@@ -5,31 +5,132 @@
 #
 # Declarations: Wrappers for Vole functions to emulate the GAP interface.
 
-#! @Chapter Emulating the traditional GAP interface with &Vole;
+#! @Chapter Emulating traditional interfaces with &Vole;
 
-#! @Section Simple wrapper functions
 
-#! Vole provides a number of reimplementations of built-in &GAP; functions.
+#! @Section The concept
+
+# TODO improve this
+#! &Vole; provides a number of reimplementations of built-in &GAP; functions.
 #! These try to provide the same interface as the original &GAP; function. Note
 #! that these functions always use graph backtracking, so may be significantly
 #! slower than &GAP;'s built in functions when those functions can greatly
 #! simplify solving using group properties.
+
+
+#! @Section The <C>Vole</C> record
+#! @SectionLabel VoleRec
+
+#! @Description
 #!
-#! The functions currently implemented are:
+#! `Vole` is a record that contains...
 #!
-#! * `Vole.Intersection(<A>U1</A>,<A>U2</A>,...)` and 
-#!   `Vole.Intersection([<A>U1</A>,<A>U2</A>,...])`
-#!    for permutation groups <A>U1</A>, <A>U2</A>, ..., etc.
-#! * `Vole.Normaliser(<A>G</A>,<A>H</A>)` - for permutation groups
-#!   <A>G</A> and <A>H</A>
-#! * `Vole.IsConjugate(<A>G</A>,<A>U</A>,<A>V</A>)` for permutation groups
-#!    <A>G</A>, <A>U</A>, <A>V</A>
-#! * `Vole.IsConjugate(<A>G</A>,<A>x</A>,<A>y</A>)` for a permutation group
-#!    <A>G</A> and permutations <A>x</A> and <A>y</A>.
+#! @BeginExampleSession
+#! gap> Difference(RecNames(Vole), ["FindOne", "FindGroup"]);
+#! @EndExampleSession
+DeclareGlobalVariable("Vole");
+# TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
+InstallValue(Vole, rec());
+
+
+#! @Section Summary of the correspondence between &Vole; and &GAP; functions
 #!
-#! * <Ref Oper="IsConjugate" BookName="Ref"/>
-#! * <Ref Oper="Normalizer" BookName="Ref" />
-#! * <Ref Oper="Intersection" BookName="Ref" />
+#! Some text.
+
+#! Some more text, explaining the following table.
+
+#! <Table Align="ll">
+#! <Row>
+#!   <Item>&Vole; function</Item>
+#!   <Item>Built-in &GAP; function</Item>
+#! </Row>
+#! <HorLine/>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.Intersection"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Oper="Intersection" BookName="Ref" />
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.Stabilizer"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Oper="Stabilizer" BookName="Ref" />
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.RepresentativeAction"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Oper="RepresentativeAction" BookName="Ref" />
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.Normalizer"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Oper="Normalizer" BookName="Ref" />
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.Centralizer"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Oper="Centralizer" BookName="Ref" />
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.IsConjugate"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Oper="IsConjugate" BookName="Ref" />
+#!   </Item>
+#! </Row>
+#! </Table>
+
+
+#! @Section Summary of the correspondence between &Vole; and &images; functions
+#!
+#! Some text.
+
+#! Some more text, explaining the following table.
+
+#! <Table Align="ll">
+#! <Row>
+#!   <Item>&Vole; function</Item>
+#!   <Item>&images; package function</Item>
+#! </Row>
+#! <HorLine/>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.CanonicalPerm"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Func="CanonicalImagePerm" BookName="images" />
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.CanonicalImage"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Func="CanonicalImage" BookName="images" />
+#!   </Item>
+#! </Row>
+#! </Table>
+
+#! Perhaps some final text?
+
+
+#! @Section &Vole; functions emulating built-in &GAP; functions
+
 
 #! @BeginGroup wilf
 #! @GroupTitle hey
@@ -42,17 +143,21 @@
 #! gap> true;
 #! true
 #! @EndExampleSession
-DeclareGlobalFunction("VoleCon.Intersection");
-DeclareGlobalFunction("VoleCon.Normalizer");
-DeclareGlobalFunction("VoleCon.Normaliser");
-DeclareGlobalFunction("VoleCon.Centralizer");
-DeclareGlobalFunction("VoleCon.Centraliser");
-DeclareGlobalFunction("VoleCon.IsConjugate");
+DeclareGlobalFunction("Vole.Intersection");
+DeclareGlobalFunction("Vole.Stabilizer");
+DeclareGlobalFunction("Vole.Stabiliser");
+DeclareGlobalFunction("Vole.RepresentativeAction");
+DeclareGlobalFunction("Vole.Normalizer");
+DeclareGlobalFunction("Vole.Normaliser");
+DeclareGlobalFunction("Vole.Centralizer");
+DeclareGlobalFunction("Vole.Centraliser");
+DeclareGlobalFunction("Vole.IsConjugate");
 #! @EndGroup
 
 #!
 #! The following four functions each take an action.
 #! The supported actions are the same for all functions, and listed below:
+#! The supported combinations of objects and actions...
 #!
 #! * `Vole.Stabilizer(<A>G</A>,<A>obj</A>,<A>action</A>)`,
 #!    for a permutation group <A>G</A>, and <A>action</A> on <A>obj</A>.
@@ -70,6 +175,3 @@ DeclareGlobalFunction("VoleCon.IsConjugate");
 #!   (for sets/lists of integers as appropriate)
 #! * `OnDigraphs`
 
-# TODO: DeclareGlobalName("Vole");
-DeclareGlobalVariable("Vole");
-InstallValue(Vole, rec());

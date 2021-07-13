@@ -61,7 +61,7 @@ _Vole.getBound := function(constraints, initial_max)
         ErrorNoReturn("Vole is unable to deduce an upper bound for the number ",
                       "of points on which the search is defined. ",
                       "Please include an additional argument that is ",
-                      "a containing group, or constraint of the form ",
+                      "a containing group, or a constraint of the form ",
                       "VoleCon.LargestMovedPoint(point) or ",
                       "VoleCon.MovedPoints(pointlist), ",
                       "in order to give a bound explicitly,");

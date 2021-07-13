@@ -5,5 +5,5 @@
 #
 # Declarations: All code to call Vole from GAP (and GAP from Vole)
 
-# Documented in install.autodoc
+# Documented in expert.autodoc
 DeclareInfoClass("InfoVole");

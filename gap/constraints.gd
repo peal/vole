@@ -30,7 +30,6 @@
 #! @EndGroup
 
 
-
 #! @Section The <C>VoleCon</C> record
 #! @SectionLabel VoleCon
 
@@ -44,6 +43,7 @@
 DeclareGlobalVariable("VoleCon");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
 InstallValue(VoleCon, rec());
+
 
 #! @Section Constraints provided in the <C>VoleCon</C> record
 #! @SectionLabel providedcons

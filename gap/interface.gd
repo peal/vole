@@ -5,7 +5,7 @@
 #
 # Declarations: TODO
 
-#! @Chapter Interface
+#! @Chapter The native &Vole; interface
 
 # TODO Note how these support a value option.
 
@@ -40,3 +40,13 @@ DeclareGlobalFunction("Vole.FindGroup");
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.CanonicalPerm");
+
+#! @Arguments G, constraints...
+#! @Returns ?
+#! @Description
+#! Text about `Vole.CanonicalImage`.
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.CanonicalImage");

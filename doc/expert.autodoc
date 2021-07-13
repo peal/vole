@@ -1,3 +1,23 @@
 @Chapter Expert use of &Vole;
 
-@Section Intro to that
+
+@Section Intro to that stuff
+
+This is doing to show how you can use configuration options,
+and perhaps lots of tips and tricks?
+
+
+@Section <C>InfoVole</C> – getting extra information about a &Vole; search
+@SectionLabel infovole
+
+<ManSection>
+  <InfoClass Name="InfoVole" />
+  <Description>
+    <C>InfoVole</C> is the primary info class for &Vole;.
+    See <Ref Sect="Info Functions" BookName="ref"/> for a description of info
+    classes in &GAP;.
+    <P/>
+    The default info level is 0. Most info messages are given at
+    level 2, and additional messages are given at level 4.
+  </Description>
+</ManSection>

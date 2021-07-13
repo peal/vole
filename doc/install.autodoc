@@ -1,40 +1,178 @@
 @Chapter Setting up Vole
+
+@Section Introduction
+
+A little introduction.
+
+If you are having trouble getting GAP to run, please let us know!
+By filing a GitHub isse. If you prefer to contact the authors of this package
+directly via email, please do so, and we will try our best to help you.
+We wrote this software to be useful to people, so we want it to work for you! If
+it doesn't we want to hear about it.
+Including if that is because you don't understand the instructions.
+
+
 @Section Dependencies
 
-TODO.
-You need &GAP; at least version 4.11.0.
-Also &BacktrackKit; and &GraphBacktracking; and &ferret; and &IO;.
-Probably others too.
+&Vole; requires &GAP; &GAPVersion; or newer and various other &GAP;
+packages to run, and Rust is required to compile &Vole;.
 
-You need Rust to be installed, and in particular you need <C>cargo</C> to be
-in your <C>PATH</C>.
+Please note that if you are using &Vole; via a &GAP; Cygwin release
+(i.e. if you installed &GAP; in Windows via an installer),
+then &Vole; comes ready-compiled, and the versions of &GAP; and the packages
+included in the installation are sufficient to run &Vole;.
+Therefore you may skip straight to Section&nbsp;<Ref Sect="Section_loading"/>.
+
+In order to compile &Vole;, Rust must be installed and available with the
+<C>cargo</C> command.
+You can test for Rust by running `cargo --version` in the terminal and obtained
+a version number in response, such as:
+@BeginLogSession
+$ cargo --version
+cargo 1.52.0
+@EndLogSession
+If Rust is not available, then running the command `cargo --version` will give
+an error such as `cargo: command not found`. If this is the case, then please
+follow the instructions at <URL>https://www.rust-lang.org/tools/install</URL>
+for installing Rust.
+
+&Vole; requires &GAP; version &GAPVersion; or newer.
+
+In addition, the following &GAP; packages must be installed in order to use
+&Vole;.  This means that &Vole; will not load if one or more of these packages
+cannot be loaded in your &GAP; installation.
+* <URL>
+    <Link>https://peal.github.io/BacktrackKit</Link>
+    <LinkText>&BacktrackKit;</LinkText>
+  </URL>
+  version &BacktrackKitVersion;, or newer
+  <Cite Key="BacktrackKit"/>;
+* <URL>
+    <Link>https://digraphs.github.io/Digraphs</Link>
+    <LinkText>&Digraphs;</LinkText>
+  </URL>
+  version &DigraphsVersion;, or newer
+  <Cite Key="Digraphs"/>;
+* <URL>
+    <Link>https://peal.github.io/GraphBacktracking</Link>
+    <LinkText>&GraphBacktracking;</LinkText>
+  </URL>
+  version &GraphBacktrackingVersion;, or newer
+  <Cite Key="GraphBacktracking"/>;
+* <URL>
+    <Link>https://gap-packages.github.io/io</Link>
+    <LinkText>&IO;</LinkText>
+  </URL>
+  version &IOVersion;, or newer
+  <Cite Key="IO"/>;
+* <URL>
+    <Link>https://gap-packages.github.io/datastructures</Link>
+    <LinkText>&datastructures;</LinkText>
+  </URL>
+  version &datastructuresVersion;, or newer
+  <Cite Key="datastructures"/>;
+  and
+* <URL>
+    <Link>https://gap-packages.github.io/json</Link>
+    <LinkText>&json;</LinkText>
+  </URL>
+  version &jsonVersion;, or newer
+  <Cite Key="json"/>.
+
+These packages, a &GAP; itself, in turn have their own dependencies, and so
+&Vole; inherits these additional dependencies.
+However, we do not include details of these dependencies here.
+
+The following &GAP; packages are needed to run &Vole;'s test suite:
+* <URL>
+    <Link>https://github.com/ChrisJefferson/QuickCheck</Link>
+    <LinkText>&QuickCheck;</LinkText>
+  </URL> version &QuickCheckVersion;, or newer; and
+* <URL>
+    <Link>https://gap-packages.github.io/ferret</Link>
+    <LinkText>&ferret;</LinkText>
+  </URL> version &ferretVersion;, or newer
+  <Cite Key="ferret"/>;.
+
+See Section&nbsp;<Ref Sect="Section_tests"/> for more information about
+running the tests included in &Vole;.
+
+In order to compile the &Vole; documentation,
+<URL>
+  <Link>https://gap-packages.github.io/AutoDoc</Link>
+  <LinkText>&AutoDoc;</LinkText>
+</URL> version &AutoDocVersion; or newer must be available.
+See Section&nbsp;<Ref Sect="Section_compiling_manual"/> for more information
+about compiling the documentation.
 
 
 @Section Installing &Vole;
 
-TODO.
+To repeat, there is no setup required if you are using &Vole; and &GAP; in
+Windows via the &GAP; Windows installer; in this case, skip ahead to
+Section&nbsp;<Ref Sect="Section_loading"/>.
+
+Extract the archive.
+
+Change to the &Vole; directory and run `make`:
+@BeginLogSession
+$ make
+cd rust && cargo build --bins && cargo build --release --bins
+    [...
+        potentially copious output omitted here
+                                               ...]
+    Finished dev [unoptimized + debuginfo] target(s) in 0.28s
+    Finished release [optimized + debuginfo] target(s) in 0.14s
+@EndLogSession
 
 
-@Section Loading Vole
+@Section Loading &Vole;
+@SectionLabel loading
+
+<Ref Func="LoadPackage" BookName="Ref"/>.
 
 @BeginLogSession
 gap> LoadPackage("vole");
 true
 @EndLogSession
 
+You can quickly...
 
-@Section <C>InfoVole</C> – getting extra information about a &Vole; search
+@BeginLogSession
+gap> Test("tst/basic.tst");
+basic.tst
+msecs: 61
+true
+@EndLogSession
 
-<ManSection>
-  <InfoClass Name="InfoVole" />
-  <Description>
-    <C>InfoVole</C> is the primary info class for &Vole;.
-    See <Ref Sect="Info Functions" BookName="ref"/> for a description of info
-    classes in &GAP;.
-    <P/>
-    The default info level is 0. Most info messages are given at
-    level 2, and additional messages are given at level 4.
-  </Description>
-</ManSection>
+If you wish to test your &Vole; installation more thoroughly, please see
+Section&nbsp;<Ref Sect="Section_tests"/>.
 
-<!-- TODO Mention how to compile the documentation -->
+
+@Section Running the &Vole; test suite
+@SectionLabel tests
+
+@BeginLogSession
+$ ./run-tests.sh
+@EndLogSession
+
+Or just the GAP tests, read the file <F>tst/testall.g</F> from within &GAP;:
+@BeginLogSession
+gap> Read("tst/testall.g");
+@EndLogSession
+
+
+@Section Compile the documentation for &Vole;
+@SectionLabel compiling_manual
+
+recompile the documentation, although this is not necessary, since the released
+versions of &Vole; are distributed with a precompiled manual.
+
+Since you're reading this...
+
+However, this is particularly relevant if you are using a development version of
+&Vole;.
+
+@BeginLogSession
+$ make doc
+@EndLogSession
