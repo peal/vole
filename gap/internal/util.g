@@ -58,10 +58,13 @@ _Vole.getBound := function(constraints, initial_max)
     od;
     max := Maximum(min, max);
     if max = infinity then
-        ErrorNoReturn("Vole: Cannot prove an upper bound for 'vole' call. ",
-                      "Consider adding an instance of ",
-                      "VoleRefiner.SymmetricGroup(D) to set a group to search",
-                      "in");
+        ErrorNoReturn("Vole is unable to deduce an upper bound for the number ",
+                      "of points on which the search is defined. ",
+                      "Please include an additional argument that is ",
+                      "a containing group, or constraint of the form ",
+                      "VoleCon.LargestMovedPoint(point) or ",
+                      "VoleCon.MovedPoints(pointlist), ",
+                      "in order to give a bound explicitly,");
     fi;
     return rec(min := min, max := max);
 end;
