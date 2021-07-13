@@ -48,9 +48,10 @@ _autodoc := rec(
         includes := [
                     ],
         entities := rec(
-            images            := "<Package>images</Package>",
-            VoleVersion       := _strip(_voleinfo.Version),
-            GAPVersion        := _strip(_voleinfo.Dependencies.GAP),
+            images      := "<Package>images</Package>",
+            VoleWWW     := _voleinfo.PackageWWWHome,
+            VoleVersion := _strip(_voleinfo.Version),
+            GAPVersion  := _strip(_voleinfo.Dependencies.GAP),
         ),
         bib := "vole.bib",
         index := true,
@@ -62,9 +63,12 @@ _entities := _autodoc.scaffold.entities;
 # TODO could extract the dependency URLs too from their own packageinfos
 for _dep in Concatenation(_voleinfo.Dependencies.NeededOtherPackages,
                           _voleinfo.Dependencies.SuggestedOtherPackages) do
+    # &PackageName; -> <Package>PackageName</Package>
+    _entities.(_dep[1]) := StringFormatted("<Package>{}</Package>", _dep[1]);
+
+    # &PackageNameVersion; -> X.Y.Z
     _name := Concatenation(_dep[1], "Version");
     _entities.(_name) := _strip(_dep[2]);
-    _entities.(_dep[1]) := StringFormatted("<Package>{}</Package>", _dep[1]);
 od;
 
 AutoDoc(_autodoc);

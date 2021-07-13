@@ -38,7 +38,7 @@ for installing Rust.
 
 &Vole; requires &GAP; version &GAPVersion; or newer.
 
-In addition, the following &GAP; packages must be installed in order to use
+In addition, the following &GAP; packages must be available in order to use
 &Vole;.  This means that &Vole; will not load if one or more of these packages
 cannot be loaded in your &GAP; installation.
 * <URL>
@@ -46,32 +46,31 @@ cannot be loaded in your &GAP; installation.
     <LinkText>&BacktrackKit;</LinkText>
   </URL>
   version &BacktrackKitVersion;, or newer
-  <Cite Key="BacktrackKit"/>;
+  <Cite Key="BacktrackKit"/>.
 * <URL>
     <Link>https://digraphs.github.io/Digraphs</Link>
     <LinkText>&Digraphs;</LinkText>
   </URL>
   version &DigraphsVersion;, or newer
-  <Cite Key="Digraphs"/>;
+  <Cite Key="Digraphs"/>.
 * <URL>
     <Link>https://peal.github.io/GraphBacktracking</Link>
     <LinkText>&GraphBacktracking;</LinkText>
   </URL>
   version &GraphBacktrackingVersion;, or newer
-  <Cite Key="GraphBacktracking"/>;
+  <Cite Key="GraphBacktracking"/>.
 * <URL>
     <Link>https://gap-packages.github.io/io</Link>
     <LinkText>&IO;</LinkText>
   </URL>
   version &IOVersion;, or newer
-  <Cite Key="IO"/>;
+  <Cite Key="IO"/>.
 * <URL>
     <Link>https://gap-packages.github.io/datastructures</Link>
     <LinkText>&datastructures;</LinkText>
   </URL>
   version &datastructuresVersion;, or newer
-  <Cite Key="datastructures"/>;
-  and
+  <Cite Key="datastructures"/>.
 * <URL>
     <Link>https://gap-packages.github.io/json</Link>
     <LinkText>&json;</LinkText>
@@ -83,16 +82,16 @@ These packages, a &GAP; itself, in turn have their own dependencies, and so
 &Vole; inherits these additional dependencies.
 However, we do not include details of these dependencies here.
 
-The following &GAP; packages are needed to run &Vole;'s test suite:
+The following &GAP; packages are needed to run &Vole;'s test suite.
 * <URL>
     <Link>https://github.com/ChrisJefferson/QuickCheck</Link>
     <LinkText>&QuickCheck;</LinkText>
-  </URL> version &QuickCheckVersion;, or newer; and
+  </URL> version &QuickCheckVersion;, or newer.
 * <URL>
     <Link>https://gap-packages.github.io/ferret</Link>
     <LinkText>&ferret;</LinkText>
   </URL> version &ferretVersion;, or newer
-  <Cite Key="ferret"/>;.
+  <Cite Key="ferret"/>.
 
 See Section&nbsp;<Ref Sect="Section_tests"/> for more information about
 running the tests included in &Vole;.
@@ -108,13 +107,28 @@ about compiling the documentation.
 
 @Section Installing &Vole;
 
-To repeat, there is no setup required if you are using &Vole; and &GAP; in
-Windows via the &GAP; Windows installer; in this case, skip ahead to
+To repeat, no installation is required if you are using &Vole; on Windows
+as one of the packages that is included when installing &GAP; via the Windows
+installer. In this case, &Vole; is precompiled and installed in the correct
+location, so you should skip ahead to
 Section&nbsp;<Ref Sect="Section_loading"/>.
 
-Extract the archive.
+Otherwise, if you do not yet have a copy of &Vole;, you should download the
+latest version from
+<URL>
+  <Link>&VoleWWW;</Link>
+  <LinkText>the &Vole; website</LinkText>
+</URL>
+and extract the archive into your &GAP; installation's <F>pkg</F> subdirectory.
+The commands to achieve this may look something like:
+@BeginLogSession
+$ cd ~/gap/pkg
+$ curl -O https://github.com/peal/vole/releases/download/vX.Y.Z/vole-X.Y.Z.tar.gz
+$ tar xf vole-X.Y.Z.tar.gz
+@EndLogSession
 
-Change to the &Vole; directory and run `make`:
+In order to compile &Vole;, change to your &Vole; directory and run `make`.
+This should look something like:
 @BeginLogSession
 $ make
 cd rust && cargo build --bins && cargo build --release --bins
@@ -124,6 +138,8 @@ cd rust && cargo build --bins && cargo build --release --bins
     Finished dev [unoptimized + debuginfo] target(s) in 0.28s
     Finished release [optimized + debuginfo] target(s) in 0.14s
 @EndLogSession
+
+&Vole; should now be ready to load.
 
 
 @Section Loading &Vole;
