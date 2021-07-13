@@ -51,7 +51,7 @@ fn main() -> anyhow::Result<()> {
         };
 
         let domain = DomainState::new(problem.config.points, tracer);
-        let mut solutions = Solutions::default();
+        let mut solutions = Solutions::new(problem.config.points);
 
         let mut state = State {
             domain,

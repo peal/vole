@@ -49,8 +49,9 @@ pub fn sub_single_search(state: &mut State) -> Solutions {
 
     let refiners = RefinerStore::new_from_refiners(refiners);
     let tracer = trace::Tracer::new();
-    let domain = DomainState::new(state.domain.partition().extended_domain_size(), tracer);
-    let mut solutions = Solutions::default();
+    let dsize = state.domain.partition().extended_domain_size();
+    let domain = DomainState::new(dsize, tracer);
+    let mut solutions = Solutions::new(dsize);
     let mut new_state = State {
         domain,
         refiners,
@@ -83,8 +84,9 @@ pub fn sub_simple_search(state: &mut State) -> Solutions {
 
     let refiners = RefinerStore::new_from_refiners(refiners);
     let tracer = trace::Tracer::new();
-    let domain = DomainState::new(state.domain.partition().extended_domain_size(), tracer);
-    let mut solutions = Solutions::default();
+    let dsize = state.domain.partition().extended_domain_size();
+    let domain = DomainState::new(dsize, tracer);
+    let mut solutions = Solutions::new(dsize);
     let mut new_state = State {
         domain,
         refiners,

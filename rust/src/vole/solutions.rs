@@ -10,7 +10,7 @@ pub struct Canonical {
     pub images: Vec<Box<dyn Any>>,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct Solutions {
     sols: Vec<Permutation>,
     orbits: UnionFind<usize>,
@@ -21,12 +21,22 @@ pub struct Solutions {
 }
 
 impl Solutions {
+    pub fn new(max: usize) -> Self {
+        Self {
+            sols: vec![],
+            orbits: UnionFind::new(max),
+            canonical: None,
+            nodes: 0,
+            tracefails: 0,
+            solsfails: 0,
+        }
+    }
+
     pub fn add_solution(&mut self, p: &Permutation) {
         self.sols.push(p.clone());
         let max_p = p.lmp().unwrap_or(1);
-        while max_p >= self.orbits.len() {
-            self.orbits.alloc();
-        }
+        assert!(max_p <= self.orbits.len());
+
         for i in 0..max_p {
             self.orbits.union(i, p.apply(i));
         }
@@ -37,6 +47,10 @@ impl Solutions {
             self.orbits.alloc();
         }
         self.orbits.find(i) == i
+    }
+
+    pub fn orbits(&self) -> &UnionFind<usize> {
+        &self.orbits
     }
 
     pub fn get(&self) -> &Vec<Permutation> {
