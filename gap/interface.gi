@@ -56,3 +56,13 @@ Vole.CanonicalPerm := function(G, constraints...)
         return ret.canonical;
     fi;
 end;
+
+# TODO: work in progress - this does not currently work
+Vole.CanonicalImage := function(G, constraints...)
+    local perm;
+    if not IsEmpty(constraints) and IsList(constraints[1]) then
+        constraints := constraints[1];
+    fi;
+    perm := Vole.CanonicalPerm(G, constraints);
+    return constraints[1] ^ perm;
+end;
