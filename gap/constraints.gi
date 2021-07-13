@@ -25,6 +25,7 @@ VoleCon.Stabilize := function(obj, action...)
     elif action = OnDigraphs then
         return VoleRefiner.DigraphStab(obj);
     fi;
+    # TODO OnPoints
     ErrorNoReturn("Invalid action: ", action);
 end;
 VoleCon.Stabilise := VoleCon.Stabilize;
@@ -60,10 +61,9 @@ VoleCon.InGroup := function(G)
     if IsNaturalSymmetricGroup(G) then
         return VoleRefiner.InSymmetricGroup(MovedPoints(G));
     fi;
+    # TODO special case NaturalAlternatingGroup too?
     
-    return rec(bounds := rec(largest_required_point :=_Vole.lmp(G),
-                             largest_moved_point := _Vole.lmp(G),
-               con := GB_Con.InGroupSimple(_Vole.lmp(G), G)));
+    return GB_Con.InGroupSimple(_Vole.lmp(G), G);
 end;
 
 # TODO Can we assign a string such that NameFunction(VoleCon.InGroup) returns
@@ -85,7 +85,10 @@ VoleCon.InRightCoset := function(G, x)
                       "the second argument must be a permutation");
     fi;
     # TODO should we check whether x in G? And return VoleCon.InGroup if so?
-    Error("TODO: not yet implemented");
+    # TODO special case a coset of a natural symmetric group?
+
+    # TODO is this the 'best' bound?
+    return GB_Con.InCosetSimple(Maximum(_Vole.lmp(G), _Vole.lmp(x)), G, x);
 end;
 
 VoleCon.InLeftCoset := function(G, x)
@@ -96,8 +99,7 @@ VoleCon.InLeftCoset := function(G, x)
       ErrorNoReturn("VoleCon.InRightCoset: ",
                     "the second argument must be a permutation");
     fi;
-    # TODO should we check whether x in G? And return VoleCon.InGroup if so?
-    Error("TODO: not yet implemented");
+    return VoleCon.InRightCoset(G ^ x, x);
 end;
 
 VoleCon.Normalize := function(G)
