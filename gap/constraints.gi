@@ -66,8 +66,6 @@ VoleCon.InGroup := function(G)
     return GB_Con.InGroupSimple(_Vole.lmp(G), G);
 end;
 
-# TODO Can we assign a string such that NameFunction(VoleCon.InGroup) returns
-# "VoleCon.InGroup"?
 VoleCon.InCoset := function(U)
     if not IsRightCoset(U) then
         ErrorNoReturn("VoleCon.InCoset: ",
