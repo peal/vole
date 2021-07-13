@@ -200,7 +200,7 @@ _Vole.ForkVole := function(extraargs...)
         prog := "cargo";
 
         if VOLE_MODE = "opt" or firsttime then
-            args :=  ["run", "--release", "-q", "--bin", "vole", "--",];
+            args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--quiet"];
         elif VOLE_MODE = "opt-nobuild" then
             # Check for windows-style executable
             if "vole.exe" in DirectoryContents(DirectoriesPackageLibrary("vole", "rust/target/release")[1]) then
@@ -212,7 +212,7 @@ _Vole.ForkVole := function(extraargs...)
             fi;
             args :=  [];
         elif VOLE_MODE = "trace" then
-            args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--trace", ];
+            args :=  ["run",  "-q", "--bin", "vole", "--", "--trace", ];
         elif VOLE_MODE = "flamegraph" then
             args :=  ["flamegraph", "--bin", "vole", "--"];
         elif VOLE_MODE = "valgrind" then

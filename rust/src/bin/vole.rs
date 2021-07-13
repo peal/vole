@@ -1,6 +1,7 @@
 use std::fs::File;
 
 use cpu_time::ProcessTime;
+use rust_vole::vole::search::SearchConfig;
 use rust_vole::vole::trace;
 use rust_vole::vole::{domain_state::DomainState, trace::TracingType};
 use rust_vole::vole::{parse_input, state::State};
@@ -34,8 +35,10 @@ fn main() -> anyhow::Result<()> {
             .init();
     }
 
-    // Hide panic messages
-    panic::set_hook(Box::new(|_| {}));
+    // Hide panic messages, if we are not tracing
+    if rust_vole::gap_chat::OPTIONS.quiet {
+        panic::set_hook(Box::new(|_| {}));
+    }
 
     let result = panic::catch_unwind(|| -> Result<(), anyhow::Error> {
         let problem =
@@ -60,11 +63,29 @@ fn main() -> anyhow::Result<()> {
         };
 
         if problem.config.root_search {
-            root_search(&mut state, &mut solutions);
+            root_search(
+                &mut state,
+                &mut solutions,
+                &SearchConfig {
+                    full_graph_refine: false,
+                },
+            );
         } else if problem.config.find_single {
-            simple_single_search(&mut state, &mut solutions);
+            simple_single_search(
+                &mut state,
+                &mut solutions,
+                &SearchConfig {
+                    full_graph_refine: true,
+                },
+            );
         } else {
-            simple_search(&mut state, &mut solutions);
+            simple_search(
+                &mut state,
+                &mut solutions,
+                &SearchConfig {
+                    full_graph_refine: false,
+                },
+            );
         }
 
         if let Ok(time) = ProcessTime::try_now() {

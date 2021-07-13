@@ -47,6 +47,10 @@ pub struct Opt {
     /// Enable tracing
     #[structopt(short, long)]
     pub trace: bool,
+
+    /// Be quiet (hide rust backtraces on crash)
+    #[structopt(short, long)]
+    pub quiet: bool,
 }
 
 /// Store communication channels with GAP

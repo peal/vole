@@ -1,10 +1,25 @@
+use crate::vole::subsearch::sub_full_refine;
+
 use super::{backtracking::Backtrack, state::State};
 use super::{refiners::Side, selector::select_branching_cell};
 use super::{solutions::Solutions, subsearch::sub_simple_search};
 
 use tracing::{info, trace, trace_span};
 
-pub fn build_rbase(state: &mut State) {
+#[derive(Debug, Clone)]
+pub struct SearchConfig {
+    pub full_graph_refine: bool,
+}
+
+impl Default for SearchConfig {
+    fn default() -> Self {
+        SearchConfig {
+            full_graph_refine: true,
+        }
+    }
+}
+
+pub fn build_rbase(state: &mut State, search_config: &SearchConfig) {
     let part = state.domain.partition();
 
     if part.base_cells().len() == part.base_domain_size() {
@@ -44,12 +59,15 @@ pub fn build_rbase(state: &mut State) {
     if state
         .refiners
         .do_refine(&mut state.domain, Side::Left, &mut state.stats)
-        .is_err()
+        .is_ok()
+        && (!search_config.full_graph_refine || sub_full_refine(state, search_config).is_ok())
     {
+        info!("Completed rbase level");
+    } else {
         panic!("RBase Build Failure 2");
     }
 
-    build_rbase(state);
+    build_rbase(state, search_config);
 
     state.restore_state();
 }
@@ -59,6 +77,7 @@ pub fn simple_search_recurse(
     state: &mut State,
     sols: &mut Solutions,
     first_branch_in: bool,
+    search_config: &SearchConfig,
 ) -> bool {
     state.stats.search_nodes += 1;
     let part = state.domain.partition();
@@ -111,8 +130,10 @@ pub fn simple_search_recurse(
                     .refiners
                     .do_refine(&mut state.domain, side, &mut state.stats)
                     .is_ok()
+                    && (!search_config.full_graph_refine
+                        || sub_full_refine(state, search_config).is_ok())
                 {
-                    let ret = simple_search_recurse(state, sols, doing_first_branch);
+                    let ret = simple_search_recurse(state, sols, doing_first_branch, search_config);
                     if !first_branch_in && ret {
                         info!("Backtracking to special node");
                         state.restore_state();
@@ -131,7 +152,8 @@ pub fn simple_search_recurse(
     false
 }
 
-pub fn simple_single_search(state: &mut State, sols: &mut Solutions) {
+/// Search for a single permutation (for coset intersection)
+pub fn simple_single_search(state: &mut State, sols: &mut Solutions, search_config: &SearchConfig) {
     trace!("Starting Single Permutation Search");
 
     // First build RBase
@@ -145,7 +167,7 @@ pub fn simple_single_search(state: &mut State, sols: &mut Solutions) {
         panic!("RBase Build Failures 0");
     }
 
-    build_rbase(state);
+    build_rbase(state, search_config);
 
     state.restore_state();
 
@@ -160,11 +182,13 @@ pub fn simple_single_search(state: &mut State, sols: &mut Solutions) {
     if ret.is_err() {
         return;
     }
-    let _ = simple_search_recurse(state, sols, false);
+    let _ = simple_search_recurse(state, sols, false, search_config);
     state.restore_state();
+    trace!("Finishing Single Permutation Search");
 }
 
-pub fn simple_search(state: &mut State, sols: &mut Solutions) {
+/// Standard complete search, for stabilizer + canonical image
+pub fn simple_search(state: &mut State, sols: &mut Solutions, search_config: &SearchConfig) {
     trace!("Starting Search");
     let ret = state
         .refiners
@@ -172,10 +196,11 @@ pub fn simple_search(state: &mut State, sols: &mut Solutions) {
     if ret.is_err() {
         return;
     }
-    let _ = simple_search_recurse(state, sols, true);
+    let _ = simple_search_recurse(state, sols, true, search_config);
 }
 
-pub fn root_search(state: &mut State, sols: &mut Solutions) {
+/// Search only the digraph stack created during initalisation
+pub fn root_search(state: &mut State, sols: &mut Solutions, search_config: &SearchConfig) {
     if state
         .refiners
         .init_refine(&mut state.domain, Side::Left, &mut state.stats)
@@ -184,5 +209,5 @@ pub fn root_search(state: &mut State, sols: &mut Solutions) {
         panic!("RBase Build Failures 0");
     }
 
-    *sols = sub_simple_search(state);
+    *sols = sub_simple_search(state, search_config);
 }

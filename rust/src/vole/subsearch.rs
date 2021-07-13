@@ -1,4 +1,6 @@
-use crate::datastructures::sortedvec::SortedVec;
+use tracing::info;
+
+use crate::datastructures::{sortedvec::SortedVec, utils::to_vec_vec};
 
 use super::{
     backtracking::Backtrack,
@@ -6,13 +8,13 @@ use super::{
     refiners::{
         digraph::DigraphTransporter, refiner_store::RefinerStore, simple::SetTransporter, Refiner,
     },
-    search::{simple_search, simple_single_search},
+    search::{simple_search, simple_single_search, SearchConfig},
     solutions::Solutions,
     state::State,
-    trace,
+    trace::{self, TraceFailure},
 };
 
-pub fn sub_single_search(state: &mut State) -> Solutions {
+pub fn sub_single_search(state: &mut State, search_config: &SearchConfig) -> Solutions {
     state.save_state();
     let part_depth = state.domain.partition().state_depth() - 1;
     assert!(state.domain.has_rbase());
@@ -57,12 +59,12 @@ pub fn sub_single_search(state: &mut State) -> Solutions {
         refiners,
         stats: Default::default(),
     };
-    simple_single_search(&mut new_state, &mut solutions);
+    simple_single_search(&mut new_state, &mut solutions, search_config);
     state.restore_state();
     solutions
 }
 
-pub fn sub_simple_search(state: &mut State) -> Solutions {
+pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> Solutions {
     state.save_state();
     let part_depth = state.domain.partition().state_depth() - 1;
 
@@ -92,7 +94,62 @@ pub fn sub_simple_search(state: &mut State) -> Solutions {
         refiners,
         stats: Default::default(),
     };
-    simple_search(&mut new_state, &mut solutions);
+    simple_search(&mut new_state, &mut solutions, &search_config);
     state.restore_state();
     solutions
+}
+
+pub fn sub_full_refine(
+    state: &mut State,
+    search_config: &SearchConfig,
+) -> Result<(), TraceFailure> {
+    info!(
+        "Sub search with input domain {:?}",
+        state.domain.partition().extended_as_list_set()
+    );
+
+    let mut new_search_config = (*search_config).clone();
+    new_search_config.full_graph_refine = false;
+    let sols = sub_simple_search(state, &new_search_config);
+    info!("Sub Sols: {:?}", sols.get());
+    let canonical = sols.get_canonical().as_ref().unwrap().perm.clone();
+    let can_inv = canonical.inv();
+    let orbits = sols.orbits();
+    let v = to_vec_vec(orbits);
+    info!("Sub dump {:?} {:?}", canonical, v);
+    // We need to order the orbits in the context of the canonical image
+    let mut v_can: Vec<Vec<usize>> = v
+        .into_iter()
+        .map(|o| o.into_iter().map(|x| canonical.apply(x)).collect())
+        .collect();
+    for v in &mut v_can {
+        v.sort();
+    }
+    v_can.sort();
+
+    info!("Sub canonical domains {:?}", v_can);
+
+    // Now map it back
+    let v_ord: Vec<Vec<usize>> = v_can
+        .into_iter()
+        .map(|o| o.into_iter().map(|x| can_inv.apply(x)).collect())
+        .collect();
+
+    info!("Sub mapped back {:?}", v_ord);
+    let mut map = vec![0; state.domain.partition().extended_domain_size()];
+    for (i, o) in v_ord.into_iter().enumerate() {
+        for x in o {
+            map[x] = i;
+        }
+    }
+
+    info!("Sub Full graph refine: {:?}", map);
+    state.domain.base_refine_partition_by(|&x| map[x])?;
+
+    let part_depth = state.domain.partition().state_depth() - 1;
+
+    let right_graph = state.domain.digraph_stack().get_depth(part_depth);
+    let _graph_canonical = (&**right_graph) ^ &canonical;
+
+    Ok(())
 }
