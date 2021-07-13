@@ -18,24 +18,39 @@
 #! `VoleFind` is a record that contains...
 #!
 #! @BeginExampleSession
+#! gap> LoadPackage("vole", false);;
 #! gap> Set(RecNames(VoleFind));
+#! [ "CanonicalPerm", "Group", "Rep", "Representative" ]
 #! @EndExampleSession
 DeclareGlobalVariable("VoleFind");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
 InstallValue(VoleFind, rec());
 
 
-#! @Section Interface
+#! @Section Executing a search with the native &Vole; interface
 
+#! In each of the following functions, the arguments <A>constraints...</A>
+#! can be a non-empty assortment of permutation groups, and/or
+#! right cosets, and/or
+#! &Vole; <E>constraints</E> (Chapter&nbsp;<Ref Chap="Chapter_Constraints"/>),
+#! and/or <E>refiners</E> (Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>);
+#! or a single list thereof.
+
+#! @BeginGroup Rep
 #! @Arguments constraints...
 #! @Returns A permutation, or <K>fail</K>
 #! @Description
 #! Text about `VoleFind.Representative`.
+#!
+#! `VoleFind.Rep` is a synonym for `VoleFind.Representative`.
+DeclareGlobalFunction("VoleFind.Representative");
+#! @EndGroup
+#! @Arguments constraints...
+#! @Group Rep
 #! @BeginExampleSession
 #! gap> true;
 #! true
 #! @EndExampleSession
-DeclareGlobalFunction("VoleFind.Representative");
 DeclareGlobalFunction("VoleFind.Rep");
 
 #! @Arguments constraints...

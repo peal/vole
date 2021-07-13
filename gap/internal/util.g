@@ -19,7 +19,7 @@ _Vole.lmp := function(s...)
         return MaximumList(List(s, _Vole.lmp), 0);
     elif IsInt(s) then
         return s;
-    elif IsPerm(s) or IsPermGroup(s) then
+    elif IsPerm(s) or IsPermGroup(s) or IsRightCoset(s) then
         return LargestMovedPoint(s);
     elif IsDigraph(s) then
         return DigraphNrVertices(s);

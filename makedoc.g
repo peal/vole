@@ -50,6 +50,7 @@ _autodoc := rec(
         entities := rec(
             images      := "<Package>images</Package>",
             VoleWWW     := _voleinfo.PackageWWWHome,
+            VoleIssues  := _voleinfo.IssueTrackerURL,
             VoleVersion := _strip(_voleinfo.Version),
             GAPVersion  := _strip(_voleinfo.Dependencies.GAP),
         ),

@@ -26,7 +26,10 @@
 #! `Vole` is a record that contains...
 #!
 #! @BeginExampleSession
-#! gap> Difference(RecNames(Vole), ["FindOne", "FindGroup"]);
+#! gap> Set(RecNames(Vole));
+#! [ "CanonicalImage", "CanonicalPerm", "Centraliser", "Centralizer", 
+#!   "Intersection", "IsConjugate", "Normaliser", "Normalizer", 
+#!   "RepresentativeAction", "Stabiliser", "Stabilizer" ]
 #! @EndExampleSession
 DeclareGlobalVariable("Vole");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
@@ -176,7 +179,7 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #! * `OnDigraphs`
 
 
-#! @Section other
+#! @Section &Vole; functions emulating &images;
 
 #! @Arguments G, constraints...
 #! @Returns A permutation

@@ -23,12 +23,6 @@
 #! A constraint is a property that you can say whether or not any individual
 #! given permutation has that property.
 
-#! @BeginGroup LoadPackageGrp
-#! @BeginExampleSession
-#! gap> LoadPackage("vole", false);; # Just here temporarily
-#! @EndExampleSession
-#! @EndGroup
-
 
 #! @Section The <C>VoleCon</C> record
 #! @SectionLabel VoleCon
@@ -40,6 +34,13 @@
 #!
 #! These constraints are documented in
 #! Section&nbsp;<Ref Sect="Section_providedcons"/>.
+#! @BeginExampleSession
+#! gap> LoadPackage("vole", false);;
+#! gap> Set(RecNames(VoleCon));
+#! [ "Centralise", "Centralize", "InCoset", "InGroup", "InLeftCoset", 
+#!   "InRightCoset", "LargestMovedPoint", "MovedPoints", "Normalise", 
+#!   "Normalize", "Stabilise", "Stabilize", "Transport" ]
+#!  @EndExampleSession
 DeclareGlobalVariable("VoleCon");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
 InstallValue(VoleCon, rec());
@@ -48,15 +49,7 @@ InstallValue(VoleCon, rec());
 #! @Section Constraints provided in the <C>VoleCon</C> record
 #! @SectionLabel providedcons
 
-#! Some text.
-
-#! @BeginExampleSession
-#! gap> Set(RecNames(VoleCon));
-#! [ "Centralise", "Centralize", "InGroup", "LargestMovedPoint", "MovedPoints", 
-#!   "Normalise", "Normalize", "Stabilise", "Stabilize", "Transport" ]
-#! @EndExampleSession
-
-#! Some more text, explaining the following table.
+#! Some text, explaining the following table.
 
 #! <Table Align="ll">
 #! <Row>
@@ -115,8 +108,8 @@ InstallValue(VoleCon, rec());
 #! This constraint is satisfied by the elements of the permutation group
 #! <A>G</A>, and no others.
 #! @BeginExampleSession
-#! gap> con1 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 8));
-#! gap> con2 := VoleCon.InGroup(AlternatingGroup(4));
+#! gap> con1 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 8));;
+#! gap> con2 := VoleCon.InGroup(AlternatingGroup(4));;
 #! gap> VoleFind.Group(con1, con2) = Group([(1,3)(2,4), (1,4)(2,3)]);
 #! true
 #! @EndExampleSession
@@ -251,7 +244,7 @@ DeclareGlobalFunction("VoleCon.Conjugate");
 #! @BeginExampleSession
 #! gap> con1 := VoleCon.MovedPoints([1..5]);;
 #! gap> con2 := VoleCon.MovedPoints([2,6,4,5]);;
-#! gap> VoleFind.Group(con1, con2) = SymmetricGroup([2,3,5]);
+#! gap> VoleFind.Group(con1, con2) = SymmetricGroup([2,4,5]);
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.MovedPoints");

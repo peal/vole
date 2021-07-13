@@ -20,6 +20,7 @@
 #! (such as symmetric and alternating groups). In general most users will want to
 #! use <Ref Var="VoleCon"/>, which provides a higher-level interface.
 #! @BeginExampleSession
+#! gap> LoadPackage("vole", false);;
 #! gap> fail;
 #! fail
 #! @EndExampleSession

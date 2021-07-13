@@ -2,6 +2,7 @@
 
 @Section Introduction
 
+TODO finish this introduction
 A little introduction.
 
 If you are having trouble getting GAP to run, please let us know!
@@ -11,22 +12,39 @@ We wrote this software to be useful to people, so we want it to work for you! If
 it doesn't we want to hear about it.
 Including if that is because you don't understand the instructions.
 
+@BeginChunk contact
+If you encounter problems, or have any other feedback for the authors, then
+please free to
+<URL>
+  <Link>&VoleIssues;</Link>
+  <LinkText>create an issue on our issue tracker</LinkText>
+</URL>,
+or to contact us by any other appropriate means.
+See the title page of this manual for our contact details.
+@EndChunk
+
+@InsertChunk contact
+
 
 @Section Dependencies
+@SectionLabel deps 
 
 &Vole; requires &GAP; &GAPVersion; or newer and various other &GAP;
 packages to run, and Rust is required to compile &Vole;.
 
+@BeginChunk CygwinSkip
 Please note that if you are using &Vole; via a &GAP; Cygwin release
-(i.e. if you installed &GAP; in Windows via an installer),
-then &Vole; comes ready-compiled, and the versions of &GAP; and the packages
-included in the installation are sufficient to run &Vole;.
+(i.e. if you installed &GAP; in Windows via an installer which included &Vole;),
+then &Vole; came ready-compiled, and the included versions of &GAP; and its
+packages are sufficient to run &Vole; out-of-the- box.
 Therefore you may skip straight to Section&nbsp;<Ref Sect="Section_loading"/>.
+@EndChunk
+@InsertChunk CygwinSkip
 
 In order to compile &Vole;, Rust must be installed and available with the
-<C>cargo</C> command.
-You can test for Rust by running `cargo --version` in the terminal and obtained
-a version number in response, such as:
+`cargo` command.
+You can test for Rust by running `cargo --version` in the terminal. You should
+obtained a version number in response, such as:
 @BeginLogSession
 $ cargo --version
 cargo 1.52.0
@@ -35,8 +53,6 @@ If Rust is not available, then running the command `cargo --version` will give
 an error such as `cargo: command not found`. If this is the case, then please
 follow the instructions at <URL>https://www.rust-lang.org/tools/install</URL>
 for installing Rust.
-
-&Vole; requires &GAP; version &GAPVersion; or newer.
 
 In addition, the following &GAP; packages must be available in order to use
 &Vole;.  This means that &Vole; will not load if one or more of these packages
@@ -80,9 +96,12 @@ cannot be loaded in your &GAP; installation.
 
 These packages, a &GAP; itself, in turn have their own dependencies, and so
 &Vole; inherits these additional dependencies.
-However, we do not include details of these dependencies here.
+If one of the above packages does not load in your &GAP; installation,
+then please consult the documentation to for that package in order to resolve
+the problem.
 
-The following &GAP; packages are needed to run &Vole;'s test suite.
+The following &GAP; packages are needed to run &Vole;'s test suite, but they are
+not required to use rest of &Vole;, and are therefore optional.
 * <URL>
     <Link>https://github.com/ChrisJefferson/QuickCheck</Link>
     <LinkText>&QuickCheck;</LinkText>
@@ -101,17 +120,15 @@ In order to compile the &Vole; documentation,
   <Link>https://gap-packages.github.io/AutoDoc</Link>
   <LinkText>&AutoDoc;</LinkText>
 </URL> version &AutoDocVersion; or newer must be available.
+This is usually unnecessary, and is not required in order to use &Vole;
 See Section&nbsp;<Ref Sect="Section_compiling_manual"/> for more information
 about compiling the documentation.
 
 
 @Section Installing &Vole;
+@SectionLabel install
 
-To repeat, no installation is required if you are using &Vole; on Windows
-as one of the packages that is included when installing &GAP; via the Windows
-installer. In this case, &Vole; is precompiled and installed in the correct
-location, so you should skip ahead to
-Section&nbsp;<Ref Sect="Section_loading"/>.
+@InsertChunk CygwinSkip
 
 Otherwise, if you do not yet have a copy of &Vole;, you should download the
 latest version from
@@ -130,6 +147,7 @@ $ tar xf vole-X.Y.Z.tar.gz
 In order to compile &Vole;, change to your &Vole; directory and run `make`.
 This should look something like:
 @BeginLogSession
+$ cd ~/gap/pkg/vole-X.Y.Z
 $ make
 cd rust && cargo build --bins && cargo build --release --bins
     [...
@@ -140,19 +158,34 @@ cd rust && cargo build --bins && cargo build --release --bins
 @EndLogSession
 
 &Vole; should now be ready to load.
+See Section&nbsp;<Ref Sect="Section_loading"/>.
 
 
 @Section Loading &Vole;
 @SectionLabel loading
 
-<Ref Func="LoadPackage" BookName="Ref"/>.
+Given a correctly installed version of &Vole;, to load &Vole; if suffices to
+simply call the function <Ref Func="LoadPackage" BookName="Ref"/> from within
+the relevant &GAP; installation with the argument `"vole"`.
 
 @BeginLogSession
 gap> LoadPackage("vole");
 true
 @EndLogSession
 
-You can quickly...
+If `LoadPackage` instead returns <K>fail</K>, then &Vole; has failed to load.
+This is probably because &GAP; cannot find &Vole; or &Vole; is not compiled
+(Section&nbsp;<Ref Sect="Section_install"/>), or one of the dependencies of
+&Vole; is not met (Section&nbsp;<Ref Sect="Section_deps"/>).  In this case,
+please see the <Ref Func="LoadPackage" BookName="ref"/> documentation for ways
+to help diagnose the problem.
+
+@InsertChunk contact
+
+Otherwise, &Vole; is ready to use. To reassure yourself, you can quickly test that
+&Vole; is behaving as intended by quickly running one of the included test
+files. If &GAP; has been run from the &Vole; directory, then this could look
+something like:
 
 @BeginLogSession
 gap> Test("tst/basic.tst");
