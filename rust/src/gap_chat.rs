@@ -10,7 +10,7 @@ use std::{
 };
 
 use anyhow::anyhow;
-use anyhow::Error;
+use anyhow::{Context, Error, Result};
 use serde::{Deserialize, Serialize};
 use tracing::{debug, trace};
 
@@ -104,6 +104,11 @@ lazy_static! {
     };
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+struct GapError {
+    error: String,
+}
+
 impl GapChatType {
     /// Send an object to GAP, and receieve a reply. `T` is serialised
     /// to JSON, and the reply is deserialised into type `U`.
@@ -114,6 +119,11 @@ impl GapChatType {
     {
         let gap_channel = GAP_CHAT.lock().unwrap();
         Self::send_request_internal(request, gap_channel)
+    }
+
+    /// Send an error -- we assume this is the last thing we will send to GAP
+    pub fn send_error(error: String) {
+        let _: Result<String, Error> = Self::send_request(&("error", error));
     }
 
     /// A variant of send_request where, if communication is always in progress
@@ -149,7 +159,10 @@ impl GapChatType {
         out_file.flush()?;
         debug!("Sent to GAP, now reading");
         let mut line = String::new();
-        let _ = in_file.read_line(&mut line)?;
+        let _ = in_file
+            .read_line(&mut line)
+            .map_err(anyhow::Error::msg)
+            .context("Internal error in communication between vole and GAP")?;
 
         let out: U = serde_json::from_str(&line)?;
         debug!("Recieving from GAP: {:?}", out);

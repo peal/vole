@@ -296,6 +296,10 @@ _Vole.ExecuteVole := function(obj, refiners, canonicalgroup)
             IO_WaitPid(pipe.pid, true);
             result[2].stats.gap_callbacks := gapcallbacks;
             return result[2];
+        elif result[1] = "error" then
+            IO_Close(pipe.write);
+            IO_Close(pipe.read);
+            ErrorNoReturn("There was a fatal error in vole: ", result[2]);
         elif result[1] = "canonicalmin" then
             time := NanosecondsSinceEpoch();
             if canonicalgroup = false then

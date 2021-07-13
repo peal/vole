@@ -12,8 +12,10 @@ use rust_vole::vole::{search::root_search, solutions::Solutions};
 
 use tracing::Level;
 
-use rust_vole::gap_chat::GAP_CHAT;
+use rust_vole::gap_chat::{GapChatType, GAP_CHAT};
 use tracing_subscriber::fmt::format::FmtSpan;
+
+use std::panic;
 
 fn main() -> anyhow::Result<()> {
     // Set up debugging output
@@ -32,47 +34,68 @@ fn main() -> anyhow::Result<()> {
             .init();
     }
 
-    let problem =
-        parse_input::read_problem(&mut GAP_CHAT.lock().unwrap().in_file.as_mut().unwrap())?;
+    // Hide panic messages
+    panic::set_hook(Box::new(|_| {}));
 
-    let refiners =
-        RefinerStore::new_from_refiners(parse_input::build_constraints(&problem.constraints));
+    let result = panic::catch_unwind(|| -> Result<(), anyhow::Error> {
+        let problem =
+            parse_input::read_problem(&mut GAP_CHAT.lock().unwrap().in_file.as_mut().unwrap())?;
 
-    let tracer = if problem.config.find_canonical {
-        trace::Tracer::new()
-    } else {
-        trace::Tracer::new_with_type(TracingType::SYMMETRY)
-    };
+        let refiners =
+            RefinerStore::new_from_refiners(parse_input::build_constraints(&problem.constraints));
 
-    let domain = DomainState::new(problem.config.points, tracer);
-    let mut solutions = Solutions::default();
+        let tracer = if problem.config.find_canonical {
+            trace::Tracer::new()
+        } else {
+            trace::Tracer::new_with_type(TracingType::SYMMETRY)
+        };
 
-    let mut state = State {
-        domain,
-        refiners,
-        stats: Default::default(),
-    };
+        let domain = DomainState::new(problem.config.points, tracer);
+        let mut solutions = Solutions::default();
 
-    if problem.config.root_search {
-        root_search(&mut state, &mut solutions);
-    } else if problem.config.find_single {
-        simple_single_search(&mut state, &mut solutions);
-    } else {
-        simple_search(&mut state, &mut solutions);
-    }
+        let mut state = State {
+            domain,
+            refiners,
+            stats: Default::default(),
+        };
 
-    if let Ok(time) = ProcessTime::try_now() {
-        state.stats.vole_time = time.as_duration().as_millis();
-    }
-    GAP_CHAT.lock().unwrap().send_results(
-        &solutions,
-        match state.domain.rbase_partition() {
-            Some(p) => p.base_fixed_values(),
-            None => &[],
+        if problem.config.root_search {
+            root_search(&mut state, &mut solutions);
+        } else if problem.config.find_single {
+            simple_single_search(&mut state, &mut solutions);
+        } else {
+            simple_search(&mut state, &mut solutions);
+        }
+
+        if let Ok(time) = ProcessTime::try_now() {
+            state.stats.vole_time = time.as_duration().as_millis();
+        }
+        GAP_CHAT.lock().unwrap().send_results(
+            &solutions,
+            match state.domain.rbase_partition() {
+                Some(p) => p.base_fixed_values(),
+                None => &[],
+            },
+            state.domain.rbase_branch_vals(),
+            state.stats,
+        )?;
+
+        Ok(())
+    });
+
+    // Result is a double-nested error (first level panic, second level vole)
+    match result {
+        Ok(m) => match m {
+            Ok(()) => {}
+            Err(e) => {
+                GapChatType::send_error(e.to_string());
+            }
         },
-        state.domain.rbase_branch_vals(),
-        state.stats,
-    )?;
+        Err(e) => {
+            let s: Box<&'static str> = e.downcast().unwrap();
+            GapChatType::send_error(s.to_string());
+        }
+    }
 
     GAP_CHAT.lock().unwrap().close();
 
