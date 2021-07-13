@@ -297,8 +297,17 @@ _Vole.ExecuteVole := function(obj, refiners, canonicalgroup)
             result[2].stats.gap_callbacks := gapcallbacks;
             return result[2];
         elif result[1] = "error" then
-            IO_Close(pipe.write);
-            IO_Close(pipe.read);
+            # This is just here to make sure we have read all output from Vole before it closes
+            IO_WriteLine(pipe.write, "goodbye");
+            IO_Flush(pipe.write);
+            if _Vole.UsePipe then
+                IO_Close(pipe.write);
+                IO_Close(pipe.read);
+            else
+                # read + write the same when using TCP
+                IO_Close(pipe.read);
+                IO_close(pipe.socket);
+            fi;
             ErrorNoReturn("There was a fatal error in vole: ", result[2]);
         elif result[1] = "canonicalmin" then
             time := NanosecondsSinceEpoch();
