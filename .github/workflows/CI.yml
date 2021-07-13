@@ -92,6 +92,11 @@ jobs:
       - uses: gap-actions/setup-gap@v2
         with:
           GAP_PKGS_TO_BUILD: ''
+      - name: 'Add a necessary symlink'
+        shell: bash
+        run: |
+          mkdir -p gaproot/pkg/
+          ln -f -s $PWD gaproot/pkg/
       - uses: gap-actions/build-pkg-docs@v1
         with:
           use-latex: 'true'
