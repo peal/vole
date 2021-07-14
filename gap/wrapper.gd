@@ -339,3 +339,87 @@ DeclareGlobalFunction("Vole.CanonicalImagePerm");
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.CanonicalImage");
 #! @EndGroup
+
+
+#! @Section &Vole; functions emulating the &Digraphs; package
+
+#! The following table gives a summary of the correspondence between &Vole; and
+#! the &Digraphs; package.
+
+#! <Table Align="ll">
+#! <Row>
+#!   <Item>&Vole; function</Item>
+#!   <Item>&Digraphs; package function</Item>
+#! </Row>
+#! <HorLine/>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.AutomorphismGroup"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Func="AutomorphismGroup" BookName="Digraphs" Style="Number" />
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.CanonicalDigraph"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Attr="NautyCanonicalDigraph" BookName="Digraphs" Style="Number" />
+#!
+#!     <Ref Attr="BlissCanonicalDigraph" BookName="Digraphs" Style="Number" />
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.DigraphCanonicalLabelling"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Attr="NautyCanonicalLabelling" BookName="Digraphs" Style="Number" />
+#!
+#!     <Ref Attr="BlissCanonicalLabelling" BookName="Digraphs" Style="Number" />
+#!   </Item>
+#! </Row>
+#! </Table>
+
+
+#! @BeginGroup AutomorphismGroup
+#! @GroupTitle AutomorphismGroup
+#! @Arguments D[, vert_colours[, edge_colours]]
+#! @Returns A permutation group
+#! @Description
+#! TODO
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.AutomorphismGroup");
+#! @EndGroup
+
+
+#! @BeginGroup CanonicalDigraph
+#! @GroupTitle CanonicalDigraph
+#! @Arguments D
+#! @Returns A digraph
+#! @Description
+#! TODO
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.CanonicalDigraph");
+#! @EndGroup
+
+
+#! @BeginGroup DigraphCanonicalLabelling
+#! @GroupTitle DigraphCanonicalLabelling
+#! @Arguments D[, colours]
+#! @Returns A permutation
+#! @Description
+#! TODO
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.DigraphCanonicalLabelling");
+#! @EndGroup
