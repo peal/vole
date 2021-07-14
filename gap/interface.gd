@@ -64,7 +64,7 @@ DeclareGlobalFunction("VoleFind.Rep");
 DeclareGlobalFunction("VoleFind.Group");
 
 #! @Arguments constraints...
-#! @Returns A right coset of a permutation group, or an empty list
+#! @Returns A right coset of a permutation group, or <K>fail</K>
 #! @Description
 #! Text about `VoleFind.Coset`.
 #! @BeginExampleSession

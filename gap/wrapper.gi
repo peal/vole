@@ -6,6 +6,7 @@
 # Implementations: Wrappers for Vole functions to emulate the GAP interface.
 
 Vole.Intersection := function(permcolls...)
+    local ret;
     if IsEmpty(permcolls) then
         ErrorNoReturn("Vole.Intersection: The arguments must specify at least ",
                       "one perm group or right coset");
@@ -18,7 +19,12 @@ Vole.Intersection := function(permcolls...)
                       "right cosets of perm groups");
     fi;
     if ForAny(permcolls, IsRightCoset) then
-        return VoleFind.Coset(permcolls);
+        ret := VoleFind.Coset(permcolls);
+        if ret = fail then
+            return [];
+        else
+            return ret;
+        fi;
     else
         return VoleFind.Group(permcolls);
     fi;

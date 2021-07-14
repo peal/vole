@@ -68,7 +68,7 @@ VoleFind.Coset := function(constraints...)
     od;
     x := VoleFind.Representative(constraints);
     if x = fail then
-        return [];
+        return fail;
     fi;
     ErrorNoReturn("not yet implemented");
     # TODO convert the "constraints" into their group versions, as appropriate!
