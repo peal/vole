@@ -5,82 +5,101 @@
 #
 # Implementations: Wrappers for Vole functions to emulate the GAP interface.
 
-Vole.Intersection := function(grps...)
-    if Length(grps) = 1 and IsList(grps[1]) then
-        grps := grps[1];
+Vole.Intersection := function(permcolls...)
+    if IsEmpty(permcolls) then
+        ErrorNoReturn("Vole.Intersection: The arguments must specify at least ",
+                      "one perm group or right coset");
+    elif Length(permcolls) = 1 and IsList(permcolls[1]) then
+        permcolls := permcolls[1];
     fi;
-    if not ForAll(grps, IsPermGroup) then
-        ErrorNoReturn("Vole.Intersection: The arguments must be perm groups ",
-                      "or a list of perm groups");
+    if not ForAll(permcolls, x -> IsPermGroup(x) or IsRightCoset(x)) then
+        ErrorNoReturn("Vole.Intersection: The arguments must be ",
+                      "(a list containing) perm groups and/or ",
+                      "right cosets of perm groups");
     fi;
-    if IsEmpty(grps) then
-        ErrorNoReturn("Vole.Intersection: The arguments must be (a list ",
-                      "containing) at least one perm group");
+    if ForAny(permcolls, IsRightCoset) then
+        return VoleFind.Coset(permcolls);
+    else
+        return VoleFind.Group(permcolls);
     fi;
-    return VoleFind.Group(List(grps, VoleCon.InGroup));
 end;
 
 Vole.Stabilizer := function(G, object, action...)
-    return VoleFind.Group([VoleCon.InGroup(G), CallFuncList(VoleCon.Stabilize(Concatenation([object], action)))]);
+    local con;
+    con := CallFuncList(VoleCon.Stabilize, Concatenation([object], action));
+    return VoleFind.Group(G, con);
 end;
 Vole.Stabiliser := Vole.Stabilizer;
 
-Vole.Normalizer := function(G, H)
+Vole.Normalizer := function(G, U)
     if not IsPermGroup(G) then
-        ErrorNoReturn("Vole.Normalizer: The first argument must be a perm group");
+        ErrorNoReturn("Vole.Normalizer: ",
+                      "The first argument must be a perm group");
+    elif IsPermGroup(U) then
+        return VoleFind.Group(G, VoleCon.Normalise(U));
+    elif IsPerm(U) then
+        return VoleFind.Group(G, VoleCon.Normalise(Group(U)));
     fi;
-
-    if IsPermGroup(H) then
-        return VoleFind.Group([VoleCon.InGroup(G), VoleCon.Normalise(H)]);
-    elif IsPerm(H) then
-        return VoleFind.Group([VoleCon.InGroup(G), VoleCon.Normalise(Group(H))]);
-    else
-        ErrorNoReturn("Vole.Normalizer: The second argument must a perm group ",
-                      "or a permutation");
-    fi;
+    ErrorNoReturn("Vole.Normalizer: The second argument ",
+                  "must a perm group or a permutation");
 end;
 Vole.Normaliser := Vole.Normalizer;
 
 Vole.Centralizer := function(G, x)
     if not IsPermGroup(G) then
-        ErrorNoReturn("Vole.Normalizer: The first argument must be a perm group");
+        ErrorNoReturn("Vole.Centralizer: ",
+                      "The first argument must be a perm group");
     elif not (IsPermGroup(x) or IsPerm(x)) then
-        ErrorNoReturn("Vole.Centralizer: The second argument must be a perm group or a permutation");
+        ErrorNoReturn("Vole.Centralizer: The second argument ",
+                      "must be a perm group or a permutation");
     fi;
-
-    return VoleFind.Group([VoleCon.InGroup(G), VoleCon.Centralize(x)]);
+    return VoleFind.Group(G, VoleCon.Centralize(x));
 end;
 Vole.Centraliser := Vole.Centralizer;
 
-Vole.IsConjugate := function(G, g, h)
+Vole.IsConjugate := function(G, x, y)
     if not IsPermGroup(G) then
-        ErrorNoReturn("Vole.IsConjugate: The first argument must be a perm group");
-    elif (not (IsPerm(g) and IsPerm(h)) and not (IsPermGroup(g) and IsPermGroup(h))) then
+        ErrorNoReturn("Vole.IsConjugate: ",
+                      "The first argument must be a perm group");
+    elif not ForAll([x, y], IsPerm) and not ForAll([x, y], IsPermGroup) then
         ErrorNoReturn("Vole.IsConjugate: The second and third arguments ",
-                      "must both be either permutations or perm groups");
+                      "must either be both permutations or both perm groups");
     fi;
-
-    return Vole.RepresentativeAction(G, g, h, OnPoints) <> fail;
+    return Vole.RepresentativeAction(G, x, y) <> fail;
 end;
 
-Vole.RepresentativeAction := function(G, obj1, obj2, action...)
-    if Length(action) = 1 then
+Vole.RepresentativeAction := function(G, object1, object2, action...)
+    if not IsPermGroup(G) then
+        ErrorNoReturn("Vole.RepresentativeAction: ",
+                      "The first argument must be a perm group");
+    elif Length(action) > 1 then
+        ErrorNoReturn("VoleCon.RepresentativeAction args: ",
+                      "G, object1, object2[, action]");
+    elif Length(action) = 1 then
         action := action[1];
-    elif Length(action) = 0 then
-        action := OnPoints;
     else
-        ErrorNoReturn("VoleCon.RepresentativeAction args: G, obj1, obj2[, action]");
+        action := OnPoints;
     fi;
-
-    return VoleFind.Representative(VoleCon.InGroup(G), VoleCon.Transport(obj1, obj2, action));
+    return VoleFind.Representative(G, VoleCon.Transport(object1, object2, action));
 end;
 
-Vole.CanonicalPerm := function(G, obj...)
-    ErrorNoReturn("not yet implemented!");
+Vole.CanonicalPerm := function(G, object, action...)
+    if not IsPermGroup(G) then
+        ErrorNoReturn("Vole.CanonicalPerm: ",
+                      "The first argument must be a perm group");
+    elif Length(action) > 1 then
+        ErrorNoReturn("VoleCon.CanonicalPerm args: G, object[, action]");
+    elif Length(action) = 1 then
+        action := action[1];
+    else
+        action := OnPoints;
+    fi;
+    return VoleFind.CanonicalPerm(G, VoleCon.Stabilize(object, action));
 end;
+Vole.CanonicalImagePerm := Vole.CanonicalPerm;
 
-Vole.CanonicalImage := function(G, obj...)
-    local perm;
-    perm := CallFuncList(Vole.CanonicalPerm, Concatenation([G], obj));
-    return obj[1] ^ perm;
+Vole.CanonicalImage := function(G, object, action...)
+    local x;
+    x := CallFuncList(Vole.CanonicalPerm, Concatenation([G, object], action));
+    return action[1](object, x);
 end;

@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 #
-# Declarations: Wrappers for Vole functions to emulate the GAP interface.
+# Declarations: Wrappers for Vole functions to emulate GAP/images.
 
 #! @Chapter Emulating traditional interfaces with &Vole;
 
@@ -24,11 +24,14 @@
 #! @Description
 #!
 #! `Vole` is a record that contains...
+#! The components of this record are functions that are named to coincide
+#! with the corresponding &GAP; function.
 #!
 #! @BeginExampleSession
+#! gap> LoadPackage("vole", false);;
 #! gap> Set(RecNames(Vole));
-#! [ "CanonicalImage", "CanonicalPerm", "Centraliser", "Centralizer", 
-#!   "Intersection", "IsConjugate", "Normaliser", "Normalizer", 
+#! [ "CanonicalImage", "CanonicalImagePerm", "CanonicalPerm", "Centraliser", 
+#!   "Centralizer", "Intersection", "IsConjugate", "Normaliser", "Normalizer", 
 #!   "RepresentativeAction", "Stabiliser", "Stabilizer" ]
 #! @EndExampleSession
 DeclareGlobalVariable("Vole");
@@ -36,9 +39,80 @@ DeclareGlobalVariable("Vole");
 InstallValue(Vole, rec());
 
 
-#! @Section Summary of the correspondence between &Vole; and &GAP; functions
+#! @Section TEMPORARY
+
+# TODO This should probably be in constraints.gd? And only referenced from here.
+# TODO Or should it actually be a "Chunk" that I can insert in multiple places?
+# TODO Also OnTuplesSets, OnTuplesTuples, etc?
+#! The supported combinations of objects and actions are the same for all of the
+#! functions in this chapter that require one or two objects and a corresponding
+#! action. This applies here to:
+#! * <Ref Func="Vole.Stabilizer"/>
+#! * <Ref Func="Vole.RepresentativeAction"/>
+#! * <Ref Func="Vole.CanonicalPerm"/>
+#! * <Ref Func="Vole.CanonicalImage"/>
 #!
-#! Some text.
+#! <Table Align="ll">
+#! <Row>
+#!   <Item><B>Permitted action</B></Item>
+#!   <Item><B>Corresponding permitted object(s)</B></Item>
+#! </Row>
+#! <HorLine/>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="OnPoints" BookName="Ref"/> [default]
+#!   </Item>
+#!   <Item>
+#!     A point, or permutation, or perm group
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="OnTuples" BookName="Ref"/>
+#!   </Item>
+#!   <Item>
+#!     A list of positive integers
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="OnSets" BookName="Ref"/>
+#!   </Item>
+#!   <Item>
+#!     A set of positive integers
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="OnTuplesSets" BookName="Ref"/>
+#!   </Item>
+#!   <Item>
+#!     A list of sets of positive integers
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="OnSetsSets" BookName="Ref"/>
+#!   </Item>
+#!   <Item>
+#!     A set of sets of positive integers
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Oper="OnDigraphs" BookName="Digraphs" Label="for a digraph and a perm"/>
+#!   </Item>
+#!   <Item>
+#!     A digraph
+#!   </Item>
+#! </Row>
+#! </Table>
+
+
+#! @Section &Vole; functions emulating built-in &GAP; functions
+
+#! The following table gives a summary of the correspondence between &Vole; and
+#! &GAP; functions
 
 #! Some more text, explaining the following table.
 
@@ -99,11 +173,107 @@ InstallValue(Vole, rec());
 #! </Table>
 
 
-#! @Section Summary of the correspondence between &Vole; and &images; functions
+#! @BeginGroup Intersection
+#! @GroupTitle Intersection
+#! @Arguments U1, U2, ..., Uk
+#! @Returns A perm group, a right coset, or an empty list
+#! @Description
+#! Can be permgroups and/or right cosets.
 #!
-#! Some text.
+#! Note that &Vole; is cool because it does all of the intersection
+#! simultaneously in one search, rather than iteratively intersecting pairs of
+#! things.
+#!
+#! &GAP; might have some clever special cases that we don't bother with.
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.Intersection");
+#! @EndGroup
 
-#! Some more text, explaining the following table.
+
+#! @BeginGroup Stab
+#! @GroupTitle Stabilizer
+#! @Arguments G, object[, action]
+#! @Returns An permutation group
+#! @Description
+#! Text about this.
+DeclareGlobalFunction("Vole.Stabilizer");
+#! @EndGroup
+#! @Arguments G, object[, action]
+#! @Group Stab
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.Stabiliser");
+
+
+#! @BeginGroup RepAction
+#! @GroupTitle RepresentativeAction
+#! @Arguments G, object1, object2[, action]
+#! @Description
+#! Text about this.
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.RepresentativeAction");
+#! @EndGroup
+
+
+#! @BeginGroup Norm
+#! @GroupTitle Normalizer
+#! @Arguments G, U
+#! @Returns An permutation group
+#! @Description
+#! Text about this
+DeclareGlobalFunction("Vole.Normalizer");
+#! @EndGroup
+#! @Arguments G, U
+#! @Group Norm
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.Normaliser");
+
+
+#! @BeginGroup Cent
+#! @GroupTitle Centralizer
+#! @Arguments G, x
+#! @Returns An permutation group
+#! @Description
+#! Text about this
+DeclareGlobalFunction("Vole.Centralizer");
+#! @EndGroup
+#! @Arguments G, x
+#! @Group Cent
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.Centraliser");
+
+
+#! @BeginGroup IsConj
+#! @GroupTitle IsConjugate
+#! @Arguments G, x, y
+#! @Description
+#! Text about this.
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.IsConjugate");
+#! @EndGroup
+
+
+#! @Section &Vole; functions emulating the &images; package
+
+#! The following table gives a summary of the correspondence between &Vole; and
+#! the &images; package.
 
 #! <Table Align="ll">
 #! <Row>
@@ -129,74 +299,43 @@ InstallValue(Vole, rec());
 #! </Row>
 #! </Table>
 
-#! Perhaps some final text?
 
-
-#! @Section &Vole; functions emulating built-in &GAP; functions
-
-
-#! @BeginGroup wilf
-#! @GroupTitle hey
-#! @Arguments G1[, G2[, G3, ...]]
-#! @Returns An permutation group
-#! @Description
-#! Text about this
-#! Oh no! Actually we need it to work for cosets as well.
-#! @BeginExampleSession
-#! gap> true;
-#! true
-#! @EndExampleSession
-DeclareGlobalFunction("Vole.Intersection");
-DeclareGlobalFunction("Vole.Stabilizer");
-DeclareGlobalFunction("Vole.Stabiliser");
-DeclareGlobalFunction("Vole.RepresentativeAction");
-DeclareGlobalFunction("Vole.Normalizer");
-DeclareGlobalFunction("Vole.Normaliser");
-DeclareGlobalFunction("Vole.Centralizer");
-DeclareGlobalFunction("Vole.Centraliser");
-DeclareGlobalFunction("Vole.IsConjugate");
-#! @EndGroup
-
-#!
-#! The following four functions each take an action.
-#! The supported actions are the same for all functions, and listed below:
-#! The supported combinations of objects and actions...
-#!
-#! * `Vole.Stabilizer(<A>G</A>,<A>obj</A>,<A>action</A>)`,
-#!    for a permutation group <A>G</A>, and <A>action</A> on <A>obj</A>.
-#! * `Vole.RepresentativeAction(<A>G</A>,<A>obj1</A>,<A>obj2</A>,<A>action</A>)`
-#!    for a permutation group <A>G</A> and <A>action</A> on <A>obj1</A> and <A>obj2</A>.
-#! * `Vole.CanonicalImage(<A>G</A>,<A>obj</A>,<A>action</A>)`.
-#! * `Vole.CanonicalPerm(<A>G</A>,<A>obj</A>,<A>action</A>)`.
-#!
-#! The following actions are supported by `Stabilizer` and `RepresentativeAction`:
-#!
-#! * `OnPoints` (for a point, or permutation)
-#! * `OnSets`   (for a set of integers)
-#! * `OnTuples` (for a list of integers)
-#! * `OnSetsSets`, `OnSetsTuples`, `OnTuplesSets`, `OnTuplesTuples`
-#!   (for sets/lists of integers as appropriate)
-#! * `OnDigraphs`
-
-
-#! @Section &Vole; functions emulating &images;
-
-#! @Arguments G, constraints...
+#! @BeginGroup CanonicalPerm
+#! @GroupTitle CanonicalPerm
+#! @Arguments G, object[, action]
 #! @Returns A permutation
 #! @Description
-#! Text about `Vole.CanonicalPerm`.
+#! This function emulates <Ref Func="CanonicalImagePerm" BookName="images" />
+#! from the &images; package,
+#! although it supports a wider range of objects and actions.
+#!
+#! Text about `Vole.CanonicalPerm`...
+#!
+#! `VoleFind.CanonicalImagePerm` is a synonym for `VoleFind.CanonicalPerm`.
+#! @EndGroup
+DeclareGlobalFunction("Vole.CanonicalPerm");
+#! @Arguments G, object[, action]
+#! @Group CanonicalPerm
 #! @BeginExampleSession
 #! gap> true;
 #! true
 #! @EndExampleSession
-DeclareGlobalFunction("Vole.CanonicalPerm");
+DeclareGlobalFunction("Vole.CanonicalImagePerm");
 
-#! @Arguments G, constraints...
-#! @Returns ?
+
+#! @BeginGroup CanonicalImage
+#! @GroupTitle CanonicalImage
+#! @Arguments G, object[, action]
+#! @Returns An image of <A>object</A>
 #! @Description
-#! Text about `Vole.CanonicalImage`.
+#! This function emulates <Ref Func="CanonicalImage" BookName="images" />
+#! from the &images; package,
+#! although it supports a wider range of objects and actions.
+#!
+#! Text about `Vole.CanonicalImage`...
 #! @BeginExampleSession
 #! gap> true;
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.CanonicalImage");
+#! @EndGroup
