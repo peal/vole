@@ -5,34 +5,44 @@
 #
 # Implementations: TODO
 
-# TODO Better handling of one argument = list of constraints versus one argument
-# per constraint
+# TODO refactor to reduce code duplication
 
 VoleFind.Representative := function(constraints...)
-    local bounds, ret, conf;
-    if not IsEmpty(constraints) and IsList(constraints[1]) then
+    local bounds, ret, conf, i;
+    if Length(constraints) = 1 and IsList(constraints[1]) then
         constraints := constraints[1];
     fi;
+    for i in [1 .. Length(constraints)] do
+        if IsPermGroup(constraints[i]) then
+            constraints[i] := VoleCon.InGroup(constraints[i]);
+        elif IsRightCoset(constraints[i]) then
+            constraints[i] := VoleCon.InCoset(constraints[i]);
+        fi;
+    od;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBound(constraints, conf.points);
     ret := _Vole.CosetSolve(bounds.max, constraints);
     if conf.raw then
         return ret;
-    else
-        if Length(ret.sol) > 0 then
-            return ret.sol[1];
-        else
-            return fail;
-        fi;
+    elif not IsEmpty(ret.sol) then
+        return ret.sol[1];
     fi;
+    return fail;
 end;
 VoleFind.Rep := VoleFind.Representative;
 
 VoleFind.Group := function(constraints...)
-    local bounds, ret, conf;
-    if not IsEmpty(constraints) and IsList(constraints[1]) then
+    local bounds, ret, conf, i;
+    if Length(constraints) = 1 and IsList(constraints[1]) then
         constraints := constraints[1];
     fi;
+    for i in [1 .. Length(constraints)] do
+        if IsPermGroup(constraints[i]) then
+            constraints[i] := VoleCon.InGroup(constraints[i]);
+        elif IsRightCoset(constraints[i]) then
+            constraints[i] := VoleCon.InCoset(constraints[i]);
+        fi;
+    od;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBound(constraints, conf.points);
     ret := _Vole.GroupSolve(bounds.max, constraints);
@@ -68,9 +78,19 @@ end;
 
 VoleFind.CanonicalPerm := function(G, constraints...)
     local bounds, ret, max, conf;
-    if not IsEmpty(constraints) and IsList(constraints[1]) then
+    if Length(constraints) = 1 and IsList(constraints[1]) then
         constraints := constraints[1];
     fi;
+    # TODO does it even make sense for the constraint in a canonical image
+    #      search to VoleCon.InGroup?
+    #      Or should the default for a group be VoleCon.Normalize?
+    #for i in [1 .. Length(constraints)] do
+    #    if IsPermGroup(constraints[i]) then
+    #        constraints[i] := VoleCon.InGroup(constraints[i]);
+    #    elif IsRightCoset(constraints[i]) then
+    #        constraints[i] := VoleCon.InCoset(constraints[i]);
+    #    fi;
+    #od;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBound(Concatenation(constraints, [G]), conf.points);
     ret := _Vole.CanonicalSolve(bounds.max, G, constraints);
