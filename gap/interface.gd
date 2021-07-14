@@ -82,3 +82,42 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleFind.CanonicalPerm");
+
+
+#! @Section Bounds associated with a constraint or refiner
+
+#! In &GAP;, all permutations are implicitly defined on the set of all positive
+#! integers, although there are bounds on the points that can be involved that
+#! are prescribed by the limits of the computer and the laws of physics.
+#! Finite support.
+#!
+#! But there's a potential for danger here with (nearly) infinite stuff.
+#! So we need to bound the search somehow.
+#! We want to be doing stuff with finite groups.
+#! We actually want to do a search in Sym([1..k]) for some posint `k`,
+#! or even in Sym(C) for some finite subset of `PositiveIntegers`.
+#!
+#! <B>Largest required point</B>
+#!
+#! The largest required point of a 'constraint' is either
+#! <K>infinity</K>, or a positive integer `k` such that for any permutation `x`:
+#! * `x` satisfies the constraint if and only if
+#!   `x` preserves `[1..k]` as a set, and the restriction of `x` to `[1..k]`
+#!   satisfies the constraint.
+#!
+#! The constraint only concerns (at most) the points [1..k], and that the action
+#! of a permutation on the points greater than `k` is irrelevant to whether the
+#! constraint is satisfied.
+#!
+#! In particular, there exists some permutation that satisfies the constraint
+#! if and only if there exists a permutation in Sym([1..k]) that satisfies
+#! the constraint. This also a search for a representative
+#!
+#! <B>Largest moved point</B>
+#!
+#! Largest moved point: either infinity, or a positive integer `m` for
+#! which it is known a priori that any permutation satisfying the
+#! 'constraint' fixes all points > `m`.
+#! For many 'constraints' there is no such bound.
+#! For instance, the constraint "is an even permutation",
+#!

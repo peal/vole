@@ -190,10 +190,10 @@ following one:
 @BeginExampleSession
 gap> A4 := AlternatingGroup(4);
 Alt( [ 1 .. 4 ] )
-gap> D4 := DihedralGroup(IsPermGroup, 4);
-Group([ (1,2), (3,4) ])
-gap> Vole.Intersection(A4, D4);
-Group([ (1,2)(3,4) ])
+gap> D8 := DihedralGroup(IsPermGroup, 8);
+Group([ (1,2,3,4), (2,4) ])
+gap> Vole.Intersection(A4, D8);
+Group([ (1,2)(3,4), (1,4)(2,3) ])
 @EndExampleSession
 
 If you wish to test your &Vole; installation more thoroughly, please see
