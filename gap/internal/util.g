@@ -30,7 +30,7 @@ end;
 # Get the upper and lower bounds for a list of constraints
 # The list of constraints may contain permutation groups (in the event
 # we are solving a canonical problem)
-_Vole.getBound := function(constraints, initial_max)
+_Vole.getBounds := function(constraints, initial_max, allow_max_inf)
     local min, max, this_min, this_max, c;
     min := 1;
     max := initial_max;
@@ -56,8 +56,8 @@ _Vole.getBound := function(constraints, initial_max)
         min := Maximum(min, this_min);
         max := Minimum(max, this_max);
     od;
-    max := Maximum(min, max);
-    if max = infinity then
+    max := Maximum(min, max); # TODO Wilf: I'm not sure if I want this line... need to think about it
+    if max = infinity and not allow_max_inf then
         ErrorNoReturn("Vole is unable to deduce an upper bound for the number ",
                       "of points on which the search is defined. ",
                       "Please include an additional argument that is ",

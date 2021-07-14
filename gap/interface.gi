@@ -20,8 +20,8 @@ VoleFind.Representative := function(constraints...)
         fi;
     od;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
-    bounds := _Vole.getBound(constraints, conf.points);
-    ret := _Vole.CosetSolve(bounds.max, constraints);
+    bounds := _Vole.getBounds(constraints, conf.points, true);
+    ret := _Vole.CosetSolve(Minimum(bounds.min, bounds.max), constraints);
     if conf.raw then
         return ret;
     elif not IsEmpty(ret.sol) then
@@ -44,7 +44,7 @@ VoleFind.Group := function(constraints...)
         fi;
     od;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
-    bounds := _Vole.getBound(constraints, conf.points);
+    bounds := _Vole.getBounds(constraints, conf.points, false);
     ret := _Vole.GroupSolve(bounds.max, constraints);
     if conf.raw then
         return ret;
@@ -92,7 +92,7 @@ VoleFind.CanonicalPerm := function(G, constraints...)
     #    fi;
     #od;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
-    bounds := _Vole.getBound(Concatenation(constraints, [G]), conf.points);
+    bounds := _Vole.getBounds(Concatenation(constraints, [G]), conf.points, false);
     ret := _Vole.CanonicalSolve(bounds.max, G, constraints);
     if conf.raw then
         return ret;
