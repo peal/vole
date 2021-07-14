@@ -60,7 +60,7 @@ InstallValue(Vole, rec());
 #! <HorLine/>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="OnPoints" BookName="Ref"/> [default]
+#!     <Ref Func="OnPoints" Style="Number" BookName="Ref"/> [default]
 #!   </Item>
 #!   <Item>
 #!     A point, or permutation, or perm group
@@ -68,7 +68,7 @@ InstallValue(Vole, rec());
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="OnTuples" BookName="Ref"/>
+#!     <Ref Func="OnTuples" Style="Number" BookName="Ref"/>
 #!   </Item>
 #!   <Item>
 #!     A list of positive integers
@@ -76,7 +76,7 @@ InstallValue(Vole, rec());
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="OnSets" BookName="Ref"/>
+#!     <Ref Func="OnSets" Style="Number" BookName="Ref"/>
 #!   </Item>
 #!   <Item>
 #!     A set of positive integers
@@ -84,7 +84,7 @@ InstallValue(Vole, rec());
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="OnTuplesSets" BookName="Ref"/>
+#!     <Ref Func="OnTuplesSets" Style="Number" BookName="Ref"/>
 #!   </Item>
 #!   <Item>
 #!     A list of sets of positive integers
@@ -92,7 +92,7 @@ InstallValue(Vole, rec());
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="OnSetsSets" BookName="Ref"/>
+#!     <Ref Func="OnSetsSets" Style="Number" BookName="Ref"/>
 #!   </Item>
 #!   <Item>
 #!     A set of sets of positive integers
@@ -100,7 +100,7 @@ InstallValue(Vole, rec());
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Oper="OnDigraphs" BookName="Digraphs" Label="for a digraph and a perm"/>
+#!     <Ref Oper="OnDigraphs" BookName="Digraphs" Style="Number" Label="for a digraph and a perm"/>
 #!   </Item>
 #!   <Item>
 #!     A digraph
@@ -127,7 +127,7 @@ InstallValue(Vole, rec());
 #!     <Ref Func="Vole.Intersection"/>
 #!   </Item>
 #!   <Item>
-#!     <Ref Oper="Intersection" BookName="Ref" />
+#!     <Ref Oper="Intersection" BookName="Ref" Style="Number" />
 #!   </Item>
 #! </Row>
 #! <Row>
@@ -135,7 +135,7 @@ InstallValue(Vole, rec());
 #!     <Ref Func="Vole.Stabilizer"/>
 #!   </Item>
 #!   <Item>
-#!     <Ref Oper="Stabilizer" BookName="Ref" />
+#!     <Ref Oper="Stabilizer" BookName="Ref" Style="Number" />
 #!   </Item>
 #! </Row>
 #! <Row>
@@ -143,7 +143,7 @@ InstallValue(Vole, rec());
 #!     <Ref Func="Vole.RepresentativeAction"/>
 #!   </Item>
 #!   <Item>
-#!     <Ref Oper="RepresentativeAction" BookName="Ref" />
+#!     <Ref Oper="RepresentativeAction" BookName="Ref" Style="Number" />
 #!   </Item>
 #! </Row>
 #! <Row>
@@ -151,7 +151,7 @@ InstallValue(Vole, rec());
 #!     <Ref Func="Vole.Normalizer"/>
 #!   </Item>
 #!   <Item>
-#!     <Ref Oper="Normalizer" BookName="Ref" />
+#!     <Ref Oper="Normalizer" BookName="Ref" Style="Number" />
 #!   </Item>
 #! </Row>
 #! <Row>
@@ -159,7 +159,7 @@ InstallValue(Vole, rec());
 #!     <Ref Func="Vole.Centralizer"/>
 #!   </Item>
 #!   <Item>
-#!     <Ref Oper="Centralizer" BookName="Ref" />
+#!     <Ref Oper="Centralizer" BookName="Ref" Style="Number" />
 #!   </Item>
 #! </Row>
 #! <Row>
@@ -167,7 +167,7 @@ InstallValue(Vole, rec());
 #!     <Ref Func="Vole.IsConjugate"/>
 #!   </Item>
 #!   <Item>
-#!     <Ref Oper="IsConjugate" BookName="Ref" />
+#!     <Ref Oper="IsConjugate" BookName="Ref" Style="Number" />
 #!   </Item>
 #! </Row>
 #! </Table>
@@ -286,7 +286,7 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #!     <Ref Func="Vole.CanonicalPerm"/>
 #!   </Item>
 #!   <Item>
-#!     <Ref Func="CanonicalImagePerm" BookName="images" />
+#!     <Ref Func="CanonicalImagePerm" BookName="images" Style="Number" />
 #!   </Item>
 #! </Row>
 #! <Row>
@@ -294,7 +294,7 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #!     <Ref Func="Vole.CanonicalImage"/>
 #!   </Item>
 #!   <Item>
-#!     <Ref Func="CanonicalImage" BookName="images" />
+#!     <Ref Func="CanonicalImage" BookName="images" Style="Number" />
 #!   </Item>
 #! </Row>
 #! </Table>

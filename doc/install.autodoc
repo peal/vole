@@ -164,35 +164,37 @@ See Section&nbsp;<Ref Sect="Section_loading"/>.
 @Section Loading &Vole;
 @SectionLabel loading
 
-Given a correctly installed version of &Vole;, to load &Vole; if suffices to
-simply call the function <Ref Func="LoadPackage" BookName="Ref"/> from within
-the relevant &GAP; installation with the argument `"vole"`.
+If &Vole; is available to load, then to do so it suffices
+to call the function <Ref Func="LoadPackage" BookName="Ref"/>
+with the argument `"vole"`,
+from within the relevant &GAP; installation. This should return <K>true</K>.
 
-@BeginLogSession
-gap> LoadPackage("vole");
+@BeginExampleSession
+gap> LoadPackage("vole", false);
 true
-@EndLogSession
+@EndExampleSession
 
 If `LoadPackage` instead returns <K>fail</K>, then &Vole; has failed to load.
 This is probably because &GAP; cannot find &Vole; or &Vole; is not compiled
 (Section&nbsp;<Ref Sect="Section_install"/>), or one of the dependencies of
-&Vole; is not met (Section&nbsp;<Ref Sect="Section_deps"/>).  In this case,
-please see the <Ref Func="LoadPackage" BookName="ref"/> documentation for ways
-to help diagnose the problem.
+&Vole; is not available (Section&nbsp;<Ref Sect="Section_deps"/>).
+In this case, please see the <Ref Func="LoadPackage" BookName="ref"/>
+documentation for ways to help diagnose the problem further.
 
 @InsertChunk contact
 
-Otherwise, &Vole; is ready to use. To reassure yourself, you can quickly test that
-&Vole; is behaving as intended by quickly running one of the included test
-files. If &GAP; has been run from the &Vole; directory, then this could look
-something like:
+Otherwise, &Vole; is ready to use. To reassure yourself, you can quickly test
+that &Vole; is behaving as intended by quickly running a search, such that the
+following one:
 
-@BeginLogSession
-gap> Test("tst/basic.tst");
-basic.tst
-msecs: 61
-true
-@EndLogSession
+@BeginExampleSession
+gap> A4 := AlternatingGroup(4);
+Alt( [ 1 .. 4 ] )
+gap> D4 := DihedralGroup(IsPermGroup, 4);
+Group([ (1,2), (3,4) ])
+gap> Vole.Intersection(A4, D4);
+Group([ (1,2)(3,4) ])
+@EndExampleSession
 
 If you wish to test your &Vole; installation more thoroughly, please see
 Section&nbsp;<Ref Sect="Section_tests"/>.
@@ -200,6 +202,8 @@ Section&nbsp;<Ref Sect="Section_tests"/>.
 
 @Section Running the &Vole; test suite
 @SectionLabel tests
+
+TODO requires &ferret; and &QuickCheck; - possibly others?
 
 @BeginLogSession
 $ ./run-tests.sh

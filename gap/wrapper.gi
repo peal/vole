@@ -5,6 +5,10 @@
 #
 # Implementations: Wrappers for Vole functions to emulate the GAP interface.
 
+
+################################################################################
+# Wrapper for the GAP library
+
 Vole.Intersection := function(permcolls...)
     local ret;
     if IsEmpty(permcolls) then
@@ -88,6 +92,10 @@ Vole.RepresentativeAction := function(G, object1, object2, action...)
     fi;
     return VoleFind.Representative(G, VoleCon.Transport(object1, object2, action));
 end;
+
+
+################################################################################
+# Wrapper for the images package
 
 Vole.CanonicalPerm := function(G, object, action...)
     if not IsPermGroup(G) then
