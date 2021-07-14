@@ -20,7 +20,7 @@
 #! @BeginExampleSession
 #! gap> LoadPackage("vole", false);;
 #! gap> Set(RecNames(VoleFind));
-#! [ "CanonicalPerm", "Group", "Rep", "Representative" ]
+#! [ "CanonicalPerm", "Coset", "Group", "Rep", "Representative" ]
 #! @EndExampleSession
 DeclareGlobalVariable("VoleFind");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
@@ -62,6 +62,16 @@ DeclareGlobalFunction("VoleFind.Rep");
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleFind.Group");
+
+#! @Arguments constraints...
+#! @Returns A right coset of a permutation group, or an empty list
+#! @Description
+#! Text about `VoleFind.Coset`.
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("VoleFind.Coset");
 
 #! @Arguments G, constraints...
 #! @Returns A permutation

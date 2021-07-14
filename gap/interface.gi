@@ -43,6 +43,29 @@ VoleFind.Group := function(constraints...)
     fi;
 end;
 
+# TODO can we do this all in one search?
+VoleFind.Coset := function(constraints...)
+    local G, x, i;
+    if Length(constraints) = 1 and IsList(constraints[1]) then
+        constraints := constraints[1];
+    fi;
+    for i in [1 .. Length(constraints)] do
+        if IsPermGroup(constraints[i]) then
+            constraints[i] := VoleCon.InGroup(constraints[i]);
+        elif IsRightCoset(constraints[i]) then
+            constraints[i] := VoleCon.InCoset(constraints[i]);
+        fi;
+    od;
+    x := VoleFind.Representative(constraints);
+    if x = fail then
+        return [];
+    fi;
+    ErrorNoReturn("not yet implemented");
+    # TODO convert the "constraints" into their group versions, as appropriate!
+    G := VoleFind.Group();
+    return RightCoset(G, x);
+end;
+
 VoleFind.CanonicalPerm := function(G, constraints...)
     local bounds, ret, max, conf;
     if not IsEmpty(constraints) and IsList(constraints[1]) then
