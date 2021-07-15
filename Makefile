@@ -6,6 +6,6 @@ all:
 	cd rust && cargo build --bins && cargo build --release --bins
 
 doc:
-	gap makedoc.g
+	../../bin/gap.sh -A -q -r --quitonbreak makedoc.g
 
 .PHONY: doc

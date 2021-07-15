@@ -80,9 +80,10 @@
 #! @BeginExampleSession
 #! gap> LoadPackage("vole", false);;
 #! gap> Set(RecNames(Vole));
-#! [ "CanonicalImage", "CanonicalImagePerm", "CanonicalPerm", "Centraliser", 
-#!   "Centralizer", "Intersection", "IsConjugate", "Normaliser", "Normalizer", 
-#!   "RepresentativeAction", "Stabiliser", "Stabilizer" ]
+#! [ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
+#!   "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", 
+#!   "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", 
+#!   "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer" ]
 #! @EndExampleSession
 DeclareGlobalVariable("Vole");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable

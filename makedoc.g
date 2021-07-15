@@ -10,7 +10,7 @@ if LoadPackage("AutoDoc", "2019.09.04") = fail then
                   "the manual.");
 fi;
 
-# TODO make more robust
+# TODO make more robust (i.e. what if more than one Vole is installed?)
 _voleinfo := PackageInfo("vole")[1];
 _strip := function(str)
   str := ReplacedString(str, ">=", "");
@@ -33,10 +33,10 @@ _autodoc := rec(
         scan_dirs := [
                      ],
     ),
-    extract_examples := false,
-    #extract_examples := rec(
-    #    skip_empty_in_numbering := false,
-    #),
+    #extract_examples := false,
+    extract_examples := rec(
+        skip_empty_in_numbering := false,
+    ),
     gapdoc := rec(
         gap_root_relative_path := true,
     ),
@@ -46,11 +46,15 @@ _autodoc := rec(
         includes := [
                     ],
         entities := rec(
+            nauty       := "<Package>nauty</Package>",
+            bliss       := "<Package>bliss</Package>",
             images      := "<Package>images</Package>",
+            GRAPE       := "<Package>GRAPE</Package>",
             VoleWWW     := _voleinfo.PackageWWWHome,
             VoleIssues  := _voleinfo.IssueTrackerURL,
             VoleVersion := _strip(_voleinfo.Version),
             GAPVersion  := _strip(_voleinfo.Dependencies.GAP),
+            VoleYear    := _voleinfo.Date{[7..10]},
         ),
         bib := "vole.bib",
         index := true,
@@ -59,7 +63,7 @@ _autodoc := rec(
 );
 
 _entities := _autodoc.scaffold.entities;
-# TODO could extract the dependency URLs too from their own packageinfos
+# TODO could extract the dependency URLs too from their own PackageInfo files?
 for _dep in Concatenation(_voleinfo.Dependencies.NeededOtherPackages,
                           _voleinfo.Dependencies.SuggestedOtherPackages) do
     # &PackageName; -> <Package>PackageName</Package>
