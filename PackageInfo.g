@@ -130,20 +130,13 @@ Keywords := [
 AutoDoc := rec(
    TitlePage := rec(
     Copyright := Concatenation(
-      "&copyright; 20?? by ??",
-      # TODO
-      "\n"
+      "&copyright; &VoleYear; by Christopher Jefferson, Mun See Chang, ",
+      "and Wilf A. Wilson.",
+      "<P/>",
+      "&Vole; is licensed under the Mozilla Public License, version 2.0."
       ),
-    Abstract := Concatenation(
-      "&Vole; is a &GAP; package that...",
-      # TODO
-      "\n"
-      ),
-    Acknowledgements := Concatenation(
-      "GAPDoc? Autodoc? PackageMaker? Example package? People? Rebecca?",
-      # TODO
-      "<P/>\n"
-      )
+    #Abstract := "",
+    #Acknowledgements := "",
    )
 ),
 

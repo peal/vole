@@ -1,11 +1,10 @@
 @Chapter Expert use of &Vole;
-
+@ChapterLabel expert
 
 @Section Intro to that stuff
 
 This is doing to show how you can use configuration options,
 and perhaps lots of tips and tricks?
-
 
 @Section <C>InfoVole</C> – getting extra information about a &Vole; search
 @SectionLabel infovole

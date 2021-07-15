@@ -259,3 +259,5 @@ DeclareGlobalFunction("VoleCon.MovedPoints");
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.LargestMovedPoint");
+
+# TODO warning: canonical images and perms can change!
