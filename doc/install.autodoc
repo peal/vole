@@ -6,7 +6,7 @@ TODO finish this introduction
 A little introduction.
 
 If you are having trouble getting GAP to run, please let us know!
-By filing a GitHub isse. If you prefer to contact the authors of this package
+By filing a GitHub issue. If you prefer to contact the authors of this package
 directly via email, please do so, and we will try our best to help you.
 We wrote this software to be useful to people, so we want it to work for you! If
 it doesn't we want to hear about it.
@@ -153,8 +153,10 @@ cd rust && cargo build --bins && cargo build --release --bins
     [...
         potentially copious output omitted here
                                                ...]
-    Finished dev [unoptimized + debuginfo] target(s) in 0.28s
-    Finished release [optimized + debuginfo] target(s) in 0.14s
+    Compiling rust-vole v0.1.1
+    Finished dev [unoptimized + debuginfo] target(s) in 8.93s
+    Compiling rust-vole v0.1.1
+    Finished release [optimized + debuginfo] target(s) in 30.06s
 @EndLogSession
 
 &Vole; should now be ready to load.

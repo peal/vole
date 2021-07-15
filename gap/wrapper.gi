@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 #
-# Implementations: Wrappers for Vole functions to emulate the GAP interface.
+# Implementations: Wrappers for Vole functions that emulate GAP/images/Digraphs
 
 
 ################################################################################

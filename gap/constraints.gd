@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 #
-# Declarations: TODO
+# Declarations: Vole constraints
 
 #! @Chapter Constraints
 
@@ -61,9 +61,9 @@ InstallValue(VoleCon, rec());
 #!   <Item><Ref Func="VoleCon.InGroup"/></Item>
 #!   <Item>
 #!     <Ref Func="VoleCon.InCoset"/>
-#!
+#!     <P/>
 #!     <Ref Func="VoleCon.InLeftCoset"/>
-#!
+#!     <P/>
 #!     <Ref Func="VoleCon.InRightCoset"/>
 #!   </Item>
 #! </Row>
@@ -163,10 +163,7 @@ DeclareGlobalFunction("VoleCon.InLeftCoset");
 #! @Description
 #! Text about `VoleCon.Stabilize`.
 #!
-#! If the optional argument <A>action</A> is not given, then the action
-#! <Ref Func="OnPoints" BookName="Ref"/> is used by default;
-#! this is the action obtained by the `^` operator;
-#! see <Ref Oper="\^" BookName="Ref"/>.
+#! @InsertChunk DefaultAction2
 #!
 #! The combinations of objects and actions that are supported by &Vole;
 #! is given in... TODO

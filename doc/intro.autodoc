@@ -1,22 +1,81 @@
 @Chapter Introduction to &Vole;
 @ChapterLabel intro
 
-&Vole; is a brilliant package.
-It's based on a paper <Cite Key='GBpublished'/> / <Cite Key='GBextended'/>.
+ALL GROUPS ARE FINITE
+
+&Vole; is a &GAP; package.
+
+It can be used to compute finite permutation groups, their cosets, and
+individual permutations that satisfy conjunctions of particular properties,
+or **constraints**.
+This includes, for example, the computation of normalizers, set stabilizers,
+subgroup intersections, and graph automorphisms.
+
+&Vole; can also compute canonical labellings and images of various kinds of
+objects under an action of an arbitrary finite permutation group.
+This includes, for example, the canonical image of a graph under the natural
+actions of an arbitrary permutation group, or the canonical image of one
+permutation group under conjugation by another.
+
+In order to offer this functionality, &Vole; implements the
+**graph backtracking** framework,
+which was introduced in <Cite Key="GBpublished"/>,
+and which generalises the **partition backtracking** framework of Jeffrey Leon
+<Cite Key="Leon1991"/>, <Cite Key="Leon1997"/>.
+The functionality for canonical labellings and canonical images is underpinned,
+in addition, by work that is in preparation for publication, and which builds on
+<Cite Key="MinimalCanonical"/>.
+
+While the &GAP; interface of this package is written in &GAP;, the main
+algorithms are written in Rust, for reasons of fun and performance.
+
 
 @Section High level overview
 
+Graph backtracking is a form of depth-first backtrack search that can be
+performed in a finite symmetric group, which uses labelled digraphs to represent
+various aspects of the problem at hand, in order to guide the search and prune
+the search space.
+
+* &GAP; and package interface
+
 How high should we go? Sky high...
 
-@Section Related &GAP; packages
+@Section &Vole;'s functionality and its relation to &GAP; and its other packages
 
 Talk about how &Vole; is (or is not) related to &BacktrackKit;,
 &GraphBacktracking;, and &ferret;. Oh, and &images;.
-And the GAP library. Possibly more? MAGMA?
+And the GAP library. Possibly more?
 &Digraphs;?
 
-<Cite Key='MinimalCanonical'/>
-<Cite Key='Leon1991'/>
-<Cite Key='Leon1997'/>
-<Cite Key='GRAPE'/>
-<Cite Key='nauty'/>
+<Cite Key="GRAPE"/>
+<Cite Key="nauty"/>
+<Cite Key="NewRefiners"/>
+
+@Section Work in progress
+
+&Vole; is a work in progress – the code and its underlying mathematical theory
+are being developed concurrently.
+Therefore, some aspects of &Vole; are liable to change in future versions,
+although we will aim to maintain the primary interfaces as described in
+Chapters&nbsp;<Ref Chap="Chapter_wrapper"/>
+and&nbsp;<Ref Chap="Chapter_interface"/>.
+
+Some of the advanced options may change.
+
+The main focus of our future work on &Vole; will be on improving the performance
+of &Vole;, through both technical and mathematical means.  This may involve
+changes to the design of the algorithm itself, and the improvement or addition
+of refiners, especially for normalizers.
+See Section&nbsp;<Ref Sect="Section_performance"/> for further comments on the
+performance of &Vole;
+
+
+@Section Performance
+@SectionLabel performance
+
+Few special cases. Just the one graph backtracking method.
+
+It is the nature of backtrack search, you might get unlucky.
+
+Some problems also don't need the full power of &Vole;.

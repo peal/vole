@@ -3,19 +3,69 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 #
-# Declarations: Wrappers for Vole functions to emulate GAP/images.
+# Declarations: Wrappers for Vole functions that emulate GAP/images/Digraphs
 
 #! @Chapter Emulating traditional interfaces with &Vole;
+#! @ChapterLabel wrapper
 
 
 #! @Section The concept
 
-# TODO improve this
-#! &Vole; provides a number of reimplementations of built-in &GAP; functions.
-#! These try to provide the same interface as the original &GAP; function. Note
-#! that these functions always use graph backtracking, so may be significantly
+#! The functionality of &Vole; overlaps with that of &GAP; and its
+#! other packages, such as &images; and &Digraphs;.
+#!
+#! &Vole; has its own native interface, which is described in
+#! Chapter&nbsp;<Ref Chap="Chapter_interface"/>, and which offers
+#! highly configurable access to the underlying graph backtracking algorithm.
+#! However, in addition to this, &Vole; also provides wrappers around its native
+#! interface that allow &Vole; to emulate some existing interfaces.
+#!
+#! Where we identify that &GAP;, or a package, provides a function whose result
+#! could reasonably be computed with &Vole;,
+#! we provide a function in &Vole; whose interface closely
+#! matches that of the original function, and which uses &Vole; to perform the
+#! computation.
+#! All such functions are contained in the
+#! <Ref Var="Vole"/> record, which is documented
+#! in Section&nbsp;<Ref Sect="Section_VoleRec"/>.
+#! The functions themselves are individually documented in
+#! Sections&nbsp;<Ref Sect="Section_gap_wrapper"/>–<Ref
+#!   Sect="Section_digraphs_wrapper"/>.
+#!
+#! For example,
+#! the &GAP; function <Ref Oper="Normalizer" Style="Number" BookName="Ref"/> can
+#! be used to compute normalizers of permutation groups.
+#! Since &Vole; can also be used for such computations,
+#! we provide the corresponding function
+#! <Ref Func="Vole.Normalizer"/>, which can be used in the same way.
+#! Thus `Normalizer(<A>G</A>,<A>U</A>)` and `Vole.Normalizer(<A>G</A>,<A>U</A>)`
+#! will (barring bugs!)
+#! return equal groups – the normalizer of <A>U</A> in <A>G</A> – for
+#! all permutation groups <A>G</A> and <A>U</A>.
+#!
+#! The purpose of these wrappers is to make &Vole; easier to learn, and use, for
+#! those who are already familiar with the existing &GAP;/package functions.
+#!
+#! <B>A warning</B>
+#!
+#! These emulated interfaces are not necessarily the best way to use &Vole; for
+#! those users who are interesting in obtaining the best performance,
+#! and in exploiting the full flexibility of &Vole;.
+#!
+#! &Vole; has to guess refiners.
+#!
+#!
+#! The built-in &GAP; function is aware of this and it attempts to deal with
+#! special case appropriately (and quickly)
+#!
+#! Note that these functions always use graph backtracking, so may be significantly
 #! slower than &GAP;'s built in functions when those functions can greatly
 #! simplify solving using group properties.
+#!
+#! ...perhaps even without seach.
+#!
+#! See also Section&nbsp;<Ref Sect="Section_performance"/> for further
+#! comments about the performance of &Vole;
 
 
 #! @Section The <C>Vole</C> record
@@ -25,7 +75,7 @@
 #!
 #! `Vole` is a record that contains...
 #! The components of this record are functions that are named to coincide
-#! with the corresponding &GAP; function.
+#! with the corresponding &GAP;/&images;/&Digraphs; function.
 #!
 #! @BeginExampleSession
 #! gap> LoadPackage("vole", false);;
@@ -40,6 +90,20 @@ InstallValue(Vole, rec());
 
 
 #! @Section TEMPORARY
+
+#! @BeginChunk DefaultAction
+#! The default <A>action</A>, when the argument is not given, is
+#! <Ref Oper="OnPoints" Style="Number" BookName="Ref" Style="Number"/>,
+#! which is the name in &GAP; of the action that corresponds to
+#! `<A>object</A>^g`, where `g` in <A>G</A>.
+#! @EndChunk
+
+#! @BeginChunk DefaultAction2
+#! If the optional argument <A>action</A> is not given, then the action
+#! <Ref Func="OnPoints" BookName="Ref"/> is used by default;
+#! this is the action obtained by the `^` operator;
+#! see <Ref Oper="\^" BookName="Ref"/>.
+#! @EndChunk
 
 # TODO This should probably be in constraints.gd? And only referenced from here.
 # TODO Or should it actually be a "Chunk" that I can insert in multiple places?
@@ -110,6 +174,7 @@ InstallValue(Vole, rec());
 
 
 #! @Section &Vole; functions emulating built-in &GAP; functions
+#! @SectionLabel gap_wrapper
 
 #! The following table gives a summary of the correspondence between &Vole; and
 #! &GAP; functions
@@ -199,6 +264,10 @@ DeclareGlobalFunction("Vole.Intersection");
 #! @Returns An permutation group
 #! @Description
 #! Text about this.
+#!
+#! @InsertChunk DefaultAction
+#!
+#! <Ref Func="VoleFind.Group"/>
 DeclareGlobalFunction("Vole.Stabilizer");
 #! @EndGroup
 #! @Arguments G, object[, action]
@@ -215,6 +284,11 @@ DeclareGlobalFunction("Vole.Stabiliser");
 #! @Arguments G, object1, object2[, action]
 #! @Description
 #! Text about this.
+#!
+#! @InsertChunk DefaultAction
+#!
+#! <Ref Func="VoleFind.Representative"/>
+#!
 #! @BeginExampleSession
 #! gap> true;
 #! true
@@ -260,6 +334,7 @@ DeclareGlobalFunction("Vole.Centraliser");
 #! @BeginGroup IsConj
 #! @GroupTitle IsConjugate
 #! @Arguments G, x, y
+#! @Returns <K>true</K> or <K>false</K>
 #! @Description
 #! Text about this.
 #! @BeginExampleSession
@@ -271,6 +346,7 @@ DeclareGlobalFunction("Vole.IsConjugate");
 
 
 #! @Section &Vole; functions emulating the &images; package
+#! @SectionLabel images_wrapper
 
 #! The following table gives a summary of the correspondence between &Vole; and
 #! the &images; package.
@@ -305,17 +381,20 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #! @Arguments G, object[, action]
 #! @Returns A permutation
 #! @Description
-#! This function emulates <Ref Func="CanonicalImagePerm" BookName="images" />
+#! This function emulates <Ref Func="CanonicalImagePerm" BookName="images" Style="Number" />
 #! from the &images; package,
 #! although it supports a wider range of objects and actions.
 #!
 #! Text about `Vole.CanonicalPerm`...
 #!
-#! `VoleFind.CanonicalImagePerm` is a synonym for `VoleFind.CanonicalPerm`.
+#! @InsertChunk DefaultAction
+#!
+#! <Ref Func="VoleFind.CanonicalPerm"/>
 #! @EndGroup
 DeclareGlobalFunction("Vole.CanonicalPerm");
 #! @Arguments G, object[, action]
 #! @Group CanonicalPerm
+
 #! @BeginExampleSession
 #! gap> true;
 #! true
@@ -328,11 +407,17 @@ DeclareGlobalFunction("Vole.CanonicalImagePerm");
 #! @Arguments G, object[, action]
 #! @Returns An image of <A>object</A>
 #! @Description
-#! This function emulates <Ref Func="CanonicalImage" BookName="images" />
+#! This function emulates
+#! <Ref Func="CanonicalImage" BookName="images" Style="Number" />
 #! from the &images; package,
 #! although it supports a wider range of objects and actions.
 #!
 #! Text about `Vole.CanonicalImage`...
+#!
+#! @InsertChunk DefaultAction
+#!
+#! <Ref Func="VoleFind.CanonicalPerm"/>
+
 #! @BeginExampleSession
 #! gap> true;
 #! true
@@ -342,6 +427,7 @@ DeclareGlobalFunction("Vole.CanonicalImage");
 
 
 #! @Section &Vole; functions emulating the &Digraphs; package
+#! @SectionLabel digraphs_wrapper
 
 #! The following table gives a summary of the correspondence between &Vole; and
 #! the &Digraphs; package.
@@ -389,6 +475,9 @@ DeclareGlobalFunction("Vole.CanonicalImage");
 #! @Returns A permutation group
 #! @Description
 #! TODO
+#!
+#! <Ref Func="VoleFind.Group"/>
+#!
 #! @BeginExampleSession
 #! gap> true;
 #! true
@@ -403,6 +492,9 @@ DeclareGlobalFunction("Vole.AutomorphismGroup");
 #! @Returns A digraph
 #! @Description
 #! TODO
+#!
+#! <Ref Func="VoleFind.CanonicalPerm"/>
+
 #! @BeginExampleSession
 #! gap> true;
 #! true
@@ -417,6 +509,9 @@ DeclareGlobalFunction("Vole.CanonicalDigraph");
 #! @Returns A permutation
 #! @Description
 #! TODO
+#!
+#! <Ref Func="VoleFind.CanonicalPerm"/>
+
 #! @BeginExampleSession
 #! gap> true;
 #! true

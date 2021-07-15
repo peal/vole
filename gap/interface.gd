@@ -6,9 +6,11 @@
 # Declarations: TODO
 
 #! @Chapter The native &Vole; interface
+#! @ChapterLabel interface
 
 # TODO Note how these support a value option.
 
+#! Similar to &ferret; interface.
 
 #! @Section The <C>VoleFind</C> record
 #! @SectionLabel VoleFind
