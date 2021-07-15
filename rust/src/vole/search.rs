@@ -1,3 +1,5 @@
+use serde::{Deserialize, Serialize};
+
 use crate::vole::subsearch::sub_full_refine;
 
 use super::{backtracking::Backtrack, state::State};
@@ -6,7 +8,7 @@ use super::{solutions::Solutions, subsearch::sub_simple_search};
 
 use tracing::{info, trace, trace_span};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct SearchConfig {
     pub full_graph_refine: bool,
 }

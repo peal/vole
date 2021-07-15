@@ -10,6 +10,7 @@ use super::refiners::{
     digraph::DigraphTransporter,
     simple::{SetSetTransporter, SetTupleTransporter},
 };
+use super::search::SearchConfig;
 
 use anyhow::{Context, Result};
 
@@ -285,6 +286,8 @@ pub struct ProblemConfig {
     pub find_canonical: bool,
     /// Only perform root search
     pub root_search: bool,
+    /// Search configuration
+    pub search_config: SearchConfig,
 }
 
 /// The Problem to be solved

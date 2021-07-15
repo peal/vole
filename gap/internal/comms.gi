@@ -399,6 +399,7 @@ function(points, find_single, find_canonical, constraints, canonical_group, root
                       find_single    := find_single,
                       find_canonical := find_canonical,
                       root_search    := root_search,
+                      search_config := rec(full_graph_refine := false),
                   ),
                   constraints := constraints),
               gapcons,
