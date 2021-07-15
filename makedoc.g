@@ -31,8 +31,6 @@ _autodoc := rec(
                    "doc/expert.autodoc",
                  ],
         scan_dirs := [
-                       "doc",
-                       "gap",
                      ],
     ),
     extract_examples := false,
