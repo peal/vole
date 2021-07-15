@@ -158,7 +158,7 @@ DeclareGlobalFunction("VoleCon.InLeftCoset");
 
 
 #! @BeginGroup StabilizeDoc
-#! @Arguments obj[, action]
+#! @Arguments object[, action]
 ## @Returns An object
 #! @Description
 #! Text about `VoleCon.Stabilize`.
@@ -172,7 +172,7 @@ DeclareGlobalFunction("VoleCon.InLeftCoset");
 #! is given in... TODO
 DeclareGlobalFunction("VoleCon.Stabilize");
 #! @EndGroup
-#! @Arguments obj[, action]
+#! @Arguments object[, action]
 #! @Group StabilizeDoc
 #! @BeginExampleSession
 #! gap> true;
@@ -181,7 +181,7 @@ DeclareGlobalFunction("VoleCon.Stabilize");
 DeclareGlobalFunction("VoleCon.Stabilise");
 
 
-#! @Arguments obj1, obj2[, action]
+#! @Arguments object1, object2[, action]
 ## @Returns An object
 #! @Description
 #! Text about `VoleCon.Transport`.

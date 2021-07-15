@@ -3,54 +3,79 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 #
-# Implementations: TODO
+# Implementations: Vole constraints
 
-VoleCon.Stabilize := function(obj, action...)
-    if Length(action) = 1 then
+VoleCon.Stabilize := function(object, action...)
+    if Length(action) = 1 and IsFunction(action[1]) then
         action := action[1];
     elif Length(action) = 0 then
         action := OnPoints;
     else
-        ErrorNoReturn("VoleCon.Stabilizer args: obj[, action]");
+        ErrorNoReturn("VoleCon.Stabilize args: object[, action]");
     fi;
 
-    if action = OnSets then
-        return VoleRefiner.SetStab(obj);
-    elif action = OnTuples then
-        return VoleRefiner.TupleStab(obj);
-    elif action = OnSetsSets then 
-        return VoleRefiner.SetSetStab(obj);
-    elif action = OnSetsTuples then
-        return VoleRefiner.SetTupleStab(obj);
-    elif action = OnDigraphs then
-        return VoleRefiner.DigraphStab(obj);
+    if action = OnSets and IsSet(object) and ForAll(object, IsPosInt) then
+        return VoleRefiner.SetStab(object);
+    elif action = OnTuples
+      and IsHomogeneousList(object) and ForAll(object, IsPosInt) then
+        return VoleRefiner.TupleStab(object);
+    elif action = OnSetsSets
+      and IsSet(object)
+      and ForAll(object, x -> IsSet(x) and ForAll(x, IsPosInt)) then 
+        return VoleRefiner.SetSetStab(object);
+    elif action = OnSetsTuples
+      and IsSet(object)
+      and ForAll(object, x -> IsHomogeneousList(x) and ForAll(x, IsPosInt)) then
+        return VoleRefiner.SetTupleStab(object);
+    elif action = OnDigraphs and IsList(object)
+      and ForAll(object, x -> IsHomogeneousList(x) and
+                              ForAll(x, y -> y in [1 .. Length(object)])) then
+        return VoleRefiner.DigraphStab(object);
+    elif action = OnDigraphs and IsDigraph(object) then
+        return VoleRefiner.DigraphStab(OutNeighbours(object));
+    elif action = OnPoints and IsPosInt(object) then
+        return VoleRefiner.TupleStab([object]);
     fi;
-    # TODO OnPoints
-    ErrorNoReturn("Invalid action: ", action);
+    ErrorNoReturn("VoleCon.Stabilize: Unrecognised combination of ",
+                  "<object> and <action>: ",
+                  ViewString(object), " and ", NameFunction(action));
 end;
 VoleCon.Stabilise := VoleCon.Stabilize;
 
-VoleCon.Transport := function(obj1, obj2, action...)
-    if Length(action) = 1 then
+VoleCon.Transport := function(object1, object2, action...)
+    if Length(action) = 1 and IsFunction(action[1]) then
         action := action[1];
     elif Length(action) = 0 then
         action := OnPoints;
     else
-        ErrorNoReturn("VoleCon.Transport args: obj1, obj2[, action]");
+        ErrorNoReturn("VoleCon.Transport args: object1, object2[, action]");
     fi;
 
     if action = OnSets then
-        return VoleRefiner.SetTransporter(obj1, obj2);
+        return VoleRefiner.SetTransporter(object1, object2);
     elif action = OnTuples then
-        return VoleRefiner.TupleTransporter(obj1, obj2);
+        return VoleRefiner.TupleTransporter(object1, object2);
     elif action = OnSetsSets then 
-        return VoleRefiner.SetSetTransporter(obj1, obj2);
+        return VoleRefiner.SetSetTransporter(object1, object2);
     elif action = OnSetsTuples then
-        return VoleRefiner.SetTupleTransporter(obj1, obj2);
+        return VoleRefiner.SetTupleTransporter(object1, object2);
+    elif action = OnDigraphs
+      and IsHomogeneousList(object1) and IsList(object2)
+      and ForAll(object1, x -> IsHomogeneousList(x) and
+                               ForAll(x, y -> y in [1 .. Length(object1)]))
+      and ForAll(object1, x -> IsHomogeneousList(x) and
+                               ForAll(x, y -> y in [1 .. Length(object2)])) then
+        return VoleRefiner.DigraphTransporter(object1, object2);
     elif action = OnDigraphs then
-        return VoleRefiner.DigraphTransporter(obj1, obj2);
+        return VoleRefiner.DigraphTransporter(OutNeighbours(object1),
+                                              OutNeighbours(object2));
+    elif action = OnPoints and IsPosInt(object1) and IsPosInt(object2) then
+        return VoleRefiner.TupleTransporter([object1], [object2]);
     fi;
-    ErrorNoReturn("Unrecognised action: ", action);
+    ErrorNoReturn("VoleCon.Stabilize: Unrecognised combination of ",
+                  "<object1>, <object2>, and <action>: ",
+                  ViewString(object1), ", ", ViewString(object2), " and ",
+                  NameFunction(action));
 end;
 
 VoleCon.InGroup := function(G)
