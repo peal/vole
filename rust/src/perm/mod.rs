@@ -1,14 +1,3 @@
-//! Digraphs
-//!
-//! This crate implements permutations on integers
-
-// mod randomreplacement;
-mod builder;
-mod schreiervector;
-pub mod utils;
-
-use builder::PermBuilder;
-
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::cmp::max;
@@ -149,42 +138,12 @@ impl Permutation {
         }
     }
 
-    /// Computes the n-th power of a a permutation
-    /// ```
-    /// use rust_vole::perm::Permutation;
-    /// let a = Permutation::from_vec(vec![2, 0, 1]);
-    /// assert_eq!(a.pow(3), Permutation::id());
-    /// assert_eq!(a.pow(-1), a.inv());
-    /// ```
-    pub fn pow(&self, pow: isize) -> Self {
-        self.build_pow(pow).collapse()
-    }
-
-    /// Computes f * g^-1
-    pub fn divide(&self, other: &Self) -> Self {
-        self.build_divide(other).collapse()
-    }
-
     pub fn lmp(&self) -> Option<usize> {
         if self.values.is_empty() {
             None
         } else {
             Some(self.values.len() - 1)
         }
-    }
-}
-
-impl PermBuilder for Permutation {
-    fn build_apply(&self, x: usize) -> usize {
-        if x < self.values.len() {
-            self.values[x]
-        } else {
-            x
-        }
-    }
-
-    fn collapse(&self) -> Permutation {
-        self.clone()
     }
 }
 
@@ -212,7 +171,6 @@ impl From<Vec<usize>> for Permutation {
     }
 }
 
-#[allow(clippy::eq_op, clippy::neg_cmp_op_on_partial_ord)]
 #[cfg(test)]
 mod tests {
     use super::Permutation;
@@ -277,28 +235,5 @@ mod tests {
         assert_eq!(*cycle2, cycle.multiply(cycle));
         assert_eq!(*id, cycle.multiply(cycle).multiply(cycle));
         assert_ne!(*cycle, cycle.multiply(cycle));
-        assert_eq!(*cycle, cycle.pow(1));
-        assert_eq!(cycle.pow(-1), cycle.multiply(cycle));
-        assert_eq!(cycle.pow(-2), *cycle);
-        assert_eq!(cycle.pow(3), *id);
-        assert_eq!(cycle.pow(10), *cycle);
-    }
-    #[test]
-    fn div_perm() {
-        let id = Permutation::id();
-        let cycle = Permutation::from_vec(vec![1, 2, 0]);
-        let cycle2 = Permutation::from_vec(vec![2, 0, 1]);
-
-        let id = &id;
-        let cycle = &cycle;
-        let cycle2 = &cycle2;
-
-        assert_eq!(*id, id.divide(id));
-        assert_eq!(*cycle, cycle.divide(id));
-        assert_eq!(*cycle2, id.divide(cycle));
-        assert_eq!(*cycle, id.divide(cycle2));
-        assert_eq!(*id, cycle.divide(cycle));
-        assert_eq!(*cycle, id.divide(cycle2));
-        assert_eq!(*cycle2, id.divide(cycle));
     }
 }
