@@ -10,24 +10,33 @@
 #
 gap> START_TEST("vole05.tst");
 
-# doc/_Chapter_interface.xml:17-21
+# doc/_Chapter_interface.xml:17-22
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(VoleFind));
-[ "CanonicalPerm", "Coset", "Group", "Rep", "Representative" ]
+[ "Canonical", "CanonicalImage", "CanonicalPerm", "Coset", "Group", "Rep", 
+  "Representative" ]
 
-# doc/_Chapter_interface.xml:49-52
+# doc/_Chapter_interface.xml:50-53
 gap> true;
 true
 
-# doc/_Chapter_interface.xml:65-68
+# doc/_Chapter_interface.xml:66-69
 gap> true;
 true
 
-# doc/_Chapter_interface.xml:81-84
+# doc/_Chapter_interface.xml:82-85
 gap> true;
 true
 
-# doc/_Chapter_interface.xml:97-100
+# doc/_Chapter_interface.xml:98-101
+gap> true;
+true
+
+# doc/_Chapter_interface.xml:114-117
+gap> true;
+true
+
+# doc/_Chapter_interface.xml:130-133
 gap> true;
 true
 

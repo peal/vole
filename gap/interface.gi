@@ -76,27 +76,40 @@ VoleFind.Coset := function(constraints...)
     return RightCoset(G, x);
 end;
 
-VoleFind.CanonicalPerm := function(G, constraints...)
-    local bounds, ret, max, conf;
+VoleFind.Canonical := function(G, constraints...)
+    local conf, bounds, ret, i;
+
     if Length(constraints) = 1 and IsList(constraints[1]) then
         constraints := constraints[1];
     fi;
-    # TODO does it even make sense for the constraint in a canonical image
-    #      search to VoleCon.InGroup?
-    #      Or should the default for a group be VoleCon.Normalize?
-    #for i in [1 .. Length(constraints)] do
-    #    if IsPermGroup(constraints[i]) then
-    #        constraints[i] := VoleCon.InGroup(constraints[i]);
-    #    elif IsRightCoset(constraints[i]) then
-    #        constraints[i] := VoleCon.InCoset(constraints[i]);
-    #    fi;
-    #od;
+    for i in [1 .. Length(constraints)] do
+        if IsPermGroup(constraints[i]) then
+            constraints[i] := VoleCon.Normalize(constraints[i]);
+        fi;
+    od;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(Concatenation(constraints, [G]), conf.points, false);
     ret := _Vole.CanonicalSolve(bounds.max, G, constraints);
+
     if conf.raw then
         return ret;
     else
-        return ret.canonical;
+        return rec(group := ret.group, canonical := ret.canonical);
     fi;
+end;
+
+VoleFind.CanonicalPerm := function(G, constraints...)
+    local x;
+    x := CallFuncList(VoleFind.Canonical, Concatenation([G], constraints));
+    return x.canonical;
+end;
+
+VoleFind.CanonicalImage := function(G, constraints...)
+    local x;
+    ErrorNoReturn("not yet implemented");
+    x := CallFuncList(VoleFind.Canonical, Concatenation([G], constraints));
+    # TODO: work out how to form the canonical image from the constraints,
+    #       if it's even possible.
+    x.image := "TODO";
+    return x;
 end;

@@ -22,7 +22,8 @@
 #! @BeginExampleSession
 #! gap> LoadPackage("vole", false);;
 #! gap> Set(RecNames(VoleFind));
-#! [ "CanonicalPerm", "Coset", "Group", "Rep", "Representative" ]
+#! [ "Canonical", "CanonicalImage", "CanonicalPerm", "Coset", "Group", "Rep", 
+#!   "Representative" ]
 #! @EndExampleSession
 DeclareGlobalVariable("VoleFind");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
@@ -75,6 +76,17 @@ DeclareGlobalFunction("VoleFind.Group");
 #! @EndExampleSession
 DeclareGlobalFunction("VoleFind.Coset");
 
+
+#! @Arguments G, constraints...
+#! @Returns A record
+#! @Description
+#! Text about `VoleFind.Canonical`.
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("VoleFind.Canonical");
+
 #! @Arguments G, constraints...
 #! @Returns A permutation
 #! @Description
@@ -84,6 +96,16 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleFind.CanonicalPerm");
+
+#! @Arguments G, constraints...
+#! @Returns A record
+#! @Description
+#! Text about `VoleFind.CanonicalImage`.
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("VoleFind.CanonicalImage");
 
 
 #! @Section Bounds associated with a constraint or refiner
