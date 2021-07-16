@@ -129,7 +129,7 @@ VoleCon.Normalize := function(G)
     if not IsPermGroup(G) then
         ErrorNoReturn("VoleCon.Normalize: the argument must be a perm group");
     fi;
-    Error("TODO: not yet implemented");
+    return GB_Con.NormaliserSimple2(LargestMovedPoint(G), G);
 end;
 VoleCon.Normalise := VoleCon.Normalize;
 
