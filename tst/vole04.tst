@@ -10,7 +10,7 @@
 #
 gap> START_TEST("vole04.tst");
 
-# doc/_Chapter_wrapper.xml:78-85
+# doc/_Chapter_wrapper.xml:80-87
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(Vole));
 [ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
@@ -18,47 +18,47 @@ gap> Set(RecNames(Vole));
   "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", 
   "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer" ]
 
-# doc/_Chapter_wrapper.xml:248-251
+# doc/_Chapter_wrapper.xml:250-253
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:271-274
+# doc/_Chapter_wrapper.xml:273-276
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:292-295
+# doc/_Chapter_wrapper.xml:294-297
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:310-313
+# doc/_Chapter_wrapper.xml:312-315
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:328-331
+# doc/_Chapter_wrapper.xml:330-333
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:345-348
+# doc/_Chapter_wrapper.xml:347-350
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:403-406
+# doc/_Chapter_wrapper.xml:405-408
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:430-433
+# doc/_Chapter_wrapper.xml:432-435
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:493-496
+# doc/_Chapter_wrapper.xml:495-498
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:512-515
+# doc/_Chapter_wrapper.xml:514-517
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:531-534
+# doc/_Chapter_wrapper.xml:533-536
 gap> true;
 true
 

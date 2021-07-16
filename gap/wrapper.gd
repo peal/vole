@@ -17,7 +17,9 @@
 #! &Vole; has its own native interface, which is described in
 #! Chapter&nbsp;<Ref Chap="Chapter_interface"/>, and which offers
 #! highly configurable access to the underlying graph backtracking algorithm.
-#! However, in addition to this, &Vole; also provides wrappers around its native
+#! This is the recommended interface to &Vole;
+#!
+#! However, &Vole; also provides wrappers around its native
 #! interface that allow &Vole; to emulate some existing interfaces.
 #!
 #! Where we identify that &GAP;, or a package, provides a function whose result
@@ -33,14 +35,14 @@
 #!   Sect="Section_digraphs_wrapper"/>.
 #!
 #! For example,
-#! the &GAP; function <Ref Oper="Normalizer" Style="Number" BookName="Ref"/> can
-#! be used to compute normalizers of permutation groups.
+#! the &GAP; function <Ref Oper="Normaliser" Style="Number" BookName="Ref"/> can
+#! be used to compute normalisers of permutation groups.
 #! Since &Vole; can also be used for such computations,
 #! we provide the corresponding function
-#! <Ref Func="Vole.Normalizer"/>, which can be used in the same way.
-#! Thus `Normalizer(<A>G</A>,<A>U</A>)` and `Vole.Normalizer(<A>G</A>,<A>U</A>)`
+#! <Ref Func="Vole.Normaliser"/>, which can be used in the same way.
+#! Thus `Normaliser(<A>G</A>,<A>U</A>)` and `Vole.Normaliser(<A>G</A>,<A>U</A>)`
 #! will (barring bugs!)
-#! return equal groups – the normalizer of <A>U</A> in <A>G</A> – for
+#! return equal groups – the normaliser of <A>U</A> in <A>G</A> – for
 #! all permutation groups <A>G</A> and <A>U</A>.
 #!
 #! The purpose of these wrappers is to make &Vole; easier to learn, and use, for
@@ -112,7 +114,7 @@ InstallValue(Vole, rec());
 #! The supported combinations of objects and actions are the same for all of the
 #! functions in this chapter that require one or two objects and a corresponding
 #! action. This applies here to:
-#! * <Ref Func="Vole.Stabilizer"/>
+#! * <Ref Func="Vole.Stabiliser"/>
 #! * <Ref Func="Vole.RepresentativeAction"/>
 #! * <Ref Func="Vole.CanonicalPerm"/>
 #! * <Ref Func="Vole.CanonicalImage"/>
@@ -198,10 +200,10 @@ InstallValue(Vole, rec());
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="Vole.Stabilizer"/>
+#!     <Ref Func="Vole.Stabiliser"/>
 #!   </Item>
 #!   <Item>
-#!     <Ref Oper="Stabilizer" BookName="Ref" Style="Number" />
+#!     <Ref Oper="Stabiliser" BookName="Ref" Style="Number" />
 #!   </Item>
 #! </Row>
 #! <Row>
@@ -214,18 +216,18 @@ InstallValue(Vole, rec());
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="Vole.Normalizer"/>
+#!     <Ref Func="Vole.Normaliser"/>
 #!   </Item>
 #!   <Item>
-#!     <Ref Oper="Normalizer" BookName="Ref" Style="Number" />
+#!     <Ref Oper="Normaliser" BookName="Ref" Style="Number" />
 #!   </Item>
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="Vole.Centralizer"/>
+#!     <Ref Func="Vole.Centraliser"/>
 #!   </Item>
 #!   <Item>
-#!     <Ref Oper="Centralizer" BookName="Ref" Style="Number" />
+#!     <Ref Oper="Centraliser" BookName="Ref" Style="Number" />
 #!   </Item>
 #! </Row>
 #! <Row>
@@ -260,7 +262,7 @@ DeclareGlobalFunction("Vole.Intersection");
 
 
 #! @BeginGroup Stab
-#! @GroupTitle Stabilizer
+#! @GroupTitle Stabiliser
 #! @Arguments G, object[, action]
 #! @Returns An permutation group
 #! @Description
@@ -269,7 +271,7 @@ DeclareGlobalFunction("Vole.Intersection");
 #! @InsertChunk DefaultAction
 #!
 #! <Ref Func="VoleFind.Group"/>
-DeclareGlobalFunction("Vole.Stabilizer");
+DeclareGlobalFunction("Vole.Stabiliser");
 #! @EndGroup
 #! @Arguments G, object[, action]
 #! @Group Stab
@@ -277,7 +279,7 @@ DeclareGlobalFunction("Vole.Stabilizer");
 #! gap> true;
 #! true
 #! @EndExampleSession
-DeclareGlobalFunction("Vole.Stabiliser");
+DeclareGlobalFunction("Vole.Stabilizer");
 
 
 #! @BeginGroup RepAction
@@ -299,12 +301,12 @@ DeclareGlobalFunction("Vole.RepresentativeAction");
 
 
 #! @BeginGroup Norm
-#! @GroupTitle Normalizer
+#! @GroupTitle Normaliser
 #! @Arguments G, U
 #! @Returns An permutation group
 #! @Description
 #! Text about this
-DeclareGlobalFunction("Vole.Normalizer");
+DeclareGlobalFunction("Vole.Normaliser");
 #! @EndGroup
 #! @Arguments G, U
 #! @Group Norm
@@ -312,16 +314,16 @@ DeclareGlobalFunction("Vole.Normalizer");
 #! gap> true;
 #! true
 #! @EndExampleSession
-DeclareGlobalFunction("Vole.Normaliser");
+DeclareGlobalFunction("Vole.Normalizer");
 
 
 #! @BeginGroup Cent
-#! @GroupTitle Centralizer
+#! @GroupTitle Centraliser
 #! @Arguments G, x
 #! @Returns An permutation group
 #! @Description
 #! Text about this
-DeclareGlobalFunction("Vole.Centralizer");
+DeclareGlobalFunction("Vole.Centraliser");
 #! @EndGroup
 #! @Arguments G, x
 #! @Group Cent
@@ -329,7 +331,7 @@ DeclareGlobalFunction("Vole.Centralizer");
 #! gap> true;
 #! true
 #! @EndExampleSession
-DeclareGlobalFunction("Vole.Centraliser");
+DeclareGlobalFunction("Vole.Centralizer");
 
 
 #! @BeginGroup IsConj
