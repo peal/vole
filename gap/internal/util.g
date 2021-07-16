@@ -64,7 +64,9 @@ _Vole.getBounds := function(constraints, initial_max, allow_max_inf)
                       "a containing group, or a constraint of the form ",
                       "VoleCon.LargestMovedPoint(point) or ",
                       "VoleCon.MovedPoints(pointlist), ",
-                      "in order to give a bound explicitly,");
+                      "in order to give a bound explicitly, ",
+                      "type '?Bounds associated' for more information, ",
+                      "or look at the manual...");
     fi;
     return rec(min := min, max := max);
 end;
