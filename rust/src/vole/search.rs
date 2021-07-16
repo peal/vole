@@ -15,7 +15,7 @@ pub struct SearchConfig {
 
 impl Default for SearchConfig {
     fn default() -> Self {
-        SearchConfig {
+        Self {
             full_graph_refine: true,
         }
     }
@@ -211,5 +211,6 @@ pub fn root_search(state: &mut State, sols: &mut Solutions, search_config: &Sear
         panic!("RBase Build Failures 0");
     }
 
-    *sols = sub_simple_search(state, search_config);
+    let (ret_sols, _) = sub_simple_search(state, search_config);
+    *sols = ret_sols;
 }

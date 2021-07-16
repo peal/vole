@@ -1,5 +1,5 @@
-use std::cmp::Ordering;
 use std::hash::Hash;
+use std::{cmp::Ordering, num::Wrapping};
 
 use tracing::info;
 
@@ -22,6 +22,9 @@ pub enum TraceEvent {
         cell: usize,
         size: usize,
         reason: QHash,
+    },
+    FullGraph {
+        hash: Wrapping<QHash>,
     },
     End(),
     EndRefine(),

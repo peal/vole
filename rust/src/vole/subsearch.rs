@@ -1,6 +1,11 @@
+use crate::vole::trace::TraceEvent::FullGraph;
+use std::sync::Arc;
+
 use tracing::info;
 
-use crate::datastructures::{sortedvec::SortedVec, utils::to_vec_vec};
+use crate::datastructures::{
+    digraph::Digraph, hash::do_hash, sortedvec::SortedVec, utils::to_vec_vec,
+};
 
 use super::{
     backtracking::Backtrack,
@@ -64,7 +69,10 @@ pub fn sub_single_search(state: &mut State, search_config: &SearchConfig) -> Sol
     solutions
 }
 
-pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> Solutions {
+pub fn sub_simple_search(
+    state: &mut State,
+    search_config: &SearchConfig,
+) -> (Solutions, Arc<Digraph>) {
     state.save_state();
     let part_depth = state.domain.partition().state_depth() - 1;
 
@@ -74,7 +82,7 @@ pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> Sol
         .into_iter()
         .map(SortedVec::from_unsorted);
 
-    let right_graph = state.domain.digraph_stack().get_depth(part_depth);
+    let right_graph = state.domain.digraph_stack().get_depth(part_depth).clone();
 
     let mut refiners: Vec<Box<dyn Refiner>> = vec![Box::new(DigraphTransporter::new_stabilizer(
         right_graph.clone(),
@@ -94,9 +102,9 @@ pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> Sol
         refiners,
         stats: Default::default(),
     };
-    simple_search(&mut new_state, &mut solutions, &search_config);
+    simple_search(&mut new_state, &mut solutions, search_config);
     state.restore_state();
-    solutions
+    (solutions, right_graph)
 }
 
 pub fn sub_full_refine(
@@ -110,7 +118,7 @@ pub fn sub_full_refine(
 
     let mut new_search_config = (*search_config).clone();
     new_search_config.full_graph_refine = false;
-    let sols = sub_simple_search(state, &new_search_config);
+    let (sols, digraph) = sub_simple_search(state, &new_search_config);
     info!("Sub Sols: {:?}", sols.get());
     let canonical = sols.get_canonical().as_ref().unwrap().perm.clone();
     let can_inv = canonical.inv();
@@ -146,10 +154,10 @@ pub fn sub_full_refine(
     info!("Sub Full graph refine: {:?}", map);
     state.domain.base_refine_partition_by(|&x| map[x])?;
 
-    let part_depth = state.domain.partition().state_depth() - 1;
-
-    let right_graph = state.domain.digraph_stack().get_depth(part_depth);
-    let _graph_canonical = (&**right_graph) ^ &canonical;
+    let graph_canonical = (&*digraph) ^ &canonical;
+    state.domain.add_trace_event(FullGraph {
+        hash: do_hash(graph_canonical),
+    })?;
 
     Ok(())
 }
