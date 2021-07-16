@@ -72,21 +72,39 @@ _Vole.getBounds := function(constraints, initial_max, allow_max_inf)
 end;
 
 
-# Fill in a configuration 'default', using user-supplied values from 'conf'
+# TODO Wilf has been adjusting this and it's still a bit of a work in progress
+# I want the 'main' configuration interface to just be listing the options
+# as value options individually, i.e.
+# VoleFind.Group(constraints : points := 5);
+# VoleFind.Group(constraints : raw := true);
+#
+# For me the question is: do we still want to support the conf := rec() way
+# of doing things too? As both a ValueOption and as an optional final
+# argument? Currently you can give it as a value option and it still works
+# (and overrides individual options) but I don't think it's sensible to keep
+# both ways around. I'll talk to Chris about it.
+#
+# Fill in a configuration 'default', using user-supplied values from
+# ValueOptions
 _Vole.getConfig := function(default)
     local r, conf;
 
     conf := ValueOption("conf");
     if conf = fail then
-        return default;
-    elif IsRecord(conf) then
-        for r in RecNames(conf) do
-            if not IsBound(default.(r)) then
-                ErrorNoReturn("Vole: Invalid config key - ", r);
-            fi;
-            default.(r) := conf.(r);
-        od;
-        return default;
+        conf := rec();
+    elif not IsRecord(conf) then
+        ErrorNoReturn("Vole: The value option 'conf' must be a record, not ",
+                      conf);
     fi;
-    ErrorNoReturn("Vole: The value option 'conf' must be a record, not ", conf);
+    for r in RecNames(default) do
+        #if not IsBound(default.(r)) then
+        #    ErrorNoReturn("Vole: Invalid config key - ", r);
+        #fi;
+        if IsBound(conf.(r)) then
+            default.(r) := conf.(r);
+        elif ValueOption(r) <> fail then
+            default.(r) := ValueOption(r);
+        fi;
+    od;
+    return default;
 end;
