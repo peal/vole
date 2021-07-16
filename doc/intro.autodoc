@@ -13,7 +13,7 @@ In full generality,
 kinds of properties, or **constraints**; details of these properties are
 given later.
 Problems that can be formulated in this way include, for example, the
-computation of normalizers, set stabilizers, subgroup intersections, and graph
+computation of normalisers, set stabilisers, subgroup intersections, and graph
 automorphisms, and testing subgroup conjugacy and graph isomorphism.
 
 &Vole; can also compute canonical labellings and images of various kinds of
@@ -21,6 +21,8 @@ objects under an action of an arbitrary permutation group.
 This includes, for example, the canonical image of a digraph under the natural
 action of an arbitrary permutation group, or the canonical image of a
 permutation group under conjugation by another.
+<B>As far as we are aware, most of this ‘canonical’ functionality is not
+possible with existing tools</B>.
 
 In order to offer this functionality, &Vole; implements the
 **graph backtracking** framework,
@@ -138,7 +140,7 @@ and&nbsp;<Ref Chap="Chapter_expert"/> are more likely change.
 The main focus of our future work on &Vole; will be on improving the performance
 of &Vole;, through both technical and mathematical means.  This may involve
 changes to the design of the algorithm itself, and the improvement or addition
-of refiners, especially for normalizers and conjugacy.
+of refiners, especially for normalisers and conjugacy.
 See Section&nbsp;<Ref Sect="Section_performance"/> for further comments on the
 performance of &Vole;.
 
@@ -206,8 +208,8 @@ cases.
   &Vole; communicates with the Rust component of &Vole;. This is sometimes
   particularly noticeable when using &Vole; for the first time in a &GAP;
   session.  This is exacerbated by the fact that &Vole; does not yet include its
-  full own implementation of stabilizer chains, and so it uses &GAP;'s
-  stabilizer chains instead. This means that &GAP; and the Rust component must
+  full own implementation of stabiliser chains, and so it uses &GAP;'s
+  stabiliser chains instead. This means that &GAP; and the Rust component must
   communicate heavily during a typical search, and this can incur a significant
   time penalty.  Implementing Rust-level stabiliser chains is a work in
   progress.
