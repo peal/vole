@@ -1,6 +1,157 @@
 @Chapter Tutorial
 @ChapterLabel tut
 
-@Section Thingy
 
-We should write a really beautiful tutorial :)
+@Section Computing the intersection of a normaliser and a stabiliser
+
+Suppose that we wish to compute the intersection of the stabiliser in
+$M_{12}$ of the set $\{1,2,4,5\}$ with the normaliser of $H$ in $G$,
+where $H$ and $G$ are defined by the generating sets below.
+
+@BeginExampleSession
+gap> M12 := MathieuGroup(12);;
+gap> S := [ 1, 2, 4, 5 ];;
+gap> G := Group([(1,8,7,2,3,10,9,4)(5,6,11,12), (3,11)(4,12,6,8,10)]);;
+gap> H := Group([(1,2,3,4,9,10,5,6,11,8)(7,12), (1,5,9)(6,12)(8,10)]);;
+@EndExampleSession
+
+Thus we wish to compute
+$\operatorname{Stab}_{M_{12}}(\{1,2,3,5\}) \cap N_{G}(H)$.
+
+For future reference, we note that the result is a dihedral group of order 8:
+
+@BeginExampleSession
+gap> answer := Group([(1,2)(3,10)(4,5)(6,7)(8,9)(11,12),
+>                     (2,4)(3,7)(8,12)(9,11)]);
+Group([ (1,2)(3,10)(4,5)(6,7)(8,9)(11,12), (2,4)(3,7)(8,12)(9,11) ])
+gap> StructureDescription(answer);
+"D8"
+@EndExampleSession
+
+
+@Subsection The general &GAP; approach
+
+With the &GAP; library, there are several ways to compute this.
+For example, we can stick as closely to the statement as possible, and first
+compute the stabiliser and the normaliser separately, and then intersect them:
+
+@BeginExampleSession
+gap> Intersection(Stabiliser(M12, S, OnSets),
+>                 Normaliser(G, H))
+> = answer;
+true
+@EndExampleSession
+
+Or we can slightly re-think the task, and first intersect $M_{12}$ with $G$,
+and then compute the stabiliser of the set in that smaller group,
+and finally compute the normaliser of $H$ in that (even smaller) stabiliser: 
+
+@BeginExampleSession
+gap> M12andG := Intersection(M12, G);;
+gap> stab := Stabiliser(M12andG, S, OnSets);;
+gap> Normaliser(stab, H) = answer;
+true
+@EndExampleSession
+
+Or we could switch things in the previous example and compute the normaliser
+before computing the stabiliser in that normaliser:
+
+@BeginExampleSession
+gap> M12andG := Intersection(M12, G);;
+gap> norm := Normaliser(M12andG, H);;
+gap> Stabiliser(norm, S, OnSets) = answer;
+true
+@EndExampleSession
+
+There are several further combinations. Each of the above strategies can be
+emulated in &Vole; by prepending “`Vole.`” to the beginning of each call to
+`Stabiliser`, `Normaliser`, and `Intersection`, as described in
+Chapter&nbsp;<Ref Chap="Chapter_wrapper"/>. However, this is not the recommended
+approach, as we will see below.
+
+@BeginExampleSession
+gap> LoadPackage("vole", false);;
+gap> stab := Vole.Stabiliser(M12, S, OnSets);;
+gap> norm := Vole.Normaliser(G, H);;
+gap> answer = Vole.Intersection(stab, norm);
+true
+@EndExampleSession
+
+We quickly realise that solving our problem with the &GAP; library interface
+really requires three separate steps to be undertaken in sequence.
+This raises some potential disadvantages.
+* Although it is clear that each of the above strategies will give
+  the correct answer, it is not clear which approach gives the best performance:
+  should we compute the normaliser in the stabiliser, or vice versa, or
+  should we do something else? It is not necessarily clear.
+* Breaking the problem up into three separate steps requires three
+  instances of a backtrack search, where each instance is unaware of the ones to
+  come. This is not ideal for a number of reasons.
+  * Firstly, backtrack search can be expensive, and so we
+    should aim to minimise the number of times that it is required.
+  * Secondly, a search is quicker when there are more ’restrictions’ on the
+    search space.
+  Therefore, it is typically better to perform one search with many restrictions
+  as opposed to performing several searches that each have few restrictions.
+
+
+@Subsection The general &Vole; approach
+
+The ‘&Vole;’ way of solving this is problem is to do it in one step
+with the function <Ref Func="VoleFind.Group"/>.
+
+For most users, the easiest way to solve the problem with
+<Ref Func="VoleFind.Group"/> is to find a collection of **constraints**
+that together specify the problem.
+Constraints are discussed in Chapter&nbsp;<Ref Chap="Chapter_Constraints"/>,
+and all of the constraints directly offered by &Vole; are contained in the
+record <Ref Var="VoleCon"/>.
+
+We are looking for all permutations that in contained in $M_{12}$ and stabilise
+the set $\{1,2,3,5\}$, and that are also contained in $G$ and normalise $H$.
+Therefore, we can solve the problem with the following constraints:
+
+@BeginExampleSession
+gap> VoleFind.Group(VoleCon.InGroup(M12),
+>                   VoleCon.Stabilize(S, OnSets),
+>                   VoleCon.InGroup(G),
+>                   VoleCon.Normalize(H))
+> = answer;
+true
+@EndExampleSession
+
+&Vole; performs only one search to solve the whole problem.
+&Vole; does this by choosing approach refiners for the collection of constraints
+that it is given.
+
+Refiners are documented in Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>.
+The more confident user may wish to directly specify one or more refiners
+instead of, and/or in addition to, some of the constraints.
+
+For example, a user may know (or just hope) that the group $H$ is
+well-suited to the technique that the refiner `GB_Con.NormaliserSimple` from the
+&GraphBacktracking; package uses to refine for the normaliser.
+This refiner may be included instead of, or as well as, the constraint
+`VoleCon.Normalize(H)`, since the refiner implies that constraint,
+but it is perfectly acceptable to use multiple refiners for the same constraint.
+
+@BeginExampleSession
+gap> VoleFind.Group(VoleCon.InGroup(M12),
+>                   VoleCon.Stabilize(S, OnSets),
+>                   VoleCon.InGroup(G),
+>                   GB_Con.NormaliserSimple(12, H))
+> = answer;
+true
+gap> VoleFind.Group(VoleCon.InGroup(M12),
+>                   VoleCon.Stabilize(S, OnSets),
+>                   VoleCon.InGroup(G),
+>                   VoleCon.Normalise(H),
+>                   GB_Con.NormaliserSimple(12, H))
+> = answer;
+true
+@EndExampleSession
+
+
+@Section Computing a canonical image
+
+Not yet written.
