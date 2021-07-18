@@ -12,6 +12,7 @@ pub struct Canonical {
 
 #[derive(Debug)]
 pub struct Solutions {
+    first_sol_inv: Option<Permutation>,
     sols: Vec<Permutation>,
     orbits: UnionFind<usize>,
     canonical: Option<Canonical>,
@@ -23,6 +24,7 @@ pub struct Solutions {
 impl Solutions {
     pub fn new(max: usize) -> Self {
         Self {
+            first_sol_inv: None,
             sols: vec![],
             orbits: UnionFind::new(max),
             canonical: None,
@@ -33,6 +35,12 @@ impl Solutions {
     }
 
     pub fn add_solution(&mut self, p: &Permutation) {
+        if self.first_sol_inv.is_none() {
+            self.first_sol_inv = Some(p.inv());
+        }
+
+        let _p_coset = p.multiply(&self.first_sol_inv.as_ref().unwrap());
+
         self.sols.push(p.clone());
         let max_p = p.lmp().unwrap_or(1);
         assert!(max_p <= self.orbits.len());
@@ -43,10 +51,16 @@ impl Solutions {
     }
 
     pub fn min_in_orbit(&mut self, i: usize) -> bool {
-        while i >= self.orbits.len() {
-            self.orbits.alloc();
+        match self.first_sol_inv.as_ref() {
+            Some(_) => {
+                let i = self.first_sol_inv.as_ref().unwrap().apply(i);
+                while i >= self.orbits.len() {
+                    self.orbits.alloc();
+                }
+                self.orbits.find(i) == i
+            }
+            None => true,
         }
-        self.orbits.find(i) == i
     }
 
     pub fn orbits(&self) -> &UnionFind<usize> {

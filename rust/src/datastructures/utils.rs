@@ -5,7 +5,7 @@ pub fn to_vec_vec(uf: &disjoint_sets::UnionFind<usize>) -> Vec<Vec<usize>> {
 
     for i in 0..uf.len() {
         let m = uf.find(i);
-        let elms = h.entry(m).or_insert_with(|| -> Vec<usize> {vec![]});
+        let elms = h.entry(m).or_insert_with(|| -> Vec<usize> { vec![] });
         elms.push(i);
     }
 

@@ -192,12 +192,10 @@ impl GapChatType {
         rbase_base: &[usize],
         stats: Stats,
     ) -> anyhow::Result<()> {
-        let sols: Vec<Vec<usize>> = solutions
-            .get()
+        let sols: Vec<Vec<usize>> = solutions.get()
             .iter()
             .map(|s| s.as_vec().iter().map(|x| x + 1).collect())
             .collect();
-
         let search_fix_order = fixed.iter().map(|&x| x + 1).collect();
 
         let rbase_branches = rbase_base.iter().map(|&x| x + 1).collect();
