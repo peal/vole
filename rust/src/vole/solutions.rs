@@ -46,15 +46,14 @@ impl Solutions {
         self.orbits.union_permutation(p);
     }
 
-    pub fn min_in_orbit(&mut self, i: usize) -> bool {
-        match self.first_sol_inv.as_ref() {
-            Some(_) => {
-                let i = self.first_sol_inv.as_ref().unwrap().apply(i);
-                self.orbits.expand_to(i);
-                self.orbits.find(i) == i
-            }
-            None => true,
-        }
+    /// Should we branch on this value at this depth
+    pub fn orbit_needs_searching(&mut self, c: usize, depth: usize) -> bool {
+        self.orbits.orbit_needs_searching(c, depth)
+    }
+
+    /// Mark we have searched this point
+    pub fn set_orbit_searched(&mut self, c: usize, depth: usize) {
+        self.orbits.set_orbit_searched(c, depth)
     }
 
     pub fn orbits(&self) -> &UnionFind {

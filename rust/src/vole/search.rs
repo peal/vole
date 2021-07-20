@@ -79,6 +79,7 @@ pub fn simple_search_recurse(
     state: &mut State,
     sols: &mut Solutions,
     first_branch_in: bool,
+    depth: usize,
     search_config: &SearchConfig,
 ) -> bool {
     state.stats.search_nodes += 1;
@@ -106,6 +107,7 @@ pub fn simple_search_recurse(
     for c in cell {
         let span = trace_span!("C", value = c);
         let _o = span.enter();
+
         if doing_first_branch && first_branch_in {
             state.domain.push_rbase_branch_val(c);
         }
@@ -115,8 +117,14 @@ pub fn simple_search_recurse(
             Side::Right
         };
 
-        // Skip search if we are in the first branch, not on the first thing, and not min in orbit
-        let skip = first_branch_in && !doing_first_branch && !sols.min_in_orbit(c);
+        assert!(!(doing_first_branch && !sols.orbit_needs_searching(c, depth)));
+
+        // Skip search if we are in the first branch, not checked anything in this orbit yet, and not on the first thing.
+        // As 'branch_in_orbit' does something (it stores we explored this point), it is
+        let skip = first_branch_in && !sols.orbit_needs_searching(c, depth);
+        if first_branch_in && !skip {
+            sols.set_orbit_searched(c, depth);
+        }
         if !skip {
             state.save_state();
             let cell_count = state.domain.partition().base_cells().len();
@@ -135,7 +143,13 @@ pub fn simple_search_recurse(
                     && (!search_config.full_graph_refine
                         || sub_full_refine(state, search_config).is_ok())
                 {
-                    let ret = simple_search_recurse(state, sols, doing_first_branch, search_config);
+                    let ret = simple_search_recurse(
+                        state,
+                        sols,
+                        doing_first_branch,
+                        depth + 1,
+                        search_config,
+                    );
                     if !first_branch_in && ret {
                         info!("Backtracking to special node");
                         state.restore_state();
@@ -184,7 +198,7 @@ pub fn simple_single_search(state: &mut State, sols: &mut Solutions, search_conf
     if ret.is_err() {
         return;
     }
-    let _ = simple_search_recurse(state, sols, false, search_config);
+    let _ = simple_search_recurse(state, sols, false, 0, search_config);
     state.restore_state();
     trace!("Finishing Single Permutation Search");
 }
@@ -198,7 +212,7 @@ pub fn simple_search(state: &mut State, sols: &mut Solutions, search_config: &Se
     if ret.is_err() {
         return;
     }
-    let _ = simple_search_recurse(state, sols, true, search_config);
+    let _ = simple_search_recurse(state, sols, true, 0, search_config);
 }
 
 /// Search only the digraph stack created during initalisation

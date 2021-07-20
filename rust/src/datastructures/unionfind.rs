@@ -78,6 +78,23 @@ impl UnionFind {
         }
     }
 
+    /// Should we branch on this value at this depth
+    pub fn orbit_needs_searching(&mut self, c: usize, depth: usize) -> bool {
+        if self.orbit_mins[c] != usize::MAX {
+            return false;
+        }
+
+        assert!(self.depth_explored[c] >= depth);
+        self.depth_explored[c] > depth
+    }
+
+    /// Mark we have searched this point
+    pub fn set_orbit_searched(&mut self, c: usize, depth: usize) {
+        assert_eq!(self.orbit_mins[c], usize::MAX);
+        assert!(self.depth_explored[c] > depth);
+        self.depth_explored[c] = depth;
+    }
+
     pub fn to_vec_vec(&self) -> Vec<Vec<usize>> {
         let mut h: HashMap<usize, Vec<usize>> = HashMap::new();
 
