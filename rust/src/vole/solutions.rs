@@ -1,7 +1,7 @@
+use crate::datastructures::unionfind::UnionFind;
 use std::any::Any;
 
 use crate::perm::Permutation;
-use disjoint_sets::UnionFind;
 
 #[derive(Debug)]
 pub struct Canonical {
@@ -14,7 +14,7 @@ pub struct Canonical {
 pub struct Solutions {
     first_sol_inv: Option<Permutation>,
     sols: Vec<Permutation>,
-    orbits: UnionFind<usize>,
+    orbits: UnionFind,
     canonical: Option<Canonical>,
     nodes: u64,
     tracefails: u64,
@@ -39,7 +39,7 @@ impl Solutions {
             self.first_sol_inv = Some(p.inv());
         }
 
-        let _p_coset = p.multiply(&self.first_sol_inv.as_ref().unwrap());
+        let _p_coset = p.multiply(self.first_sol_inv.as_ref().unwrap());
 
         self.sols.push(p.clone());
         let max_p = p.lmp().unwrap_or(1);
@@ -54,16 +54,14 @@ impl Solutions {
         match self.first_sol_inv.as_ref() {
             Some(_) => {
                 let i = self.first_sol_inv.as_ref().unwrap().apply(i);
-                while i >= self.orbits.len() {
-                    self.orbits.alloc();
-                }
+                self.orbits.expand_to(i);
                 self.orbits.find(i) == i
             }
             None => true,
         }
     }
 
-    pub fn orbits(&self) -> &UnionFind<usize> {
+    pub fn orbits(&self) -> &UnionFind {
         &self.orbits
     }
 

@@ -3,9 +3,7 @@ use std::sync::Arc;
 
 use tracing::info;
 
-use crate::datastructures::{
-    digraph::Digraph, hash::do_hash, sortedvec::SortedVec, utils::to_vec_vec,
-};
+use crate::datastructures::{digraph::Digraph, hash::do_hash, sortedvec::SortedVec};
 
 use super::{
     backtracking::Backtrack,
@@ -123,7 +121,7 @@ pub fn sub_full_refine(
     let canonical = sols.get_canonical().as_ref().unwrap().perm.clone();
     let can_inv = canonical.inv();
     let orbits = sols.orbits();
-    let v = to_vec_vec(orbits);
+    let v = orbits.to_vec_vec();
     info!("Sub dump {:?} {:?}", canonical, v);
     // We need to order the orbits in the context of the canonical image
     let mut v_can: Vec<Vec<usize>> = v
