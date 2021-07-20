@@ -8,17 +8,17 @@ edition = "2018"
 
 [dependencies]
 tracing = "0.1.25"
-tracing-subscriber = "0.2.17"
+tracing-subscriber = "0.2.19"
 tracing-appender = "0.1"
-structopt = "0.3.21"
-anyhow = "1.0.39"
+structopt = "0.3.22"
+anyhow = "1.0.42"
 smallbitvec = "2.5"
-serde = { version = "1.0.124", features=["rc", "derive"]}
+serde = { version = "1.0.126", features=["rc", "derive"]}
 serde_json = "1.0.64"
-rand = "0.8.3"
-rand_chacha = "0.3.0"
-indexmap = {features=["serde"], version = "1.6.2"}
-itertools = "0.10.0"
+rand = "0.8.4"
+rand_chacha = "0.3.1"
+indexmap = {features=["serde"], version = "1.7.0"}
+itertools = "0.10.1"
 seahash = "4.1.0"
 bitflags = "1.2"
 lazy_static = "1.4"
