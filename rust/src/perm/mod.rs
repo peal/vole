@@ -153,9 +153,17 @@ impl PartialEq for Permutation {
     }
 }
 
+impl Eq for Permutation {}
+
 impl PartialOrd for Permutation {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.values.cmp(&other.values))
+    fn partial_cmp(&self, other: &Permutation) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Permutation {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.values.cmp(&other.values)
     }
 }
 
