@@ -42,12 +42,8 @@ impl Solutions {
         let _p_coset = p.multiply(self.first_sol_inv.as_ref().unwrap());
 
         self.sols.push(p.clone());
-        let max_p = p.lmp().unwrap_or(1);
-        assert!(max_p <= self.orbits.len());
 
-        for i in 0..max_p {
-            self.orbits.union(i, p.apply(i));
-        }
+        self.orbits.union_permutation(p);
     }
 
     pub fn min_in_orbit(&mut self, i: usize) -> bool {

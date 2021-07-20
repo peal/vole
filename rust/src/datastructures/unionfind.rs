@@ -1,20 +1,27 @@
 use std::collections::HashMap;
 
+use crate::perm::Permutation;
+
+/// A union-find with an extra value 'depth_explored', which is stored per union. When two
+/// unions are combined, they take the smallest 'depth_explored' value of their components.
 #[derive(Debug)]
 pub struct UnionFind {
     orbit_mins: Vec<usize>,
+    depth_explored: Vec<usize>,
 }
 
 impl UnionFind {
     pub fn new(size: usize) -> Self {
         Self {
             orbit_mins: vec![usize::MAX; size],
+            depth_explored: vec![usize::MAX; size],
         }
     }
 
     pub fn expand_to(&mut self, size: usize) {
         while self.orbit_mins.len() < size {
             self.orbit_mins.push(usize::MAX);
+            self.depth_explored.push(usize::MAX);
         }
     }
 
@@ -29,12 +36,28 @@ impl UnionFind {
         p
     }
 
+    pub fn depth_explored(&self, p: usize) -> usize {
+        let find_p = self.find(p);
+        self.depth_explored[find_p]
+    }
+
+    pub fn set_depth_explored(&mut self, p: usize, depth: usize) {
+        let find_p = self.find(p);
+        assert!(self.depth_explored[find_p] > depth);
+        self.depth_explored[find_p] = depth;
+    }
+
     pub fn union(&mut self, a: usize, b: usize) -> bool {
+        if a == b {
+            return false;
+        }
         let af = self.find(a);
         let bf = self.find(b);
         if af == bf {
             return false;
         }
+
+        let min_depth_explored = std::cmp::min(self.depth_explored[af], self.depth_explored[bf]);
 
         let base = if af < bf { af } else { bf };
 
@@ -43,7 +66,16 @@ impl UnionFind {
         self.orbit_mins[a] = base;
         self.orbit_mins[b] = base;
         self.orbit_mins[base] = usize::MAX;
+        self.depth_explored[base] = min_depth_explored;
         true
+    }
+
+    pub fn union_permutation(&mut self, p: &Permutation) {
+        let max_p = p.lmp().unwrap_or(0) + 1;
+
+        for i in 0..max_p {
+            self.union(i, p.apply(i));
+        }
     }
 
     pub fn to_vec_vec(&self) -> Vec<Vec<usize>> {
