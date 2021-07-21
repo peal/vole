@@ -122,9 +122,6 @@ pub fn simple_search_recurse(
         // Skip search if we are in the first branch, not checked anything in this orbit yet, and not on the first thing.
         // As 'branch_in_orbit' does something (it stores we explored this point), it is
         let skip = first_branch_in && !sols.orbit_needs_searching(c, depth);
-        if first_branch_in && !skip {
-            sols.set_orbit_searched(c, depth);
-        }
         if !skip {
             state.save_state();
             let cell_count = state.domain.partition().base_cells().len();
@@ -162,7 +159,12 @@ pub fn simple_search_recurse(
                 state.stats.trace_fail_nodes += 1;
             }
             state.restore_state();
+
+            if first_branch_in {
+                sols.set_orbit_searched(c, depth);
+            }
         }
+
         doing_first_branch = false;
     }
     false

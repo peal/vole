@@ -39,21 +39,28 @@ impl Solutions {
             self.first_sol_inv = Some(p.inv());
         }
 
-        let _p_coset = p.multiply(self.first_sol_inv.as_ref().unwrap());
+        let p_coset = p.multiply(self.first_sol_inv.as_ref().unwrap());
 
         self.sols.push(p.clone());
 
-        self.orbits.union_permutation(p);
+        self.orbits.union_permutation(&p_coset);
     }
 
     /// Should we branch on this value at this depth
     pub fn orbit_needs_searching(&mut self, c: usize, depth: usize) -> bool {
-        self.orbits.orbit_needs_searching(c, depth)
+        match &self.first_sol_inv {
+            None => true,
+            Some(perm) => self.orbits.orbit_needs_searching(perm.apply(c), depth),
+        }
     }
 
     /// Mark we have searched this point
     pub fn set_orbit_searched(&mut self, c: usize, depth: usize) {
-        self.orbits.set_orbit_searched(c, depth)
+        let p = self
+            .first_sol_inv
+            .as_ref()
+            .expect("Internal error: Set_Orbit_Searched");
+        self.orbits.set_orbit_searched(p.apply(c), depth)
     }
 
     pub fn orbits(&self) -> &UnionFind {

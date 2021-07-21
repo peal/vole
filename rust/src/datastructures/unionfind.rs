@@ -90,9 +90,9 @@ impl UnionFind {
 
     /// Mark we have searched this point
     pub fn set_orbit_searched(&mut self, c: usize, depth: usize) {
-        assert_eq!(self.orbit_mins[c], usize::MAX);
-        assert!(self.depth_explored[c] > depth);
-        self.depth_explored[c] = depth;
+        let c_f = self.find(c);
+        assert!(self.depth_explored[c_f] >= depth);
+        self.depth_explored[c_f] = depth;
     }
 
     pub fn to_vec_vec(&self) -> Vec<Vec<usize>> {
