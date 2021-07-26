@@ -31,15 +31,9 @@ pub struct DigraphStab {
 
 impl RefinerDescription for DigraphStab {
     fn build_refiner(&self) -> Box<dyn Refiner> {
-        let edges = self
-            .edges
-            .iter()
-            .map(|v| v.iter().map(|x| *x - 1).collect())
-            .collect();
+        let edges = self.edges.iter().map(|v| v.iter().map(|x| *x - 1).collect()).collect();
 
-        Box::new(DigraphTransporter::new_stabilizer(Arc::new(
-            Digraph::from_vec(edges),
-        )))
+        Box::new(DigraphTransporter::new_stabilizer(Arc::new(Digraph::from_vec(edges))))
     }
 }
 
@@ -135,11 +129,7 @@ pub struct SetSetStab {
 
 impl RefinerDescription for SetSetStab {
     fn build_refiner(&self) -> Box<dyn Refiner> {
-        let points = self
-            .points
-            .iter()
-            .map(|x| x.iter().map(|&y| y - 1).collect())
-            .collect();
+        let points = self.points.iter().map(|x| x.iter().map(|&y| y - 1).collect()).collect();
         Box::new(SetSetTransporter::new_stabilizer(points))
     }
 }
@@ -163,10 +153,7 @@ impl RefinerDescription for SetSetTransport {
             .iter()
             .map(|x| x.iter().map(|&y| y - 1).collect())
             .collect();
-        Box::new(SetSetTransporter::new_transporter(
-            left_points,
-            right_points,
-        ))
+        Box::new(SetSetTransporter::new_transporter(left_points, right_points))
     }
 }
 
@@ -178,11 +165,7 @@ pub struct SetTupleStab {
 
 impl RefinerDescription for SetTupleStab {
     fn build_refiner(&self) -> Box<dyn Refiner> {
-        let points = self
-            .points
-            .iter()
-            .map(|x| x.iter().map(|&y| y - 1).collect())
-            .collect();
+        let points = self.points.iter().map(|x| x.iter().map(|&y| y - 1).collect()).collect();
         Box::new(SetTupleTransporter::new_stabilizer(points))
     }
 }
@@ -206,10 +189,7 @@ impl RefinerDescription for SetTupleTransport {
             .iter()
             .map(|x| x.iter().map(|&y| y - 1).collect())
             .collect();
-        Box::new(SetTupleTransporter::new_transporter(
-            left_points,
-            right_points,
-        ))
+        Box::new(SetTupleTransporter::new_transporter(left_points, right_points))
     }
 }
 
@@ -308,12 +288,8 @@ pub fn build_constraints(constraints: &[Constraint]) -> Vec<Box<dyn Refiner>> {
 pub fn read_problem<R: BufRead>(prob: &mut R) -> Result<Problem> {
     let mut line = String::new();
     let _ = prob.read_line(&mut line)?;
-    let parsed: Problem = serde_json::from_str(&line).context(
-        "Invalid problem specification. Does one of your constraints have the wrong argument type?",
-    )?;
-    assert!(
-        parsed.config.points > 1,
-        "Problems must have at least two points"
-    );
+    let parsed: Problem = serde_json::from_str(&line)
+        .context("Invalid problem specification. Does one of your constraints have the wrong argument type?")?;
+    assert!(parsed.config.points > 1, "Problems must have at least two points");
     Ok(parsed)
 }

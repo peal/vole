@@ -96,10 +96,7 @@ impl Permutation {
     /// ```
     pub fn inv(&self) -> Self {
         if self.inv_values.borrow().is_some() {
-            return Self::make_inverse(
-                self.values.clone(),
-                self.inv_values.borrow().clone().unwrap(),
-            );
+            return Self::make_inverse(self.values.clone(), self.inv_values.borrow().clone().unwrap());
         }
 
         let mut v = vec![0; self.values.len()];

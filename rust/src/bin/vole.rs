@@ -40,11 +40,9 @@ fn main() -> anyhow::Result<()> {
     }
 
     let result = panic::catch_unwind(|| -> Result<(), anyhow::Error> {
-        let problem =
-            parse_input::read_problem(&mut GAP_CHAT.lock().unwrap().in_file.as_mut().unwrap())?;
+        let problem = parse_input::read_problem(&mut GAP_CHAT.lock().unwrap().in_file.as_mut().unwrap())?;
 
-        let refiners =
-            RefinerStore::new_from_refiners(parse_input::build_constraints(&problem.constraints));
+        let refiners = RefinerStore::new_from_refiners(parse_input::build_constraints(&problem.constraints));
 
         let tracer = if problem.config.find_canonical {
             trace::Tracer::new()

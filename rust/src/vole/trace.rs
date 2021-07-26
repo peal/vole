@@ -18,21 +18,12 @@ bitflags! {
 
 #[derive(Copy, Clone, Debug, Eq, Ord, PartialEq, PartialOrd, Hash)]
 pub enum TraceEvent {
-    Split {
-        cell: usize,
-        size: usize,
-        reason: QHash,
-    },
-    FullGraph {
-        hash: Wrapping<QHash>,
-    },
+    Split { cell: usize, size: usize, reason: QHash },
+    FullGraph { hash: Wrapping<QHash> },
     End(),
     EndRefine(),
     EndTrace(),
-    NoSplit {
-        cell: usize,
-        reason: QHash,
-    },
+    NoSplit { cell: usize, reason: QHash },
 }
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, Hash)]

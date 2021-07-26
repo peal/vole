@@ -66,20 +66,11 @@ mod tests {
         assert_eq!(set.sorted_iter().cloned().collect::<Vec<_>>(), vec![2]);
         set.insert(0);
         set.insert(3);
-        assert_eq!(
-            set.sorted_iter().cloned().collect::<Vec<_>>(),
-            vec![0, 2, 3]
-        );
+        assert_eq!(set.sorted_iter().cloned().collect::<Vec<_>>(), vec![0, 2, 3]);
         set.insert(4);
-        assert_eq!(
-            set.sorted_iter().cloned().collect::<Vec<_>>(),
-            vec![0, 2, 3, 4]
-        );
+        assert_eq!(set.sorted_iter().cloned().collect::<Vec<_>>(), vec![0, 2, 3, 4]);
         set.clear();
-        assert_eq!(
-            set.sorted_iter().cloned().collect::<Vec<usize>>(),
-            Vec::<usize>::new()
-        );
+        assert_eq!(set.sorted_iter().cloned().collect::<Vec<usize>>(), Vec::<usize>::new());
         assert!(!set.contains(3));
         assert!(!set.contains(0));
         assert!(!set.contains(2));

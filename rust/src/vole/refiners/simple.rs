@@ -50,10 +50,7 @@ impl Refiner for SetTransporter {
         if self.is_group() {
             format!("SetStabilizer of {:?}", self.set_left)
         } else {
-            format!(
-                "SetTransporter of {:?} -> {:?}",
-                self.set_left, self.set_right
-            )
+            format!("SetTransporter of {:?} -> {:?}", self.set_left, self.set_right)
         }
     }
 
@@ -142,10 +139,7 @@ impl Refiner for TupleTransporter {
         if self.is_group() {
             format!("TupleTransporter of {:?}", self.tuple_left)
         } else {
-            format!(
-                "TupleTransporter of {:?} -> {:?}",
-                self.tuple_left, self.tuple_right
-            )
+            format!("TupleTransporter of {:?} -> {:?}", self.tuple_left, self.tuple_right)
         }
     }
 
@@ -188,10 +182,7 @@ pub struct SetSetTransporter {
 }
 
 impl SetSetTransporter {
-    pub fn new_transporter(
-        set_left: SortedVec<SortedVec<usize>>,
-        set_right: SortedVec<SortedVec<usize>>,
-    ) -> Self {
+    pub fn new_transporter(set_left: SortedVec<SortedVec<usize>>, set_right: SortedVec<SortedVec<usize>>) -> Self {
         Self {
             set_left: Rc::new(set_left),
             set_right: Rc::new(set_right),
@@ -212,16 +203,10 @@ impl SetSetTransporter {
             Side::Right => &self.set_right,
         };
 
-        set.iter()
-            .map(|x| x.iter().map(|&y| p.apply(y)).collect())
-            .collect()
+        set.iter().map(|x| x.iter().map(|&y| p.apply(y)).collect()).collect()
     }
 
-    fn compare(
-        &self,
-        lhs: &SortedVec<SortedVec<usize>>,
-        rhs: &SortedVec<SortedVec<usize>>,
-    ) -> Ordering {
+    fn compare(&self, lhs: &SortedVec<SortedVec<usize>>, rhs: &SortedVec<SortedVec<usize>>) -> Ordering {
         lhs.cmp(rhs)
     }
 }
@@ -233,10 +218,7 @@ impl Refiner for SetSetTransporter {
         if self.is_group() {
             format!("SetSetStabilizer of {:?}", self.set_left)
         } else {
-            format!(
-                "SetSetTransporter of {:?} -> {:?}",
-                self.set_left, self.set_right
-            )
+            format!("SetSetTransporter of {:?} -> {:?}", self.set_left, self.set_right)
         }
     }
 
@@ -291,10 +273,7 @@ pub struct SetTupleTransporter {
 }
 
 impl SetTupleTransporter {
-    pub fn new_transporter(
-        set_left: SortedVec<Vec<usize>>,
-        set_right: SortedVec<Vec<usize>>,
-    ) -> Self {
+    pub fn new_transporter(set_left: SortedVec<Vec<usize>>, set_right: SortedVec<Vec<usize>>) -> Self {
         Self {
             set_left: Rc::new(set_left),
             set_right: Rc::new(set_right),
@@ -315,9 +294,7 @@ impl SetTupleTransporter {
             Side::Right => &self.set_right,
         };
 
-        set.iter()
-            .map(|x| x.iter().map(|&y| p.apply(y)).collect())
-            .collect()
+        set.iter().map(|x| x.iter().map(|&y| p.apply(y)).collect()).collect()
     }
 
     fn compare(&self, lhs: &SortedVec<Vec<usize>>, rhs: &SortedVec<Vec<usize>>) -> Ordering {
@@ -332,10 +309,7 @@ impl Refiner for SetTupleTransporter {
         if self.is_group() {
             format!("SetTupleStabilizer of {:?}", self.set_left)
         } else {
-            format!(
-                "SetTupleTransporter of {:?} -> {:?}",
-                self.set_left, self.set_right
-            )
+            format!("SetTupleTransporter of {:?} -> {:?}", self.set_left, self.set_right)
         }
     }
 

@@ -49,11 +49,7 @@ pub fn build_rbase(state: &mut State, search_config: &SearchConfig) {
 
     let cell_count = state.domain.partition().base_cells().len();
 
-    if state
-        .domain
-        .refine_partition_cell_by(cell_num, |x| *x == c)
-        .is_err()
-    {
+    if state.domain.refine_partition_cell_by(cell_num, |x| *x == c).is_err() {
         panic!("RBase Build Failure 1");
     }
 
@@ -87,9 +83,7 @@ pub fn simple_search_recurse(
     let part = state.domain.partition();
 
     if part.base_cells().len() == part.base_domain_size() {
-        return state
-            .refiners
-            .check_solution(&mut state.domain, sols, &mut state.stats);
+        return state.refiners.check_solution(&mut state.domain, sols, &mut state.stats);
     }
 
     let span = trace_span!("B");
@@ -127,27 +121,16 @@ pub fn simple_search_recurse(
             state.save_state();
             let cell_count = state.domain.partition().base_cells().len();
             info!("Try branching on {:?} in cell {:?}", c, cell_num);
-            if state
-                .domain
-                .refine_partition_cell_by(cell_num, |x| *x == c)
-                .is_ok()
-            {
+            if state.domain.refine_partition_cell_by(cell_num, |x| *x == c).is_ok() {
                 assert!(state.domain.partition().base_cells().len() == cell_count + 1);
                 info!("Run refiners");
                 if state
                     .refiners
                     .do_refine(&mut state.domain, side, &mut state.stats)
                     .is_ok()
-                    && (!search_config.full_graph_refine
-                        || sub_full_refine(state, search_config).is_ok())
+                    && (!search_config.full_graph_refine || sub_full_refine(state, search_config).is_ok())
                 {
-                    let ret = simple_search_recurse(
-                        state,
-                        sols,
-                        doing_first_branch,
-                        depth + 1,
-                        search_config,
-                    );
+                    let ret = simple_search_recurse(state, sols, doing_first_branch, depth + 1, search_config);
                     if !first_branch_in && ret != SolutionFound::None {
                         info!("Backtracking to special node");
                         state.restore_state();

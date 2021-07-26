@@ -86,8 +86,7 @@ impl Opt {
             self.port.unwrap() as u16,
         );
         trace!("Connecting to GAP");
-        let t = std::net::TcpStream::connect(socket)
-            .expect("Unable to make connection from ferret to GAP");
+        let t = std::net::TcpStream::connect(socket).expect("Unable to make connection from ferret to GAP");
         trace!("Cloning socket");
         let t2 = t.try_clone().unwrap();
         trace!("Connecting finished");
@@ -144,10 +143,7 @@ impl GapChatType {
         }
     }
 
-    pub fn send_request_internal<T, U>(
-        request: &T,
-        mut gap_channel: MutexGuard<Self>,
-    ) -> Result<U, Error>
+    pub fn send_request_internal<T, U>(request: &T, mut gap_channel: MutexGuard<Self>) -> Result<U, Error>
     where
         T: serde::Serialize + std::fmt::Debug,
         U: serde::de::DeserializeOwned + std::fmt::Debug,
@@ -223,11 +219,7 @@ impl GapChatType {
 
         debug!("Sent results to GAP, now reading");
         let mut closing_message = String::new();
-        let _ = self
-            .in_file
-            .as_mut()
-            .unwrap()
-            .read_line(&mut closing_message)?;
+        let _ = self.in_file.as_mut().unwrap().read_line(&mut closing_message)?;
         assert_eq!(closing_message.trim(), "goodbye");
         Ok(())
     }

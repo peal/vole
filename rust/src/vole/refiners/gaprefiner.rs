@@ -42,12 +42,7 @@ enum GapRefinerReturn {
 }
 
 impl GapRefiner {
-    fn extend_part(
-        part: &[usize],
-        max_val: usize,
-        base_size: usize,
-        extended_start: usize,
-    ) -> Vec<usize> {
+    fn extend_part(part: &[usize], max_val: usize, base_size: usize, extended_start: usize) -> Vec<usize> {
         // Points we have to move
         let extra_points = max_val - base_size;
         let mut new_vertlabels = vec![usize::MAX; extended_start + extra_points];
@@ -61,12 +56,7 @@ impl GapRefiner {
         new_vertlabels
     }
 
-    fn extend_digraph(
-        digraph: &Digraph,
-        max_val: usize,
-        base_size: usize,
-        extended_start: usize,
-    ) -> Digraph {
+    fn extend_digraph(digraph: &Digraph, max_val: usize, base_size: usize, extended_start: usize) -> Digraph {
         // Points we have to move
         let base_verts = 0..base_size;
         let more_verts = extended_start..(extended_start + (max_val - base_size));
@@ -83,12 +73,7 @@ impl GapRefiner {
         }
     }
 
-    fn generic_refine(
-        &mut self,
-        state: &mut DomainState,
-        refiner_type: &str,
-        side: Side,
-    ) -> trace::Result<()> {
+    fn generic_refine(&mut self, state: &mut DomainState, refiner_type: &str, side: Side) -> trace::Result<()> {
         let ret_list: Vec<GapRefinerReturn> = GapChatType::send_request(&(
             "refiner",
             &self.gap_id,
@@ -161,12 +146,7 @@ impl GapRefiner {
                 }
 
                 if let Some(raw_digraph) = digraph {
-                    digraph = Some(Self::extend_digraph(
-                        &raw_digraph,
-                        max_val,
-                        base_size,
-                        extended_size,
-                    ));
+                    digraph = Some(Self::extend_digraph(&raw_digraph, max_val, base_size, extended_size));
                 };
             }
 
@@ -187,8 +167,7 @@ impl GapRefiner {
     }
 
     fn compare(&self, lhs: &GapRef, rhs: &GapRef) -> std::cmp::Ordering {
-        let ret: isize =
-            GapChatType::send_request(&("refiner", &self.gap_id, "compare", lhs, rhs)).unwrap();
+        let ret: isize = GapChatType::send_request(&("refiner", &self.gap_id, "compare", lhs, rhs)).unwrap();
         match ret {
             -1 => std::cmp::Ordering::Less,
             0 => std::cmp::Ordering::Equal,
@@ -238,8 +217,7 @@ impl Backtrack for GapRefiner {
     }
 
     fn restore_state(&mut self) {
-        let _: bool =
-            GapChatType::send_request(&("refiner", &self.gap_id, "restore_state")).unwrap();
+        let _: bool = GapChatType::send_request(&("refiner", &self.gap_id, "restore_state")).unwrap();
     }
 
     fn state_depth(&self) -> usize {

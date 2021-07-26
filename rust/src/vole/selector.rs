@@ -49,9 +49,7 @@ pub fn select_branching_cell(state: &State) -> usize {
     let choice = Selector::First;
     let cell = match choice {
         Selector::Smallest => find_best_cell(state, |s, i| s.domain.partition().cell(i).len()),
-        Selector::Largest => {
-            find_best_cell(state, |s, i| -(s.domain.partition().cell(i).len() as isize))
-        }
+        Selector::Largest => find_best_cell(state, |s, i| -(s.domain.partition().cell(i).len() as isize)),
         Selector::First => find_first_cell(state),
         _ => unimplemented!(),
     };

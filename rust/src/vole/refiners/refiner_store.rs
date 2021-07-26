@@ -32,22 +32,13 @@ impl RefinerStore {
         let len = refiners.len();
         Self {
             refiners,
-            base_fixed_values_considered: std::iter::repeat_with(|| Backtracking::new(0))
-                .take(len)
-                .collect(),
-            cells_considered: std::iter::repeat_with(|| Backtracking::new(0))
-                .take(len)
-                .collect(),
+            base_fixed_values_considered: std::iter::repeat_with(|| Backtracking::new(0)).take(len).collect(),
+            cells_considered: std::iter::repeat_with(|| Backtracking::new(0)).take(len).collect(),
             saved_depth: 0,
         }
     }
 
-    pub fn init_refine(
-        &mut self,
-        state: &mut DomainState,
-        side: Side,
-        stats: &mut Stats,
-    ) -> trace::Result<()> {
+    pub fn init_refine(&mut self, state: &mut DomainState, side: Side, stats: &mut Stats) -> trace::Result<()> {
         let span = trace_span!("init_refine:", side = debug(side));
         let _e = span.enter();
         for (i, r) in self.refiners.iter_mut().enumerate() {
@@ -59,12 +50,7 @@ impl RefinerStore {
         self.do_refine(state, side, stats)
     }
 
-    pub fn do_refine(
-        &mut self,
-        state: &mut DomainState,
-        side: Side,
-        stats: &mut Stats,
-    ) -> trace::Result<()> {
+    pub fn do_refine(&mut self, state: &mut DomainState, side: Side, stats: &mut Stats) -> trace::Result<()> {
         let span = trace_span!("do_refine");
         let _e = span.enter();
         loop {
@@ -109,11 +95,7 @@ impl RefinerStore {
     }
 
     pub fn get_canonical_images(&self, p: &Permutation) -> Vec<Box<dyn Any>> {
-        return self
-            .refiners
-            .iter()
-            .map(|r| r.any_image(p, Side::Left))
-            .collect();
+        return self.refiners.iter().map(|r| r.any_image(p, Side::Left)).collect();
     }
 
     pub fn get_smaller_canonical_image(
@@ -155,12 +137,7 @@ impl RefinerStore {
         None
     }
 
-    pub fn check_canonical(
-        &mut self,
-        state: &mut DomainState,
-        sols: &mut Solutions,
-        stats: &mut Stats,
-    ) {
+    pub fn check_canonical(&mut self, state: &mut DomainState, sols: &mut Solutions, stats: &mut Stats) {
         let part = state.partition();
         let pnts = part.base_domain_size();
 
@@ -168,8 +145,7 @@ impl RefinerStore {
         let preimage: Vec<usize> = part.base_cells().iter().map(|&x| part.cell(x)[0]).collect();
         // GAP needs 1 indexed
         let preimagegap: Vec<usize> = preimage.iter().map(|&x| x + 1).collect();
-        let postimagegap: Vec<usize> =
-            GapChatType::send_request(&("canonicalmin", &preimagegap)).unwrap();
+        let postimagegap: Vec<usize> = GapChatType::send_request(&("canonicalmin", &preimagegap)).unwrap();
         let postimage: Vec<usize> = postimagegap.into_iter().map(|x| x - 1).collect();
         let mut image: Vec<usize> = vec![0; pnts];
         for i in 0..pnts {
@@ -219,10 +195,7 @@ impl RefinerStore {
     ) -> SolutionFound {
         // Make one final 'finish' event on the trace. This avoids problems where one trace
         // is a prefix of another.
-        if state
-            .add_trace_event(trace::TraceEvent::EndTrace())
-            .is_err()
-        {
+        if state.add_trace_event(trace::TraceEvent::EndTrace()).is_err() {
             return SolutionFound::None;
         }
         if !state.has_rbase() {
@@ -238,8 +211,7 @@ impl RefinerStore {
 
         let mut sol_found = SolutionFound::None;
         if tracing_type.contains(TracingType::SYMMETRY) {
-            let sol =
-                partition_stack::perm_between(state.rbase_partition().as_ref().unwrap(), part);
+            let sol = partition_stack::perm_between(state.rbase_partition().as_ref().unwrap(), part);
             /*
             for r in self.refiners.iter() {
                 let x = r.check(&sol);

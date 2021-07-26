@@ -69,10 +69,7 @@ impl Solutions {
 
     /// Mark we have searched this point
     pub fn set_orbit_searched(&mut self, c: usize, depth: usize) {
-        let p = self
-            .first_sol_inv
-            .as_ref()
-            .expect("Internal error: Set_Orbit_Searched");
+        let p = self.first_sol_inv.as_ref().expect("Internal error: Set_Orbit_Searched");
         self.orbits.set_orbit_searched(p.apply(c), depth)
     }
 

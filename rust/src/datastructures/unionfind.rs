@@ -121,10 +121,7 @@ mod tests {
     #[test]
     fn basic_test() {
         let mut s: UnionFind = UnionFind::new(5);
-        assert_eq!(
-            s.to_vec_vec(),
-            vec![vec![0], vec![1], vec![2], vec![3], vec![4]]
-        );
+        assert_eq!(s.to_vec_vec(), vec![vec![0], vec![1], vec![2], vec![3], vec![4]]);
         s.union(1, 3);
         assert_eq!(s.to_vec_vec(), vec![vec![0], vec![1, 3], vec![2], vec![4]]);
         s.union(2, 4);

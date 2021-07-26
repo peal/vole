@@ -21,11 +21,7 @@ macro_rules! gen_any_image_compare {
             Box::new(val)
         }
 
-        fn any_compare(
-            &self,
-            lhs: &Box<dyn std::any::Any>,
-            rhs: &Box<dyn std::any::Any>,
-        ) -> std::cmp::Ordering {
+        fn any_compare(&self, lhs: &Box<dyn std::any::Any>, rhs: &Box<dyn std::any::Any>) -> std::cmp::Ordering {
             let lhs_ref = lhs.downcast_ref::<$name>().unwrap();
             let rhs_ref = rhs.downcast_ref::<$name>().unwrap();
             self.compare(lhs_ref, rhs_ref)

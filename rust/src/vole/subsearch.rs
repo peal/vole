@@ -8,9 +8,7 @@ use crate::datastructures::{digraph::Digraph, hash::do_hash, sortedvec::SortedVe
 use super::{
     backtracking::Backtrack,
     domain_state::DomainState,
-    refiners::{
-        digraph::DigraphTransporter, refiner_store::RefinerStore, simple::SetTransporter, Refiner,
-    },
+    refiners::{digraph::DigraphTransporter, refiner_store::RefinerStore, simple::SetTransporter, Refiner},
     search::{simple_search, simple_single_search, SearchConfig},
     solutions::Solutions,
     state::State,
@@ -29,14 +27,8 @@ pub fn sub_single_search(state: &mut State, search_config: &SearchConfig) -> Sol
         left_p.restore_state();
     }
 
-    let left_part = left_p
-        .extended_as_list_set()
-        .into_iter()
-        .map(SortedVec::from_unsorted);
-    let right_part = right_p
-        .extended_as_list_set()
-        .into_iter()
-        .map(SortedVec::from_unsorted);
+    let left_part = left_p.extended_as_list_set().into_iter().map(SortedVec::from_unsorted);
+    let right_part = right_p.extended_as_list_set().into_iter().map(SortedVec::from_unsorted);
 
     assert_eq!(part_depth, state.domain.digraph_stack().state_depth());
 
@@ -67,24 +59,16 @@ pub fn sub_single_search(state: &mut State, search_config: &SearchConfig) -> Sol
     solutions
 }
 
-pub fn sub_simple_search(
-    state: &mut State,
-    search_config: &SearchConfig,
-) -> (Solutions, Arc<Digraph>) {
+pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> (Solutions, Arc<Digraph>) {
     state.save_state();
     let part_depth = state.domain.partition().state_depth() - 1;
 
     let right_p = state.domain.partition();
-    let right_part = right_p
-        .extended_as_list_set()
-        .into_iter()
-        .map(SortedVec::from_unsorted);
+    let right_part = right_p.extended_as_list_set().into_iter().map(SortedVec::from_unsorted);
 
     let right_graph = state.domain.digraph_stack().get_depth(part_depth).clone();
 
-    let mut refiners: Vec<Box<dyn Refiner>> = vec![Box::new(DigraphTransporter::new_stabilizer(
-        right_graph.clone(),
-    ))];
+    let mut refiners: Vec<Box<dyn Refiner>> = vec![Box::new(DigraphTransporter::new_stabilizer(right_graph.clone()))];
 
     for right in right_part.into_iter() {
         refiners.push(Box::new(SetTransporter::new_stabilizer(right)));
@@ -105,10 +89,7 @@ pub fn sub_simple_search(
     (solutions, right_graph)
 }
 
-pub fn sub_full_refine(
-    state: &mut State,
-    search_config: &SearchConfig,
-) -> Result<(), TraceFailure> {
+pub fn sub_full_refine(state: &mut State, search_config: &SearchConfig) -> Result<(), TraceFailure> {
     info!(
         "Sub search with input domain {:?}",
         state.domain.partition().extended_as_list_set()

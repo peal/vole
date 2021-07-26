@@ -1,7 +1,4 @@
-use super::{
-    backtracking::Backtrack, domain_state::DomainState, refiners::refiner_store::RefinerStore,
-    stats::Stats,
-};
+use super::{backtracking::Backtrack, domain_state::DomainState, refiners::refiner_store::RefinerStore, stats::Stats};
 
 pub struct State {
     pub domain: DomainState,
