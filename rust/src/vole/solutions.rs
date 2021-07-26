@@ -21,6 +21,13 @@ pub struct Solutions {
     solsfails: u64,
 }
 
+#[derive(Debug, Eq, PartialEq)]
+pub enum SolutionFound {
+    None,
+    First,
+    AfterFirst,
+}
+
 impl Solutions {
     pub fn new(max: usize) -> Self {
         Self {
@@ -34,7 +41,7 @@ impl Solutions {
         }
     }
 
-    pub fn add_solution(&mut self, p: &Permutation) {
+    pub fn add_solution(&mut self, p: &Permutation) -> SolutionFound {
         if self.first_sol_inv.is_none() {
             self.first_sol_inv = Some(p.inv());
         }
@@ -44,6 +51,12 @@ impl Solutions {
         self.sols.push(p.clone());
 
         self.orbits.union_permutation(&p_coset);
+
+        if self.sols.len() == 1 {
+            SolutionFound::First
+        } else {
+            SolutionFound::AfterFirst
+        }
     }
 
     /// Should we branch on this value at this depth

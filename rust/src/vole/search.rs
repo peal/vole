@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::vole::subsearch::sub_full_refine;
 
+use super::solutions::SolutionFound;
 use super::{backtracking::Backtrack, state::State};
 use super::{refiners::Side, selector::select_branching_cell};
 use super::{solutions::Solutions, subsearch::sub_simple_search};
@@ -81,7 +82,7 @@ pub fn simple_search_recurse(
     first_branch_in: bool,
     depth: usize,
     search_config: &SearchConfig,
-) -> bool {
+) -> SolutionFound {
     state.stats.search_nodes += 1;
     let part = state.domain.partition();
 
@@ -147,10 +148,10 @@ pub fn simple_search_recurse(
                         depth + 1,
                         search_config,
                     );
-                    if !first_branch_in && ret {
+                    if !first_branch_in && ret != SolutionFound::None {
                         info!("Backtracking to special node");
                         state.restore_state();
-                        return true;
+                        return ret;
                     }
                 } else {
                     state.stats.trace_fail_nodes += 1;
@@ -167,7 +168,7 @@ pub fn simple_search_recurse(
 
         doing_first_branch = false;
     }
-    false
+    SolutionFound::None
 }
 
 /// Search for a single permutation (for coset intersection)

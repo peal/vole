@@ -2,6 +2,7 @@ use std::cmp::Ordering;
 
 use tracing::{info, trace_span};
 
+use crate::vole::solutions::SolutionFound;
 use crate::vole::trace::TracingType;
 use crate::vole::{
     backtracking::{Backtrack, Backtracking},
@@ -215,14 +216,14 @@ impl RefinerStore {
         state: &mut DomainState,
         sols: &mut Solutions,
         stats: &mut Stats,
-    ) -> bool {
+    ) -> SolutionFound {
         // Make one final 'finish' event on the trace. This avoids problems where one trace
         // is a prefix of another.
         if state
             .add_trace_event(trace::TraceEvent::EndTrace())
             .is_err()
         {
-            return false;
+            return SolutionFound::None;
         }
         if !state.has_rbase() {
             info!("Taking rbase snapshot");
@@ -235,7 +236,7 @@ impl RefinerStore {
 
         let tracing_type = state.tracer().tracing_type();
 
-        let mut is_sol = false;
+        let mut sol_found = SolutionFound::None;
         if tracing_type.contains(TracingType::SYMMETRY) {
             let sol =
                 partition_stack::perm_between(state.rbase_partition().as_ref().unwrap(), part);
@@ -272,11 +273,11 @@ impl RefinerStore {
                     &x.any_image(&Permutation::id(), Side::Right)
                 ) == Ordering::Equal)));
 
-            is_sol = self.refiners.iter().all(|x| x.check(&sol));
+            let is_sol = self.refiners.iter().all(|x| x.check(&sol));
             if is_sol {
                 info!("Found solution: {:?}", sol);
                 stats.good_iso += 1;
-                sols.add_solution(&sol);
+                sol_found = sols.add_solution(&sol);
             } else {
                 stats.bad_iso += 1;
                 info!("Not solution: {:?}", sol);
@@ -287,7 +288,7 @@ impl RefinerStore {
             self.check_canonical(state, sols, stats);
         }
 
-        is_sol
+        sol_found
     }
 }
 
