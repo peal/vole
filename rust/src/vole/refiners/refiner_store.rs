@@ -39,8 +39,7 @@ impl RefinerStore {
     }
 
     pub fn init_refine(&mut self, state: &mut DomainState, side: Side, stats: &mut Stats) -> trace::Result<()> {
-        let span = trace_span!("init_refine:", side = debug(side));
-        let _e = span.enter();
+        let _span = trace_span!("init_refine:", side = debug(side)).entered();
         for (i, r) in self.refiners.iter_mut().enumerate() {
             *self.base_fixed_values_considered[i] = state.partition().base_fixed_values().len();
             *self.cells_considered[i] = state.partition().base_cells().len();
@@ -51,8 +50,7 @@ impl RefinerStore {
     }
 
     pub fn do_refine(&mut self, state: &mut DomainState, side: Side, stats: &mut Stats) -> trace::Result<()> {
-        let span = trace_span!("do_refine");
-        let _e = span.enter();
+        let _span = trace_span!("do_refine").entered();
         loop {
             let init_fixed_points = state.partition().base_fixed_values().len();
 

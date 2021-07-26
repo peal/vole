@@ -30,8 +30,7 @@ pub fn build_rbase(state: &mut State, search_config: &SearchConfig) {
         return;
     }
 
-    let span = trace_span!("B");
-    let _o = span.enter();
+    let _span = trace_span!("B").entered();
 
     let cell_num = select_branching_cell(state);
     let mut cell: Vec<usize> = part.cell(cell_num).to_vec();
@@ -42,8 +41,7 @@ pub fn build_rbase(state: &mut State, search_config: &SearchConfig) {
     let c = cell[0];
     state.domain.push_rbase_branch_val(c);
 
-    let span = trace_span!("C", value = c);
-    let _o = span.enter();
+    let _span = trace_span!("C", value = c).entered();
 
     state.save_state();
 
@@ -86,8 +84,7 @@ pub fn simple_search_recurse(
         return state.refiners.check_solution(&mut state.domain, sols, &mut state.stats);
     }
 
-    let span = trace_span!("B");
-    let _o = span.enter();
+    let _span = trace_span!("B").entered();
 
     let cell_num = select_branching_cell(state);
     let mut cell: Vec<usize> = part.cell(cell_num).to_vec();
@@ -100,8 +97,7 @@ pub fn simple_search_recurse(
     let mut doing_first_branch = first_branch_in;
 
     for c in cell {
-        let span = trace_span!("C", value = c);
-        let _o = span.enter();
+        let _span = trace_span!("C", value = c).entered();
 
         if doing_first_branch && first_branch_in {
             state.domain.push_rbase_branch_val(c);
@@ -115,7 +111,6 @@ pub fn simple_search_recurse(
         assert!(!(doing_first_branch && !sols.orbit_needs_searching(c, depth)));
 
         // Skip search if we are in the first branch, not checked anything in this orbit yet, and not on the first thing.
-        // As 'branch_in_orbit' does something (it stores we explored this point), it is
         let skip = first_branch_in && !sols.orbit_needs_searching(c, depth);
         if !skip {
             state.save_state();
