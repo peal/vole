@@ -23,7 +23,7 @@
 /doc/*.six
 /doc/*.tex
 /doc/*.toc
-/doc/manual.pdf
+/doc/*.pdf
 /doc/_*.xml
 /doc/Vole.xml
 /doc/title.xml

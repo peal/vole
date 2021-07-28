@@ -48,7 +48,7 @@ gap> norm := Vole.Normaliser(G, H);;
 gap> answer = Vole.Intersection(stab, norm);
 true
 
-# doc/_Chapter_tut.xml:148-155
+# doc/_Chapter_tut.xml:153-160
 gap> VoleFind.Group(VoleCon.InGroup(M12),
 >                   VoleCon.Stabilize(S, OnSets),
 >                   VoleCon.InGroup(G),
@@ -56,7 +56,7 @@ gap> VoleFind.Group(VoleCon.InGroup(M12),
 > = answer;
 true
 
-# doc/_Chapter_tut.xml:174-188
+# doc/_Chapter_tut.xml:179-193
 gap> VoleFind.Group(VoleCon.InGroup(M12),
 >                   VoleCon.Stabilize(S, OnSets),
 >                   VoleCon.InGroup(G),

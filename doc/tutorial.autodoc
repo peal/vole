@@ -89,10 +89,11 @@ This raises some potential disadvantages.
   come. This is not ideal for a number of reasons.
   * Firstly, backtrack search can be expensive, and so we
     should aim to minimise the number of times that it is required.
-  * Secondly, a search is quicker when there are more ’restrictions’ on the
-    search space.
-  Therefore, it is typically better to perform one search with many restrictions
-  as opposed to performing several searches that each have few restrictions.
+  * Secondly, a search tends to be quicker when there are more ’restrictions’ on
+    the search space.
+    Therefore, it is typically better to perform one search with many
+    restrictions rather than performing several searches that each have few
+    restrictions.
 
 
 @Subsection The general &Vole; approach
@@ -103,12 +104,16 @@ with the function <Ref Func="VoleFind.Group"/>.
 For most users, the easiest way to solve the problem with
 <Ref Func="VoleFind.Group"/> is to find a collection of **constraints**
 that together specify the problem.
-Constraints are discussed in Chapter&nbsp;<Ref Chap="Chapter_Constraints"/>,
-and all of the constraints directly offered by &Vole; are contained in the
-record <Ref Var="VoleCon"/>.
+Constraints are discussed in Chapter&nbsp;<Ref Chap="Chapter_Constraints"/>.
+The constraints directly offered by &Vole; are contained in the
+record <Ref Var="VoleCon"/>, and are sufficient to solve the problem at hand.
 
-We are looking for all permutations that in contained in $M_{12}$ and stabilise
-the set $\{1,2,3,5\}$, and that are also contained in $G$ and normalise $H$.
+Specifically,
+we are looking for all permutations
+that are contained in $M_{12}$,
+that stabilise the set $\{1,2,3,5\}$,
+that are also contained in $G$, and
+that normalise $H$.
 Therefore, we can solve the problem with the following constraints:
 
 @BeginExampleSession
@@ -121,9 +126,9 @@ true
 @EndExampleSession
 
 &Vole; performs only one search to solve the whole problem.
-&Vole; does this by choosing approach refiners for the collection of constraints
-that it is given.
 
+In order to solve the problem as specified,
+&Vole; chooses appropriate refiners for the given collection of constraints.
 Refiners are documented in Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>.
 The more confident user may wish to directly specify one or more refiners
 instead of, and/or in addition to, some of the constraints.

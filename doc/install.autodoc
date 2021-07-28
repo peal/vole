@@ -88,7 +88,7 @@ cannot be loaded in your &GAP; installation.
   version &jsonVersion;, or newer
   <Cite Key="json"/>.
 
-These packages, a &GAP; itself, in turn have their own dependencies, and so
+These packages, and &GAP; itself, in turn have their own dependencies, and so
 &Vole; inherits these additional dependencies.
 If one of the above packages does not load in your &GAP; installation,
 then please consult the documentation to for that package in order to resolve
@@ -196,7 +196,7 @@ If you wish to test your &Vole; installation more thoroughly, please see
 Section&nbsp;<Ref Sect="Section_tests"/>.
 
 
-@Section Running the &Vole; test suite
+@Section Running &Vole;'s test suite
 @SectionLabel tests
 
 Optionally, if you wish to thoroughly test your &Vole; installation, then you

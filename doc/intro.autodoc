@@ -9,7 +9,9 @@ In this manual, a **group** is a finite permutation group with a finite set of
 moved points, and a **coset** is a coset of such a group.
 
 In full generality,
-&Vole; can be used to find permutations that satisfy conjunctions of particular
+&Vole; can be used to find permutations
+(groups, cosets, or representative elements)
+that satisfy conjunctions of particular
 kinds of properties, or **constraints**; details of these properties are
 given later.
 Problems that can be formulated in this way include, for example, the
@@ -97,7 +99,7 @@ custom breadth-first search that was introduced in
 <Cite Key="MinimalCanonical"/> to compute a <E>canonical image</E> of a set of
 points under the action of an arbitrary permutation group.
 This algorithm built upon the original algorithm of Steve Linton <Cite
-Key="Linton"/> for computing <E>minimal</E> images of sets of points,
+Key="Linton"/> for computing <E>minimal images</E> of sets of points,
 which is available in the &GRAPE; package.
 The overlap of &Vole;'s functionality with &images; is detailed in
 Section&nbsp;<Ref Sect="Section_images_wrapper"/>.
@@ -112,7 +114,8 @@ for computing automorphism groups and canonical images of graphs and digraphs,
 and their labelled variants. The overlap of &Vole;'s functionality with
 &Digraphs; is detailed in Section&nbsp;<Ref Sect="Section_digraphs_wrapper"/>.
 &GRAPE; also provides an interface to <Package>nauty</Package> for computing
-automorphism groups and canonical images of graphs.
+automorphism groups of graphs, and computing canonical images of graphs in the
+symmetric group.
 
 &BacktrackKit; <B>and</B> &GraphBacktracking;
 
@@ -155,15 +158,16 @@ As mentioned in Section&nbsp;<Ref Sect="Section_wip"/>, we are still working
 towards this aim.
 
 The experiments in <Cite Key="GBpublished"/> showed that for some classes of
-problems, graph backtracking requires far smaller searches than does partition
+problems, graph backtracking performs a far smaller search than does partition
 backtracking.  Although this experimental data is very encouraging,
 it is clearly inherently more expensive to compute with graphs
 than it is to compute with ordered partitions.
-This means that the time benefit having a smaller number of nodes in a search
-does not necessarily immediately outweigh the time penalty of performing a
+This means that the time gained by having a smaller number of nodes in a search
+does not necessarily immediately outweigh the time required to perform a
 larger amount of computation at each node.
 Therefore, in rough terms, the focus of future work is on reducing the number of
-search nodes further (with better refiners), and reducing the amount of work
+search nodes further (with more sophisticated refiners),
+and reducing the amount of work
 required at each node of search (with technical optimisations).
 
 Where there is overlap between &Vole; and existing functionality in the &GAP;
@@ -178,17 +182,19 @@ backtracking, and indeed the additional overhead required by graph backtracking
 may make it slower overall.
 
 In particular, we do not expect &Vole; to beat &nauty; (available
-through the &Digraphs; and &GRAPE; packages) at computing automorphisms and
-canonical images of graphs, and we do not expect &Vole; to beat &images; at
-computing canonical images of sets in groups.
+through the &Digraphs; and &GRAPE; packages) at computing automorphisms of
+graphs and canonical images of graphs in the symmetric group,
+and we do not expect &Vole; to beat &images;
+at computing canonical images of sets in groups.
 
 There are further reasons why existing implementations may beat &Vole; in some
 cases.
 
 * <B>No special cases:</B>
   &Vole; passes every problem that it receives on to the
-  full graph backtracking algorithm, with the overheads and poor worst-case
-  complexity that that entails.  On the other hand, other implementations
+  full graph backtracking algorithm,
+  with its corresponding overheads and poor worst-case complexity.
+  On the other hand, other implementations
   (particularly those in the &GAP; library) may provide multiple competing
   methods for solving a problem.  Some of these methods might only apply in
   special cases (such as for simple groups, or abelian group, or primitive
@@ -216,4 +222,4 @@ cases.
 
 These factors together highlight the principle that, for users for whom
 performance is very important, it makes sense to compare and experiment with the
-range of available tools, when it comes to running computations.
+range of available tools when running computations.

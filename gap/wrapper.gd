@@ -17,7 +17,7 @@
 #! &Vole; has its own native interface, which is described in
 #! Chapter&nbsp;<Ref Chap="Chapter_interface"/>, and which offers
 #! highly configurable access to the underlying graph backtracking algorithm.
-#! This is the recommended interface to &Vole;
+#! This is the recommended interface to &Vole;.
 #!
 #! However, &Vole; also provides wrappers around its native
 #! interface that allow &Vole; to emulate some existing interfaces.
