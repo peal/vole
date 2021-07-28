@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-(cd rust && cargo test --release -q)
+(echo "Building Vole..." && cd rust && cargo test --release -q)
 
 
 if which parallel 2> /dev/null; then
