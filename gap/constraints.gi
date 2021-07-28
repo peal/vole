@@ -66,7 +66,7 @@ VoleCon.Transport := function(object1, object2, action...)
       and ForAll(object1, x -> IsHomogeneousList(x) and
                                ForAll(x, y -> y in [1 .. Length(object2)])) then
         return VoleRefiner.DigraphTransporter(object1, object2);
-    elif action = OnDigraphs then
+    elif action = OnDigraphs and IsDigraph(object1) and IsDigraph(object2) then
         return VoleRefiner.DigraphTransporter(OutNeighbours(object1),
                                               OutNeighbours(object2));
     elif action = OnPoints and IsPosInt(object1) and IsPosInt(object2) then
@@ -137,7 +137,21 @@ VoleCon.Centralize := function(G)
     if IsPermGroup(G) then
         # TODO
     elif IsPerm(G) then
-        # TODO
+        # TODO: return a digraph refiner for the digraph of the permutation
+        # Potential problem: how many vertices should the digraph have?
+        # For x = (1,3), should you want to solve
+        # [VoleCon.InGroup(A4), VoleCon.Centralize(x)]
+        # The perm (1,3)(2,4) should be a solution to this, but this
+        # perm does not stabilize any digraph on 3 vertices!
+        # Therefore you would want the digraph to be on [1..4] (but how should
+        # VoleCon.Centralize know to use 4?!) or you'd want the digraph
+        # to be on only the MovedPoints of the perm - which is general, but so
+        # far Digraphs are no allowed to have "holes".
+        #
+        # Or, this is an example where we only want to turn the constraint
+        # into a refiner (which makes us choose the number of vertices) at
+        # the point that the search happens, at which point we have a 'bound'
+        # for the 
     else
         ErrorNoReturn("TODO");
     fi;
