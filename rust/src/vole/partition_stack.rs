@@ -51,7 +51,7 @@ impl MarkStore {
 /// Data about the partition
 #[derive(Clone, Debug)]
 pub struct CellData {
-    /// The partition, and it's inverse
+    /// The partition, and its inverse
     values: Vec<usize>,
     inv_values: Vec<usize>,
 

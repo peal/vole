@@ -129,7 +129,7 @@ impl Digraph {
 
     /// Merge a list of digraphs into this graph. This new graph
     /// will contain all edges both from the original graph, and
-    /// from all elements of `digraphs`. It's automorphism group
+    /// from all elements of `digraphs`. Its automorphism group
     /// should be the intersection of the automorphism groups of
     /// itself, and the elements of digraphs, but it may be larger
     /// in some cases (due to hash collisions).

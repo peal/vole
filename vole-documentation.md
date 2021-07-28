@@ -144,7 +144,7 @@ Which is equivalent to:
 VoleFindCanonical(G, [VoleCon.SetStab(S)]);
 
 
-Note that VoleFindCanonical returns a record, containing the *permutation* which maps S to it's canonical image (this will always be an element of G), and also the stabilizer of S in G (this is calculated while finding the canonical image).
+Note that VoleFindCanonical returns a record, containing the *permutation* which maps S to its canonical image (this will always be an element of G), and also the stabilizer of S in G (this is calculated while finding the canonical image).
 
 What does it mean to be a canonical permutation? The canonical permutation will always be in the first group G. Further, given two sets S and T, then if $\exists g \in G. S^g = T$, then given the *canonical permutations* pS for S and pT for T, $S^{pS} = T^{pT}$.
 
