@@ -1,12 +1,13 @@
 use std::fs::File;
 
+use anyhow::bail;
 use cpu_time::ProcessTime;
 use rust_vole::vole::trace;
 use rust_vole::vole::{domain_state::DomainState, trace::TracingType};
 use rust_vole::vole::{parse_input, state::State};
 use rust_vole::vole::{
     refiners::refiner_store::RefinerStore,
-    search::{simple_search, simple_single_search},
+    search::{simple_coset_search, simple_group_search},
 };
 use rust_vole::vole::{search::root_search, solutions::Solutions};
 
@@ -59,12 +60,16 @@ fn main() -> anyhow::Result<()> {
             stats: Default::default(),
         };
 
+        if problem.config.find_coset && problem.config.find_canonical {
+            bail!("Cannot find coset, and canonical, at the same time");
+        }
+
         if problem.config.root_search {
             root_search(&mut state, &mut solutions, &problem.config.search_config);
-        } else if problem.config.find_single {
-            simple_single_search(&mut state, &mut solutions, &problem.config.search_config);
+        } else if problem.config.find_coset {
+            simple_coset_search(&mut state, &mut solutions, &problem.config.search_config);
         } else {
-            simple_search(&mut state, &mut solutions, &problem.config.search_config);
+            simple_group_search(&mut state, &mut solutions, &problem.config.search_config);
         }
 
         if let Ok(time) = ProcessTime::try_now() {

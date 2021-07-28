@@ -362,13 +362,15 @@ end;
 
 # Solve a problem using Vole
 # 'points': Search will be done in the set [1..points]
-# 'find_single': Find a single solution (equivalent to 'this is a coset problem')
+# 'find_single': Find a single solution (only really makes sense when looking for a coset)
+# 'find_coset': The solution may be a coset (note: This will still find groups, but if false,
+#                and the solution is not a group, the wrong answer will be produced)
 # 'constraints': List of constraints to solve
 # 'canonical_group':
 # TODO: Add Canonical group
 _Vole.Solve :=
-function(points, find_single, find_canonical, constraints, canonical_group, root_search)
-    local ret, gapcons, i, sc, gens, group, result, start_time;
+function(points, find_single, find_coset, find_canonical, constraints, canonical_group, root_search)
+    local ret, gapcons, i, sc, gens, group, result, start_time,cosetrep;
 
     start_time := NanosecondsSinceEpoch();
 
@@ -396,10 +398,10 @@ function(points, find_single, find_canonical, constraints, canonical_group, root
               rec(
                   config := rec(
                       points         := points,
-                      find_single    := find_single,
+                      find_coset    := find_coset,
                       find_canonical := find_canonical,
                       root_search    := root_search,
-                      search_config := rec(full_graph_refine := false),
+                      search_config := rec(full_graph_refine := false, find_single:= find_single),
                   ),
                   constraints := constraints),
               gapcons,
@@ -411,7 +413,18 @@ function(points, find_single, find_canonical, constraints, canonical_group, root
     if find_single then
         result.sol := List(ret.sols, PermList);
     else
-        gens := List(Filtered(ret.sols, x -> not IsEmpty(x)), PermList);
+        gens := List(ret.sols, PermList);
+        result.sols := List(ret.sols, PermList);
+        if IsEmpty(gens) then
+            cosetrep := fail;
+        else
+            cosetrep := gens[1];
+            if find_coset then
+                gens := List(gens, x -> x*(cosetrep^-1));
+            else
+                Assert(0, gens[1] = (), "Invalid group");
+            fi;
+        fi;
         group := Group(gens, ());
         if not IsEmpty(ret.rbase_branches) then
             sc := StabChainBaseStrongGenerators(ret.rbase_branches, gens, ());
@@ -422,6 +435,7 @@ function(points, find_single, find_canonical, constraints, canonical_group, root
         #Assert(0, SizeStabChain(sc) = Size(Group(gens)));
 
         result.group := group;
+        result.cosetrep := cosetrep;
     fi;
 
     if find_canonical then
@@ -432,12 +446,15 @@ function(points, find_single, find_canonical, constraints, canonical_group, root
 end;
 
 _Vole.GroupSolve :=
-{points, constraints} -> _Vole.Solve(points, false, false, constraints, false, false);
+{points, constraints} -> _Vole.Solve(points, false, false, false, constraints, false, false);
 
 _Vole.CosetSolve :=
-{points, constraints} -> _Vole.Solve(points, true, false, constraints, false, false);
+{points, constraints} -> _Vole.Solve(points, false, true, false, constraints, false, false);
+
+_Vole.CosetSingleSolve :=
+{points, constraints} -> _Vole.Solve(points, true, true, false, constraints, false, false);
 
 _Vole.CanonicalSolve :=
-{points, group, constraints} -> _Vole.Solve(points, false, true, constraints, group, false);
+{points, group, constraints} -> _Vole.Solve(points, false, false, true, constraints, group, false);
 
-_Vole.RootSolve := {points, constraints} -> _Vole.Solve(points, false, false, constraints, false, true);
+_Vole.RootSolve := {points, constraints} -> _Vole.Solve(points, false, false, false, constraints, false, true);

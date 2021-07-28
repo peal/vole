@@ -46,7 +46,7 @@ impl Solutions {
             self.first_sol_inv = Some(p.inv());
         }
 
-        let p_coset = p.multiply(self.first_sol_inv.as_ref().unwrap());
+        let p_coset = self.first_sol_inv.as_ref().unwrap().multiply(p);
 
         self.sols.push(p.clone());
 

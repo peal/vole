@@ -19,8 +19,8 @@ VoleFind.Representative := function(arguments...)
 
     if conf.raw then
         return ret;
-    elif not IsEmpty(ret.sol) then
-        return ret.sol[1];
+    elif not IsEmpty(ret.sols) then
+        return ret.sols[1];
     else
         return fail;
     fi;
@@ -46,25 +46,26 @@ VoleFind.Group := function(arguments...)
     fi;
 end;
 
-# TODO: This could be implemented at the Vole level: there should be an
-#       option to continue a coset search after the first element is found
 VoleFind.Coset := function(arguments...)
-    local constraints, x, G;
+    local conf, constraints, bounds, ret;
 
-    ErrorNoReturn("not yet implemented");
-
+    
     if IsEmpty(arguments) then
         ErrorNoReturn("at least one argument must be given");
     fi;
 
     constraints := _Vole.processConstraints(arguments);
-    x := VoleFind.Representative(constraints);
-    if x = fail then
-        return fail;
+    conf := _Vole.getConfig(rec(raw := false, points := infinity));
+    bounds := _Vole.getBounds(constraints, conf.points, false);
+    ret := _Vole.CosetSolve(bounds.max, constraints);
+
+    if conf.raw then
+        return ret;
+    elif ret.cosetrep <> fail then
+        return RightCoset(ret.group, ret.cosetrep);
     fi;
-    # TODO convert the "constraints" into their group versions, as appropriate!
-    G := VoleFind.Group();
-    return RightCoset(G, x);
+
+    return fail;
 end;
 
 VoleFind.Canonical := function(G, arguments...)

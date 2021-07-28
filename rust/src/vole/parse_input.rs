@@ -260,8 +260,8 @@ impl RefinerDescription for Constraint {
 pub struct ProblemConfig {
     /// The problem should be solved on the set [1..`points`]
     pub points: usize,
-    /// Find only a single solution
-    pub find_single: bool,
+    /// Problem may be a coset
+    pub find_coset: bool,
     /// Find canonical image
     pub find_canonical: bool,
     /// Only perform root search

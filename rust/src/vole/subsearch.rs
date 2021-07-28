@@ -9,7 +9,7 @@ use super::{
     backtracking::Backtrack,
     domain_state::DomainState,
     refiners::{digraph::DigraphTransporter, refiner_store::RefinerStore, simple::SetTransporter, Refiner},
-    search::{simple_search, simple_single_search, SearchConfig},
+    search::{simple_coset_search, simple_group_search, SearchConfig},
     solutions::Solutions,
     state::State,
     trace::{self, TraceFailure},
@@ -54,7 +54,7 @@ pub fn sub_single_search(state: &mut State, search_config: &SearchConfig) -> Sol
         refiners,
         stats: Default::default(),
     };
-    simple_single_search(&mut new_state, &mut solutions, search_config);
+    simple_coset_search(&mut new_state, &mut solutions, search_config);
     state.restore_state();
     solutions
 }
@@ -84,7 +84,7 @@ pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> (So
         refiners,
         stats: Default::default(),
     };
-    simple_search(&mut new_state, &mut solutions, search_config);
+    simple_group_search(&mut new_state, &mut solutions, search_config);
     state.restore_state();
     (solutions, right_graph)
 }
