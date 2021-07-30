@@ -10,7 +10,7 @@
 VoleFind.Representative := function(constraints...)
     local bounds, ret, conf, i;
     if Length(constraints) = 1 and IsList(constraints[1]) then
-        constraints := constraints[1];
+        constraints := ShallowCopy(constraints[1]);
     fi;
     for i in [1 .. Length(constraints)] do
         if IsPermGroup(constraints[i]) then
@@ -34,7 +34,7 @@ VoleFind.Rep := VoleFind.Representative;
 VoleFind.Group := function(constraints...)
     local bounds, ret, conf, i;
     if Length(constraints) = 1 and IsList(constraints[1]) then
-        constraints := constraints[1];
+        constraints := ShallowCopy(constraints[1]);
     fi;
     for i in [1 .. Length(constraints)] do
         if IsPermGroup(constraints[i]) then
@@ -57,7 +57,7 @@ end;
 VoleFind.Coset := function(constraints...)
     local G, x, i;
     if Length(constraints) = 1 and IsList(constraints[1]) then
-        constraints := constraints[1];
+        constraints := ShallowCopy(constraints[1]);
     fi;
     for i in [1 .. Length(constraints)] do
         if IsPermGroup(constraints[i]) then
@@ -80,7 +80,7 @@ VoleFind.Canonical := function(G, constraints...)
     local conf, bounds, ret, i;
 
     if Length(constraints) = 1 and IsList(constraints[1]) then
-        constraints := constraints[1];
+        constraints := ShallowCopy(constraints[1]);
     fi;
     for i in [1 .. Length(constraints)] do
         if IsPermGroup(constraints[i]) then
