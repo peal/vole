@@ -23,7 +23,7 @@ GAP: ">= 4.11.0"
 
 needed-pkgs:
     - name: "BacktrackKit"
-      version: ">= 0.4.0"
+      version: ">= 0.4.1"
       url: "https://peal.github.io/BacktrackKit/"
     - name: "Digraphs"
       version: ">= 1.1.1"
@@ -58,7 +58,7 @@ packageinfo: https://peal.github.io/vole/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/peal/vole/releases/download/v0.4.2/Vole-0.4.2.tar.gz
+      url: https://github.com/peal/vole/releases/download/v0.4.2/vole-0.4.2.tar.gz
 
 abstract: |
     <B>Vole</B> is a <B>GAP</B> package that implements graph backtracking, which can be used to solve many problems in finite permutation groups, such as subgroup intersections, normalisers, set stabilisers, and canonical images of groups.

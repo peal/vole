@@ -43,7 +43,7 @@
 
 <p>This chapter contains instructions for getting <strong class="pkg">Vole</strong> up and running.</p>
 
-<p>If you encounter problems, or have any other feedback for the authors, then please free to <span class="URL"><a href="https://github.com/peal/vole/issues">create an issue on our issue tracker</a></span>, or to contact us by any other appropriate means. See the title page of this manual for our contact details. We published <strong class="pkg">Vole</strong> so that our ideas and algorithms could be used by, and be useful to, others in the community. But without feedback, it can be difficult to know whether we are achieving this aim. Therefore we are keen to hear your comments, remarks, and complaints.</p>
+<p>If you encounter problems, or have any other feedback for the authors, then please <span class="URL"><a href="https://github.com/peal/vole/issues">create an issue on our issue tracker</a></span>, or to contact us by any other appropriate means. See the title page of this manual for our contact details. We published <strong class="pkg">Vole</strong> so that our ideas and algorithms could be used by, and be useful to, others in the community. But without feedback, it can be difficult to know whether we are achieving this aim. Therefore we are keen to hear your comments, remarks, and complaints.</p>
 
 <p><a id="X7C0B91E37C8FC531" name="X7C0B91E37C8FC531"></a></p>
 
@@ -51,9 +51,9 @@
 
 <p><strong class="pkg">Vole</strong> requires <strong class="pkg">GAP</strong> 4.11.0 or newer and various other <strong class="pkg">GAP</strong> packages to run, and Rust is required to compile <strong class="pkg">Vole</strong>.</p>
 
-<p>Please note that if you are using <strong class="pkg">Vole</strong> via a <strong class="pkg">GAP</strong> Cygwin release (i.e. if you installed <strong class="pkg">GAP</strong> in Windows via an installer which included <strong class="pkg">Vole</strong>), then <strong class="pkg">Vole</strong> came ready-compiled, and the included versions of <strong class="pkg">GAP</strong> and its packages are sufficient to run <strong class="pkg">Vole</strong> out-of-the- box. Therefore you may skip straight to Section <a href="chap2.html#X7B9EF0AA85282A2E"><span class="RefLink">2.3</span></a>.</p>
+<p>Please note that if you are using <strong class="pkg">Vole</strong> via a <strong class="pkg">GAP</strong> Cygwin release (i.e. if you installed <strong class="pkg">GAP</strong> in Windows via an installer which included <strong class="pkg">Vole</strong>), then <strong class="pkg">Vole</strong> came ready-compiled, and the included versions of <strong class="pkg">GAP</strong> and its packages are sufficient to run <strong class="pkg">Vole</strong> out-of-the-box. Therefore you may skip straight to Section <a href="chap2.html#X7B9EF0AA85282A2E"><span class="RefLink">2.3</span></a>.</p>
 
-<p>In order to compile <strong class="pkg">Vole</strong>, Rust must be installed and available with the <code class="code">cargo</code> command. You can test for Rust by running <code class="code">cargo --version</code> in the terminal. You should obtained a version number in response, such as:</p>
+<p>In order to compile <strong class="pkg">Vole</strong>, Rust must be installed and available with the <code class="code">cargo</code> command. You can test for Rust by running <code class="code">cargo --version</code> in the terminal. You should obtain a version number in response, such as:</p>
 
 
 <div class="example"><pre>
@@ -63,11 +63,11 @@ cargo 1.53.0
 
 <p>If Rust is not available, then running the command <code class="code">cargo --version</code> will give an error such as <code class="code">cargo: command not found</code>. If this is the case, then please follow the instructions at <span class="URL"><a href="https://www.rust-lang.org/tools/install">https://www.rust-lang.org/tools/install</a></span> for installing Rust.</p>
 
-<p>In addition, the following <strong class="pkg">GAP</strong> packages must be available in order to use <strong class="pkg">Vole</strong>. This means that <strong class="pkg">Vole</strong> will not load if one or more of these packages cannot be loaded in your <strong class="pkg">GAP</strong> installation.</p>
+<p>In addition, the following <strong class="pkg">GAP</strong> packages must be available in order to use <strong class="pkg">Vole</strong>. This means that <strong class="pkg">Vole</strong> will not load if one or more of these packages cannot be loaded in your <strong class="pkg">GAP</strong> installation in a new enough version.</p>
 
 
 <ul>
-<li><p><span class="URL"><a href="https://peal.github.io/BacktrackKit"><strong class="pkg">BacktrackKit</strong></a></span> version 0.4.0, or newer <a href="chapBib.html#biBBacktrackKit">[JW21a]</a>.</p>
+<li><p><span class="URL"><a href="https://peal.github.io/BacktrackKit"><strong class="pkg">BacktrackKit</strong></a></span> version 0.4.1, or newer <a href="chapBib.html#biBBacktrackKit">[JW21a]</a>.</p>
 
 </li>
 <li><p><span class="URL"><a href="https://digraphs.github.io/Digraphs"><strong class="pkg">Digraphs</strong></a></span> version 1.1.1, or newer <a href="chapBib.html#biBDigraphs">[BJM+21]</a>.</p>
@@ -86,7 +86,7 @@ cargo 1.53.0
 
 </li>
 </ul>
-<p>These packages, and <strong class="pkg">GAP</strong> itself, in turn have their own dependencies, and so <strong class="pkg">Vole</strong> inherits these additional dependencies. If one of the above packages does not load in your <strong class="pkg">GAP</strong> installation, then please consult the documentation to for that package in order to resolve the problem.</p>
+<p>These packages, and <strong class="pkg">GAP</strong> itself, in turn have their own dependencies, and so <strong class="pkg">Vole</strong> inherits these additional dependencies. If one of the above packages does not load in your <strong class="pkg">GAP</strong> installation, then please consult the documentation for that package in order to resolve the problem.</p>
 
 <p>The following <strong class="pkg">GAP</strong> packages are needed to run <strong class="pkg">Vole</strong>'s test suite, but they are not required to use rest of <strong class="pkg">Vole</strong>, and are therefore optional.</p>
 
@@ -101,15 +101,29 @@ cargo 1.53.0
 </ul>
 <p>See Section <a href="chap2.html#X869B437C7AACA6AF"><span class="RefLink">2.4</span></a> for more information about running the tests included in <strong class="pkg">Vole</strong>.</p>
 
-<p>In order to compile the <strong class="pkg">Vole</strong> documentation, <span class="URL"><a href="https://gap-packages.github.io/AutoDoc"><strong class="pkg">AutoDoc</strong></a></span> version 2019.09.04 or newer must be available. This is usually unnecessary, and is not required in order to use <strong class="pkg">Vole</strong> See Section <a href="chap2.html#X86E906F782C8DA05"><span class="RefLink">2.5</span></a> for more information about compiling the documentation.</p>
+<p>In order to compile the <strong class="pkg">Vole</strong> documentation, <span class="URL"><a href="https://gap-packages.github.io/AutoDoc"><strong class="pkg">AutoDoc</strong></a></span> version 2019.09.04 or newer must be available. This is usually unnecessary, and is not required in order to use <strong class="pkg">Vole</strong>. See Section <a href="chap2.html#X86E906F782C8DA05"><span class="RefLink">2.5</span></a> for more information about compiling the documentation.</p>
 
 <p><a id="X7BB03C16800B014E" name="X7BB03C16800B014E"></a></p>
 
 <h4>2.2 <span class="Heading">Installing <strong class="pkg">Vole</strong></span></h4>
 
-<p>Please note that if you are using <strong class="pkg">Vole</strong> via a <strong class="pkg">GAP</strong> Cygwin release (i.e. if you installed <strong class="pkg">GAP</strong> in Windows via an installer which included <strong class="pkg">Vole</strong>), then <strong class="pkg">Vole</strong> came ready-compiled, and the included versions of <strong class="pkg">GAP</strong> and its packages are sufficient to run <strong class="pkg">Vole</strong> out-of-the- box. Therefore you may skip straight to Section <a href="chap2.html#X7B9EF0AA85282A2E"><span class="RefLink">2.3</span></a>.</p>
+<p>Please note that if you are using <strong class="pkg">Vole</strong> via a <strong class="pkg">GAP</strong> Cygwin release (i.e. if you installed <strong class="pkg">GAP</strong> in Windows via an installer which included <strong class="pkg">Vole</strong>), then <strong class="pkg">Vole</strong> came ready-compiled, and the included versions of <strong class="pkg">GAP</strong> and its packages are sufficient to run <strong class="pkg">Vole</strong> out-of-the-box. Therefore you may skip straight to Section <a href="chap2.html#X7B9EF0AA85282A2E"><span class="RefLink">2.3</span></a>.</p>
 
-<p>Otherwise, if you do not yet have a copy of <strong class="pkg">Vole</strong>, you should download the latest version from <span class="URL"><a href="https://peal.github.io/vole">the <strong class="pkg">Vole</strong> website</a></span> and extract the archive into your <strong class="pkg">GAP</strong> installation's <code class="file">pkg</code> subdirectory. The commands to achieve this may look something like:</p>
+<p>Otherwise, if you do not yet have a copy of <strong class="pkg">Vole</strong>, you should download the latest version of <strong class="pkg">Vole</strong>.</p>
+
+<p>If you have the <span class="URL"><a href="https://gap-packages.github.io/PackageManager"><strong class="pkg">PackageManager</strong></a></span> package installed, then you should be able to use it to download and compile <strong class="pkg">Vole</strong>. Please consult <span class="URL"><a href="https://gap-packages.github.io/PackageManager/doc/chap0_mj.html">the <strong class="pkg">PackageManager</strong> documentation</a></span> for full instructions of how to do this, but the commands should look something like:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Warning: this won't work until PackageManager has been taught about Vole!</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">LoadPackage("PackageManager");</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">InstallPackage("vole");</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">CompilePackage("vole");</span>
+</pre></div>
+
+<p>If this succeeds, you may skip to Section <a href="chap2.html#X7B9EF0AA85282A2E"><span class="RefLink">2.3</span></a>.</p>
+
+<p>Alternatively, you can manually download the latest <code class="code">.tar.gz</code> <strong class="pkg">Vole</strong> archive from <span class="URL"><a href="https://peal.github.io/vole">the <strong class="pkg">Vole</strong> website</a></span> and extract the archive into your <strong class="pkg">GAP</strong> installation's <code class="file">pkg</code> subdirectory. The commands to achieve this may look something like:</p>
 
 
 <div class="example"><pre>
@@ -150,7 +164,7 @@ true
 
 <p>If <code class="code">LoadPackage</code> instead returns <code class="keyw">fail</code>, then <strong class="pkg">Vole</strong> has failed to load. This is probably because <strong class="pkg">GAP</strong> cannot find <strong class="pkg">Vole</strong> or <strong class="pkg">Vole</strong> is not compiled (Section <a href="chap2.html#X7BB03C16800B014E"><span class="RefLink">2.2</span></a>), or one of the dependencies of <strong class="pkg">Vole</strong> is not available (Section <a href="chap2.html#X7C0B91E37C8FC531"><span class="RefLink">2.1</span></a>). In this case, please see the <code class="func">LoadPackage</code> (<a href="../../../doc/ref/chap76.html#X79B373A77B29D1F5"><span class="RefLink">Reference: LoadPackage</span></a>) documentation for ways to help diagnose the problem further.</p>
 
-<p>If you encounter problems, or have any other feedback for the authors, then please free to <span class="URL"><a href="https://github.com/peal/vole/issues">create an issue on our issue tracker</a></span>, or to contact us by any other appropriate means. See the title page of this manual for our contact details. We published <strong class="pkg">Vole</strong> so that our ideas and algorithms could be used by, and be useful to, others in the community. But without feedback, it can be difficult to know whether we are achieving this aim. Therefore we are keen to hear your comments, remarks, and complaints.</p>
+<p>If you encounter problems, or have any other feedback for the authors, then please <span class="URL"><a href="https://github.com/peal/vole/issues">create an issue on our issue tracker</a></span>, or to contact us by any other appropriate means. See the title page of this manual for our contact details. We published <strong class="pkg">Vole</strong> so that our ideas and algorithms could be used by, and be useful to, others in the community. But without feedback, it can be difficult to know whether we are achieving this aim. Therefore we are keen to hear your comments, remarks, and complaints.</p>
 
 <p>Otherwise, <strong class="pkg">Vole</strong> is ready to use. To reassure yourself, you can quickly test that <strong class="pkg">Vole</strong> is behaving as intended by quickly running a search, such that the following one:</p>
 
@@ -172,7 +186,9 @@ true
 
 <p>Optionally, if you wish to thoroughly test your <strong class="pkg">Vole</strong> installation, then you can run the test suite. As well the dependencies of <strong class="pkg">Vole</strong> itself, the test suite requires the <strong class="pkg">GAP</strong> packages <span class="URL"><a href="https://gap-packages.github.io/ferret"><strong class="pkg">ferret</strong></a></span> (version 1.0.2 or newer) and <span class="URL"><a href="https://github.com/ChrisJefferson/QuickCheck"><strong class="pkg">QuickCheck</strong></a></span> (version 0.1 or newer) to be available.</p>
 
-<p>The <code class="file">run-tests.sh</code> script, located in the root directory of <strong class="pkg">Vole</strong>, first tests the Rust component directly, and then tests the <strong class="pkg">GAP</strong>-level interface to the Rust component.</p>
+<p>There are two files that can be invoked to run extesive tests of <strong class="pkg">Vole</strong>: <code class="file">run-tests.sh</code> and <code class="file">tst/testall.g</code>.</p>
+
+<p>The <code class="file">run-tests.sh</code> script, which is located in the root directory of <strong class="pkg">Vole</strong>, begins by testing the Rust component directly, and then it tests the <strong class="pkg">GAP</strong>-level interface to the Rust component. This script requires that the command <code class="code">gap</code>, in your terminal environment, is set up to load the appropriate version of <strong class="pkg">GAP</strong> for <strong class="pkg">Vole</strong>.</p>
 
 
 <div class="example"><pre>
@@ -194,14 +210,14 @@ $ ./run-tests.sh
 
 <p>To compile the manual, it suffices to read <strong class="pkg">Vole</strong>'s <code class="file">makedoc.g</code> file into <strong class="pkg">GAP</strong>.</p>
 
-<p>This can be done directly within <strong class="pkg">GAP</strong> via the function <code class="func">Read</code> (<a href="../../../doc/ref/chap9.html#X8373AC6B7D5F9167"><span class="RefLink">Ref 9.7-1</span></a>).</p>
+<p>This can be done directly within <strong class="pkg">GAP</strong> via the function <code class="func">Read</code> (<a href="../../../doc/ref/chap9.html#X8373AC6B7D5F9167"><span class="RefLink">Ref 9.7-1</span></a>):</p>
 
 
 <div class="example"><pre>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Read("makedoc.g");</span>
 </pre></div>
 
-<p>Alteratively, the <code class="file">makedoc.g</code> file can be read into <strong class="pkg">GAP</strong> by giving its path as an argument to the <strong class="pkg">GAP</strong> executable.</p>
+<p>Alternatively, the <code class="file">makedoc.g</code> file can be read into <strong class="pkg">GAP</strong> by giving its path as an argument to the <strong class="pkg">GAP</strong> executable.</p>
 
 
 <div class="example"><pre>
