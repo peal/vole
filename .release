@@ -1,0 +1,23 @@
+#!/bin/bash
+# This script is intended to be run by the release-gap-package script which is
+# part of the the ReleaseTools for GAP:
+#
+# https://github.com/gap-system/ReleaseTools
+
+set -e
+
+# ensure we are in the same directory as this script
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
+notice_it() {
+    printf '\033[93m%s\033[0m\n' "$*"
+}
+
+notice_it "Fixing the links in the documentation"
+for f in ./*/*.htm* ; do
+  sed \
+    -e 's;href="../../../pkg/digraphs[^\/]*/doc/;href="https://digraphs.github.io/Digraphs/doc/;g' \
+    -e 's;href="../../../pkg/images[^\/]*/doc/;href="https://gap-packages.github.io/images/doc/;g' \
+    "$f" > "$f.bak"
+  mv "$f.bak" "$f"
+done
