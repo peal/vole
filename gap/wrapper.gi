@@ -41,27 +41,34 @@ Vole.Intersection := function(permcolls...)
 end;
 
 Vole.Stabilizer := function(G, object, action...)
-    local con;
+    local con, ret;
     con := CallFuncList(VoleCon.Stabilize, Concatenation([object], action));
-    return VoleFind.Group(G, con);
+    ret := VoleFind.Group(G, con);
+    SetParent(ret, G);
+    return ret;
 end;
 Vole.Stabiliser := Vole.Stabilizer;
 
 Vole.Normalizer := function(G, U)
+    local ret;
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.Normalizer: ",
                       "The first argument must be a perm group");
     elif IsPermGroup(U) then
-        return VoleFind.Group(G, VoleCon.Normalise(U));
+        ret := VoleFind.Group(G, VoleCon.Normalise(U));
     elif IsPerm(U) then
-        return VoleFind.Group(G, VoleCon.Normalise(Group(U)));
+        ret := VoleFind.Group(G, VoleCon.Normalise(Group(U)));
+    else
+        ErrorNoReturn("Vole.Normalizer: The second argument ",
+                      "must a perm group or a permutation");
     fi;
-    ErrorNoReturn("Vole.Normalizer: The second argument ",
-                  "must a perm group or a permutation");
+    SetParent(ret, G);
+    return ret;
 end;
 Vole.Normaliser := Vole.Normalizer;
 
 Vole.Centralizer := function(G, x)
+    local ret;
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.Centralizer: ",
                       "The first argument must be a perm group");
@@ -69,7 +76,9 @@ Vole.Centralizer := function(G, x)
         ErrorNoReturn("Vole.Centralizer: The second argument ",
                       "must be a perm group or a permutation");
     fi;
-    return VoleFind.Group(G, VoleCon.Centralize(x));
+    ret := VoleFind.Group(G, VoleCon.Centralize(x));
+    SetParent(ret, G);
+    return ret;
 end;
 Vole.Centraliser := Vole.Centralizer;
 
