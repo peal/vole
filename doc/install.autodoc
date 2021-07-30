@@ -5,7 +5,7 @@ This chapter contains instructions for getting &Vole; up and running.
 
 @BeginChunk contact
 If you encounter problems, or have any other feedback for the authors, then
-please free to
+please
 <URL>
   <Link>&VoleIssues;</Link>
   <LinkText>create an issue on our issue tracker</LinkText>
@@ -30,7 +30,7 @@ packages to run, and Rust is required to compile &Vole;.
 Please note that if you are using &Vole; via a &GAP; Cygwin release
 (i.e. if you installed &GAP; in Windows via an installer which included &Vole;),
 then &Vole; came ready-compiled, and the included versions of &GAP; and its
-packages are sufficient to run &Vole; out-of-the- box.
+packages are sufficient to run &Vole; out-of-the-box.
 Therefore you may skip straight to Section&nbsp;<Ref Sect="Section_loading"/>.
 @EndChunk
 @InsertChunk CygwinSkip
@@ -38,7 +38,7 @@ Therefore you may skip straight to Section&nbsp;<Ref Sect="Section_loading"/>.
 In order to compile &Vole;, Rust must be installed and available with the
 `cargo` command.
 You can test for Rust by running `cargo --version` in the terminal. You should
-obtained a version number in response, such as:
+obtain a version number in response, such as:
 @BeginLogSession
 $ cargo --version
 cargo 1.53.0
@@ -50,7 +50,7 @@ for installing Rust.
 
 In addition, the following &GAP; packages must be available in order to use
 &Vole;.  This means that &Vole; will not load if one or more of these packages
-cannot be loaded in your &GAP; installation.
+cannot be loaded in your &GAP; installation in a new enough version.
 * <URL>
     <Link>https://peal.github.io/BacktrackKit</Link>
     <LinkText>&BacktrackKit;</LinkText>
@@ -91,7 +91,7 @@ cannot be loaded in your &GAP; installation.
 These packages, and &GAP; itself, in turn have their own dependencies, and so
 &Vole; inherits these additional dependencies.
 If one of the above packages does not load in your &GAP; installation,
-then please consult the documentation to for that package in order to resolve
+then please consult the documentation for that package in order to resolve
 the problem.
 
 The following &GAP; packages are needed to run &Vole;'s test suite, but they are
@@ -114,7 +114,7 @@ In order to compile the &Vole; documentation,
   <Link>https://gap-packages.github.io/AutoDoc</Link>
   <LinkText>&AutoDoc;</LinkText>
 </URL> version &AutoDocVersion; or newer must be available.
-This is usually unnecessary, and is not required in order to use &Vole;
+This is usually unnecessary, and is not required in order to use &Vole;.
 See Section&nbsp;<Ref Sect="Section_compiling_manual"/> for more information
 about compiling the documentation.
 
@@ -125,7 +125,30 @@ about compiling the documentation.
 @InsertChunk CygwinSkip
 
 Otherwise, if you do not yet have a copy of &Vole;, you should download the
-latest version from
+latest version of &Vole;.
+
+If you have the
+<URL>
+  <Link>https://gap-packages.github.io/PackageManager</Link>
+  <LinkText><Package>PackageManager</Package></LinkText>
+</URL>
+package installed, then you should be able to use it to download and compile
+&Vole;. Please consult
+<URL>
+  <Link>https://gap-packages.github.io/PackageManager/doc/chap0_mj.html</Link>
+  <LinkText>the <Package>PackageManager</Package> documentation</LinkText>
+</URL>
+for full instructions of how to do this,
+but the commands should look something like:
+@BeginLogSession
+gap> # Warning: this won't work until PackageManager has been taught about Vole!
+gap> LoadPackage("PackageManager");
+gap> InstallPackage("vole");
+gap> CompilePackage("vole");
+@EndLogSession
+If this succeeds, you may skip to Section&nbsp;<Ref Sect="Section_loading"/>.
+
+Alternatively, you can manually download the latest `.tar.gz` &Vole; archive from
 <URL>
   <Link>&VoleWWW;</Link>
   <LinkText>the &Vole; website</LinkText>
@@ -214,9 +237,15 @@ and
 </URL>
 (version &QuickCheckVersion; or newer) to be available.
 
-The <F>run-tests.sh</F> script, located in the root directory of &Vole;,
-first tests the Rust component directly, and then tests the &GAP;-level
-interface to the Rust component.
+There are two files that can be invoked to run extesive tests of &Vole;:
+<F>run-tests.sh</F> and <F>tst/testall.g</F>.
+
+The <F>run-tests.sh</F> script, which is located in the root directory of
+&Vole;, begins by testing the Rust component directly,
+and then it tests the &GAP;-level interface to the Rust component.
+This script requires that the command `gap`,
+in your terminal environment,
+is set up to load the appropriate version of &GAP; for &Vole;.
 
 @BeginLogSession
 $ ./run-tests.sh
@@ -240,13 +269,13 @@ To compile the manual, it suffices to read &Vole;'s <F>makedoc.g</F> file into
 &GAP;.
 
 This can be done directly within &GAP; via the function
-<Ref Oper="Read" BookName="Ref" Style="Number"/>.
+<Ref Oper="Read" BookName="Ref" Style="Number"/>:
 
 @BeginLogSession
 gap> Read("makedoc.g");
 @EndLogSession
 
-Alteratively, the <F>makedoc.g</F> file can be read into &GAP; by giving its
+Alternatively, the <F>makedoc.g</F> file can be read into &GAP; by giving its
 path as an argument to the &GAP; executable.
 
 @BeginLogSession

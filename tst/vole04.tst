@@ -50,15 +50,15 @@ true
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:509-512
+# doc/_Chapter_wrapper.xml:517-520
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:532-535
+# doc/_Chapter_wrapper.xml:540-543
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:555-558
+# doc/_Chapter_wrapper.xml:563-566
 gap> true;
 true
 

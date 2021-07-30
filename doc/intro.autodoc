@@ -18,15 +18,16 @@ Problems that can be formulated in this way include, for example, the
 computation of normalisers, set stabilisers, subgroup intersections, and graph
 automorphisms, and testing subgroup conjugacy and graph isomorphism.
 
-&Vole; can also compute canonical labellings and images of various kinds of
+&Vole; can also compute canonical labellings and images
+(also known as ‘canonical forms’) of various kinds of
 objects under an action of an arbitrary permutation group.
 This includes, for example, the canonical image of a digraph under the natural
 action of an arbitrary permutation group, or the canonical image of a
 permutation group under conjugation by another.
-<B>As far as we are aware, most of this ‘canonical’ functionality is not
+<B>As far as we are aware, most of this canonical image functionality is not
 possible with existing tools</B>.
 
-In order to offer this functionality, &Vole; implements the
+In order to offer all of this functionality, &Vole; implements the
 **graph backtracking** framework,
 which was introduced in <Cite Key="GBpublished"/>,
 and which generalises the **partition backtracking** framework of Jeffrey Leon
@@ -65,6 +66,8 @@ details of those that are available.
 Chapter&nbsp;<Ref Chap="Chapter_expert"/> gives lower-level details, and
 instructions for the expert use of &Vole;.
 
+@InsertChunk contact
+
 
 @Section &Vole;'s relation to &GAP; and its other packages
 @SectionLabel overlap
@@ -72,55 +75,62 @@ instructions for the expert use of &Vole;.
 The functionality of &Vole; overlaps with that of &GAP; itself, and some of its
 packages.
 However, &Vole;'s functionality goes further than all of them, and has the
-potential to offer better performance in many cases where there is overlap.
+potential to offer better performance in many cases where there is an overlap.
 The perfomance of &Vole; is discussed in
 Section&nbsp;<Ref Sect="Section_performance"/>.
 
 &GAP; <B>itself</B>
 
-&GAP; contains an implementation of Jeffrey Leon's
+&GAP; <Cite Key="GAP4"/> contains an implementation of Jeffrey Leon's
 partition backtrack framework
 <Cite Key="Leon1991"/>, <Cite Key="Leon1997"/> at the &GAP; level,
 as improved upon by Heiko Theißen <Cite Key="Theissen"/>.
 Therefore &GAP; already offers some of the functionality that &Vole; provides;
-the overlap is detailed in Section&nbsp;<Ref Sect="Section_gap_wrapper"/>.
+the overlap is explored further in
+Section&nbsp;<Ref Sect="Section_gap_wrapper"/>.
 
 &ferret;
 
-Christopher Jefferson's &ferret; package for &GAP; provides a C++
-reimplementation of partition backtracking, which contains the orbital graph
-developments of <Cite Key="NewRefiners"/>.
+Christopher Jefferson's &ferret; package <Cite Key="ferret"/> for &GAP; provides
+a C++ reimplementation of partition backtracking, which contains the orbital
+graph developments of <Cite Key="NewRefiners"/>.
 &Vole; should be seen as the spiritual successor to &ferret;.
 
 &images;
 
-The &images; package provides a &GAP;-level implementation of the
-custom breadth-first search that was introduced in
-<Cite Key="MinimalCanonical"/> to compute a <E>canonical image</E> of a set of
-points under the action of an arbitrary permutation group.
+The &images; package <Cite Key="images"/> provides a &GAP;-level implementation
+of the custom breadth-first search that was introduced in
+<Cite Key="MinimalCanonical"/> to compute the <E>canonical image</E> of any set
+of points under the action of an arbitrary permutation group.
 This algorithm built upon the original algorithm of Steve Linton <Cite
 Key="Linton"/> for computing <E>minimal images</E> of sets of points,
-which is available in the &GRAPE; package.
+which is available in the &GRAPE; package <Cite Key="GRAPE"/> in
+<URL>
+  <LinkText><F>lib/smallestimage.g</F></LinkText>
+  <Link>https://github.com/gap-packages/grape/blob/master/lib/smallestimage.g</Link>
+</URL>,
+as `SmallestImageSet`.
 The overlap of &Vole;'s functionality with &images; is detailed in
 Section&nbsp;<Ref Sect="Section_images_wrapper"/>.
 
 &Digraphs; <B>and</B> &GRAPE;
 
-The &Digraphs; package offers interfaces to
+The &Digraphs; package <Cite Key="Digraphs"/> offers interfaces to
 <Package>nauty</Package> <Cite Key="nauty"/>
 (via the <Package>NautyTracesInterface</Package>)
 and <Package>bliss</Package> <Cite Key="bliss"/>
 for computing automorphism groups and canonical images of graphs and digraphs,
 and their labelled variants. The overlap of &Vole;'s functionality with
 &Digraphs; is detailed in Section&nbsp;<Ref Sect="Section_digraphs_wrapper"/>.
-&GRAPE; also provides an interface to <Package>nauty</Package> for computing
+&GRAPE; <Cite Key="GRAPE"/> also provides an interface to <Package>nauty</Package> for computing
 automorphism groups of graphs, and computing canonical images of graphs in the
 symmetric group.
 
 &BacktrackKit; <B>and</B> &GraphBacktracking;
 
-&BacktrackKit; and &GraphBacktracking; contain &GAP;-level reference
-implementations of partition backtracking and graph backtracking, respectively.
+&BacktrackKit; <Cite Key="BacktrackKit"/> and &GraphBacktracking; <Cite
+Key="GraphBacktracking"/> contain &GAP;-level reference implementations of
+partition backtracking and graph backtracking, respectively.
 They are intended to demonstrate readable code implementing these frameworks,
 but they are not intended to have high performance, and they are deliberately
 not optimized.
@@ -151,15 +161,24 @@ performance of &Vole;.
 @Section Performance
 @SectionLabel performance
 
-Our aim is for &Vole; to have good performance in general and, in particular,
-to have high performance for some classes of problems that existing tools tend
-to find difficult.
+Our aims are for &Vole; to have good performance in general, and to have
+relatively high performance for some classes of problems that existing tools
+tend to find very difficult.
 As mentioned in Section&nbsp;<Ref Sect="Section_wip"/>, we are still working
-towards this aim.
+towards these aims.
+
+<B>If you encounter disappointing and/or surprising performance for your
+use-case, please let us know,</B> by
+<URL>
+  <Link>&VoleIssues;</Link>
+  <LinkText>creating an issue on our issue tracker</LinkText>
+</URL>,
+or contacting us by any other appropriate means.  See the title page of this
+manual for our contact details. This will help us to improve &Vole;.
 
 The experiments in <Cite Key="GBpublished"/> showed that for some classes of
-problems, graph backtracking performs a far smaller search than does partition
-backtracking.  Although this experimental data is very encouraging,
+problems, graph backtracking typically performs a far smaller search than does
+partition backtracking.  Although this experimental data is very encouraging,
 it is clearly inherently more expensive to compute with graphs
 than it is to compute with ordered partitions.
 This means that the time gained by having a smaller number of nodes in a search
@@ -172,23 +191,26 @@ required at each node of search (with technical optimisations).
 
 Where there is overlap between &Vole; and existing functionality in the &GAP;
 ecosystem, as described in Section&nbsp;<Ref Sect="Section_overlap"/>,
-we aim for &Vole; to perform reasonably competitively, on the whole.
+we aim for &Vole; to perform reasonably competitively.
 
 However, roughly speaking,
 there are certain problems that can be represented by ordered
 partitions just as well as they can by graphs.
 In these cases, it follows that there is nothing to be gained by using graph
-backtracking, and indeed the additional overhead required by graph backtracking
+backtracking,
+while the additional overhead required by graph backtracking
 may make it slower overall.
+&Vole; does not yet attempt to mitigate this issue.
+For example, we do not yet expect &Vole; to match the performance of &nauty;
+(available through the &Digraphs; and &GRAPE; packages)
+at computing automorphisms of graphs, and canonical images of graphs in the
+whole symmetric group.
 
-In particular, we do not expect &Vole; to beat &nauty; (available
-through the &Digraphs; and &GRAPE; packages) at computing automorphisms of
-graphs and canonical images of graphs in the symmetric group,
-and we do not expect &Vole; to beat &images;
+In addition, we do not expect &Vole; to beat &images;
 at computing canonical images of sets in groups.
 
-There are further reasons why existing implementations may beat &Vole; in some
-cases.
+There are further reasons why existing implementations may beat the current
+version of &Vole;, in some situations.
 
 * <B>No special cases:</B>
   &Vole; passes every problem that it receives on to the
@@ -202,6 +224,26 @@ cases.
   different methods, the system can use heuristics to choose the most
   appropriate one to run in each instance.
 
+* <B>First-time compilation of Vole:</B>
+  When the first &Vole; search is executed in any particular &GAP; session,
+  &Vole; tests whether its Rust component is compiled, and it builds the
+  component if necessary.
+  The check itself can take a noticeable amount of time,
+  but compilation takes much longer.
+  To avoid this, we recommend that you manually recompile &Vole;
+  when you update your &Vole; installation via the `make` command,
+  as described in Section&nbsp;<Ref Subsect="Section_install"/>.
+
+* <B>Communication between the GAP layer and the Rust component:</B>
+  There is also a delay that is incurred when the &GAP;-level interface of
+  &Vole; communicates with the Rust component of &Vole;.
+  This is exacerbated by the fact that &Vole; does not yet include its
+  full own implementation of stabiliser chains, and so it uses &GAP;'s
+  stabiliser chains instead. This means that &GAP; and the Rust component must
+  communicate heavily during a typical search, and this can incur a significant
+  time penalty.  Implementing Rust-level stabiliser chains is a work in
+  progress.
+
 * <B>Fortune:</B>
   The nature of backtrack search means that one algorithm may beat another just
   by being ‘lucky’, and (by chance) stumbling upon particularly fruitful
@@ -209,17 +251,9 @@ cases.
   Conversely, an algorithm may be ‘unlucky’ and fall down a particular
   unfruitful branch that a different algorithm accidentally avoids.
 
-* <B>Communication between the GAP layer and the Rust component:</B>
-  There is also a delay that is incurred when the &GAP;-level interface of
-  &Vole; communicates with the Rust component of &Vole;. This is sometimes
-  particularly noticeable when using &Vole; for the first time in a &GAP;
-  session.  This is exacerbated by the fact that &Vole; does not yet include its
-  full own implementation of stabiliser chains, and so it uses &GAP;'s
-  stabiliser chains instead. This means that &GAP; and the Rust component must
-  communicate heavily during a typical search, and this can incur a significant
-  time penalty.  Implementing Rust-level stabiliser chains is a work in
-  progress.
-
 These factors together highlight the principle that, for users for whom
 performance is very important, it makes sense to compare and experiment with the
 range of available tools when running computations.
+
+Please also make sure that you are running the newest version of &Vole;, since
+newer versions should have better performance.
