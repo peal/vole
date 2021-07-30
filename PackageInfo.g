@@ -1,102 +1,143 @@
-#############################################################################
-##  
-##  Demo PackageInfo.g for the GitHubPagesForGAP
-##
+# Vole: Backtrack search in permutation groups with graphs
+# A GAP package by Mun See Chang, Christopher Jefferson, and Wilf A. Wilson.
+#
+# SPDX-License-Identifier: MPL-2.0
 
+_STANDREWSCS := Concatenation("School of Computer Science, ",
+                              "University of St Andrews, ",
+                              "St Andrews, Fife, KY16 9SX, Scotland");
 SetPackageInfo( rec(
 
-PackageName := "GitHubPagesForGAP",
-
-Subtitle := "A GitHub Pages generator for GAP packages",
-Version := "0.3",
-Date := "10/11/2019", # dd/mm/yyyy format
-License := "0BSD",
+PackageName := "Vole",
+Subtitle := "Backtrack search in permutation groups with graphs",
+Version := "0.4.0",
+Date := "07/05/2021", # dd/mm/yyyy format
+License := "MPL-2.0",
 
 Persons := [
   rec(
-    LastName      := "Horn",
-    FirstNames    := "Max",
-    IsAuthor      := true,
-    IsMaintainer  := true,
-    Email         := "max.horn@uni-siegen.de",
-    WWWHome       := "https://www.quendi.de/math",
-    PostalAddress := Concatenation(
-                       "Department Mathematik\n",
-                       "Universität Siegen\n",
-                       "Walter-Flex-Straße 3\n",
-                       "57072 Siegen\n",
-                       "Germany" ),
-    Place         := "Siegen",
-    Institution   := "Universität Siegen"
+    FirstNames := "Mun See",
+    LastName := "Chang",
+    Email := "msc2@st-andrews.ac.uk",
+    IsAuthor := true,
+    IsMaintainer := false,
+    Institution := "University of St Andrews",
+    Place := "St Andrews",
+    PostalAddress := _STANDREWSCS,
   ),
-
   rec(
-    LastName      := "Thor",
-    FirstNames    := "A. U.",
-    IsAuthor      := true,
-    IsMaintainer  := false,
-    #Email         := "author@example.com",
+    FirstNames := "Christopher",
+    LastName := "Jefferson",
+    WWWHome := "https://caj.host.cs.st-andrews.ac.uk",
+    Email := "caj21@st-andrews.ac.uk",
+    IsAuthor := true,
+    IsMaintainer := true,
+    Institution := "University of St Andrews",
+    Place := "St Andrews",
+    PostalAddress := _STANDREWSCS,
   ),
-
   rec(
-    LastName      := "Itor",
-    FirstNames    := "Jan",
-    IsAuthor      := false,
-    IsMaintainer  := true,
-    #Email         := "janitor@example.com",
+    FirstNames := "Wilf A.",
+    LastName := "Wilson",
+    WWWHome := "https://wilf.me",
+    Email := "gap@wilf-wilson.net",
+    IsAuthor := true,
+    IsMaintainer := true,
+    Institution := "University of St Andrews",
+    Place := "St Andrews",
+    PostalAddress := _STANDREWSCS,
   ),
 ],
 
-Status := "other",
+SourceRepository := rec(
+    Type := "git",
+    URL := "https://github.com/peal/vole",
+),
+IssueTrackerURL := Concatenation( ~.SourceRepository.URL, "/issues" ),
+PackageWWWHome  := "https://peal.github.io/vole",
+PackageInfoURL  := Concatenation( ~.PackageWWWHome, "/PackageInfo.g" ),
+README_URL      := Concatenation( ~.PackageWWWHome, "/README.md" ),
+ArchiveURL      := Concatenation( ~.SourceRepository.URL,
+                                 "/releases/download/v", ~.Version,
+                                 "/", ~.PackageName, "-", ~.Version ),
 
-# The following are not strictly necessary in your own PackageInfo.g
-# (in the sense that update.g only looks at the usual fields
-# like PackageWWWHome, ArchiveURL etc.). But they are convenient
-# if you use exactly the scheme for your package website that we propose.
-GithubUser := "gap-system",
-GithubRepository := ~.PackageName,
-GithubWWW := Concatenation("https://github.com/", ~.GithubUser, "/", ~.GithubRepository),
+ArchiveFormats := ".tar.gz",
 
-PackageWWWHome := Concatenation("https://", ~.GithubUser, ".github.io/", ~.GithubRepository, "/"),
-README_URL     := Concatenation( ~.PackageWWWHome, "README.md" ),
-PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
-# The following assumes you are using the Github releases system. If not, adjust
-# it accordingly.
-ArchiveURL     := Concatenation(~.GithubWWW,
-                    "/releases/download/v", ~.Version, "/",
-                    ~.GithubRepository, "-", ~.Version),
+##  Status information. Currently the following cases are recognized:
+##    "accepted"      for successfully refereed packages
+##    "submitted"     for packages submitted for the refereeing
+##    "deposited"     for packages for which the GAP developers agreed
+##                    to distribute them with the core GAP system
+##    "dev"           for development versions of packages
+##    "other"         for all other packages
+##
+Status := "dev",
 
-ArchiveFormats := ".tar.gz .tar.bz2",
-
-AbstractHTML := 
-  "This is a pseudo package that contains no actual\
-  <span class=\"pkgname\">GAP</span> code. Instead, it is a template for other\
-  GAP packages that allows to quickly setup GitHub Pages.",
+AbstractHTML :=  "TODO",
 
 PackageDoc := rec(
-  BookName  := "GitHubPagesForGAP",
+  BookName  := ~.PackageName,
   ArchiveURLSubset := ["doc"],
-  HTMLStart := "doc/chap0.html",
+  HTMLStart := "doc/chap0_mj.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
-  LongTitle := "A GitHub Pages generator for GAP packages",
+  LongTitle := ~.Subtitle,
 ),
 
-# The following dependencies are fake and for testing / demo purposes
 Dependencies := rec(
-  GAP := ">=4.8.1",
+  GAP := ">= 4.11.0",
   NeededOtherPackages := [
-    ["GAPDoc", ">= 1.2"],
-    ["IO", ">= 4.1"],
+    [ "BacktrackKit", ">= 0.4.0" ],
+    [ "Digraphs", ">= 1.1.1" ],
+    [ "GraphBacktracking", ">= 0.4.0" ],
+    # required by BacktrackKit and Digraphs... so we may as well include it?
+    [ "datastructures", ">= 0.2.6" ],
+    # to enable GAP and rust to talk to each other
+    [ "IO", ">= 4.7.0" ],
+    [ "json", ">= 2.0.1" ],
   ],
-  SuggestedOtherPackages := [["orb", ">= 4.2"]],
-  ExternalConditions := []
+  SuggestedOtherPackages := [
+    [ "AutoDoc", ">= 2019.09.04" ], # to compile documentation
+    [ "ferret", ">= 1.0.2" ],       # used in tests
+    [ "QuickCheck", ">= 0.1" ],     # used in tests
+  ],
+  ExternalConditions := [
+    # FIXME
+    "To compile Vole, rust needs to be installed and available...",
+  ],
 ),
 
-AvailabilityTest := ReturnTrue,
+# FIXME: This might not work properly if the user has multiple Voles installed.
+AvailabilityTest := function()
+  if Filename(List(GAPInfo.PackagesInfo.vole, x -> Directory(Concatenation(
+      x.InstallationPath, "/rust/target/release"))), "vole.d") = fail then
+    LogPackageLoadingMessage(PACKAGE_WARNING,
+      "Vole package is not compiled; please run `make` in the Vole directory");
+    return fail;
+  fi;
+  return true;
+end,
 
-Keywords := ["GitHub Pages", "GAP"]
+TestFile := "tst/testall.g",
+
+# TODO: more/better keywords
+Keywords := [
+    "permutation group", "backtrack", "search", "backtracking", "graph",
+    "digraph", "normaliser", "normalizer", "stabiliser", "stabilizer",
+    "group", "subgroup", "intersection", "conjugacy", "coset", "transporter",
+],
+
+AutoDoc := rec(
+   TitlePage := rec(
+    Copyright := Concatenation(
+      "&copyright; &VoleYear; by Christopher Jefferson, Mun See Chang, ",
+      "and Wilf A. Wilson.",
+      "<P/>",
+      "&Vole; is licensed under the Mozilla Public License, version 2.0."
+      ),
+    #Abstract := "",
+    #Acknowledgements := "",
+   )
+),
 
 ));
-
-

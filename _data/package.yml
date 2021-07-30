@@ -1,76 +1,99 @@
-name: GitHubPagesForGAP
-version: "0.2"
-license: "0BSD"
-date: 2017-02-04
+name: Vole
+version: "0.4.0"
+license: "MPL-2.0"
+date: 2021-05-07
 description: |
-    A GitHub Pages generator for GAP packages
+    Backtrack search in permutation groups with graphs
 
 authors:
-    - name: Max Horn
-      url: http://www.quendi.de/math
-    - name: A. U. Thor
+    - name: Mun See Chang
+      url: mailto:msc2@st-andrews.ac.uk
+    - name: Christopher Jefferson
+      url: https://caj.host.cs.st-andrews.ac.uk
+    - name: Wilf A. Wilson
+      url: https://wilf.me
 
 maintainers:
-    - name: Max Horn
-      url: http://www.quendi.de/math
-    - name: Jan Itor
+    - name: Christopher Jefferson
+      url: https://caj.host.cs.st-andrews.ac.uk
+    - name: Wilf A. Wilson
+      url: https://wilf.me
 
-GAP: ">=4.8.1"
+GAP: ">= 4.11.0"
 
 needed-pkgs:
-    - name: "GAPDoc"
-      version: ">= 1.2"
-      url: "http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc"
+    - name: "BacktrackKit"
+      version: ">= 0.4.0"
+      url: "https://peal.github.io/BacktrackKit/"
+    - name: "Digraphs"
+      version: ">= 1.1.1"
+      url: "https://digraphs.github.io/Digraphs"
+    - name: "GraphBacktracking"
+      version: ">= 0.4.0"
+      url: "https://peal.github.io/GraphBacktracking/"
+    - name: "datastructures"
+      version: ">= 0.2.6"
+      url: "https://gap-packages.github.io/datastructures"
     - name: "IO"
-      version: ">= 4.1"
+      version: ">= 4.7.0"
       url: "https://gap-packages.github.io/io"
+    - name: "json"
+      version: ">= 2.0.1"
+      url: "https://gap-packages.github.io/json/"
 
 suggested-pkgs:
-    - name: "orb"
-      version: ">= 4.2"
-      url: "https://gap-packages.github.io/orb"
+    - name: "AutoDoc"
+      version: ">= 2019.09.04"
+      url: "https://gap-packages.github.io/AutoDoc"
+    - name: "ferret"
+      version: ">= 1.0.2"
+      url: "https://gap-packages.github.io/ferret/"
+    - name: "QuickCheck"
+      version: ">= 0.1"
+      url: "https://gap-packages.github.io/QuickCheck/"
 
-www: https://gap-system.github.io/GitHubPagesForGAP/
+www: https://peal.github.io/vole
 readme: README.md
-packageinfo: https://gap-system.github.io/GitHubPagesForGAP/PackageInfo.g
-github: https://github.com/gap-system/GitHubPagesForGAP
+packageinfo: https://peal.github.io/vole/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/gap-system/GitHubPagesForGAP/releases/download/v0.2/GitHubPagesForGAP-0.2.tar.gz
-    - name: .tar.bz2
-      url: https://github.com/gap-system/GitHubPagesForGAP/releases/download/v0.2/GitHubPagesForGAP-0.2.tar.bz2
+      url: https://github.com/peal/vole/releases/download/v0.4.0/Vole-0.4.0.tar.gz
 
 abstract: |
-    This is a pseudo package that contains no actual  <span class="pkgname">GAP</span> code. Instead, it is a template for other  GAP packages that allows to quickly setup GitHub Pages.
+    TODO
 
-status: other
-doc-html: doc/chap0.html
+status: dev
+doc-html: doc/chap0_mj.html
 doc-pdf: doc/manual.pdf
 keywords: |
-    GitHub Pages, GAP.
+    permutation group, backtrack, search, backtracking, graph, digraph, normaliser, normalizer, stabiliser, stabilizer, group, subgroup, intersection, conjugacy, coset, transporter.
 citeas: |
     <p class='BibEntry'>
-    [<span class='BibKey'>HTI17</span>]   <b class='BibAuthor'>Horn, M., Thor, A. U. and Itor, J.</b>,
-     <i class='BibTitle'>GitHubPagesForGAP, A GitHub Pages generator for GAP packages,
-             Version 0.2</i>
-     (<span class='BibYear'>2017</span>)<br />
+    [<span class='BibKey'>CJW21</span>]   <b class='BibAuthor'>Chang, M. S., Jefferson, C. and Wilson, W. A.</b>,
+     <i class='BibTitle'>Vole, Backtrack search in permutation groups with graphs,
+             Version 0.4.0</i>
+     (<span class='BibYear'>2021</span>)<br />
     (<span class='BibNote'>GAP package</span>),
-    <span class='BibHowpublished'><a href="https://gap-system.github.io/GitHubPagesForGAP/">https://gap-system.github.io/GitHubPagesForGAP/</a></span>.
+    <span class='BibHowpublished'><a href="https://peal.github.io/vole">https://peal.github.io/vole</a></span>.
     </p>
     
 
 bibtex: |
-    @misc{ GitHubPagesForGAP0.2,
-      author =           {Horn, M. and Thor, A. U. and Itor, J.},
-      title =            {{GitHubPagesForGAP}, A GitHub Pages generator for GAP packages, {V}ersion 0.2},
-      month =            {Feb},
-      year =             {2017},
+    @misc{ Vole0.4.0,
+      author =           {Chang, M. S. and Jefferson, C. and Wilson, W. A.},
+      title =            {{Vole},  Backtrack  search  in permutation groups with
+                          graphs, {V}ersion 0.4.0},
+      month =            {May},
+      year =             {2021},
       note =             {GAP package},
-      howpublished =     {\href                              {https://gap-system.github.io/GitHubPagesForGAP/}
-                          {\texttt{https://gap-system.github.io/}\discretionary
-                          {}{}{}\texttt{GitHubPagesForGAP/}}},
-      keywords =         {GitHub Pages; GAP},
-      printedkey =       {HTI17}
+      howpublished =     {\href                    {https://peal.github.io/vole}
+                          {\texttt{https://peal.github.io/}\discretionary
+                          {}{}{}\texttt{vole}}},
+      keywords =         {permutation  group;  backtrack;  search; backtracking;
+                          graph;  digraph;  normaliser;  normalizer; stabiliser;
+                          stabilizer;  group; subgroup; intersection; conjugacy;
+                          coset; transporter},
+      printedkey =       {CJW21}
     }
 
