@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>GAP (Vole) - Chapter 1: Introduction to Vole</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="GAPDoc2HTML" />
+<link rel="stylesheet" type="text/css" href="manual.css" />
+<script src="manual.js" type="text/javascript"></script>
+<script type="text/javascript">overwriteStyle();</script>
+</head>
+<body class="chap1"  onload="jscontent()">
+
+
+<div class="chlinktop"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chap8.html">8</a>  <a href="chapBib.html">Bib</a>  <a href="chapInd.html">Ind</a>  </div>
+
+<div class="chlinkprevnexttop">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap0.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap2.html">[Next Chapter]</a>&nbsp;  </div>
+
+<p id="mathjaxlink" class="pcenter"><a href="chap1_mj.html">[MathJax on]</a></p>
+<p><a id="X84A579727817BFC5" name="X84A579727817BFC5"></a></p>
+<div class="ChapSects"><a href="chap1.html#X84A579727817BFC5">1 <span class="Heading">Introduction to <strong class="pkg">Vole</strong></span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap1.html#X79B51C5E7EA1D7D2">1.1 <span class="Heading">High level overview of <strong class="pkg">Vole</strong> and this manual</span></a>
+</span>
+</div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap1.html#X8551085685C27DF0">1.2 <span class="Heading"><strong class="pkg">Vole</strong>'s relation to <strong class="pkg">GAP</strong> and its other packages</span></a>
+</span>
+</div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap1.html#X78971F3A7930451A">1.3 <span class="Heading">Work in progress</span></a>
+</span>
+</div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap1.html#X854F8C5579845066">1.4 <span class="Heading">Performance</span></a>
+</span>
+</div>
+</div>
+
+<h3>1 <span class="Heading">Introduction to <strong class="pkg">Vole</strong></span></h3>
+
+<p><strong class="pkg">Vole</strong> is a <strong class="pkg">GAP</strong> <a href="chapBib.html#biBGAP4">[GAP21]</a> package. The purpose of this manual is to describe the capabilities of <strong class="pkg">Vole</strong>, and to give directions, hints, and explanations about its use.</p>
+
+<p>In this manual, a <em>group</em> is a finite permutation group with a finite set of moved points, and a <em>coset</em> is a coset of such a group.</p>
+
+<p>In full generality, <strong class="pkg">Vole</strong> can be used to find permutations (groups, cosets, or representative elements) that satisfy conjunctions of particular kinds of properties, or <em>constraints</em>; details of these properties are given later. Problems that can be formulated in this way include, for example, the computation of normalisers, set stabilisers, subgroup intersections, and graph automorphisms, and testing subgroup conjugacy and graph isomorphism.</p>
+
+<p><strong class="pkg">Vole</strong> can also compute canonical labellings and images of various kinds of objects under an action of an arbitrary permutation group. This includes, for example, the canonical image of a digraph under the natural action of an arbitrary permutation group, or the canonical image of a permutation group under conjugation by another. <strong class="button">As far as we are aware, most of this ‘canonical’ functionality is not possible with existing tools</strong>.</p>
+
+<p>In order to offer this functionality, <strong class="pkg">Vole</strong> implements the <em>graph backtracking</em> framework, which was introduced in <a href="chapBib.html#biBGBpublished">[JPWW21]</a>, and which generalises the <em>partition backtracking</em> framework of Jeffrey Leon <a href="chapBib.html#biBLeon1991">[Leo91]</a>, <a href="chapBib.html#biBLeon1997">[Leo97]</a>. The functionality for canonical labellings and canonical images is underpinned, in addition, by work that is in preparation for publication, and which builds on <a href="chapBib.html#biBMinimalCanonical">[JJPW19]</a>.</p>
+
+<p>While the <strong class="pkg">GAP</strong> interface of this package is written in <strong class="pkg">GAP</strong>, the main algorithms are written in Rust, for reasons of fun and performance.</p>
+
+<p><a id="X79B51C5E7EA1D7D2" name="X79B51C5E7EA1D7D2"></a></p>
+
+<h4>1.1 <span class="Heading">High level overview of <strong class="pkg">Vole</strong> and this manual</span></h4>
+
+<p><strong class="pkg">Vole</strong> aims to provide a high-performance implementation of the graph backtracking framework of <a href="chapBib.html#biBGBpublished">[JPWW21]</a>, <a href="chapBib.html#biBGBextended">[JPWW19]</a>.</p>
+
+<p>Graph backtracking is a form of depth-first backtrack search that can be performed in a finite symmetric group, and which uses labelled digraphs to represent various aspects of the problem at hand in order to guide the search and prune the search space. The specification of the problem is given by a collection of <em>constraints</em>, and a collection of <em>refiners</em> are used to prune the search according to those constraints.</p>
+
+<p>The rest of this introduction discusses the place of <strong class="pkg">Vole</strong> in the <strong class="pkg">GAP</strong> ‘ecosystem’, and gives information about its ongoing development. Installation instructions for <strong class="pkg">Vole</strong> are given in Chapter <a href="chap2.html#X7DB9E92F7B9E3031"><span class="RefLink">2</span></a>, and Chapter <a href="chap3.html#X81932F777898AD72"><span class="RefLink">3</span></a> gives a tutorial for the package. Chapters <a href="chap4.html#X7C9C24D97DB3662F"><span class="RefLink">4</span></a> and <a href="chap5.html#X8722B8157E8CAB1D"><span class="RefLink">5</span></a> document the main interfaces to <strong class="pkg">Vole</strong>. Chapter <a href="chap6.html#X79EAB456814AB11C"><span class="RefLink">6</span></a> describes the constraints that can be used with <strong class="pkg">Vole</strong>, while Chapter <a href="chap7.html#X786EF6928319D57A"><span class="RefLink">7</span></a> explains refiners, and gives details of those that are available. Chapter <a href="chap8.html#X85AB4D7A8774546F"><span class="RefLink">8</span></a> gives lower-level details, and instructions for the expert use of <strong class="pkg">Vole</strong>.</p>
+
+<p><a id="X8551085685C27DF0" name="X8551085685C27DF0"></a></p>
+
+<h4>1.2 <span class="Heading"><strong class="pkg">Vole</strong>'s relation to <strong class="pkg">GAP</strong> and its other packages</span></h4>
+
+<p>The functionality of <strong class="pkg">Vole</strong> overlaps with that of <strong class="pkg">GAP</strong> itself, and some of its packages. However, <strong class="pkg">Vole</strong>'s functionality goes further than all of them, and has the potential to offer better performance in many cases where there is overlap. The perfomance of <strong class="pkg">Vole</strong> is discussed in Section <a href="chap1.html#X854F8C5579845066"><span class="RefLink">1.4</span></a>.</p>
+
+<p><strong class="pkg">GAP</strong> <strong class="button">itself</strong></p>
+
+<p><strong class="pkg">GAP</strong> contains an implementation of Jeffrey Leon's partition backtrack framework <a href="chapBib.html#biBLeon1991">[Leo91]</a>, <a href="chapBib.html#biBLeon1997">[Leo97]</a> at the <strong class="pkg">GAP</strong> level, as improved upon by Heiko Theißen <a href="chapBib.html#biBTheissen">[The97]</a>. Therefore <strong class="pkg">GAP</strong> already offers some of the functionality that <strong class="pkg">Vole</strong> provides; the overlap is detailed in Section <a href="chap4.html#X800CAA4182BAB6D7"><span class="RefLink">4.4</span></a>.</p>
+
+<p><strong class="pkg">ferret</strong></p>
+
+<p>Christopher Jefferson's <strong class="pkg">ferret</strong> package for <strong class="pkg">GAP</strong> provides a C++ reimplementation of partition backtracking, which contains the orbital graph developments of <a href="chapBib.html#biBNewRefiners">[JPW19]</a>. <strong class="pkg">Vole</strong> should be seen as the spiritual successor to <strong class="pkg">ferret</strong>.</p>
+
+<p><strong class="pkg">images</strong></p>
+
+<p>The <strong class="pkg">images</strong> package provides a <strong class="pkg">GAP</strong>-level implementation of the custom breadth-first search that was introduced in <a href="chapBib.html#biBMinimalCanonical">[JJPW19]</a> to compute a <em>canonical image</em> of a set of points under the action of an arbitrary permutation group. This algorithm built upon the original algorithm of Steve Linton <a href="chapBib.html#biBLinton">[Lin04]</a> for computing <em>minimal images</em> of sets of points, which is available in the <strong class="pkg">GRAPE</strong> package. The overlap of <strong class="pkg">Vole</strong>'s functionality with <strong class="pkg">images</strong> is detailed in Section <a href="chap4.html#X7A2FDAA7838D97A1"><span class="RefLink">4.5</span></a>.</p>
+
+<p><strong class="pkg">Digraphs</strong> <strong class="button">and</strong> <strong class="pkg">GRAPE</strong></p>
+
+<p>The <strong class="pkg">Digraphs</strong> package offers interfaces to <strong class="pkg">nauty</strong> <a href="chapBib.html#biBnauty">[MP14]</a> (via the <strong class="pkg">NautyTracesInterface</strong>) and <strong class="pkg">bliss</strong> <a href="chapBib.html#biBbliss">[JK07]</a> for computing automorphism groups and canonical images of graphs and digraphs, and their labelled variants. The overlap of <strong class="pkg">Vole</strong>'s functionality with <strong class="pkg">Digraphs</strong> is detailed in Section <a href="chap4.html#X7E533E72831AC20B"><span class="RefLink">4.6</span></a>. <strong class="pkg">GRAPE</strong> also provides an interface to <strong class="pkg">nauty</strong> for computing automorphism groups of graphs, and computing canonical images of graphs in the symmetric group.</p>
+
+<p><strong class="pkg">BacktrackKit</strong> <strong class="button">and</strong> <strong class="pkg">GraphBacktracking</strong></p>
+
+<p><strong class="pkg">BacktrackKit</strong> and <strong class="pkg">GraphBacktracking</strong> contain <strong class="pkg">GAP</strong>-level reference implementations of partition backtracking and graph backtracking, respectively. They are intended to demonstrate readable code implementing these frameworks, but they are not intended to have high performance, and they are deliberately not optimized.</p>
+
+<p><a id="X78971F3A7930451A" name="X78971F3A7930451A"></a></p>
+
+<h4>1.3 <span class="Heading">Work in progress</span></h4>
+
+<p><strong class="pkg">Vole</strong> is a work in progress – the code and its underlying mathematical theory are being developed concurrently. Therefore, some aspects of <strong class="pkg">Vole</strong> are liable to change in future versions, although we will aim to maintain the primary interfaces as described in Chapters <a href="chap4.html#X7C9C24D97DB3662F"><span class="RefLink">4</span></a>, <a href="chap5.html#X8722B8157E8CAB1D"><span class="RefLink">5</span></a>, and <a href="chap6.html#X79EAB456814AB11C"><span class="RefLink">6</span></a>. However, some of the lower-level details described in Sections <a href="chap7.html#X786EF6928319D57A"><span class="RefLink">7</span></a> and <a href="chap8.html#X85AB4D7A8774546F"><span class="RefLink">8</span></a> are more likely change.</p>
+
+<p>The main focus of our future work on <strong class="pkg">Vole</strong> will be on improving the performance of <strong class="pkg">Vole</strong>, through both technical and mathematical means. This may involve changes to the design of the algorithm itself, and the improvement or addition of refiners, especially for normalisers and conjugacy. See Section <a href="chap1.html#X854F8C5579845066"><span class="RefLink">1.4</span></a> for further comments on the performance of <strong class="pkg">Vole</strong>.</p>
+
+<p><a id="X854F8C5579845066" name="X854F8C5579845066"></a></p>
+
+<h4>1.4 <span class="Heading">Performance</span></h4>
+
+<p>Our aim is for <strong class="pkg">Vole</strong> to have good performance in general and, in particular, to have high performance for some classes of problems that existing tools tend to find difficult. As mentioned in Section <a href="chap1.html#X78971F3A7930451A"><span class="RefLink">1.3</span></a>, we are still working towards this aim.</p>
+
+<p>The experiments in <a href="chapBib.html#biBGBpublished">[JPWW21]</a> showed that for some classes of problems, graph backtracking performs a far smaller search than does partition backtracking. Although this experimental data is very encouraging, it is clearly inherently more expensive to compute with graphs than it is to compute with ordered partitions. This means that the time gained by having a smaller number of nodes in a search does not necessarily immediately outweigh the time required to perform a larger amount of computation at each node. Therefore, in rough terms, the focus of future work is on reducing the number of search nodes further (with more sophisticated refiners), and reducing the amount of work required at each node of search (with technical optimisations).</p>
+
+<p>Where there is overlap between <strong class="pkg">Vole</strong> and existing functionality in the <strong class="pkg">GAP</strong> ecosystem, as described in Section <a href="chap1.html#X8551085685C27DF0"><span class="RefLink">1.2</span></a>, we aim for <strong class="pkg">Vole</strong> to perform reasonably competitively, on the whole.</p>
+
+<p>However, roughly speaking, there are certain problems that can be represented by ordered partitions just as well as they can by graphs. In these cases, it follows that there is nothing to be gained by using graph backtracking, and indeed the additional overhead required by graph backtracking may make it slower overall.</p>
+
+<p>In particular, we do not expect <strong class="pkg">Vole</strong> to beat <strong class="pkg">nauty</strong> (available through the <strong class="pkg">Digraphs</strong> and <strong class="pkg">GRAPE</strong> packages) at computing automorphisms of graphs and canonical images of graphs in the symmetric group, and we do not expect <strong class="pkg">Vole</strong> to beat <strong class="pkg">images</strong> at computing canonical images of sets in groups.</p>
+
+<p>There are further reasons why existing implementations may beat <strong class="pkg">Vole</strong> in some cases.</p>
+
+
+<ul>
+<li><p><strong class="button">No special cases:</strong> <strong class="pkg">Vole</strong> passes every problem that it receives on to the full graph backtracking algorithm, with its corresponding overheads and poor worst-case complexity. On the other hand, other implementations (particularly those in the <strong class="pkg">GAP</strong> library) may provide multiple competing methods for solving a problem. Some of these methods might only apply in special cases (such as for simple groups, or abelian group, or primitive groups), and some of them might not even involve search at all. From these different methods, the system can use heuristics to choose the most appropriate one to run in each instance.</p>
+
+</li>
+</ul>
+
+<ul>
+<li><p><strong class="button">Fortune:</strong> The nature of backtrack search means that one algorithm may beat another just by being ‘lucky’, and (by chance) stumbling upon particularly fruitful branches early in search. Conversely, an algorithm may be ‘unlucky’ and fall down a particular unfruitful branch that a different algorithm accidentally avoids.</p>
+
+</li>
+</ul>
+
+<ul>
+<li><p><strong class="button">Communication between the GAP layer and the Rust component:</strong> There is also a delay that is incurred when the <strong class="pkg">GAP</strong>-level interface of <strong class="pkg">Vole</strong> communicates with the Rust component of <strong class="pkg">Vole</strong>. This is sometimes particularly noticeable when using <strong class="pkg">Vole</strong> for the first time in a <strong class="pkg">GAP</strong> session. This is exacerbated by the fact that <strong class="pkg">Vole</strong> does not yet include its full own implementation of stabiliser chains, and so it uses <strong class="pkg">GAP</strong>'s stabiliser chains instead. This means that <strong class="pkg">GAP</strong> and the Rust component must communicate heavily during a typical search, and this can incur a significant time penalty. Implementing Rust-level stabiliser chains is a work in progress.</p>
+
+</li>
+</ul>
+<p>These factors together highlight the principle that, for users for whom performance is very important, it makes sense to compare and experiment with the range of available tools when running computations.</p>
+
+
+<div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap0.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap2.html">[Next Chapter]</a>&nbsp;  </div>
+
+
+<div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chap8.html">8</a>  <a href="chapBib.html">Bib</a>  <a href="chapInd.html">Ind</a>  </div>
+
+<hr />
+<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+</body>
+</html>

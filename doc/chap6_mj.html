@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<title>GAP (Vole) - Chapter 6: Constraints</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="GAPDoc2HTML" />
+<link rel="stylesheet" type="text/css" href="manual.css" />
+<script src="manual.js" type="text/javascript"></script>
+<script type="text/javascript">overwriteStyle();</script>
+</head>
+<body class="chap6"  onload="jscontent()">
+
+
+<div class="chlinktop"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chap3_mj.html">3</a>  <a href="chap4_mj.html">4</a>  <a href="chap5_mj.html">5</a>  <a href="chap6_mj.html">6</a>  <a href="chap7_mj.html">7</a>  <a href="chap8_mj.html">8</a>  <a href="chapBib_mj.html">Bib</a>  <a href="chapInd_mj.html">Ind</a>  </div>
+
+<div class="chlinkprevnexttop">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap5_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap7_mj.html">[Next Chapter]</a>&nbsp;  </div>
+
+<p id="mathjaxlink" class="pcenter"><a href="chap6.html">[MathJax off]</a></p>
+<p><a id="X79EAB456814AB11C" name="X79EAB456814AB11C"></a></p>
+<div class="ChapSects"><a href="chap6_mj.html#X79EAB456814AB11C">6 <span class="Heading">Constraints</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6_mj.html#X7E70E2CC7E86816E">6.1 <span class="Heading">The concept of constraints</span></a>
+</span>
+</div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6_mj.html#X7C8EACBE780DCACB">6.2 <span class="Heading">The <code class="code">VoleCon</code> record</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X78F3F7F58416EE54">6.2-1 VoleCon</a></span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6_mj.html#X7DE8762080A02EB0">6.3 <span class="Heading">Constraints provided in the <code class="code">VoleCon</code> record</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7FD1D7EB7F8EF940">6.3-1 VoleCon.InGroup</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7F27DDB6818F24DB">6.3-2 VoleCon.InCoset</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7DEA6F208128AF5D">6.3-3 VoleCon.InRightCoset</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X807A0B8780F66AA9">6.3-4 VoleCon.InLeftCoset</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7DA2969D80A3B32D">6.3-5 VoleCon.Stabilize</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7999E7CA8654F16E">6.3-6 VoleCon.Transport</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X831679EC79779033">6.3-7 VoleCon.Normalize</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X866EC72B7F648321">6.3-8 VoleCon.Centralize</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7AFA275E862CF966">6.3-9 VoleCon.Conjugate</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X854830F5810A5AD6">6.3-10 VoleCon.MovedPoints</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X821F077482DE97E6">6.3-11 VoleCon.LargestMovedPoint</a></span>
+</div></div>
+</div>
+
+<h3>6 <span class="Heading">Constraints</span></h3>
+
+<p><a id="X7E70E2CC7E86816E" name="X7E70E2CC7E86816E"></a></p>
+
+<h4>6.1 <span class="Heading">The concept of constraints</span></h4>
+
+<p>Constraints and refiners are kind of two names for the same things. Well, depending on your definitions.</p>
+
+<p>When solving a problem, a 'constraint' will be mapped into one or more low-level 'refiners'.</p>
+
+<p>The choice of refiner(s) can vary depending on the input, and may be changed between versions of Vole as better refiners are created.</p>
+
+<p>A constraint is a property that you can say whether or not any individual given permutation has that property.</p>
+
+<p><a id="X7C8EACBE780DCACB" name="X7C8EACBE780DCACB"></a></p>
+
+<h4>6.2 <span class="Heading">The <code class="code">VoleCon</code> record</span></h4>
+
+<p><a id="X78F3F7F58416EE54" name="X78F3F7F58416EE54"></a></p>
+
+<h5>6.2-1 VoleCon</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon</code></td><td class="tdright">(&nbsp;global variable&nbsp;)</td></tr></table></div>
+<p><code class="code">VoleCon</code> is a record that contains all of the constraints that <strong class="pkg">Vole</strong> provides.</p>
+
+<p>These constraints are documented in Section <a href="chap6_mj.html#X7DE8762080A02EB0"><span class="RefLink">6.3</span></a>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">LoadPackage("vole", false);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Set(RecNames(VoleCon));</span>
+[ "Centralise", "Centralize", "InCoset", "InGroup", "InLeftCoset", 
+  "InRightCoset", "LargestMovedPoint", "MovedPoints", "Normalise", 
+  "Normalize", "Stabilise", "Stabilize", "Transport" ]
+</pre></div>
+
+<p><a id="X7DE8762080A02EB0" name="X7DE8762080A02EB0"></a></p>
+
+<h4>6.3 <span class="Heading">Constraints provided in the <code class="code">VoleCon</code> record</span></h4>
+
+<p>Some text, explaining the following table.</p>
+
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft">Group version</td>
+<td class="tdleft">Coset version</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">VoleCon.InGroup</code> (<a href="chap6_mj.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>)</td>
+<td class="tdleft"><code class="func">VoleCon.InCoset</code> (<a href="chap6_mj.html#X7F27DDB6818F24DB"><span class="RefLink">6.3-2</span></a>)</p>
+
+<p><code class="func">VoleCon.InLeftCoset</code> (<a href="chap6_mj.html#X807A0B8780F66AA9"><span class="RefLink">6.3-4</span></a>)</p>
+
+<p><code class="func">VoleCon.InRightCoset</code> (<a href="chap6_mj.html#X7DEA6F208128AF5D"><span class="RefLink">6.3-3</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">VoleCon.Stabilize</code> (<a href="chap6_mj.html#X7DA2969D80A3B32D"><span class="RefLink">6.3-5</span></a>)</td>
+<td class="tdleft"><code class="func">VoleCon.Transport</code> (<a href="chap6_mj.html#X7999E7CA8654F16E"><span class="RefLink">6.3-6</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">VoleCon.Normalize</code> (<a href="chap6_mj.html#X831679EC79779033"><span class="RefLink">6.3-7</span></a>)</td>
+<td class="tdleft"><code class="func">VoleCon.Conjugate</code> (<a href="chap6_mj.html#X7AFA275E862CF966"><span class="RefLink">6.3-9</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">VoleCon.Centralize</code> (<a href="chap6_mj.html#X866EC72B7F648321"><span class="RefLink">6.3-8</span></a>)</td>
+<td class="tdleft"><code class="func">VoleCon.Conjugate</code> (<a href="chap6_mj.html#X7AFA275E862CF966"><span class="RefLink">6.3-9</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">VoleCon.MovedPoints</code> (<a href="chap6_mj.html#X854830F5810A5AD6"><span class="RefLink">6.3-10</span></a>)</td>
+<td class="tdleft">N/A</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">VoleCon.LargestMovedPoint</code> (<a href="chap6_mj.html#X821F077482DE97E6"><span class="RefLink">6.3-11</span></a>)</td>
+<td class="tdleft">N/A</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
+
+<p>Perhaps some final text?</p>
+
+<p><a id="X7FD1D7EB7F8EF940" name="X7FD1D7EB7F8EF940"></a></p>
+
+<h5>6.3-1 VoleCon.InGroup</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.InGroup</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>This constraint is satisfied by the elements of the permutation group <var class="Arg">G</var>, and no others.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con1 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 8));;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con2 := VoleCon.InGroup(AlternatingGroup(4));;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(con1, con2) = Group([(1,3)(2,4), (1,4)(2,3)]);</span>
+true
+</pre></div>
+
+<p><a id="X7F27DDB6818F24DB" name="X7F27DDB6818F24DB"></a></p>
+
+<h5>6.3-2 VoleCon.InCoset</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.InCoset</code>( <var class="Arg">U</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>A permutation satisfies this constraint if...</p>
+
+<p>See also <code class="func">VoleCon.InLeftCoset</code> (<a href="chap6_mj.html#X807A0B8780F66AA9"><span class="RefLink">6.3-4</span></a>) and <code class="func">VoleCon.InRightCoset</code> (<a href="chap6_mj.html#X7DEA6F208128AF5D"><span class="RefLink">6.3-3</span></a>), which allow a coset to be specifed by a subgroup and a representative element.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X7DEA6F208128AF5D" name="X7DEA6F208128AF5D"></a></p>
+
+<h5>6.3-3 VoleCon.InRightCoset</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.InRightCoset</code>( <var class="Arg">G</var>, <var class="Arg">x</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>A permutation satisfies this constraint if...</p>
+
+<p>See also <code class="func">VoleCon.InLeftCoset</code> (<a href="chap6_mj.html#X807A0B8780F66AA9"><span class="RefLink">6.3-4</span></a>).</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X807A0B8780F66AA9" name="X807A0B8780F66AA9"></a></p>
+
+<h5>6.3-4 VoleCon.InLeftCoset</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.InLeftCoset</code>( <var class="Arg">G</var>, <var class="Arg">x</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Text about <code class="code">VoleCon.InLeftCoset</code>. See also <code class="func">VoleCon.InRightCoset</code> (<a href="chap6_mj.html#X7DEA6F208128AF5D"><span class="RefLink">6.3-3</span></a>).</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X7DA2969D80A3B32D" name="X7DA2969D80A3B32D"></a></p>
+
+<h5>6.3-5 VoleCon.Stabilize</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Stabilize</code>( <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Stabilise</code>( <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Text about <code class="code">VoleCon.Stabilize</code>.</p>
+
+<p>If the optional argument <var class="Arg">action</var> is not given, then the action <code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>) is used by default; this is the action obtained by the <code class="code">^</code> operator; see <code class="func">\^</code> (<a href="../../../doc/ref/chap4_mj.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+
+<p>The combinations of objects and actions that are supported by <strong class="pkg">Vole</strong> is given in... TODO</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X7999E7CA8654F16E" name="X7999E7CA8654F16E"></a></p>
+
+<h5>6.3-6 VoleCon.Transport</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Transport</code>( <var class="Arg">object1</var>, <var class="Arg">object2</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Text about <code class="code">VoleCon.Transport</code>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X831679EC79779033" name="X831679EC79779033"></a></p>
+
+<h5>6.3-7 VoleCon.Normalize</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Normalize</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Normalise</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Text about <code class="code">VoleCon.Normalize</code>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X866EC72B7F648321" name="X866EC72B7F648321"></a></p>
+
+<h5>6.3-8 VoleCon.Centralize</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Centralize</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Centralise</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Text about <code class="code">VoleCon.Centralize</code>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X7AFA275E862CF966" name="X7AFA275E862CF966"></a></p>
+
+<h5>6.3-9 VoleCon.Conjugate</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Conjugate</code>( <var class="Arg">x</var>, <var class="Arg">y</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Text about <code class="code">VoleCon.Conjugate</code>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X854830F5810A5AD6" name="X854830F5810A5AD6"></a></p>
+
+<h5>6.3-10 VoleCon.MovedPoints</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.MovedPoints</code>( <var class="Arg">pointlist</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>This constraint is a shorthand for <code class="code">VoleCon.InGroup(SymmetricGroup(<var class="Arg">pointlist</var>))</code>; see <code class="func">VoleCon.InGroup</code> (<a href="chap6_mj.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>).</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con1 := VoleCon.MovedPoints([1..5]);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con2 := VoleCon.MovedPoints([2,6,4,5]);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(con1, con2) = SymmetricGroup([2,4,5]);</span>
+true
+</pre></div>
+
+<p><a id="X821F077482DE97E6" name="X821F077482DE97E6"></a></p>
+
+<h5>6.3-11 VoleCon.LargestMovedPoint</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.LargestMovedPoint</code>( <var class="Arg">point</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>This constraint is a shorthand for <code class="code">VoleCon.InGroup(SymmetricGroup([1..<var class="Arg">point</var>]))</code>; see <code class="func">VoleCon.InGroup</code> (<a href="chap6_mj.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>).</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con := VoleCon.LargestMovedPoint(5);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(con) = SymmetricGroup(5);</span>
+true
+</pre></div>
+
+
+<div class="chlinkprevnextbot">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap5_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap7_mj.html">[Next Chapter]</a>&nbsp;  </div>
+
+
+<div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chap3_mj.html">3</a>  <a href="chap4_mj.html">4</a>  <a href="chap5_mj.html">5</a>  <a href="chap6_mj.html">6</a>  <a href="chap7_mj.html">7</a>  <a href="chap8_mj.html">8</a>  <a href="chapBib_mj.html">Bib</a>  <a href="chapInd_mj.html">Ind</a>  </div>
+
+<hr />
+<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+</body>
+</html>

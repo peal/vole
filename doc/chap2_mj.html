@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<title>GAP (Vole) - Chapter 2: Setting up Vole</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="GAPDoc2HTML" />
+<link rel="stylesheet" type="text/css" href="manual.css" />
+<script src="manual.js" type="text/javascript"></script>
+<script type="text/javascript">overwriteStyle();</script>
+</head>
+<body class="chap2"  onload="jscontent()">
+
+
+<div class="chlinktop"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chap3_mj.html">3</a>  <a href="chap4_mj.html">4</a>  <a href="chap5_mj.html">5</a>  <a href="chap6_mj.html">6</a>  <a href="chap7_mj.html">7</a>  <a href="chap8_mj.html">8</a>  <a href="chapBib_mj.html">Bib</a>  <a href="chapInd_mj.html">Ind</a>  </div>
+
+<div class="chlinkprevnexttop">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap1_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap3_mj.html">[Next Chapter]</a>&nbsp;  </div>
+
+<p id="mathjaxlink" class="pcenter"><a href="chap2.html">[MathJax off]</a></p>
+<p><a id="X7DB9E92F7B9E3031" name="X7DB9E92F7B9E3031"></a></p>
+<div class="ChapSects"><a href="chap2_mj.html#X7DB9E92F7B9E3031">2 <span class="Heading">Setting up Vole</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2_mj.html#X7C0B91E37C8FC531">2.1 <span class="Heading">Dependencies</span></a>
+</span>
+</div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2_mj.html#X7BB03C16800B014E">2.2 <span class="Heading">Installing <strong class="pkg">Vole</strong></span></a>
+</span>
+</div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2_mj.html#X7B9EF0AA85282A2E">2.3 <span class="Heading">Loading <strong class="pkg">Vole</strong></span></a>
+</span>
+</div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2_mj.html#X869B437C7AACA6AF">2.4 <span class="Heading">Running <strong class="pkg">Vole</strong>'s test suite</span></a>
+</span>
+</div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2_mj.html#X86E906F782C8DA05">2.5 <span class="Heading">Compiling the documentation for <strong class="pkg">Vole</strong></span></a>
+</span>
+</div>
+</div>
+
+<h3>2 <span class="Heading">Setting up Vole</span></h3>
+
+<p>This chapter contains instructions for getting <strong class="pkg">Vole</strong> up and running.</p>
+
+<p>If you encounter problems, or have any other feedback for the authors, then please free to <span class="URL"><a href="https://github.com/peal/vole/issues">create an issue on our issue tracker</a></span>, or to contact us by any other appropriate means. See the title page of this manual for our contact details. We published <strong class="pkg">Vole</strong> so that our ideas and algorithms could be used by, and be useful to, others in the community. But without feedback, it can be difficult to know whether we are achieving this aim. Therefore we are keen to hear your comments, remarks, and complaints.</p>
+
+<p><a id="X7C0B91E37C8FC531" name="X7C0B91E37C8FC531"></a></p>
+
+<h4>2.1 <span class="Heading">Dependencies</span></h4>
+
+<p><strong class="pkg">Vole</strong> requires <strong class="pkg">GAP</strong> 4.11.0 or newer and various other <strong class="pkg">GAP</strong> packages to run, and Rust is required to compile <strong class="pkg">Vole</strong>.</p>
+
+<p>Please note that if you are using <strong class="pkg">Vole</strong> via a <strong class="pkg">GAP</strong> Cygwin release (i.e. if you installed <strong class="pkg">GAP</strong> in Windows via an installer which included <strong class="pkg">Vole</strong>), then <strong class="pkg">Vole</strong> came ready-compiled, and the included versions of <strong class="pkg">GAP</strong> and its packages are sufficient to run <strong class="pkg">Vole</strong> out-of-the- box. Therefore you may skip straight to Section <a href="chap2_mj.html#X7B9EF0AA85282A2E"><span class="RefLink">2.3</span></a>.</p>
+
+<p>In order to compile <strong class="pkg">Vole</strong>, Rust must be installed and available with the <code class="code">cargo</code> command. You can test for Rust by running <code class="code">cargo --version</code> in the terminal. You should obtained a version number in response, such as:</p>
+
+
+<div class="example"><pre>
+$ cargo --version
+cargo 1.53.0
+</pre></div>
+
+<p>If Rust is not available, then running the command <code class="code">cargo --version</code> will give an error such as <code class="code">cargo: command not found</code>. If this is the case, then please follow the instructions at <span class="URL"><a href="https://www.rust-lang.org/tools/install">https://www.rust-lang.org/tools/install</a></span> for installing Rust.</p>
+
+<p>In addition, the following <strong class="pkg">GAP</strong> packages must be available in order to use <strong class="pkg">Vole</strong>. This means that <strong class="pkg">Vole</strong> will not load if one or more of these packages cannot be loaded in your <strong class="pkg">GAP</strong> installation.</p>
+
+
+<ul>
+<li><p><span class="URL"><a href="https://peal.github.io/BacktrackKit"><strong class="pkg">BacktrackKit</strong></a></span> version 0.4.0, or newer <a href="chapBib_mj.html#biBBacktrackKit">[JW21a]</a>.</p>
+
+</li>
+<li><p><span class="URL"><a href="https://digraphs.github.io/Digraphs"><strong class="pkg">Digraphs</strong></a></span> version 1.1.1, or newer <a href="chapBib_mj.html#biBDigraphs">[BJM+21]</a>.</p>
+
+</li>
+<li><p><span class="URL"><a href="https://peal.github.io/GraphBacktracking"><strong class="pkg">GraphBacktracking</strong></a></span> version 0.4.0, or newer <a href="chapBib_mj.html#biBGraphBacktracking">[JW21b]</a>.</p>
+
+</li>
+<li><p><span class="URL"><a href="https://gap-packages.github.io/io"><strong class="pkg">IO</strong></a></span> version 4.7.0, or newer <a href="chapBib_mj.html#biBIO">[Neu21]</a>.</p>
+
+</li>
+<li><p><span class="URL"><a href="https://gap-packages.github.io/datastructures"><strong class="pkg">datastructures</strong></a></span> version 0.2.6, or newer <a href="chapBib_mj.html#biBdatastructures">[JHPL21]</a>.</p>
+
+</li>
+<li><p><span class="URL"><a href="https://gap-packages.github.io/json"><strong class="pkg">json</strong></a></span> version 2.0.1, or newer <a href="chapBib_mj.html#biBjson">[Jef20]</a>.</p>
+
+</li>
+</ul>
+<p>These packages, and <strong class="pkg">GAP</strong> itself, in turn have their own dependencies, and so <strong class="pkg">Vole</strong> inherits these additional dependencies. If one of the above packages does not load in your <strong class="pkg">GAP</strong> installation, then please consult the documentation to for that package in order to resolve the problem.</p>
+
+<p>The following <strong class="pkg">GAP</strong> packages are needed to run <strong class="pkg">Vole</strong>'s test suite, but they are not required to use rest of <strong class="pkg">Vole</strong>, and are therefore optional.</p>
+
+
+<ul>
+<li><p><span class="URL"><a href="https://github.com/ChrisJefferson/QuickCheck"><strong class="pkg">QuickCheck</strong></a></span> version 0.1, or newer.</p>
+
+</li>
+<li><p><span class="URL"><a href="https://gap-packages.github.io/ferret"><strong class="pkg">ferret</strong></a></span> version 1.0.2, or newer <a href="chapBib_mj.html#biBferret">[Jef21]</a>.</p>
+
+</li>
+</ul>
+<p>See Section <a href="chap2_mj.html#X869B437C7AACA6AF"><span class="RefLink">2.4</span></a> for more information about running the tests included in <strong class="pkg">Vole</strong>.</p>
+
+<p>In order to compile the <strong class="pkg">Vole</strong> documentation, <span class="URL"><a href="https://gap-packages.github.io/AutoDoc"><strong class="pkg">AutoDoc</strong></a></span> version 2019.09.04 or newer must be available. This is usually unnecessary, and is not required in order to use <strong class="pkg">Vole</strong> See Section <a href="chap2_mj.html#X86E906F782C8DA05"><span class="RefLink">2.5</span></a> for more information about compiling the documentation.</p>
+
+<p><a id="X7BB03C16800B014E" name="X7BB03C16800B014E"></a></p>
+
+<h4>2.2 <span class="Heading">Installing <strong class="pkg">Vole</strong></span></h4>
+
+<p>Please note that if you are using <strong class="pkg">Vole</strong> via a <strong class="pkg">GAP</strong> Cygwin release (i.e. if you installed <strong class="pkg">GAP</strong> in Windows via an installer which included <strong class="pkg">Vole</strong>), then <strong class="pkg">Vole</strong> came ready-compiled, and the included versions of <strong class="pkg">GAP</strong> and its packages are sufficient to run <strong class="pkg">Vole</strong> out-of-the- box. Therefore you may skip straight to Section <a href="chap2_mj.html#X7B9EF0AA85282A2E"><span class="RefLink">2.3</span></a>.</p>
+
+<p>Otherwise, if you do not yet have a copy of <strong class="pkg">Vole</strong>, you should download the latest version from <span class="URL"><a href="https://peal.github.io/vole">the <strong class="pkg">Vole</strong> website</a></span> and extract the archive into your <strong class="pkg">GAP</strong> installation's <code class="file">pkg</code> subdirectory. The commands to achieve this may look something like:</p>
+
+
+<div class="example"><pre>
+$ cd ~/gap/pkg
+$ curl -O https://github.com/peal/vole/releases/download/vX.Y.Z/vole-X.Y.Z.tar.gz
+$ tar xf vole-X.Y.Z.tar.gz
+</pre></div>
+
+<p>In order to compile <strong class="pkg">Vole</strong>, change to your <strong class="pkg">Vole</strong> directory and run <code class="code">make</code>. This should look something like:</p>
+
+
+<div class="example"><pre>
+$ cd ~/gap/pkg/vole-X.Y.Z
+$ make
+cd rust &amp;&amp; cargo build --bins &amp;&amp; cargo build --release --bins
+    [...
+        potentially copious output omitted here
+                                               ...]
+    Compiling rust-vole v0.1.1
+    Finished dev [unoptimized + debuginfo] target(s) in 8.93s
+    Compiling rust-vole v0.1.1
+    Finished release [optimized + debuginfo] target(s) in 30.06s
+</pre></div>
+
+<p><strong class="pkg">Vole</strong> should now be ready to load. See Section <a href="chap2_mj.html#X7B9EF0AA85282A2E"><span class="RefLink">2.3</span></a>.</p>
+
+<p><a id="X7B9EF0AA85282A2E" name="X7B9EF0AA85282A2E"></a></p>
+
+<h4>2.3 <span class="Heading">Loading <strong class="pkg">Vole</strong></span></h4>
+
+<p>If <strong class="pkg">Vole</strong> is available to load, then to do so it suffices to call the function <code class="func">LoadPackage</code> (<a href="../../../doc/ref/chap76_mj.html#X79B373A77B29D1F5"><span class="RefLink">Reference: LoadPackage</span></a>) with the argument <code class="code">"vole"</code>, from within the relevant <strong class="pkg">GAP</strong> installation. This should return <code class="keyw">true</code>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">LoadPackage("vole", false);</span>
+true
+</pre></div>
+
+<p>If <code class="code">LoadPackage</code> instead returns <code class="keyw">fail</code>, then <strong class="pkg">Vole</strong> has failed to load. This is probably because <strong class="pkg">GAP</strong> cannot find <strong class="pkg">Vole</strong> or <strong class="pkg">Vole</strong> is not compiled (Section <a href="chap2_mj.html#X7BB03C16800B014E"><span class="RefLink">2.2</span></a>), or one of the dependencies of <strong class="pkg">Vole</strong> is not available (Section <a href="chap2_mj.html#X7C0B91E37C8FC531"><span class="RefLink">2.1</span></a>). In this case, please see the <code class="func">LoadPackage</code> (<a href="../../../doc/ref/chap76_mj.html#X79B373A77B29D1F5"><span class="RefLink">Reference: LoadPackage</span></a>) documentation for ways to help diagnose the problem further.</p>
+
+<p>If you encounter problems, or have any other feedback for the authors, then please free to <span class="URL"><a href="https://github.com/peal/vole/issues">create an issue on our issue tracker</a></span>, or to contact us by any other appropriate means. See the title page of this manual for our contact details. We published <strong class="pkg">Vole</strong> so that our ideas and algorithms could be used by, and be useful to, others in the community. But without feedback, it can be difficult to know whether we are achieving this aim. Therefore we are keen to hear your comments, remarks, and complaints.</p>
+
+<p>Otherwise, <strong class="pkg">Vole</strong> is ready to use. To reassure yourself, you can quickly test that <strong class="pkg">Vole</strong> is behaving as intended by quickly running a search, such that the following one:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">A4 := AlternatingGroup(4);</span>
+Alt( [ 1 .. 4 ] )
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">D8 := DihedralGroup(IsPermGroup, 8);</span>
+Group([ (1,2,3,4), (2,4) ])
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.Intersection(A4, D8) = Group([ (1,2)(3,4), (1,4)(2,3) ]);</span>
+true
+</pre></div>
+
+<p>If you wish to test your <strong class="pkg">Vole</strong> installation more thoroughly, please see Section <a href="chap2_mj.html#X869B437C7AACA6AF"><span class="RefLink">2.4</span></a>.</p>
+
+<p><a id="X869B437C7AACA6AF" name="X869B437C7AACA6AF"></a></p>
+
+<h4>2.4 <span class="Heading">Running <strong class="pkg">Vole</strong>'s test suite</span></h4>
+
+<p>Optionally, if you wish to thoroughly test your <strong class="pkg">Vole</strong> installation, then you can run the test suite. As well the dependencies of <strong class="pkg">Vole</strong> itself, the test suite requires the <strong class="pkg">GAP</strong> packages <span class="URL"><a href="https://gap-packages.github.io/ferret"><strong class="pkg">ferret</strong></a></span> (version 1.0.2 or newer) and <span class="URL"><a href="https://github.com/ChrisJefferson/QuickCheck"><strong class="pkg">QuickCheck</strong></a></span> (version 0.1 or newer) to be available.</p>
+
+<p>The <code class="file">run-tests.sh</code> script, located in the root directory of <strong class="pkg">Vole</strong>, first tests the Rust component directly, and then tests the <strong class="pkg">GAP</strong>-level interface to the Rust component.</p>
+
+
+<div class="example"><pre>
+$ ./run-tests.sh
+</pre></div>
+
+<p>To run only the <strong class="pkg">GAP</strong>-level tests, please read the file <code class="file">testall.g</code> of <strong class="pkg">Vole</strong>'s <code class="file">tst</code> directory into <strong class="pkg">GAP</strong>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Read("tst/testall.g");</span>
+</pre></div>
+
+<p><a id="X86E906F782C8DA05" name="X86E906F782C8DA05"></a></p>
+
+<h4>2.5 <span class="Heading">Compiling the documentation for <strong class="pkg">Vole</strong></span></h4>
+
+<p>Released versions of <strong class="pkg">Vole</strong> are distributed with precompiled documentation, so compiling the documentation should be an unnecessary for most users. However, development versions of <strong class="pkg">Vole</strong> do not include precompiled documentation.</p>
+
+<p>To compile the manual, it suffices to read <strong class="pkg">Vole</strong>'s <code class="file">makedoc.g</code> file into <strong class="pkg">GAP</strong>.</p>
+
+<p>This can be done directly within <strong class="pkg">GAP</strong> via the function <code class="func">Read</code> (<a href="../../../doc/ref/chap9_mj.html#X8373AC6B7D5F9167"><span class="RefLink">Ref 9.7-1</span></a>).</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Read("makedoc.g");</span>
+</pre></div>
+
+<p>Alteratively, the <code class="file">makedoc.g</code> file can be read into <strong class="pkg">GAP</strong> by giving its path as an argument to the <strong class="pkg">GAP</strong> executable.</p>
+
+
+<div class="example"><pre>
+$ gap makedoc.g
+</pre></div>
+
+<p>Finally, running <code class="code">make doc</code> in the <strong class="pkg">Vole</strong> directory should compile the documentation of <strong class="pkg">Vole</strong> if <code class="file">../../bin/gap.sh</code> is the path of a <strong class="pkg">GAP</strong> executable, relative to <strong class="pkg">Vole</strong>.</p>
+
+
+<div class="example"><pre>
+$ make doc
+</pre></div>
+
+
+<div class="chlinkprevnextbot">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap1_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap3_mj.html">[Next Chapter]</a>&nbsp;  </div>
+
+
+<div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chap3_mj.html">3</a>  <a href="chap4_mj.html">4</a>  <a href="chap5_mj.html">5</a>  <a href="chap6_mj.html">6</a>  <a href="chap7_mj.html">7</a>  <a href="chap8_mj.html">8</a>  <a href="chapBib_mj.html">Bib</a>  <a href="chapInd_mj.html">Ind</a>  </div>
+
+<hr />
+<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+</body>
+</html>

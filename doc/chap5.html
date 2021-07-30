@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>GAP (Vole) - Chapter 5: The native Vole interface</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="GAPDoc2HTML" />
+<link rel="stylesheet" type="text/css" href="manual.css" />
+<script src="manual.js" type="text/javascript"></script>
+<script type="text/javascript">overwriteStyle();</script>
+</head>
+<body class="chap5"  onload="jscontent()">
+
+
+<div class="chlinktop"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chap8.html">8</a>  <a href="chapBib.html">Bib</a>  <a href="chapInd.html">Ind</a>  </div>
+
+<div class="chlinkprevnexttop">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap4.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap6.html">[Next Chapter]</a>&nbsp;  </div>
+
+<p id="mathjaxlink" class="pcenter"><a href="chap5_mj.html">[MathJax on]</a></p>
+<p><a id="X8722B8157E8CAB1D" name="X8722B8157E8CAB1D"></a></p>
+<div class="ChapSects"><a href="chap5.html#X8722B8157E8CAB1D">5 <span class="Heading">The native <strong class="pkg">Vole</strong> interface</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap5.html#X85B877CA78602A63">5.1 <span class="Heading">The <code class="code">VoleFind</code> record</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap5.html#X86BB4FFE81AEC046">5.1-1 VoleFind</a></span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap5.html#X7AE5181F7D89AB33">5.2 <span class="Heading">Executing a search with the native <strong class="pkg">Vole</strong> interface</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap5.html#X8712249F879D9FA9">5.2-1 VoleFind.Representative</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap5.html#X7A6FC97E7F94FC49">5.2-2 VoleFind.Group</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap5.html#X7A99C3238317F649">5.2-3 VoleFind.Coset</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap5.html#X7A32626983FEB066">5.2-4 VoleFind.Canonical</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap5.html#X7ACA1CDC80D12604">5.2-5 VoleFind.CanonicalPerm</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap5.html#X7946AA2A85D2C96B">5.2-6 VoleFind.CanonicalImage</a></span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap5.html#X83C3802E816A5013">5.3 <span class="Heading">Bounds associated with a constraint or refiner</span></a>
+</span>
+</div>
+</div>
+
+<h3>5 <span class="Heading">The native <strong class="pkg">Vole</strong> interface</span></h3>
+
+<p>Similar to <strong class="pkg">ferret</strong> interface.</p>
+
+<p><a id="X85B877CA78602A63" name="X85B877CA78602A63"></a></p>
+
+<h4>5.1 <span class="Heading">The <code class="code">VoleFind</code> record</span></h4>
+
+<p><a id="X86BB4FFE81AEC046" name="X86BB4FFE81AEC046"></a></p>
+
+<h5>5.1-1 VoleFind</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind</code></td><td class="tdright">(&nbsp;global variable&nbsp;)</td></tr></table></div>
+<p><code class="code">VoleFind</code> is a record that contains...</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">LoadPackage("vole", false);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Set(RecNames(VoleFind));</span>
+[ "Canonical", "CanonicalImage", "CanonicalPerm", "Coset", "Group", "Rep", 
+  "Representative" ]
+</pre></div>
+
+<p><a id="X7AE5181F7D89AB33" name="X7AE5181F7D89AB33"></a></p>
+
+<h4>5.2 <span class="Heading">Executing a search with the native <strong class="pkg">Vole</strong> interface</span></h4>
+
+<p>In each of the following functions, the arguments <var class="Arg">constraints...</var> can be a non-empty assortment of permutation groups, and/or right cosets, and/or <strong class="pkg">Vole</strong> <em>constraints</em> (Chapter <a href="chap6.html#X79EAB456814AB11C"><span class="RefLink">6</span></a>), and/or <em>refiners</em> (Chapter <a href="chap7.html#X786EF6928319D57A"><span class="RefLink">7</span></a>); or a single list thereof.</p>
+
+<p><a id="X8712249F879D9FA9" name="X8712249F879D9FA9"></a></p>
+
+<h5>5.2-1 VoleFind.Representative</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.Representative</code>( <var class="Arg">constraints...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.Rep</code>( <var class="Arg">constraints...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A permutation, or <code class="keyw">fail</code></p>
+
+<p>Text about <code class="code">VoleFind.Representative</code>.</p>
+
+<p><code class="code">VoleFind.Rep</code> is a synonym for <code class="code">VoleFind.Representative</code>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X7A6FC97E7F94FC49" name="X7A6FC97E7F94FC49"></a></p>
+
+<h5>5.2-2 VoleFind.Group</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.Group</code>( <var class="Arg">constraints...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A permutation group</p>
+
+<p>Text about <code class="code">VoleFind.Group</code>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X7A99C3238317F649" name="X7A99C3238317F649"></a></p>
+
+<h5>5.2-3 VoleFind.Coset</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.Coset</code>( <var class="Arg">constraints...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A right coset of a permutation group, or <code class="keyw">fail</code></p>
+
+<p>Text about <code class="code">VoleFind.Coset</code>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X7A32626983FEB066" name="X7A32626983FEB066"></a></p>
+
+<h5>5.2-4 VoleFind.Canonical</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.Canonical</code>( <var class="Arg">G</var>, <var class="Arg">constraints...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A record</p>
+
+<p>Text about <code class="code">VoleFind.Canonical</code>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X7ACA1CDC80D12604" name="X7ACA1CDC80D12604"></a></p>
+
+<h5>5.2-5 VoleFind.CanonicalPerm</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.CanonicalPerm</code>( <var class="Arg">G</var>, <var class="Arg">constraints...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A permutation</p>
+
+<p>Text about <code class="code">VoleFind.CanonicalPerm</code>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X7946AA2A85D2C96B" name="X7946AA2A85D2C96B"></a></p>
+
+<h5>5.2-6 VoleFind.CanonicalImage</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.CanonicalImage</code>( <var class="Arg">G</var>, <var class="Arg">constraints...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A record</p>
+
+<p>Text about <code class="code">VoleFind.CanonicalImage</code>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X83C3802E816A5013" name="X83C3802E816A5013"></a></p>
+
+<h4>5.3 <span class="Heading">Bounds associated with a constraint or refiner</span></h4>
+
+<p>In <strong class="pkg">GAP</strong>, all permutations are implicitly defined on the set of all positive integers, although there are bounds on the points that can be involved that are prescribed by the limits of the computer and the laws of physics. Finite support.</p>
+
+<p>But there's a potential for danger here with (nearly) infinite stuff. So we need to bound the search somehow. We want to be doing stuff with finite groups. We actually want to do a search in Sym([1..k]) for some posint <code class="code">k</code>, or even in Sym(C) for some finite subset of <code class="code">PositiveIntegers</code>.</p>
+
+<p><strong class="button">Largest required point</strong></p>
+
+<p>The largest required point of a 'constraint' is either <code class="keyw">infinity</code>, or a positive integer <code class="code">k</code> such that for any permutation <code class="code">x</code>:</p>
+
+
+<ul>
+<li><p><code class="code">x</code> satisfies the constraint if and only if <code class="code">x</code> preserves <code class="code">[1..k]</code> as a set, and the restriction of <code class="code">x</code> to <code class="code">[1..k]</code> satisfies the constraint.</p>
+
+</li>
+</ul>
+<p>The constraint only concerns (at most) the points [1..k], and that the action of a permutation on the points greater than <code class="code">k</code> is irrelevant to whether the constraint is satisfied.</p>
+
+<p>In particular, there exists some permutation that satisfies the constraint if and only if there exists a permutation in Sym([1..k]) that satisfies the constraint. This also a search for a representative</p>
+
+<p><strong class="button">Largest moved point</strong></p>
+
+<p>Largest moved point: either infinity, or a positive integer <code class="code">m</code> for which it is known a priori that any permutation satisfying the 'constraint' fixes all points &gt; <code class="code">m</code>. For many 'constraints' there is no such bound. For instance, the constraint "is an even permutation",</p>
+
+
+<div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap4.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap6.html">[Next Chapter]</a>&nbsp;  </div>
+
+
+<div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chap8.html">8</a>  <a href="chapBib.html">Bib</a>  <a href="chapInd.html">Ind</a>  </div>
+
+<hr />
+<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+</body>
+</html>

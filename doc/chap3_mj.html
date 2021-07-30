@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<title>GAP (Vole) - Chapter 3: Tutorial</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="GAPDoc2HTML" />
+<link rel="stylesheet" type="text/css" href="manual.css" />
+<script src="manual.js" type="text/javascript"></script>
+<script type="text/javascript">overwriteStyle();</script>
+</head>
+<body class="chap3"  onload="jscontent()">
+
+
+<div class="chlinktop"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chap3_mj.html">3</a>  <a href="chap4_mj.html">4</a>  <a href="chap5_mj.html">5</a>  <a href="chap6_mj.html">6</a>  <a href="chap7_mj.html">7</a>  <a href="chap8_mj.html">8</a>  <a href="chapBib_mj.html">Bib</a>  <a href="chapInd_mj.html">Ind</a>  </div>
+
+<div class="chlinkprevnexttop">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap2_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap4_mj.html">[Next Chapter]</a>&nbsp;  </div>
+
+<p id="mathjaxlink" class="pcenter"><a href="chap3.html">[MathJax off]</a></p>
+<p><a id="X81932F777898AD72" name="X81932F777898AD72"></a></p>
+<div class="ChapSects"><a href="chap3_mj.html#X81932F777898AD72">3 <span class="Heading">Tutorial</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap3_mj.html#X8596BEA486D8E2C4">3.1 <span class="Heading">Computing the intersection of a normaliser and a stabiliser</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap3_mj.html#X7ABF0CDD7FA6346C">3.1-1 <span class="Heading">The general <strong class="pkg">GAP</strong> approach</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap3_mj.html#X84B902F37E8024FB">3.1-2 <span class="Heading">The general <strong class="pkg">Vole</strong> approach</span></a>
+</span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap3_mj.html#X87BC2DB48642883A">3.2 <span class="Heading">Computing a canonical image</span></a>
+</span>
+</div>
+</div>
+
+<h3>3 <span class="Heading">Tutorial</span></h3>
+
+<p><a id="X8596BEA486D8E2C4" name="X8596BEA486D8E2C4"></a></p>
+
+<h4>3.1 <span class="Heading">Computing the intersection of a normaliser and a stabiliser</span></h4>
+
+<p>Suppose that we wish to compute the intersection of the stabiliser in <span class="SimpleMath">\(M_{12}\)</span> of the set <span class="SimpleMath">\(\{1,2,4,5\}\)</span> with the normaliser of <span class="SimpleMath">\(H\)</span> in <span class="SimpleMath">\(G\)</span>, where <span class="SimpleMath">\(H\)</span> and <span class="SimpleMath">\(G\)</span> are defined by the generating sets below.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">M12 := MathieuGroup(12);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">S := [ 1, 2, 4, 5 ];;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G := Group([(1,8,7,2,3,10,9,4)(5,6,11,12), (3,11)(4,12,6,8,10)]);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">H := Group([(1,2,3,4,9,10,5,6,11,8)(7,12), (1,5,9)(6,12)(8,10)]);;</span>
+</pre></div>
+
+<p>Thus we wish to compute <span class="SimpleMath">\(\operatorname{Stab}_{M_{12}}(\{1,2,3,5\}) \cap N_{G}(H)\)</span>.</p>
+
+<p>For future reference, we note that the result is a dihedral group of order 8:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">answer := Group([(1,2)(3,10)(4,5)(6,7)(8,9)(11,12),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                    (2,4)(3,7)(8,12)(9,11)]);</span>
+Group([ (1,2)(3,10)(4,5)(6,7)(8,9)(11,12), (2,4)(3,7)(8,12)(9,11) ])
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">StructureDescription(answer);</span>
+"D8"
+</pre></div>
+
+<p><a id="X7ABF0CDD7FA6346C" name="X7ABF0CDD7FA6346C"></a></p>
+
+<h5>3.1-1 <span class="Heading">The general <strong class="pkg">GAP</strong> approach</span></h5>
+
+<p>With the <strong class="pkg">GAP</strong> library, there are several ways to compute this. For example, we can stick as closely to the statement as possible, and first compute the stabiliser and the normaliser separately, and then intersect them:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Intersection(Stabiliser(M12, S, OnSets),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                Normaliser(G, H))</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">= answer;</span>
+true
+</pre></div>
+
+<p>Or we can slightly re-think the task, and first intersect <span class="SimpleMath">\(M_{12}\)</span> with <span class="SimpleMath">\(G\)</span>, and then compute the stabiliser of the set in that smaller group, and finally compute the normaliser of <span class="SimpleMath">\(H\)</span> in that (even smaller) stabiliser:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">M12andG := Intersection(M12, G);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">stab := Stabiliser(M12andG, S, OnSets);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Normaliser(stab, H) = answer;</span>
+true
+</pre></div>
+
+<p>Or we could switch things in the previous example and compute the normaliser before computing the stabiliser in that normaliser:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">M12andG := Intersection(M12, G);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">norm := Normaliser(M12andG, H);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Stabiliser(norm, S, OnSets) = answer;</span>
+true
+</pre></div>
+
+<p>There are several further combinations. Each of the above strategies can be emulated in <strong class="pkg">Vole</strong> by prepending “<code class="code">Vole.</code>” to the beginning of each call to <code class="code">Stabiliser</code>, <code class="code">Normaliser</code>, and <code class="code">Intersection</code>, as described in Chapter <a href="chap4_mj.html#X7C9C24D97DB3662F"><span class="RefLink">4</span></a>. However, this is not the recommended approach, as we will see below.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">LoadPackage("vole", false);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">stab := Vole.Stabiliser(M12, S, OnSets);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">norm := Vole.Normaliser(G, H);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">answer = Vole.Intersection(stab, norm);</span>
+true
+</pre></div>
+
+<p>We quickly realise that solving our problem with the <strong class="pkg">GAP</strong> library interface really requires three separate steps to be undertaken in sequence. This raises some potential disadvantages.</p>
+
+
+<ul>
+<li><p>Although it is clear that each of the above strategies will give the correct answer, it is not clear which approach gives the best performance: should we compute the normaliser in the stabiliser, or vice versa, or should we do something else? It is not necessarily clear.</p>
+
+</li>
+<li><p>Breaking the problem up into three separate steps requires three instances of a backtrack search, where each instance is unaware of the ones to come. This is not ideal for a number of reasons.</p>
+
+
+<ul>
+<li><p>Firstly, backtrack search can be expensive, and so we should aim to minimise the number of times that it is required.</p>
+
+</li>
+<li><p>Secondly, a search tends to be quicker when there are more ’restrictions’ on the search space. Therefore, it is typically better to perform one search with many restrictions rather than performing several searches that each have few restrictions.</p>
+
+</li>
+</ul>
+</li>
+</ul>
+<p><a id="X84B902F37E8024FB" name="X84B902F37E8024FB"></a></p>
+
+<h5>3.1-2 <span class="Heading">The general <strong class="pkg">Vole</strong> approach</span></h5>
+
+<p>The ‘<strong class="pkg">Vole</strong>’ way of solving this is problem is to do it in one step with the function <code class="func">VoleFind.Group</code> (<a href="chap5_mj.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>).</p>
+
+<p>For most users, the easiest way to solve the problem with <code class="func">VoleFind.Group</code> (<a href="chap5_mj.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>) is to find a collection of <em>constraints</em> that together specify the problem. Constraints are discussed in Chapter <a href="chap6_mj.html#X79EAB456814AB11C"><span class="RefLink">6</span></a>. The constraints directly offered by <strong class="pkg">Vole</strong> are contained in the record <code class="func">VoleCon</code> (<a href="chap6_mj.html#X78F3F7F58416EE54"><span class="RefLink">6.2-1</span></a>), and are sufficient to solve the problem at hand.</p>
+
+<p>Specifically, we are looking for all permutations that are contained in <span class="SimpleMath">\(M_{12}\)</span>, that stabilise the set <span class="SimpleMath">\(\{1,2,3,5\}\)</span>, that are also contained in <span class="SimpleMath">\(G\)</span>, and that normalise <span class="SimpleMath">\(H\)</span>. Therefore, we can solve the problem with the following constraints:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(VoleCon.InGroup(M12),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.Stabilize(S, OnSets),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.InGroup(G),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.Normalize(H))</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">= answer;</span>
+true
+</pre></div>
+
+<p><strong class="pkg">Vole</strong> performs only one search to solve the whole problem.</p>
+
+<p>In order to solve the problem as specified, <strong class="pkg">Vole</strong> chooses appropriate refiners for the given collection of constraints. Refiners are documented in Chapter <a href="chap7_mj.html#X786EF6928319D57A"><span class="RefLink">7</span></a>. The more confident user may wish to directly specify one or more refiners instead of, and/or in addition to, some of the constraints.</p>
+
+<p>For example, a user may know (or just hope) that the group <span class="SimpleMath">\(H\)</span> is well-suited to the technique that the refiner <code class="code">GB_Con.NormaliserSimple</code> from the <strong class="pkg">GraphBacktracking</strong> package uses to refine for the normaliser. This refiner may be included instead of, or as well as, the constraint <code class="code">VoleCon.Normalize(H)</code>, since the refiner implies that constraint, but it is perfectly acceptable to use multiple refiners for the same constraint.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(VoleCon.InGroup(M12),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.Stabilize(S, OnSets),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.InGroup(G),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  GB_Con.NormaliserSimple(12, H))</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">= answer;</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(VoleCon.InGroup(M12),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.Stabilize(S, OnSets),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.InGroup(G),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.Normalise(H),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  GB_Con.NormaliserSimple(12, H))</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">= answer;</span>
+true
+</pre></div>
+
+<p><a id="X87BC2DB48642883A" name="X87BC2DB48642883A"></a></p>
+
+<h4>3.2 <span class="Heading">Computing a canonical image</span></h4>
+
+<p>Not yet written.</p>
+
+
+<div class="chlinkprevnextbot">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap2_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap4_mj.html">[Next Chapter]</a>&nbsp;  </div>
+
+
+<div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chap3_mj.html">3</a>  <a href="chap4_mj.html">4</a>  <a href="chap5_mj.html">5</a>  <a href="chap6_mj.html">6</a>  <a href="chap7_mj.html">7</a>  <a href="chap8_mj.html">8</a>  <a href="chapBib_mj.html">Bib</a>  <a href="chapInd_mj.html">Ind</a>  </div>
+
+<hr />
+<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+</body>
+</html>
