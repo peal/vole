@@ -10,27 +10,33 @@
 # Wrapper for the GAP library
 
 Vole.Intersection := function(permcolls...)
-    local ret;
+    local ret, i;
     if IsEmpty(permcolls) then
         ErrorNoReturn("Vole.Intersection: The arguments must specify at least ",
                       "one perm group or right coset");
     elif Length(permcolls) = 1 and IsList(permcolls[1]) then
-        permcolls := permcolls[1];
+        permcolls := ShallowCopy(permcolls[1]);
     fi;
     if not ForAll(permcolls, x -> IsPermGroup(x) or IsRightCoset(x)) then
         ErrorNoReturn("Vole.Intersection: The arguments must be ",
                       "(a list containing) perm groups and/or ",
                       "right cosets of perm groups");
     fi;
-    if ForAny(permcolls, IsRightCoset) then
-        ret := VoleFind.Coset(permcolls);
+    if ForAll(permcolls, IsPermGroup) then
+        return VoleFind.Group(permcolls);
+    else
+        # FIXME when VoleFind.Coset is implemented, just use it directly.
+        ret := VoleFind.Rep(permcolls);
         if ret = fail then
             return [];
         else
-            return ret;
+            for i in [1 .. Length(permcolls)] do
+                if IsRightCoset(permcolls[i]) then
+                    permcolls[i] := ActingDomain(permcolls[i]);
+                fi;
+            od;
+            return VoleFind.Group(permcolls) * ret;
         fi;
-    else
-        return VoleFind.Group(permcolls);
     fi;
 end;
 
