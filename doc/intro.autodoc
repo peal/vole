@@ -5,8 +5,13 @@
 The purpose of this manual is to describe the capabilities of &Vole;, and to
 give directions, hints, and explanations about its use.
 
-In this manual, a **group** is a finite permutation group with a finite set of
-moved points, and a **coset** is a coset of such a group.
+In this manual, a **permutation** is defined on the set of all positive
+integers, but moves only finitely many points;
+a **group** is a finite permutation group
+(which, by the definition of a permutation, necessarily has a finite set of
+moved points);
+and a **coset** is a left or right coset of such a group determined by some
+permutation (the parent group is unspecified).
 
 In full generality,
 &Vole; can be used to find permutations

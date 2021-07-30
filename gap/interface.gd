@@ -139,9 +139,11 @@ DeclareGlobalFunction("VoleFind.CanonicalImage");
 #!
 #! <B>Largest moved point</B>
 #!
-#! Largest moved point: either infinity, or a positive integer `m` for
+#! The largest moved point is either <K>infinity</K>,
+#! or a positive integer `m` for
 #! which it is known a priori that any permutation satisfying the
 #! 'constraint' fixes all points > `m`.
-#! For many 'constraints' there is no such bound.
-#! For instance, the constraint "is an even permutation",
+#! For many 'constraints' there is no such bound, or at least none can be easily
+#! deduced. For instance, the constraint "is even" can be satisfied by
+#! some permutation that moves any given point.
 #!

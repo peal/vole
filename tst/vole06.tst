@@ -23,45 +23,45 @@ gap> con2 := VoleCon.InGroup(AlternatingGroup(4));;
 gap> VoleFind.Group(con1, con2) = Group([(1,3)(2,4), (1,4)(2,3)]);
 true
 
-# doc/_Chapter_Constraints.xml:130-133
+# doc/_Chapter_Constraints.xml:131-134
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:146-149
+# doc/_Chapter_Constraints.xml:148-151
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:161-164
+# doc/_Chapter_Constraints.xml:165-168
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:182-185
+# doc/_Chapter_Constraints.xml:193-196
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:196-199
+# doc/_Chapter_Constraints.xml:221-224
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:211-214
+# doc/_Chapter_Constraints.xml:241-244
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:226-229
+# doc/_Chapter_Constraints.xml:261-264
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:240-243
+# doc/_Chapter_Constraints.xml:280-283
 gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:256-261
+# doc/_Chapter_Constraints.xml:296-301
 gap> con1 := VoleCon.MovedPoints([1..5]);;
 gap> con2 := VoleCon.MovedPoints([2,6,4,5]);;
 gap> VoleFind.Group(con1, con2) = SymmetricGroup([2,4,5]);
 true
 
-# doc/_Chapter_Constraints.xml:274-278
+# doc/_Chapter_Constraints.xml:314-318
 gap> con := VoleCon.LargestMovedPoint(5);;
 gap> VoleFind.Group(con) = SymmetricGroup(5);
 true

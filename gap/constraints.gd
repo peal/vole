@@ -5,6 +5,16 @@
 #
 # Declarations: Vole constraints
 
+
+#! @BeginChunk maybeinfinite
+#! Note that the set of such permutations may be infinite.
+#! @EndChunk
+
+#! @BeginChunk isinfinite
+#! Note that the set of such permutations is infinite.
+#! @EndChunk
+
+
 #! @Chapter Constraints
 
 #! @Section The concept of constraints
@@ -44,6 +54,8 @@
 DeclareGlobalVariable("VoleCon");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
 InstallValue(VoleCon, rec());
+
+
 
 
 #! @Section Constraints provided in the <C>VoleCon</C> record
@@ -105,8 +117,8 @@ InstallValue(VoleCon, rec());
 #! @Arguments G
 ## @Returns An object
 #! @Description
-#! This constraint is satisfied by the elements of the permutation group
-#! <A>G</A>, and no others.
+#! This constraint is satisfied by precisely those permutations in the
+#! group <A>G</A>.
 #! @BeginExampleSession
 #! gap> con1 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 8));;
 #! gap> con2 := VoleCon.InGroup(AlternatingGroup(4));;
@@ -119,7 +131,8 @@ DeclareGlobalFunction("VoleCon.InGroup");
 #! @Arguments U
 ## @Returns An object
 #! @Description
-#! A permutation satisfies this constraint if...
+#! This constraint is satisfied by precisely those permutations in the &GAP;
+#! right coset object <A>U</A>.
 #!
 #! See also <Ref Func="VoleCon.InLeftCoset"/>
 #! and <Ref Func="VoleCon.InRightCoset"/>, which allow a coset to be specifed
@@ -134,7 +147,8 @@ DeclareGlobalFunction("VoleCon.InCoset");
 #! @Arguments G, x
 ## @Returns An object
 #! @Description
-#! A permutation satisfies this constraint if...
+#! This constraint is satisfied by precisely those permutations in the right
+#! coset of the group <A>G</A> determined by the permutation <A>x</A>.
 #!
 #! See also <Ref Func="VoleCon.InLeftCoset"/>.
 #! @BeginExampleSession
@@ -148,7 +162,9 @@ DeclareGlobalFunction("VoleCon.InRightCoset");
 #! @Arguments G, x
 ## @Returns An object
 #! @Description
-#! Text about `VoleCon.InLeftCoset`.
+#! This constraint is satisfied by precisely those permutations in the left
+#! coset of the group <A>G</A> determined by the permutation <A>x</A>.
+#! 
 #! See also <Ref Func="VoleCon.InRightCoset"/>.
 #! @BeginExampleSession
 #! gap> true;
@@ -157,31 +173,48 @@ DeclareGlobalFunction("VoleCon.InRightCoset");
 DeclareGlobalFunction("VoleCon.InLeftCoset");
 
 
-#! @BeginGroup StabilizeDoc
+#! @BeginGroup StabiliseDoc
 #! @Arguments object[, action]
 ## @Returns An object
 #! @Description
-#! Text about `VoleCon.Stabilize`.
+#! This constraint is satisfied by precisely those permutations that fix
+#! <A>object</A> under <A>action</A>,
+#! i.e. all permutations `g` such that
+#! `<A>action</A>(<A>object</A>, g) = <A>object</A>`.
+#! Note that such a stabiliser may be infinite.
 #!
-#! @InsertChunk DefaultAction2
+#! The combinations of objects and actions that are supported by
+#! `VoleCon.Stabilise` are given in the following table.
 #!
-#! The combinations of objects and actions that are supported by &Vole;
-#! is given in... TODO
-DeclareGlobalFunction("VoleCon.Stabilize");
+#! @InsertChunk DefaultAction
+#!
+#! @InsertChunk ActionsTable
+DeclareGlobalFunction("VoleCon.Stabilise");
 #! @EndGroup
 #! @Arguments object[, action]
-#! @Group StabilizeDoc
+#! @Group StabiliseDoc
 #! @BeginExampleSession
 #! gap> true;
 #! true
 #! @EndExampleSession
-DeclareGlobalFunction("VoleCon.Stabilise");
+DeclareGlobalFunction("VoleCon.Stabilize");
 
 
 #! @Arguments object1, object2[, action]
 ## @Returns An object
 #! @Description
-#! Text about `VoleCon.Transport`.
+#! This constraint is satisfied by precisely those permutations that map
+#! <A>object1</A> to <A>object2</A> under <A>action</A>,
+#! i.e. all permutations `g` such that
+#! `<A>action</A>(<A>object1</A>, g) = <A>object2</A>`.
+#! @InsertChunk maybeinfinite
+#!
+#! The combinations of objects and actions that are supported by
+#! `VoleCon.Transport` are given in the following table.
+#!
+#! @InsertChunk DefaultAction
+#!
+#! @InsertChunk ActionsTable
 #! @BeginExampleSession
 #! gap> true;
 #! true
@@ -189,42 +222,54 @@ DeclareGlobalFunction("VoleCon.Stabilise");
 DeclareGlobalFunction("VoleCon.Transport");
 
 
-#! @BeginGroup NormalizeDoc
+#! @BeginGroup NormaliseDoc
 #! @Arguments G
 ## @Returns An object
 #! @Description
-#! Text about `VoleCon.Normalize`.
-DeclareGlobalFunction("VoleCon.Normalize");
-#! @EndGroup
-#! @Arguments G
-#! @Group NormalizeDoc
-#! @BeginExampleSession
-#! gap> true;
-#! true
-#! @EndExampleSession
+#! This constraint is satisfied by precisely those permutations that
+#! normalise the permutation group <A>G</A>,
+#! i.e. that preserve <A>G</A> under conjugation.
+#!
+#! @InsertChunk isinfinite
 DeclareGlobalFunction("VoleCon.Normalise");
-
-
-#! @BeginGroup CentralizeDoc
-#! @Arguments G
-## @Returns An object
-#! @Description
-#! Text about `VoleCon.Centralize`.
-DeclareGlobalFunction("VoleCon.Centralize");
 #! @EndGroup
 #! @Arguments G
-#! @Group CentralizeDoc
+#! @Group NormaliseDoc
 #! @BeginExampleSession
 #! gap> true;
 #! true
 #! @EndExampleSession
+DeclareGlobalFunction("VoleCon.Normalize");
+
+
+#! @BeginGroup CentraliseDoc
+#! @Arguments G
+## @Returns An object
+#! @Description
+#! This constraint is satisfied by precisely those permutations that
+#! commute with <A>G</A>, if <A>G</A> is a permutation, or that
+#! commute with every element of <A>G</A>, if <A>G</A> is a permutation group.
+#!
+#! @InsertChunk isinfinite
 DeclareGlobalFunction("VoleCon.Centralise");
+#! @EndGroup
+#! @Arguments G
+#! @Group CentraliseDoc
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("VoleCon.Centralize");
 
 
 #! @Arguments x, y
 ## @Returns An object
 #! @Description
-#! Text about `VoleCon.Conjugate`.
+#! This constraint is satisfied by precisely those permutations that
+#! conjugate <A>x</A> to <A>y</A>, where <A>x</A> and <A>y</A> are either
+#! both permutations, or both permutation groups.
+#!
+#! @InsertChunk maybeinfinite
 #! @BeginExampleSession
 #! gap> true;
 #! true
@@ -236,8 +281,8 @@ DeclareGlobalFunction("VoleCon.Conjugate");
 ## @Returns An object
 #! @Description
 #! This constraint is a shorthand for
-#! `VoleCon.InGroup(SymmetricGroup(<A>pointlist</A>))`;
-#! see <Ref Func="VoleCon.InGroup"/>.
+#! `VoleCon.InGroup(SymmetricGroup(<A>pointlist</A>))`.
+#! See <Ref Func="VoleCon.InGroup"/>.
 #! @BeginExampleSession
 #! gap> con1 := VoleCon.MovedPoints([1..5]);;
 #! gap> con2 := VoleCon.MovedPoints([2,6,4,5]);;
@@ -251,13 +296,11 @@ DeclareGlobalFunction("VoleCon.MovedPoints");
 ## @Returns An object
 #! @Description
 #! This constraint is a shorthand for
-#! `VoleCon.InGroup(SymmetricGroup([1..<A>point</A>]))`;
-#! see <Ref Func="VoleCon.InGroup"/>.
+#! `VoleCon.InGroup(SymmetricGroup(<A>point</A>))`.
+#! See <Ref Func="VoleCon.InGroup"/>.
 #! @BeginExampleSession
 #! gap> con := VoleCon.LargestMovedPoint(5);;
 #! gap> VoleFind.Group(con) = SymmetricGroup(5);
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.LargestMovedPoint");
-
-# TODO warning: canonical images and perms can change!

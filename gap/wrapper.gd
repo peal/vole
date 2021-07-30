@@ -5,34 +5,101 @@
 #
 # Declarations: Wrappers for Vole functions that emulate GAP/images/Digraphs
 
-#! @Chunk bettergroup
+#! @Chunk better
 #! Note that it may be possible to obtain better performance from &Vole; with
-#! the native interface, see <Ref Func="VoleFind.Group"/>.
+#! the native interface, see
+#! @EndChunk
+
+#! @Chunk bettergroup
+#! @InsertChunk better
+#! <Ref Func="VoleFind.Group"/>.
 #! @EndChunk
 
 #! @Chunk betterrep
-#! Note that it may be possible to obtain better performance from &Vole; with
-#! the native interface, see <Ref Func="VoleFind.Rep"/>.
+#! @InsertChunk better
+#! <Ref Func="VoleFind.Rep"/>.
 #! @EndChunk
 
 #! @Chunk bettercanonical
-#! Note that it may be possible to obtain better performance from &Vole; with
-#! the native interface, see <Ref Func="VoleFind.Canonical"/>.
+#! @InsertChunk better
+#! <Ref Func="VoleFind.Canonical"/>.
+#! @EndChunk
+
+#! @Chunk betterall
+#! @InsertChunk better
+#! Chapter&nbsp;<Ref Chap="Chapter_Constraints"/>.
 #! @EndChunk
 
 #! @BeginChunk DefaultAction
-#! The default <A>action</A>, when the argument is not given, is
-#! <Ref Oper="OnPoints" Style="Number" BookName="Ref" Style="Number"/>,
-#! which is the name in &GAP; of the action that corresponds to
-#! `<A>object</A>^g`, where `g` in <A>G</A>.
+#! The default <A>action</A>, in the case that the argument is not given, is
+#! <Ref Func="OnPoints" BookName="Ref"/>.
+#! This is the name in &GAP; of the action given by the `^` operator,
+#! i.e. it corresponds to `<A>object</A>^g`, where `g` in <A>G</A>.
+#! See <Ref Oper="\^" BookName="Ref"/>.
 #! @EndChunk
 
-#! @BeginChunk DefaultAction2
-#! If the optional argument <A>action</A> is not given, then the action
-#! <Ref Func="OnPoints" BookName="Ref"/> is used by default;
-#! this is the action obtained by the `^` operator;
-#! see <Ref Oper="\^" BookName="Ref"/>.
+#! @BeginChunk AvailableActions
+#! TODO: some text about which actions &Vole; supports.
 #! @EndChunk
+
+#! @BeginChunk ActionsTable
+#! <Table Align="ll">
+#! <Row>
+#!   <Item><B>Permitted action</B></Item>
+#!   <Item><B>Corresponding object</B></Item>
+#! </Row>
+#! <HorLine/>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="OnPoints" Style="Number" BookName="Ref"/> [default]
+#!   </Item>
+#!   <Item>
+#!     A point, or permutation, or perm group
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="OnTuples" Style="Number" BookName="Ref"/>
+#!   </Item>
+#!   <Item>
+#!     A list of positive integers
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="OnSets" Style="Number" BookName="Ref"/>
+#!   </Item>
+#!   <Item>
+#!     A set of positive integers
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="OnTuplesSets" Style="Number" BookName="Ref"/>
+#!   </Item>
+#!   <Item>
+#!     A list of sets of positive integers
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="OnSetsSets" Style="Number" BookName="Ref"/>
+#!   </Item>
+#!   <Item>
+#!     A set of sets of positive integers
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Oper="OnDigraphs" BookName="Digraphs" Style="Number" Label="for a digraph and a perm"/>
+#!   </Item>
+#!   <Item>
+#!     A digraph object, or a list of adjacencies
+#!   </Item>
+#! </Row>
+#! </Table>
+#! @EndChunk
+
 
 #! @Chapter Emulating traditional interfaces with &Vole;
 #! @ChapterLabel wrapper
@@ -123,10 +190,8 @@ DeclareGlobalVariable("Vole");
 InstallValue(Vole, rec());
 
 
-#! @Section TEMPORARY
+#! @Section The group actions built into &Vole;
 
-
-# TODO This should probably be in constraints.gd? And only referenced from here.
 # TODO Or should it actually be a "Chunk" that I can insert in multiple places?
 # TODO Also OnTuplesSets, OnTuplesTuples, etc?
 #! The supported combinations of objects and actions are the same for all of the
@@ -137,61 +202,7 @@ InstallValue(Vole, rec());
 #! * <Ref Func="Vole.CanonicalPerm"/>
 #! * <Ref Func="Vole.CanonicalImage"/>
 #!
-#! <Table Align="ll">
-#! <Row>
-#!   <Item><B>Permitted action</B></Item>
-#!   <Item><B>Corresponding permitted object(s)</B></Item>
-#! </Row>
-#! <HorLine/>
-#! <Row>
-#!   <Item>
-#!     <Ref Func="OnPoints" Style="Number" BookName="Ref"/> [default]
-#!   </Item>
-#!   <Item>
-#!     A point, or permutation, or perm group
-#!   </Item>
-#! </Row>
-#! <Row>
-#!   <Item>
-#!     <Ref Func="OnTuples" Style="Number" BookName="Ref"/>
-#!   </Item>
-#!   <Item>
-#!     A list of positive integers
-#!   </Item>
-#! </Row>
-#! <Row>
-#!   <Item>
-#!     <Ref Func="OnSets" Style="Number" BookName="Ref"/>
-#!   </Item>
-#!   <Item>
-#!     A set of positive integers
-#!   </Item>
-#! </Row>
-#! <Row>
-#!   <Item>
-#!     <Ref Func="OnTuplesSets" Style="Number" BookName="Ref"/>
-#!   </Item>
-#!   <Item>
-#!     A list of sets of positive integers
-#!   </Item>
-#! </Row>
-#! <Row>
-#!   <Item>
-#!     <Ref Func="OnSetsSets" Style="Number" BookName="Ref"/>
-#!   </Item>
-#!   <Item>
-#!     A set of sets of positive integers
-#!   </Item>
-#! </Row>
-#! <Row>
-#!   <Item>
-#!     <Ref Oper="OnDigraphs" BookName="Digraphs" Style="Number" Label="for a digraph and a perm"/>
-#!   </Item>
-#!   <Item>
-#!     A digraph
-#!   </Item>
-#! </Row>
-#! </Table>
+#! @InsertChunk ActionsTable
 
 
 #! @Section &Vole; functions emulating built-in &GAP; functions
@@ -274,6 +285,8 @@ InstallValue(Vole, rec());
 #! things.
 #!
 #! &GAP; might have some clever special cases that we don't bother with.
+#!
+#! @InsertChunk betterall
 #! @BeginExampleSession
 #! gap> true;
 #! true
@@ -292,9 +305,10 @@ DeclareGlobalFunction("Vole.Intersection");
 #!
 #! Text about this.
 #!
+#! @InsertChunk AvailableActions
 #! @InsertChunk DefaultAction
 #!
-#! <Ref Func="VoleFind.Group"/>
+#! @InsertChunk bettergroup
 DeclareGlobalFunction("Vole.Stabiliser");
 #! @EndGroup
 #! @Arguments G, object[, action]
@@ -320,6 +334,7 @@ DeclareGlobalFunction("Vole.Stabilizer");
 #! under the action <A>action</A>, if such an element exists,
 #! and it returns <K>fail</K> otherwise.
 #!
+#! @InsertChunk AvailableActions
 #! @InsertChunk DefaultAction
 #!
 #! @InsertChunk betterrep
@@ -341,7 +356,7 @@ DeclareGlobalFunction("Vole.RepresentativeAction");
 #! <Ref Oper="Normaliser" BookName="Ref" Style="Number"/>.
 #!
 #! If <A>G</A> and <A>U</A> are permutation groups, then
-#! this function returns the <E>normaliser</E> $N_{G}(U)$ of <A>U</A> in
+#! this function returns the **normaliser** $N_{G}(U)$ of <A>U</A> in
 #! <A>G</A>, which is the stabiliser of <A>U</A> under conjugation by <A>G</A>.
 #! If <A>U</A> is instead a permutation, then
 #! `Vole.Normalizer(<A>G</A>,<A>U</A>)` returns $N_{G}(\langle U \rangle)$.
@@ -456,6 +471,7 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #!
 #! Text about `Vole.CanonicalPerm`...
 #!
+#! @InsertChunk AvailableActions
 #! @InsertChunk DefaultAction
 #!
 #! <Ref Func="VoleFind.CanonicalPerm"/>
@@ -483,6 +499,7 @@ DeclareGlobalFunction("Vole.CanonicalImagePerm");
 #!
 #! Text about `Vole.CanonicalImage`...
 #!
+#! @InsertChunk AvailableActions
 #! @InsertChunk DefaultAction
 #!
 #! <Ref Func="VoleFind.CanonicalPerm"/>
@@ -605,3 +622,5 @@ DeclareGlobalFunction("Vole.CanonicalDigraph");
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.DigraphCanonicalLabelling");
 #! @EndGroup
+
+# TODO warning: canonical images and perms can change!

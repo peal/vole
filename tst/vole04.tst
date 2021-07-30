@@ -18,27 +18,27 @@ gap> Set(RecNames(Vole));
   "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", 
   "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer" ]
 
-# doc/_Chapter_wrapper.xml:255-258
+# doc/_Chapter_wrapper.xml:205-208
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:281-284
+# doc/_Chapter_wrapper.xml:234-237
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:312-315
+# doc/_Chapter_wrapper.xml:267-270
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:340-343
+# doc/_Chapter_wrapper.xml:295-298
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:361-364
+# doc/_Chapter_wrapper.xml:316-319
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:393-403
+# doc/_Chapter_wrapper.xml:348-358
 gap> # Conjugacy of permutations
 gap> x := (1,2,3,4,5);; y := (1,2,3,4,6);;
 gap> IsConjugate(SymmetricGroup(6), x, y);
@@ -49,23 +49,23 @@ gap> IsConjugate(Group([ (5,6) ]), x, y);
 true
 gap> # Conjugacy of groups
 
-# doc/_Chapter_wrapper.xml:458-461
+# doc/_Chapter_wrapper.xml:415-418
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:485-488
+# doc/_Chapter_wrapper.xml:444-447
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:558-561
+# doc/_Chapter_wrapper.xml:517-520
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:581-584
+# doc/_Chapter_wrapper.xml:540-543
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:604-607
+# doc/_Chapter_wrapper.xml:563-566
 gap> true;
 true
 
