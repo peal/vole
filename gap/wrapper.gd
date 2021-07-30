@@ -246,6 +246,8 @@ InstallValue(Vole, rec());
 #! @Arguments U1, U2, ..., Uk
 #! @Returns A perm group, a right coset, or an empty list
 #! @Description
+#! <Ref Oper="Intersection" BookName="Ref" Style="Number" />
+#!
 #! Can be permgroups and/or right cosets.
 #!
 #! Note that &Vole; is cool because it does all of the intersection
@@ -266,6 +268,8 @@ DeclareGlobalFunction("Vole.Intersection");
 #! @Arguments G, object[, action]
 #! @Returns An permutation group
 #! @Description
+#! <Ref Oper="Stabiliser" BookName="Ref" Style="Number" />
+#!
 #! Text about this.
 #!
 #! @InsertChunk DefaultAction
@@ -286,6 +290,8 @@ DeclareGlobalFunction("Vole.Stabilizer");
 #! @GroupTitle RepresentativeAction
 #! @Arguments G, object1, object2[, action]
 #! @Description
+#! <Ref Oper="RepresentativeAction" BookName="Ref" Style="Number" />
+#!
 #! Text about this.
 #!
 #! @InsertChunk DefaultAction
@@ -305,6 +311,8 @@ DeclareGlobalFunction("Vole.RepresentativeAction");
 #! @Arguments G, U
 #! @Returns An permutation group
 #! @Description
+#! <Ref Oper="Normaliser" BookName="Ref" Style="Number" />
+#!
 #! Text about this
 DeclareGlobalFunction("Vole.Normaliser");
 #! @EndGroup
@@ -322,6 +330,8 @@ DeclareGlobalFunction("Vole.Normalizer");
 #! @Arguments G, x
 #! @Returns An permutation group
 #! @Description
+#! <Ref Oper="Centraliser" BookName="Ref" Style="Number" />
+#!
 #! Text about this
 DeclareGlobalFunction("Vole.Centraliser");
 #! @EndGroup
@@ -339,6 +349,8 @@ DeclareGlobalFunction("Vole.Centralizer");
 #! @Arguments G, x, y
 #! @Returns <K>true</K> or <K>false</K>
 #! @Description
+#! <Ref Oper="IsConjugate" BookName="Ref" Style="Number" />
+#!
 #! Text about this.
 #! @BeginExampleSession
 #! gap> true;
@@ -477,6 +489,8 @@ DeclareGlobalFunction("Vole.CanonicalImage");
 #! @Arguments D[, vert_colours[, edge_colours]]
 #! @Returns A permutation group
 #! @Description
+#! <Ref Func="AutomorphismGroup" BookName="Digraphs" Style="Number" />
+#!
 #! TODO
 #!
 #! <Ref Func="VoleFind.Group"/>
@@ -494,6 +508,10 @@ DeclareGlobalFunction("Vole.AutomorphismGroup");
 #! @Arguments D
 #! @Returns A digraph
 #! @Description
+#! <Ref Oper="BlissCanonicalDigraph" BookName="Digraphs" Style="Number" />
+#! and
+#! <Ref Oper="NautyCanonicalDigraph" BookName="Digraphs" Style="Number" />
+#!
 #! TODO
 #!
 #! <Ref Func="VoleFind.CanonicalPerm"/>
@@ -511,6 +529,10 @@ DeclareGlobalFunction("Vole.CanonicalDigraph");
 #! @Arguments D[, colours]
 #! @Returns A permutation
 #! @Description
+#! <Ref Attr="BlissCanonicalLabelling" BookName="Digraphs" Style="Number" />
+#!
+#! <Ref Attr="NautyCanonicalLabelling" BookName="Digraphs" Style="Number" />
+#!
 #! TODO
 #!
 #! <Ref Func="VoleFind.CanonicalPerm"/>

@@ -16,7 +16,7 @@ gap> H := Group([(1,2,3,4,9,10,5,6,11,8)(7,12), (1,5,9)(6,12)(8,10)]);;
 @EndExampleSession
 
 Thus we wish to compute
-$\operatorname{Stab}_{M_{12}}(\{1,2,3,5\}) \cap N_{G}(H)$.
+${Stab}_{M_{12}}(\{1,2,3,5\}) \cap N_{G}(H)$.
 
 For future reference, we note that the result is a dihedral group of order 8:
 

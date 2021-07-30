@@ -18,47 +18,47 @@ gap> Set(RecNames(Vole));
   "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", 
   "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer" ]
 
-# doc/_Chapter_wrapper.xml:250-253
+# doc/_Chapter_wrapper.xml:252-255
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:273-276
+# doc/_Chapter_wrapper.xml:277-280
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:294-297
+# doc/_Chapter_wrapper.xml:300-303
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:312-315
+# doc/_Chapter_wrapper.xml:320-323
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:330-333
+# doc/_Chapter_wrapper.xml:340-343
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:347-350
+# doc/_Chapter_wrapper.xml:359-362
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:405-408
+# doc/_Chapter_wrapper.xml:417-420
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:432-435
+# doc/_Chapter_wrapper.xml:444-447
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:495-498
+# doc/_Chapter_wrapper.xml:509-512
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:514-517
+# doc/_Chapter_wrapper.xml:532-535
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:533-536
+# doc/_Chapter_wrapper.xml:555-558
 gap> true;
 true
 
