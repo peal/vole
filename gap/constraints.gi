@@ -88,7 +88,7 @@ VoleCon.InGroup := function(G)
     fi;
     # TODO special case NaturalAlternatingGroup too?
     
-    return GB_Con.InGroupSimple(_Vole.lmp(G), G);
+    return GB_Con.InGroup(_Vole.lmp(G), G);
 end;
 
 VoleCon.InCoset := function(U)
