@@ -22,7 +22,7 @@ _Vole.lmp := function(s...)
     elif IsPerm(s) or IsPermGroup(s) or IsRightCoset(s) then
         return LargestMovedPoint(s);
     elif IsDigraph(s) then
-        return DigraphNrVertices(s);
+        return Maximum(DigraphVertices(s));
     fi;
     ErrorNoReturn("Vole: Do not recognise...");
 end;
