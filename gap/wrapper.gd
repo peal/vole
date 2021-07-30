@@ -5,6 +5,35 @@
 #
 # Declarations: Wrappers for Vole functions that emulate GAP/images/Digraphs
 
+#! @Chunk bettergroup
+#! Note that it may be possible to obtain better performance from &Vole; with
+#! the native interface, see <Ref Func="VoleFind.Group"/>.
+#! @EndChunk
+
+#! @Chunk betterrep
+#! Note that it may be possible to obtain better performance from &Vole; with
+#! the native interface, see <Ref Func="VoleFind.Rep"/>.
+#! @EndChunk
+
+#! @Chunk bettercanonical
+#! Note that it may be possible to obtain better performance from &Vole; with
+#! the native interface, see <Ref Func="VoleFind.Canonical"/>.
+#! @EndChunk
+
+#! @BeginChunk DefaultAction
+#! The default <A>action</A>, when the argument is not given, is
+#! <Ref Oper="OnPoints" Style="Number" BookName="Ref" Style="Number"/>,
+#! which is the name in &GAP; of the action that corresponds to
+#! `<A>object</A>^g`, where `g` in <A>G</A>.
+#! @EndChunk
+
+#! @BeginChunk DefaultAction2
+#! If the optional argument <A>action</A> is not given, then the action
+#! <Ref Func="OnPoints" BookName="Ref"/> is used by default;
+#! this is the action obtained by the `^` operator;
+#! see <Ref Oper="\^" BookName="Ref"/>.
+#! @EndChunk
+
 #! @Chapter Emulating traditional interfaces with &Vole;
 #! @ChapterLabel wrapper
 
@@ -75,7 +104,9 @@
 
 #! @Description
 #!
-#! `Vole` is a record that contains...
+#! `Vole` is a record that contains all of the &Vole; wrapper functions
+#! that are provided to emulate aspects of &GAP;, and its packages
+#! &images; and &Digraphs;.
 #! The components of this record are functions that are named to coincide
 #! with the corresponding &GAP;/&images;/&Digraphs; function.
 #!
@@ -94,19 +125,6 @@ InstallValue(Vole, rec());
 
 #! @Section TEMPORARY
 
-#! @BeginChunk DefaultAction
-#! The default <A>action</A>, when the argument is not given, is
-#! <Ref Oper="OnPoints" Style="Number" BookName="Ref" Style="Number"/>,
-#! which is the name in &GAP; of the action that corresponds to
-#! `<A>object</A>^g`, where `g` in <A>G</A>.
-#! @EndChunk
-
-#! @BeginChunk DefaultAction2
-#! If the optional argument <A>action</A> is not given, then the action
-#! <Ref Func="OnPoints" BookName="Ref"/> is used by default;
-#! this is the action obtained by the `^` operator;
-#! see <Ref Oper="\^" BookName="Ref"/>.
-#! @EndChunk
 
 # TODO This should probably be in constraints.gd? And only referenced from here.
 # TODO Or should it actually be a "Chunk" that I can insert in multiple places?
@@ -246,7 +264,8 @@ InstallValue(Vole, rec());
 #! @Arguments U1, U2, ..., Uk
 #! @Returns A perm group, a right coset, or an empty list
 #! @Description
-#! <Ref Oper="Intersection" BookName="Ref" Style="Number" />
+#! <Ref Func="Vole.Intersection"/> emulates the built-in &GAP; operation
+#! <Ref Oper="Intersection" BookName="Ref" Style="Number" />.
 #!
 #! Can be permgroups and/or right cosets.
 #!
@@ -268,7 +287,8 @@ DeclareGlobalFunction("Vole.Intersection");
 #! @Arguments G, object[, action]
 #! @Returns An permutation group
 #! @Description
-#! <Ref Oper="Stabiliser" BookName="Ref" Style="Number" />
+#! <Ref Func="Vole.Stabiliser"/> emulates the built-in &GAP; operation
+#! <Ref Oper="Stabiliser" BookName="Ref" Style="Number"/>.
 #!
 #! Text about this.
 #!
@@ -289,14 +309,20 @@ DeclareGlobalFunction("Vole.Stabilizer");
 #! @BeginGroup RepAction
 #! @GroupTitle RepresentativeAction
 #! @Arguments G, object1, object2[, action]
+#! @Returns A permutation, or <K>fail</K>
 #! @Description
-#! <Ref Oper="RepresentativeAction" BookName="Ref" Style="Number" />
 #!
-#! Text about this.
+#! <Ref Func="Vole.RepresentativeAction"/> emulates the built-in &GAP; function
+#! <Ref Oper="RepresentativeAction" BookName="Ref" Style="Number"/>.
+#!
+#! This function returns an element
+#! of the permutation group <A>G</A> that maps <A>object1</A> to <A>object2</A>
+#! under the action <A>action</A>, if such an element exists,
+#! and it returns <K>fail</K> otherwise.
 #!
 #! @InsertChunk DefaultAction
 #!
-#! <Ref Func="VoleFind.Representative"/>
+#! @InsertChunk betterrep
 #!
 #! @BeginExampleSession
 #! gap> true;
@@ -311,9 +337,16 @@ DeclareGlobalFunction("Vole.RepresentativeAction");
 #! @Arguments G, U
 #! @Returns An permutation group
 #! @Description
-#! <Ref Oper="Normaliser" BookName="Ref" Style="Number" />
+#! <Ref Func="Vole.Normaliser"/> emulates the built-in &GAP; operation
+#! <Ref Oper="Normaliser" BookName="Ref" Style="Number"/>.
 #!
-#! Text about this
+#! If <A>G</A> and <A>U</A> are permutation groups, then
+#! this function returns the <E>normaliser</E> $N_{G}(U)$ of <A>U</A> in
+#! <A>G</A>, which is the stabiliser of <A>U</A> under conjugation by <A>G</A>.
+#! If <A>U</A> is instead a permutation, then
+#! `Vole.Normalizer(<A>G</A>,<A>U</A>)` returns $N_{G}(\langle U \rangle)$.
+#!
+#! @InsertChunk bettergroup
 DeclareGlobalFunction("Vole.Normaliser");
 #! @EndGroup
 #! @Arguments G, U
@@ -330,7 +363,8 @@ DeclareGlobalFunction("Vole.Normalizer");
 #! @Arguments G, x
 #! @Returns An permutation group
 #! @Description
-#! <Ref Oper="Centraliser" BookName="Ref" Style="Number" />
+#! <Ref Func="Vole.Centraliser"/> emulates the built-in &GAP; operation
+#! <Ref Oper="Centraliser" BookName="Ref" Style="Number"/>.
 #!
 #! Text about this
 DeclareGlobalFunction("Vole.Centraliser");
@@ -349,12 +383,32 @@ DeclareGlobalFunction("Vole.Centralizer");
 #! @Arguments G, x, y
 #! @Returns <K>true</K> or <K>false</K>
 #! @Description
-#! <Ref Oper="IsConjugate" BookName="Ref" Style="Number" />
+#! <Ref Func="Vole.IsConjugate"/> emulates the built-in &GAP; function
+#! <Ref Oper="IsConjugate" BookName="Ref" Style="Number"/>.
 #!
-#! Text about this.
+#! This function returns <K>true</K> if there exists an element
+#! of the permutation group <A>G</A> that conjugates <A>x</A> to <A>y</A>,
+#! and <K>false</K> otherwise,
+#! where <A>x</A> and <A>y</A> are either both permutations,
+#! or both permutation groups.
+#! Note that <A>x</A> and <A>y</A> are not required to be contained in <A>G</A>.
+#!
+#! This function immediately delegates to
+#! <Ref Func="Vole.RepresentativeAction"/>, which finds a representative
+#! conjugating element, or proves that none exists.
+#!
+#! @InsertChunk betterrep
+
 #! @BeginExampleSession
-#! gap> true;
+#! gap> # Conjugacy of permutations
+#! gap> x := (1,2,3,4,5);; y := (1,2,3,4,6);;
+#! gap> IsConjugate(SymmetricGroup(6), x, y);
 #! true
+#! gap> IsConjugate(AlternatingGroup(6), x, y);
+#! false
+#! gap> IsConjugate(Group([ (5,6) ]), x, y);
+#! true
+#! gap> # Conjugacy of groups
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.IsConjugate");
 #! @EndGroup
@@ -459,6 +513,10 @@ DeclareGlobalFunction("Vole.CanonicalImage");
 #!   </Item>
 #!   <Item>
 #!     <Ref Func="AutomorphismGroup" BookName="Digraphs" Style="Number" />
+#!
+#!     <Ref Attr="NautyAutomorphismGroup" BookName="Digraphs" Style="Number" />
+#!
+#!     <Ref Attr="BlissAutomorphismGroup" BookName="Digraphs" Style="Number" />
 #!   </Item>
 #! </Row>
 #! <Row>
@@ -490,6 +548,10 @@ DeclareGlobalFunction("Vole.CanonicalImage");
 #! @Returns A permutation group
 #! @Description
 #! <Ref Func="AutomorphismGroup" BookName="Digraphs" Style="Number" />
+#!
+#! <Ref Attr="NautyAutomorphismGroup" BookName="Digraphs" Style="Number" />
+#!
+#! <Ref Attr="BlissAutomorphismGroup" BookName="Digraphs" Style="Number" />
 #!
 #! TODO
 #!
