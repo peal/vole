@@ -30,7 +30,7 @@
 <div class="ContSSBlock">
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4.html#X877669AE7981FCED">4.2-1 Vole</a></span>
 </div></div>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4.html#X7B9965EC86CEE831">4.3 <span class="Heading">TEMPORARY</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4.html#X793F8D777FEB7D60">4.3 <span class="Heading">The group actions built into <strong class="pkg">Vole</strong></span></a>
 </span>
 </div>
 <div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4.html#X800CAA4182BAB6D7">4.4 <span class="Heading"><strong class="pkg">Vole</strong> functions emulating built-in <strong class="pkg">GAP</strong> functions</span></a>
@@ -110,7 +110,7 @@
 <h5>4.2-1 Vole</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole</code></td><td class="tdright">(&nbsp;global variable&nbsp;)</td></tr></table></div>
-<p><code class="code">Vole</code> is a record that contains... The components of this record are functions that are named to coincide with the corresponding <strong class="pkg">GAP</strong>/<strong class="pkg">images</strong>/<strong class="pkg">Digraphs</strong> function.</p>
+<p><code class="code">Vole</code> is a record that contains all of the <strong class="pkg">Vole</strong> wrapper functions that are provided to emulate aspects of <strong class="pkg">GAP</strong>, and its packages <strong class="pkg">images</strong> and <strong class="pkg">Digraphs</strong>. The components of this record are functions that are named to coincide with the corresponding <strong class="pkg">GAP</strong>/<strong class="pkg">images</strong>/<strong class="pkg">Digraphs</strong> function.</p>
 
 
 <div class="example"><pre>
@@ -122,9 +122,9 @@
   "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer" ]
 </pre></div>
 
-<p><a id="X7B9965EC86CEE831" name="X7B9965EC86CEE831"></a></p>
+<p><a id="X793F8D777FEB7D60" name="X793F8D777FEB7D60"></a></p>
 
-<h4>4.3 <span class="Heading">TEMPORARY</span></h4>
+<h4>4.3 <span class="Heading">The group actions built into <strong class="pkg">Vole</strong></span></h4>
 
 <p>The supported combinations of objects and actions are the same for all of the functions in this chapter that require one or two objects and a corresponding action. This applies here to:</p>
 
@@ -146,7 +146,7 @@
 <div class="pcenter"><table class="GAPDocTable">
 <tr>
 <td class="tdleft"><strong class="button">Permitted action</strong></td>
-<td class="tdleft"><strong class="button">Corresponding permitted object(s)</strong></td>
+<td class="tdleft"><strong class="button">Corresponding object</strong></td>
 </tr>
 <tr>
 <td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
@@ -170,7 +170,7 @@
 </tr>
 <tr>
 <td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
-<td class="tdleft">A digraph</td>
+<td class="tdleft">A digraph object, or a list of adjacencies</td>
 </tr>
 </table><br /><p>&nbsp;</p><br />
 </div>
@@ -220,13 +220,15 @@
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Intersection</code>( <var class="Arg">U1</var>, <var class="Arg">U2</var>, <var class="Arg">...</var>, <var class="Arg">Uk</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A perm group, a right coset, or an empty list</p>
 
-<p><code class="func">Intersection</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap30.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>)</p>
+<p><code class="func">Vole.Intersection</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Intersection</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap30.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>).</p>
 
 <p>Can be permgroups and/or right cosets.</p>
 
 <p>Note that <strong class="pkg">Vole</strong> is cool because it does all of the intersection simultaneously in one search, rather than iteratively intersecting pairs of things.</p>
 
 <p><strong class="pkg">GAP</strong> might have some clever special cases that we don't bother with.</p>
+
+<p>Note that it may be possible to obtain better performance from <strong class="pkg">Vole</strong> with the native interface, see Chapter <a href="chap6.html#X79EAB456814AB11C"><span class="RefLink">6</span></a>.</p>
 
 
 <div class="example"><pre>
@@ -242,13 +244,13 @@ true
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Stabilizer</code>( <var class="Arg">G</var>, <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: An permutation group</p>
 
-<p><code class="func">Stabiliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X86FB962786397E02"><span class="RefLink">Ref 41.5-2</span></a>)</p>
+<p><code class="func">Vole.Stabiliser</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Stabiliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X86FB962786397E02"><span class="RefLink">Ref 41.5-2</span></a>).</p>
 
 <p>Text about this.</p>
 
-<p>The default <var class="Arg">action</var>, when the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>), which is the name in <strong class="pkg">GAP</strong> of the action that corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>.</p>
+<p>TODO: some text about which actions <strong class="pkg">Vole</strong> supports. The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
 
-<p><code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>)</p>
+<p>Note that it may be possible to obtain better performance from <strong class="pkg">Vole</strong> with the native interface, see <code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>).</p>
 
 
 <div class="example"><pre>
@@ -261,13 +263,15 @@ true
 <h5>4.4-3 <span class="Heading">RepresentativeAction</span></h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.RepresentativeAction</code>( <var class="Arg">G</var>, <var class="Arg">object1</var>, <var class="Arg">object2</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p><code class="func">RepresentativeAction</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X857DC7B085EB0539"><span class="RefLink">Ref 41.6-1</span></a>)</p>
+<p>Returns: A permutation, or <code class="keyw">fail</code></p>
 
-<p>Text about this.</p>
+<p><code class="func">Vole.RepresentativeAction</code> emulates the built-in <strong class="pkg">GAP</strong> function <code class="func">RepresentativeAction</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X857DC7B085EB0539"><span class="RefLink">Ref 41.6-1</span></a>).</p>
 
-<p>The default <var class="Arg">action</var>, when the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>), which is the name in <strong class="pkg">GAP</strong> of the action that corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>.</p>
+<p>This function returns an element of the permutation group <var class="Arg">G</var> that maps <var class="Arg">object1</var> to <var class="Arg">object2</var> under the action <var class="Arg">action</var>, if such an element exists, and it returns <code class="keyw">fail</code> otherwise.</p>
 
-<p><code class="func">VoleFind.Representative</code> (<a href="chap5.html#X8712249F879D9FA9"><span class="RefLink">5.2-1</span></a>)</p>
+<p>TODO: some text about which actions <strong class="pkg">Vole</strong> supports. The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+
+<p>Note that it may be possible to obtain better performance from <strong class="pkg">Vole</strong> with the native interface, see <code class="func">VoleFind.Rep</code> (<a href="chap5.html#X8712249F879D9FA9"><span class="RefLink">5.2-1</span></a>).</p>
 
 
 <div class="example"><pre>
@@ -283,9 +287,11 @@ true
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Normalizer</code>( <var class="Arg">G</var>, <var class="Arg">U</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: An permutation group</p>
 
-<p><code class="func">Normaliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>)</p>
+<p><code class="func">Vole.Normaliser</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Normaliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>).</p>
 
-<p>Text about this</p>
+<p>If <var class="Arg">G</var> and <var class="Arg">U</var> are permutation groups, then this function returns the <em>normaliser</em> <span class="Math">N_{G}(U)</span> of <var class="Arg">U</var> in <var class="Arg">G</var>, which is the stabiliser of <var class="Arg">U</var> under conjugation by <var class="Arg">G</var>. If <var class="Arg">U</var> is instead a permutation, then <code class="code">Vole.Normalizer(<var class="Arg">G</var>,<var class="Arg">U</var>)</code> returns <span class="Math">N_{G}(\langle U \rangle)</span>.</p>
+
+<p>Note that it may be possible to obtain better performance from <strong class="pkg">Vole</strong> with the native interface, see <code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>).</p>
 
 
 <div class="example"><pre>
@@ -301,7 +307,7 @@ true
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Centralizer</code>( <var class="Arg">G</var>, <var class="Arg">x</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: An permutation group</p>
 
-<p><code class="func">Centraliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap35.html#X7DE33AFC823C7873"><span class="RefLink">Ref 35.4-4</span></a>)</p>
+<p><code class="func">Vole.Centraliser</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Centraliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap35.html#X7DE33AFC823C7873"><span class="RefLink">Ref 35.4-4</span></a>).</p>
 
 <p>Text about this</p>
 
@@ -318,14 +324,25 @@ true
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.IsConjugate</code>( <var class="Arg">G</var>, <var class="Arg">x</var>, <var class="Arg">y</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
 
-<p><code class="func">IsConjugate</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39.html#X83DD148D7DA2ABA9"><span class="RefLink">Ref 39.10-9</span></a>)</p>
+<p><code class="func">Vole.IsConjugate</code> emulates the built-in <strong class="pkg">GAP</strong> function <code class="func">IsConjugate</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39.html#X83DD148D7DA2ABA9"><span class="RefLink">Ref 39.10-9</span></a>).</p>
 
-<p>Text about this.</p>
+<p>This function returns <code class="keyw">true</code> if there exists an element of the permutation group <var class="Arg">G</var> that conjugates <var class="Arg">x</var> to <var class="Arg">y</var>, and <code class="keyw">false</code> otherwise, where <var class="Arg">x</var> and <var class="Arg">y</var> are either both permutations, or both permutation groups. Note that <var class="Arg">x</var> and <var class="Arg">y</var> are not required to be contained in <var class="Arg">G</var>.</p>
+
+<p>This function immediately delegates to <code class="func">Vole.RepresentativeAction</code> (<a href="chap4.html#X857DC7B085EB0539"><span class="RefLink">4.4-3</span></a>), which finds a representative conjugating element, or proves that none exists.</p>
+
+<p>Note that it may be possible to obtain better performance from <strong class="pkg">Vole</strong> with the native interface, see <code class="func">VoleFind.Rep</code> (<a href="chap5.html#X8712249F879D9FA9"><span class="RefLink">5.2-1</span></a>).</p>
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Conjugacy of permutations</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">x := (1,2,3,4,5);; y := (1,2,3,4,6);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">IsConjugate(SymmetricGroup(6), x, y);</span>
 true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">IsConjugate(AlternatingGroup(6), x, y);</span>
+false
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">IsConjugate(Group([ (5,6) ]), x, y);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Conjugacy of groups</span>
 </pre></div>
 
 <p><a id="X7A2FDAA7838D97A1" name="X7A2FDAA7838D97A1"></a></p>
@@ -362,7 +379,7 @@ true
 
 <p>Text about <code class="code">Vole.CanonicalPerm</code>...</p>
 
-<p>The default <var class="Arg">action</var>, when the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>), which is the name in <strong class="pkg">GAP</strong> of the action that corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>.</p>
+<p>TODO: some text about which actions <strong class="pkg">Vole</strong> supports. The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
 
 <p><code class="func">VoleFind.CanonicalPerm</code> (<a href="chap5.html#X7ACA1CDC80D12604"><span class="RefLink">5.2-5</span></a>)</p>
 
@@ -383,7 +400,7 @@ true
 
 <p>Text about <code class="code">Vole.CanonicalImage</code>...</p>
 
-<p>The default <var class="Arg">action</var>, when the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>), which is the name in <strong class="pkg">GAP</strong> of the action that corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>.</p>
+<p>TODO: some text about which actions <strong class="pkg">Vole</strong> supports. The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
 
 <p><code class="func">VoleFind.CanonicalPerm</code> (<a href="chap5.html#X7ACA1CDC80D12604"><span class="RefLink">5.2-5</span></a>)</p>
 

@@ -40,10 +40,10 @@
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7F27DDB6818F24DB">6.3-2 VoleCon.InCoset</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7DEA6F208128AF5D">6.3-3 VoleCon.InRightCoset</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X807A0B8780F66AA9">6.3-4 VoleCon.InLeftCoset</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7DA2969D80A3B32D">6.3-5 VoleCon.Stabilize</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X80BEBD297D7403C0">6.3-5 VoleCon.Stabilise</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7999E7CA8654F16E">6.3-6 VoleCon.Transport</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X831679EC79779033">6.3-7 VoleCon.Normalize</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X866EC72B7F648321">6.3-8 VoleCon.Centralize</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7E0A525884A020DE">6.3-7 VoleCon.Normalise</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7B72EC9F797FEB6C">6.3-8 VoleCon.Centralise</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X7AFA275E862CF966">6.3-9 VoleCon.Conjugate</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X854830F5810A5AD6">6.3-10 VoleCon.MovedPoints</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6_mj.html#X821F077482DE97E6">6.3-11 VoleCon.LargestMovedPoint</a></span>
@@ -106,15 +106,15 @@
 <p><code class="func">VoleCon.InRightCoset</code> (<a href="chap6_mj.html#X7DEA6F208128AF5D"><span class="RefLink">6.3-3</span></a>)</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">VoleCon.Stabilize</code> (<a href="chap6_mj.html#X7DA2969D80A3B32D"><span class="RefLink">6.3-5</span></a>)</td>
+<td class="tdleft"><code class="func">VoleCon.Stabilize</code> (<a href="chap6_mj.html#X80BEBD297D7403C0"><span class="RefLink">6.3-5</span></a>)</td>
 <td class="tdleft"><code class="func">VoleCon.Transport</code> (<a href="chap6_mj.html#X7999E7CA8654F16E"><span class="RefLink">6.3-6</span></a>)</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">VoleCon.Normalize</code> (<a href="chap6_mj.html#X831679EC79779033"><span class="RefLink">6.3-7</span></a>)</td>
+<td class="tdleft"><code class="func">VoleCon.Normalize</code> (<a href="chap6_mj.html#X7E0A525884A020DE"><span class="RefLink">6.3-7</span></a>)</td>
 <td class="tdleft"><code class="func">VoleCon.Conjugate</code> (<a href="chap6_mj.html#X7AFA275E862CF966"><span class="RefLink">6.3-9</span></a>)</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">VoleCon.Centralize</code> (<a href="chap6_mj.html#X866EC72B7F648321"><span class="RefLink">6.3-8</span></a>)</td>
+<td class="tdleft"><code class="func">VoleCon.Centralize</code> (<a href="chap6_mj.html#X7B72EC9F797FEB6C"><span class="RefLink">6.3-8</span></a>)</td>
 <td class="tdleft"><code class="func">VoleCon.Conjugate</code> (<a href="chap6_mj.html#X7AFA275E862CF966"><span class="RefLink">6.3-9</span></a>)</td>
 </tr>
 <tr>
@@ -135,7 +135,7 @@
 <h5>6.3-1 VoleCon.InGroup</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.InGroup</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>This constraint is satisfied by the elements of the permutation group <var class="Arg">G</var>, and no others.</p>
+<p>This constraint is satisfied by precisely those permutations in the group <var class="Arg">G</var>.</p>
 
 
 <div class="example"><pre>
@@ -150,7 +150,7 @@ true
 <h5>6.3-2 VoleCon.InCoset</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.InCoset</code>( <var class="Arg">U</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>A permutation satisfies this constraint if...</p>
+<p>This constraint is satisfied by precisely those permutations in the <strong class="pkg">GAP</strong> right coset object <var class="Arg">U</var>.</p>
 
 <p>See also <code class="func">VoleCon.InLeftCoset</code> (<a href="chap6_mj.html#X807A0B8780F66AA9"><span class="RefLink">6.3-4</span></a>) and <code class="func">VoleCon.InRightCoset</code> (<a href="chap6_mj.html#X7DEA6F208128AF5D"><span class="RefLink">6.3-3</span></a>), which allow a coset to be specifed by a subgroup and a representative element.</p>
 
@@ -165,7 +165,7 @@ true
 <h5>6.3-3 VoleCon.InRightCoset</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.InRightCoset</code>( <var class="Arg">G</var>, <var class="Arg">x</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>A permutation satisfies this constraint if...</p>
+<p>This constraint is satisfied by precisely those permutations in the right coset of the group <var class="Arg">G</var> determined by the permutation <var class="Arg">x</var>.</p>
 
 <p>See also <code class="func">VoleCon.InLeftCoset</code> (<a href="chap6_mj.html#X807A0B8780F66AA9"><span class="RefLink">6.3-4</span></a>).</p>
 
@@ -180,7 +180,9 @@ true
 <h5>6.3-4 VoleCon.InLeftCoset</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.InLeftCoset</code>( <var class="Arg">G</var>, <var class="Arg">x</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Text about <code class="code">VoleCon.InLeftCoset</code>. See also <code class="func">VoleCon.InRightCoset</code> (<a href="chap6_mj.html#X7DEA6F208128AF5D"><span class="RefLink">6.3-3</span></a>).</p>
+<p>This constraint is satisfied by precisely those permutations in the left coset of the group <var class="Arg">G</var> determined by the permutation <var class="Arg">x</var>.</p>
+
+<p>See also <code class="func">VoleCon.InRightCoset</code> (<a href="chap6_mj.html#X7DEA6F208128AF5D"><span class="RefLink">6.3-3</span></a>).</p>
 
 
 <div class="example"><pre>
@@ -188,17 +190,49 @@ true
 true
 </pre></div>
 
-<p><a id="X7DA2969D80A3B32D" name="X7DA2969D80A3B32D"></a></p>
+<p><a id="X80BEBD297D7403C0" name="X80BEBD297D7403C0"></a></p>
 
-<h5>6.3-5 VoleCon.Stabilize</h5>
+<h5>6.3-5 VoleCon.Stabilise</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Stabilize</code>( <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Stabilise</code>( <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Text about <code class="code">VoleCon.Stabilize</code>.</p>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Stabilize</code>( <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>This constraint is satisfied by precisely those permutations that fix <var class="Arg">object</var> under <var class="Arg">action</var>, i.e. all permutations <code class="code">g</code> such that <code class="code"><var class="Arg">action</var>(<var class="Arg">object</var>, g) = <var class="Arg">object</var></code>. Note that such a stabiliser may be infinite.</p>
 
-<p>If the optional argument <var class="Arg">action</var> is not given, then the action <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>) is used by default; this is the action obtained by the <code class="code">^</code> operator; see <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4_mj.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+<p>The combinations of objects and actions that are supported by <code class="code">VoleCon.Stabilise</code> are given in the following table.</p>
 
-<p>The combinations of objects and actions that are supported by <strong class="pkg">Vole</strong> is given in... TODO</p>
+<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4_mj.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft"><strong class="button">Permitted action</strong></td>
+<td class="tdleft"><strong class="button">Corresponding object</strong></td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft">A point, or permutation, or perm group</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft">A list of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft">A set of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft">A list of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft">A set of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft">A digraph object, or a list of adjacencies</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
 
 
 <div class="example"><pre>
@@ -211,7 +245,43 @@ true
 <h5>6.3-6 VoleCon.Transport</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Transport</code>( <var class="Arg">object1</var>, <var class="Arg">object2</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Text about <code class="code">VoleCon.Transport</code>.</p>
+<p>This constraint is satisfied by precisely those permutations that map <var class="Arg">object1</var> to <var class="Arg">object2</var> under <var class="Arg">action</var>, i.e. all permutations <code class="code">g</code> such that <code class="code"><var class="Arg">action</var>(<var class="Arg">object1</var>, g) = <var class="Arg">object2</var></code>. Note that the set of such permutations may be infinite.</p>
+
+<p>The combinations of objects and actions that are supported by <code class="code">VoleCon.Transport</code> are given in the following table.</p>
+
+<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4_mj.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft"><strong class="button">Permitted action</strong></td>
+<td class="tdleft"><strong class="button">Corresponding object</strong></td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft">A point, or permutation, or perm group</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft">A list of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft">A set of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft">A list of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft">A set of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft">A digraph object, or a list of adjacencies</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
 
 
 <div class="example"><pre>
@@ -219,13 +289,15 @@ true
 true
 </pre></div>
 
-<p><a id="X831679EC79779033" name="X831679EC79779033"></a></p>
+<p><a id="X7E0A525884A020DE" name="X7E0A525884A020DE"></a></p>
 
-<h5>6.3-7 VoleCon.Normalize</h5>
+<h5>6.3-7 VoleCon.Normalise</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Normalize</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Normalise</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Text about <code class="code">VoleCon.Normalize</code>.</p>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Normalize</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>This constraint is satisfied by precisely those permutations that normalise the permutation group <var class="Arg">G</var>, i.e. that preserve <var class="Arg">G</var> under conjugation.</p>
+
+<p>Note that the set of such permutations is infinite.</p>
 
 
 <div class="example"><pre>
@@ -233,13 +305,15 @@ true
 true
 </pre></div>
 
-<p><a id="X866EC72B7F648321" name="X866EC72B7F648321"></a></p>
+<p><a id="X7B72EC9F797FEB6C" name="X7B72EC9F797FEB6C"></a></p>
 
-<h5>6.3-8 VoleCon.Centralize</h5>
+<h5>6.3-8 VoleCon.Centralise</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Centralize</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Centralise</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Text about <code class="code">VoleCon.Centralize</code>.</p>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Centralize</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>This constraint is satisfied by precisely those permutations that commute with <var class="Arg">G</var>, if <var class="Arg">G</var> is a permutation, or that commute with every element of <var class="Arg">G</var>, if <var class="Arg">G</var> is a permutation group.</p>
+
+<p>Note that the set of such permutations is infinite.</p>
 
 
 <div class="example"><pre>
@@ -252,7 +326,9 @@ true
 <h5>6.3-9 VoleCon.Conjugate</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Conjugate</code>( <var class="Arg">x</var>, <var class="Arg">y</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Text about <code class="code">VoleCon.Conjugate</code>.</p>
+<p>This constraint is satisfied by precisely those permutations that conjugate <var class="Arg">x</var> to <var class="Arg">y</var>, where <var class="Arg">x</var> and <var class="Arg">y</var> are either both permutations, or both permutation groups.</p>
+
+<p>Note that the set of such permutations may be infinite.</p>
 
 
 <div class="example"><pre>
@@ -265,7 +341,7 @@ true
 <h5>6.3-10 VoleCon.MovedPoints</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.MovedPoints</code>( <var class="Arg">pointlist</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>This constraint is a shorthand for <code class="code">VoleCon.InGroup(SymmetricGroup(<var class="Arg">pointlist</var>))</code>; see <code class="func">VoleCon.InGroup</code> (<a href="chap6_mj.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>).</p>
+<p>This constraint is a shorthand for <code class="code">VoleCon.InGroup(SymmetricGroup(<var class="Arg">pointlist</var>))</code>. See <code class="func">VoleCon.InGroup</code> (<a href="chap6_mj.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>).</p>
 
 
 <div class="example"><pre>
@@ -280,7 +356,7 @@ true
 <h5>6.3-11 VoleCon.LargestMovedPoint</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.LargestMovedPoint</code>( <var class="Arg">point</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>This constraint is a shorthand for <code class="code">VoleCon.InGroup(SymmetricGroup([1..<var class="Arg">point</var>]))</code>; see <code class="func">VoleCon.InGroup</code> (<a href="chap6_mj.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>).</p>
+<p>This constraint is a shorthand for <code class="code">VoleCon.InGroup(SymmetricGroup(<var class="Arg">point</var>))</code>. See <code class="func">VoleCon.InGroup</code> (<a href="chap6_mj.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>).</p>
 
 
 <div class="example"><pre>
