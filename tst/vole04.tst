@@ -10,62 +10,29 @@
 #
 gap> START_TEST("vole04.tst");
 
-# doc/_Chapter_wrapper.xml:82-89
+# doc/_Chapter_interface.xml:21-26
 gap> LoadPackage("vole", false);;
-gap> Set(RecNames(Vole));
-[ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
-  "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", 
-  "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", 
-  "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer" ]
+gap> Set(RecNames(VoleFind));
+[ "Canonical", "CanonicalImage", "CanonicalPerm", "Coset", "Group", "Rep", 
+  "Representative" ]
 
-# doc/_Chapter_wrapper.xml:205-208
+# doc/_Chapter_interface.xml:66-69
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:234-237
+# doc/_Chapter_interface.xml:93-96
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:267-270
+# doc/_Chapter_interface.xml:117-120
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:295-298
+# doc/_Chapter_interface.xml:203-206
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:316-319
-gap> true;
-true
-
-# doc/_Chapter_wrapper.xml:348-358
-gap> # Conjugacy of permutations
-gap> x := (1,2,3,4,5);; y := (1,2,3,4,6);;
-gap> IsConjugate(SymmetricGroup(6), x, y);
-true
-gap> IsConjugate(AlternatingGroup(6), x, y);
-false
-gap> IsConjugate(Group([ (5,6) ]), x, y);
-true
-gap> # Conjugacy of groups
-
-# doc/_Chapter_wrapper.xml:415-418
-gap> true;
-true
-
-# doc/_Chapter_wrapper.xml:444-447
-gap> true;
-true
-
-# doc/_Chapter_wrapper.xml:517-520
-gap> true;
-true
-
-# doc/_Chapter_wrapper.xml:540-543
-gap> true;
-true
-
-# doc/_Chapter_wrapper.xml:563-566
+# doc/_Chapter_interface.xml:227-230
 gap> true;
 true
 

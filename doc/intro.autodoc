@@ -62,12 +62,14 @@ The rest of this introduction discusses the place of &Vole; in the &GAP;
 Installation instructions for &Vole; are given in
 Chapter&nbsp;<Ref Chap="Chapter_install"/>,
 and Chapter&nbsp;<Ref Chap="Chapter_tut"/> gives a tutorial for the package.
-Chapters&nbsp;<Ref Chap="Chapter_wrapper"/>
-and&nbsp;<Ref Chap="Chapter_interface"/> document the main interfaces to &Vole;.
+Chapter&nbsp;<Ref Chap="Chapter_interface"/> documents the main interface to
+&Vole;.
 Chapter&nbsp;<Ref Chap="Chapter_Constraints"/> describes the constraints that
 can be used with &Vole;,
 while Chapter&nbsp;<Ref Chap="Chapter_Refiners"/> explains refiners, and gives
 details of those that are available.
+Chapter&nbsp;<Ref Chap="Chapter_wrapper"/> describes an interface to &Vole;
+that emulates the existing related functionality of &GAP; and its packages.
 Chapter&nbsp;<Ref Chap="Chapter_expert"/> gives lower-level details, and
 instructions for the expert use of &Vole;.
 

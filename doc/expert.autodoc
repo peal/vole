@@ -20,3 +20,9 @@ and perhaps lots of tips and tricks?
     level 2, and additional messages are given at level 4.
   </Description>
 </ManSection>
+
+@Section Options with the native &Vole; interface
+@SectionLabel options
+
+* `raw`
+* `points`

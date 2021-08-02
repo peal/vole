@@ -56,8 +56,6 @@ DeclareGlobalVariable("VoleCon");
 InstallValue(VoleCon, rec());
 
 
-
-
 #! @Section Constraints provided in the <C>VoleCon</C> record
 #! @SectionLabel providedcons
 
@@ -180,11 +178,11 @@ DeclareGlobalFunction("VoleCon.InLeftCoset");
 #! This constraint is satisfied by precisely those permutations that fix
 #! <A>object</A> under <A>action</A>,
 #! i.e. all permutations `g` such that
-#! `<A>action</A>(<A>object</A>, g) = <A>object</A>`.
-#! Note that such a stabiliser may be infinite.
+#! `<A>action</A>(<A>object</A>,g)=<A>object</A>`.
+#! @InsertChunk maybeinfinite
 #!
 #! The combinations of objects and actions that are supported by
-#! `VoleCon.Stabilise` are given in the following table.
+#! `VoleCon.Stabilise` are given in the table below.
 #!
 #! @InsertChunk DefaultAction
 #!
@@ -206,11 +204,11 @@ DeclareGlobalFunction("VoleCon.Stabilize");
 #! This constraint is satisfied by precisely those permutations that map
 #! <A>object1</A> to <A>object2</A> under <A>action</A>,
 #! i.e. all permutations `g` such that
-#! `<A>action</A>(<A>object1</A>, g) = <A>object2</A>`.
+#! `<A>action</A>(<A>object1</A>,g)=<A>object2</A>`.
 #! @InsertChunk maybeinfinite
 #!
 #! The combinations of objects and actions that are supported by
-#! `VoleCon.Transport` are given in the following table.
+#! `VoleCon.Transport` are given in the table below.
 #!
 #! @InsertChunk DefaultAction
 #!

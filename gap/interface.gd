@@ -3,21 +3,50 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 #
-# Declarations: TODO
+# Declarations: The native interface to Vole
+
+#! @BeginChunk valueoption
+#! This function supports various options, which are documented in
+#! Section&nbsp;<Ref Sect="Section_options"/>.
+#! @EndChunk
+
+#! @BeginChunk group-ingroup
+#! * A permutation group <A>G</A> is interpreted as the constraint
+#!   `VoleCon.InGroup(<A>G</A>)`; see <Ref Func="VoleCon.InGroup"/>.
+#! @EndChunk
+
+#! @BeginChunk coset-incoset
+#! * A &GAP; right coset object  <A>U</A> is interpreted as the constraint
+#!   `VoleCon.InCoset(<A>U</A>)`; see <Ref Func="VoleCon.InCoset"/>.
+#! @EndChunk
+
+#! @BeginChunk posint-lmp
+#! * A positive integer <A>k</A> is interpreted as the
+#!   constraint `VoleCon.LargestMovedPoint(<A>k</A>)`;
+#!   see <Ref Func="VoleCon.LargestMovedPoint"/>.
+#! @EndChunk
+
+#! @BeginChunk canonical-warning
+#! TODO: canonical labels etc are not necessarily permanent across GAP sessions.
+#! @EndChunk
+
 
 #! @Chapter The native &Vole; interface
 #! @ChapterLabel interface
 
-# TODO Note how these support a value option.
+#! The native interface to &Vole; is similar to that provided by &ferret;,
+#! &BacktrackKit;, and &GraphBacktracking;, so it should be somewhat
+#! familiar to users of those packages.
 
-#! Similar to &ferret; interface.
+#! At a basic level,
 
 #! @Section The <C>VoleFind</C> record
 #! @SectionLabel VoleFind
 
 #! @Description
 #!
-#! `VoleFind` is a record that contains...
+#! `VoleFind` is a record that contains the functions providing the
+#! native interface to &Vole;.
 #!
 #! @BeginExampleSession
 #! gap> LoadPackage("vole", false);;
@@ -30,7 +59,7 @@ DeclareGlobalVariable("VoleFind");
 InstallValue(VoleFind, rec());
 
 
-#! @Section Executing a search with the native &Vole; interface
+#! @Section Searching for groups, cosets, and representatives with the native interface
 
 #! In each of the following functions, the arguments <A>constraints...</A>
 #! can be a non-empty assortment of permutation groups, and/or
@@ -39,13 +68,22 @@ InstallValue(VoleFind, rec());
 #! and/or <E>refiners</E> (Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>);
 #! or a single list thereof.
 
+#! @Subsection lolol
+
 #! @BeginGroup Rep
 #! @Arguments constraints...
 #! @Returns A permutation, or <K>fail</K>
 #! @Description
-#! Text about `VoleFind.Representative`.
-#!
+#! `VoleFind.Representative` searches for a single permutation that
+#! satisfies the <A>constraints</A>
 #! `VoleFind.Rep` is a synonym for `VoleFind.Representative`.
+#!
+#! @InsertChunk group-ingroup
+#! @InsertChunk coset-incoset
+#! @InsertChunk posint-lmp
+#!
+#! @InsertChunk valueoption
+#!
 DeclareGlobalFunction("VoleFind.Representative");
 #! @EndGroup
 #! @Arguments constraints...
@@ -60,6 +98,14 @@ DeclareGlobalFunction("VoleFind.Rep");
 #! @Returns A permutation group
 #! @Description
 #! Text about `VoleFind.Group`.
+#!
+#! @InsertChunk group-ingroup
+#! @InsertChunk posint-lmp
+#!
+#! Warning: it is up to the users to make sure that the constraints define
+#! a group.
+#!
+#! @InsertChunk valueoption
 #! @BeginExampleSession
 #! gap> true;
 #! true
@@ -70,6 +116,11 @@ DeclareGlobalFunction("VoleFind.Group");
 #! @Returns A right coset of a permutation group, or <K>fail</K>
 #! @Description
 #! Text about `VoleFind.Coset`.
+#!
+#! @InsertChunk group-ingroup
+#! @InsertChunk posint-lmp
+#!
+#! @InsertChunk valueoption
 #! @BeginExampleSession
 #! gap> true;
 #! true
@@ -77,42 +128,11 @@ DeclareGlobalFunction("VoleFind.Group");
 DeclareGlobalFunction("VoleFind.Coset");
 
 
-#! @Arguments G, constraints...
-#! @Returns A record
-#! @Description
-#! Text about `VoleFind.Canonical`.
-#! @BeginExampleSession
-#! gap> true;
-#! true
-#! @EndExampleSession
-DeclareGlobalFunction("VoleFind.Canonical");
-
-#! @Arguments G, constraints...
-#! @Returns A permutation
-#! @Description
-#! Text about `VoleFind.CanonicalPerm`.
-#! @BeginExampleSession
-#! gap> true;
-#! true
-#! @EndExampleSession
-DeclareGlobalFunction("VoleFind.CanonicalPerm");
-
-#! @Arguments G, constraints...
-#! @Returns A record
-#! @Description
-#! Text about `VoleFind.CanonicalImage`.
-#! @BeginExampleSession
-#! gap> true;
-#! true
-#! @EndExampleSession
-DeclareGlobalFunction("VoleFind.CanonicalImage");
-
-
 #! @Section Bounds associated with a constraint or refiner
 
 #! In &GAP;, all permutations are implicitly defined on the set of all positive
-#! integers, although there are bounds on the points that can be involved that
-#! are prescribed by the limits of the computer and the laws of physics.
+#! integers, although there are limits on the points that can be involved that
+#! are prescribed by the computer and the laws of physics.
 #! Finite support.
 #!
 #! But there's a potential for danger here with (nearly) infinite stuff.
@@ -146,4 +166,62 @@ DeclareGlobalFunction("VoleFind.CanonicalImage");
 #! For many 'constraints' there is no such bound, or at least none can be easily
 #! deduced. For instance, the constraint "is even" can be satisfied by
 #! some permutation that moves any given point.
+
+
+#! @Section Searching for canonical permutations and images with the native interface
+
+#! @Arguments G, constraints...
+#! @Returns A record
+#! @Description
+#! Text about `VoleFind.Canonical`.
 #!
+#! The constraints must be (equivalent) to something of the form
+#! `VoleCon.Stabilise(object,action)`, such that <A>G</A> "acts
+#! on" <A>object</A>.
+#!
+#! In the sense that the set of all permutations satisfying
+#! the constraint is a stabiliser of some `object` under an `action`.
+#! For example, `VoleCon.Normalise(G)`!
+#!
+#! Suppose the i-th constraint is equivalent to
+#! `VoleCon.Stabilise(object_i,action_i)`.
+#!
+#! Then `VoleFind.Canonical` searches for the canonical image of
+#!
+#! @InsertChunk valueoption
+#! @InsertChunk canonical-warning
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("VoleFind.Canonical");
+
+#! @Arguments G, constraints...
+#! @Returns A permutation
+#! @Description
+#! This function returns the `perm` component of the record returned by
+#! <Ref Func="VoleFind.Canonical"/>, when given the same arguments.
+#!
+#! In other words, this returns
+#! `VoleFind.Canonical(<A>G</A>,<A>constraints...</A>).perm`.
+#!
+#! Please see the documentation of <Ref Func="VoleFind.Canonical"/> for more
+#! information.
+#!
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("VoleFind.CanonicalPerm");
+
+#! @Arguments G, constraints...
+#! @Returns An object
+#! @Description
+#! Text about `VoleFind.CanonicalImage`.
+#!
+#! @InsertChunk canonical-warning
+#! @BeginExampleSession
+#! gap> true;
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("VoleFind.CanonicalImage");
