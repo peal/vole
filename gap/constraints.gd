@@ -113,7 +113,7 @@ InstallValue(VoleCon, rec());
 
 
 #! @Arguments G
-## @Returns An object
+#! @Returns A constraint
 #! @Description
 #! This constraint is satisfied by precisely those permutations in the
 #! group <A>G</A>.
@@ -127,7 +127,7 @@ DeclareGlobalFunction("VoleCon.InGroup");
 
 
 #! @Arguments U
-## @Returns An object
+#! @Returns A constraint
 #! @Description
 #! This constraint is satisfied by precisely those permutations in the &GAP;
 #! right coset object <A>U</A>.
@@ -143,7 +143,7 @@ DeclareGlobalFunction("VoleCon.InCoset");
 
 
 #! @Arguments G, x
-## @Returns An object
+#! @Returns A constraint
 #! @Description
 #! This constraint is satisfied by precisely those permutations in the right
 #! coset of the group <A>G</A> determined by the permutation <A>x</A>.
@@ -158,7 +158,7 @@ DeclareGlobalFunction("VoleCon.InRightCoset");
 
 
 #! @Arguments G, x
-## @Returns An object
+#! @Returns A constraint
 #! @Description
 #! This constraint is satisfied by precisely those permutations in the left
 #! coset of the group <A>G</A> determined by the permutation <A>x</A>.
@@ -173,7 +173,7 @@ DeclareGlobalFunction("VoleCon.InLeftCoset");
 
 #! @BeginGroup StabiliseDoc
 #! @Arguments object[, action]
-## @Returns An object
+#! @Returns A constraint
 #! @Description
 #! This constraint is satisfied by precisely those permutations that fix
 #! <A>object</A> under <A>action</A>,
@@ -199,7 +199,7 @@ DeclareGlobalFunction("VoleCon.Stabilize");
 
 
 #! @Arguments object1, object2[, action]
-## @Returns An object
+#! @Returns A constraint
 #! @Description
 #! This constraint is satisfied by precisely those permutations that map
 #! <A>object1</A> to <A>object2</A> under <A>action</A>,
@@ -222,7 +222,7 @@ DeclareGlobalFunction("VoleCon.Transport");
 
 #! @BeginGroup NormaliseDoc
 #! @Arguments G
-## @Returns An object
+#! @Returns A constraint
 #! @Description
 #! This constraint is satisfied by precisely those permutations that
 #! normalise the permutation group <A>G</A>,
@@ -242,7 +242,7 @@ DeclareGlobalFunction("VoleCon.Normalize");
 
 #! @BeginGroup CentraliseDoc
 #! @Arguments G
-## @Returns An object
+#! @Returns A constraint
 #! @Description
 #! This constraint is satisfied by precisely those permutations that
 #! commute with <A>G</A>, if <A>G</A> is a permutation, or that
@@ -261,7 +261,7 @@ DeclareGlobalFunction("VoleCon.Centralize");
 
 
 #! @Arguments x, y
-## @Returns An object
+#! @Returns A constraint
 #! @Description
 #! This constraint is satisfied by precisely those permutations that
 #! conjugate <A>x</A> to <A>y</A>, where <A>x</A> and <A>y</A> are either
@@ -276,7 +276,7 @@ DeclareGlobalFunction("VoleCon.Conjugate");
 
 
 #! @Arguments pointlist
-## @Returns An object
+#! @Returns A constraint
 #! @Description
 #! This constraint is a shorthand for
 #! `VoleCon.InGroup(SymmetricGroup(<A>pointlist</A>))`.
@@ -291,7 +291,7 @@ DeclareGlobalFunction("VoleCon.MovedPoints");
 
 
 #! @Arguments point
-## @Returns An object
+#! @Returns A constraint
 #! @Description
 #! This constraint is a shorthand for
 #! `VoleCon.InGroup(SymmetricGroup(<A>point</A>))`.
