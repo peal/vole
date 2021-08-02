@@ -213,15 +213,3 @@ DeclareGlobalFunction("VoleFind.Canonical");
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleFind.CanonicalPerm");
-
-#! @Arguments G, constraints...
-#! @Returns An object
-#! @Description
-#! Text about `VoleFind.CanonicalImage`.
-#!
-#! @InsertChunk canonical-warning
-#! @BeginExampleSession
-#! gap> true;
-#! true
-#! @EndExampleSession
-DeclareGlobalFunction("VoleFind.CanonicalImage");

@@ -70,13 +70,3 @@ VoleFind.CanonicalPerm := function(G, constraints...)
     x := CallFuncList(VoleFind.Canonical, Concatenation([G], constraints));
     return x.canonical;
 end;
-
-VoleFind.CanonicalImage := function(G, constraints...)
-    local x;
-    ErrorNoReturn("not yet implemented");
-    x := CallFuncList(VoleFind.Canonical, Concatenation([G], constraints));
-    # TODO: work out how to form the canonical image from the constraints,
-    #       if it's even possible.
-    x.image := "TODO";
-    return x;
-end;

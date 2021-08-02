@@ -13,8 +13,7 @@ gap> START_TEST("vole04.tst");
 # doc/_Chapter_interface.xml:21-26
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(VoleFind));
-[ "Canonical", "CanonicalImage", "CanonicalPerm", "Coset", "Group", "Rep", 
-  "Representative" ]
+[ "Canonical", "CanonicalPerm", "Coset", "Group", "Rep", "Representative" ]
 
 # doc/_Chapter_interface.xml:66-69
 gap> true;
