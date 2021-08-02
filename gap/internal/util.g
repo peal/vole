@@ -108,3 +108,24 @@ _Vole.getConfig := function(default)
     od;
     return default;
 end;
+
+# Take a list of constraints and process as follows:
+# * Replace any group G by VoleCon.InGroup(G)
+# * Replace any right coset object U by VoleCon.InCoset(U)
+# * Replace any positive integer k by VoleCon.LargestMovedPoint(k)
+_Vole.processConstraints := function(constraints)
+    local i;
+    if Length(constraints) = 1 and IsList(constraints[1]) then
+        constraints := ShallowCopy(constraints[1]);
+    fi;
+    for i in [1 .. Length(constraints)] do
+        if IsPermGroup(constraints[i]) then
+            constraints[i] := VoleCon.InGroup(constraints[i]);
+        elif IsRightCoset(constraints[i]) then
+            constraints[i] := VoleCon.InCoset(constraints[i]);
+        elif IsPosInt(constraints[i]) then
+            constraints[i] := VoleCon.LargestMovedPoint(constraints[i]);
+        fi;
+    od;
+    return constraints;
+end;

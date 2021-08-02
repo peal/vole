@@ -3,23 +3,12 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 #
-# Implementations: TODO
-
-# TODO refactor to reduce code duplication
+# Implementations: The native interface to Vole
 
 VoleFind.Representative := function(constraints...)
     local bounds, ret, conf, i;
-    if Length(constraints) = 1 and IsList(constraints[1]) then
-        constraints := ShallowCopy(constraints[1]);
-    fi;
-    for i in [1 .. Length(constraints)] do
-        if IsPermGroup(constraints[i]) then
-            constraints[i] := VoleCon.InGroup(constraints[i]);
-        elif IsRightCoset(constraints[i]) then
-            constraints[i] := VoleCon.InCoset(constraints[i]);
-        fi;
-    od;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
+    constraints := _Vole.processConstraints(constraints);
     bounds := _Vole.getBounds(constraints, conf.points, true);
     ret := _Vole.CosetSolve(Minimum(bounds.min, bounds.max), constraints);
     if conf.raw then
@@ -33,19 +22,11 @@ VoleFind.Rep := VoleFind.Representative;
 
 VoleFind.Group := function(constraints...)
     local bounds, ret, conf, i;
-    if Length(constraints) = 1 and IsList(constraints[1]) then
-        constraints := ShallowCopy(constraints[1]);
-    fi;
-    for i in [1 .. Length(constraints)] do
-        if IsPermGroup(constraints[i]) then
-            constraints[i] := VoleCon.InGroup(constraints[i]);
-        elif IsRightCoset(constraints[i]) then
-            constraints[i] := VoleCon.InCoset(constraints[i]);
-        fi;
-    od;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
+    constraints := _Vole.processConstraints(constraints);
     bounds := _Vole.getBounds(constraints, conf.points, false);
     ret := _Vole.GroupSolve(bounds.max, constraints);
+
     if conf.raw then
         return ret;
     else
@@ -53,19 +34,10 @@ VoleFind.Group := function(constraints...)
     fi;
 end;
 
-# TODO can we do this all in one search?
+# TODO:
 VoleFind.Coset := function(constraints...)
     local G, x, i;
-    if Length(constraints) = 1 and IsList(constraints[1]) then
-        constraints := ShallowCopy(constraints[1]);
-    fi;
-    for i in [1 .. Length(constraints)] do
-        if IsPermGroup(constraints[i]) then
-            constraints[i] := VoleCon.InGroup(constraints[i]);
-        elif IsRightCoset(constraints[i]) then
-            constraints[i] := VoleCon.InCoset(constraints[i]);
-        fi;
-    od;
+    constraints := _Vole.processConstraints(constraints);
     x := VoleFind.Representative(constraints);
     if x = fail then
         return fail;
@@ -78,15 +50,10 @@ end;
 
 VoleFind.Canonical := function(G, constraints...)
     local conf, bounds, ret, i;
-
     if Length(constraints) = 1 and IsList(constraints[1]) then
         constraints := ShallowCopy(constraints[1]);
     fi;
-    for i in [1 .. Length(constraints)] do
-        if IsPermGroup(constraints[i]) then
-            constraints[i] := VoleCon.Normalize(constraints[i]);
-        fi;
-    od;
+
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(Concatenation(constraints, [G]), conf.points, false);
     ret := _Vole.CanonicalSolve(bounds.max, G, constraints);
