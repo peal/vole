@@ -5,25 +5,37 @@
 #
 # Implementations: The native interface to Vole
 
-VoleFind.Representative := function(constraints...)
-    local bounds, ret, conf, i;
+VoleFind.Representative := function(arguments...)
+    local conf, constraints, bounds, ret;
+
+    if IsEmpty(arguments) then
+        ErrorNoReturn("at least one argument must be given");
+    fi;
+
+    constraints := _Vole.processConstraints(arguments);
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
-    constraints := _Vole.processConstraints(constraints);
     bounds := _Vole.getBounds(constraints, conf.points, true);
     ret := _Vole.CosetSolve(Minimum(bounds.min, bounds.max), constraints);
+
     if conf.raw then
         return ret;
     elif not IsEmpty(ret.sol) then
         return ret.sol[1];
+    else
+        return fail;
     fi;
-    return fail;
 end;
 VoleFind.Rep := VoleFind.Representative;
 
-VoleFind.Group := function(constraints...)
-    local bounds, ret, conf, i;
+VoleFind.Group := function(arguments...)
+    local conf, constraints, bounds, ret;
+
+    if IsEmpty(arguments) then
+        ErrorNoReturn("at least one argument must be given");
+    fi;
+
+    constraints := _Vole.processConstraints(arguments);
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
-    constraints := _Vole.processConstraints(constraints);
     bounds := _Vole.getBounds(constraints, conf.points, false);
     ret := _Vole.GroupSolve(bounds.max, constraints);
 
@@ -34,28 +46,37 @@ VoleFind.Group := function(constraints...)
     fi;
 end;
 
-# TODO: This should be implemented
-VoleFind.Coset := function(constraints...)
-    local G, x, i;
-    constraints := _Vole.processConstraints(constraints);
+# TODO: This could be implemented at the Vole level: there should be an
+#       option to continue a coset search after the first element is found
+VoleFind.Coset := function(arguments...)
+    local constraints, x, G;
+
+    ErrorNoReturn("not yet implemented");
+
+    if IsEmpty(arguments) then
+        ErrorNoReturn("at least one argument must be given");
+    fi;
+
+    constraints := _Vole.processConstraints(arguments);
     x := VoleFind.Representative(constraints);
     if x = fail then
         return fail;
     fi;
-    ErrorNoReturn("not yet implemented");
     # TODO convert the "constraints" into their group versions, as appropriate!
     G := VoleFind.Group();
     return RightCoset(G, x);
 end;
 
-VoleFind.Canonical := function(G, constraints...)
-    local conf, bounds, ret, i;
-    if Length(constraints) = 1 and IsList(constraints[1]) then
-        constraints := ShallowCopy(constraints[1]);
-    elif IsPosInt(G) then
-        G := SymmetricGroup(G);
+VoleFind.Canonical := function(G, arguments...)
+    local constraints, conf, bounds, ret;
+
+    if IsEmpty(arguments) then
+        ErrorNoReturn("at least two arguments must be given");
+    elif Length(arguments) = 1 and IsList(arguments[1]) then
+        arguments := ShallowCopy(arguments[1]);
     fi;
 
+    constraints := arguments; # We don't do any processing
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(Concatenation(constraints, [G]), conf.points, false);
     ret := _Vole.CanonicalSolve(bounds.max, G, constraints);
@@ -67,8 +88,5 @@ VoleFind.Canonical := function(G, constraints...)
     fi;
 end;
 
-VoleFind.CanonicalPerm := function(G, constraints...)
-    local x;
-    x := CallFuncList(VoleFind.Canonical, Concatenation([G], constraints));
-    return x.canonical;
-end;
+VoleFind.CanonicalPerm := {G, constraints...} ->
+    CallFuncList(VoleFind.Canonical, Concatenation([G], constraints)).canonical;
