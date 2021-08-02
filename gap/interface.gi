@@ -34,7 +34,7 @@ VoleFind.Group := function(constraints...)
     fi;
 end;
 
-# TODO:
+# TODO: This should be implemented
 VoleFind.Coset := function(constraints...)
     local G, x, i;
     constraints := _Vole.processConstraints(constraints);
@@ -52,6 +52,8 @@ VoleFind.Canonical := function(G, constraints...)
     local conf, bounds, ret, i;
     if Length(constraints) = 1 and IsList(constraints[1]) then
         constraints := ShallowCopy(constraints[1]);
+    elif IsPosInt(G) then
+        G := SymmetricGroup(G);
     fi;
 
     conf := _Vole.getConfig(rec(raw := false, points := infinity));

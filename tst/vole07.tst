@@ -49,23 +49,23 @@ gap> IsConjugate(Group([ (5,6) ]), x, y);
 true
 gap> # Conjugacy of groups
 
-# doc/_Chapter_wrapper.xml:415-418
+# doc/_Chapter_wrapper.xml:418-421
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:444-447
+# doc/_Chapter_wrapper.xml:450-453
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:517-520
+# doc/_Chapter_wrapper.xml:523-526
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:540-543
+# doc/_Chapter_wrapper.xml:549-552
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:563-566
+# doc/_Chapter_wrapper.xml:575-578
 gap> true;
 true
 

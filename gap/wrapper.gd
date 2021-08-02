@@ -475,6 +475,8 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #! @InsertChunk DefaultAction
 #!
 #! <Ref Func="VoleFind.CanonicalPerm"/>
+#!
+#! @InsertChunk canonical-warning-session
 #! @EndGroup
 DeclareGlobalFunction("Vole.CanonicalPerm");
 #! @Arguments G, object[, action]
@@ -503,6 +505,8 @@ DeclareGlobalFunction("Vole.CanonicalImagePerm");
 #! @InsertChunk DefaultAction
 #!
 #! <Ref Func="VoleFind.CanonicalPerm"/>
+#!
+#! @InsertChunk canonical-warning-session
 
 #! @BeginExampleSession
 #! gap> true;
@@ -594,6 +598,8 @@ DeclareGlobalFunction("Vole.AutomorphismGroup");
 #! TODO
 #!
 #! <Ref Func="VoleFind.CanonicalPerm"/>
+#!
+#! @InsertChunk canonical-warning-session
 
 #! @BeginExampleSession
 #! gap> true;
@@ -615,6 +621,8 @@ DeclareGlobalFunction("Vole.CanonicalDigraph");
 #! TODO
 #!
 #! <Ref Func="VoleFind.CanonicalPerm"/>
+#!
+#! @InsertChunk canonical-warning-session
 
 #! @BeginExampleSession
 #! gap> true;

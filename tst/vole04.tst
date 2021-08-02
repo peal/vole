@@ -10,20 +10,20 @@
 #
 gap> START_TEST("vole04.tst");
 
-# doc/_Chapter_interface.xml:21-26
+# doc/_Chapter_interface.xml:35-39
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(VoleFind));
 [ "Canonical", "CanonicalPerm", "Coset", "Group", "Rep", "Representative" ]
 
-# doc/_Chapter_interface.xml:66-69
+# doc/_Chapter_interface.xml:81-84
 gap> true;
 true
 
-# doc/_Chapter_interface.xml:93-96
+# doc/_Chapter_interface.xml:115-118
 gap> true;
 true
 
-# doc/_Chapter_interface.xml:117-120
+# doc/_Chapter_interface.xml:142-145
 gap> true;
 true
 
@@ -31,9 +31,18 @@ true
 gap> true;
 true
 
-# doc/_Chapter_interface.xml:227-230
-gap> true;
-true
+# doc/_Chapter_interface.xml:237-242
+gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
+>  VoleCon.Normalise(Group([ (1,2) ]))
+> );
+(1,4)(2,3)
+
+# doc/_Chapter_interface.xml:249-255
+gap> VoleFind.CanonicalPerm(SymmetricGroup(4),
+>  VoleCon.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),
+>  VoleCon.Stabilise(CycleDigraph(4), OnDigraphs)
+> );
+(1,2,3)
 
 #
 gap> STOP_TEST("vole04.tst", 1);

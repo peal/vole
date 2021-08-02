@@ -5,31 +5,82 @@
 #
 # Declarations: The native interface to Vole
 
+#! @BeginChunk args-or-list
+#! The constraints may be given as separate arguments, or as a single list.
+#! @EndChunk
+
+#! @BeginChunk con-ref-or
+#! A constraint may be a &Vole; constraint
+#! (Chapter&nbsp;<Ref Chap="Chapter_Constraints"/>),
+#! a refiner (Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>),
+#! or one of the following objects:
+#! @EndChunk
+
 #! @BeginChunk valueoption
 #! This function supports various options, which are documented in
 #! Section&nbsp;<Ref Sect="Section_options"/>.
 #! @EndChunk
 
 #! @BeginChunk group-ingroup
-#! * A permutation group <A>G</A> is interpreted as the constraint
-#!   `VoleCon.InGroup(<A>G</A>)`; see <Ref Func="VoleCon.InGroup"/>.
+#! * A permutation group <A>G</A>, which is interpreted as an instance of the
+#!   constraint <Ref Func="VoleCon.InGroup"/> with argument <A>G</A>.
 #! @EndChunk
 
 #! @BeginChunk coset-incoset
-#! * A &GAP; right coset object  <A>U</A> is interpreted as the constraint
-#!   `VoleCon.InCoset(<A>U</A>)`; see <Ref Func="VoleCon.InCoset"/>.
+#! * A &GAP; right coset object <A>U</A>, which is interpreted as an instance
+#!   of the constraint <Ref Func="VoleCon.InCoset"/> with argument <A>U</A>.
 #! @EndChunk
 
 #! @BeginChunk posint-lmp
-#! * A positive integer <A>k</A> is interpreted as the
-#!   constraint `VoleCon.LargestMovedPoint(<A>k</A>)`;
-#!   see <Ref Func="VoleCon.LargestMovedPoint"/>.
+#! * A positive integer <A>k</A>, which is interpreted as an instance of the
+#!   constraint <Ref Func="VoleCon.LargestMovedPoint"/> with argument <A>k</A>.
 #! @EndChunk
 
-#! @BeginChunk canonical-warning
-#! TODO: canonical labels etc are not necessarily permanent across GAP sessions.
+#! @BeginChunk canonical-warning-session
+#! <B>Warning</B>: The permutation given by a canonical search, and the
+#! canonical image that it defines, are <B>not guaranteed to be the same
+#! across different sessions</B>.
+#! In particular, canonical permutations and images may differ in different
+#! versions of &Vole;, in different versions of &GAP;,
+#! and on different hardware.
+#! @EndChunk
+#! @BeginChunk canonical-warning-ordering
+#! In addition, please note that the result also depends on order in which
+#! the <A>constraints</A> are given.
 #! @EndChunk
 
+#! @BeginChunk bounds-ref
+#! This guarantees that &Vole; terminates (given sufficient resources).
+#! See Section&nbsp;<Ref Sect="Section_bounds"/> for examples and further
+#! information.
+#! @EndChunk
+
+#! @BeginChunk need-lmp
+#! At least one of the constraints must clearly imply a finite largest moved
+#! point of any permutation that satisfies the constraint.
+#! An error is given if &Vole; cannot immediately deduce such a largest moved
+#! point.
+#! @InsertChunk bounds-ref
+#! @EndChunk
+
+#! @BeginChunk need-lrp
+#! At least one of the constraints must clearly imply a positive integer bound
+#! `k` such that there exists **some** permutation satisfying the constraint
+#! if and only if there exists an element of `Sym([1 .. k])` satisfying
+#! the constraint.
+#! An error is given if &Vole; cannot immediately deduce such a bound.
+#! @InsertChunk bounds-ref
+#! @EndChunk
+
+
+#! @BeginChunk
+#! In each of the following functions, the arguments <A>constraints...</A>
+#! can be a non-empty assortment of permutation groups, and/or
+#! right cosets, and/or
+#! &Vole; <E>constraints</E> (Chapter&nbsp;<Ref Chap="Chapter_Constraints"/>),
+#! and/or <E>refiners</E> (Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>);
+#! or a single list thereof.
+#! @EndChunk
 
 #! @Chapter The native &Vole; interface
 #! @ChapterLabel interface
@@ -37,8 +88,16 @@
 #! The native interface to &Vole; is similar to that provided by &ferret;,
 #! &BacktrackKit;, and &GraphBacktracking;, so it should be somewhat
 #! familiar to users of those packages.
+#!
+#! At a basic level, a search is executed by calling the appropriate function
+#! with a suitable list of constraints
+#! (and/or refiners, for more expert users):
+#! * The name of the function determines the **kind** of search to be executed
+#!   (whether for a single permutation, or for a group, or for a canonical
+#!    image, etc).
+#! * Broadly speaking, the arguments are a list of properties that constrain
+#!   the search to give the desired result.
 
-#! At a basic level,
 
 #! @Section The <C>VoleFind</C> record
 #! @SectionLabel VoleFind
@@ -51,8 +110,7 @@
 #! @BeginExampleSession
 #! gap> LoadPackage("vole", false);;
 #! gap> Set(RecNames(VoleFind));
-#! [ "Canonical", "CanonicalImage", "CanonicalPerm", "Coset", "Group", "Rep", 
-#!   "Representative" ]
+#! [ "Canonical", "CanonicalPerm", "Coset", "Group", "Rep", "Representative" ]
 #! @EndExampleSession
 DeclareGlobalVariable("VoleFind");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
@@ -60,27 +118,26 @@ InstallValue(VoleFind, rec());
 
 
 #! @Section Searching for groups, cosets, and representatives with the native interface
+#! @SectionLabel interface_main
 
-#! In each of the following functions, the arguments <A>constraints...</A>
-#! can be a non-empty assortment of permutation groups, and/or
-#! right cosets, and/or
-#! &Vole; <E>constraints</E> (Chapter&nbsp;<Ref Chap="Chapter_Constraints"/>),
-#! and/or <E>refiners</E> (Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>);
-#! or a single list thereof.
-
-#! @Subsection lolol
 
 #! @BeginGroup Rep
 #! @Arguments constraints...
 #! @Returns A permutation, or <K>fail</K>
 #! @Description
-#! `VoleFind.Representative` searches for a single permutation that
-#! satisfies the <A>constraints</A>
-#! `VoleFind.Rep` is a synonym for `VoleFind.Representative`.
+#! <Ref Func="VoleFind.Representative"/> returns a single permutation that
+#! satisfies all of the <A>constraints</A> if one exists,
+#! and returns <K>fail</K> otherwise.
+#! <Ref Func="VoleFind.Rep"/> is a synonym for
+#! <Ref Func="VoleFind.Representative"/>.
 #!
+#! @InsertChunk args-or-list
+#! @InsertChunk con-ref-or
 #! @InsertChunk group-ingroup
 #! @InsertChunk coset-incoset
 #! @InsertChunk posint-lmp
+#!
+#! @InsertChunk need-lrp
 #!
 #! @InsertChunk valueoption
 #!
@@ -97,13 +154,17 @@ DeclareGlobalFunction("VoleFind.Rep");
 #! @Arguments constraints...
 #! @Returns A permutation group
 #! @Description
-#! Text about `VoleFind.Group`.
+#! <Ref Func="VoleFind.Group"/> returns the group of permutations that satisfy
+#! all of the constraints.  It is assumed, although not verified, that for each
+#! constraint, the set of permutations that satisfy that constraint forms a
+#! group: this is the responsibility of the user.
 #!
+#! @InsertChunk args-or-list
+#! @InsertChunk con-ref-or
 #! @InsertChunk group-ingroup
 #! @InsertChunk posint-lmp
 #!
-#! Warning: it is up to the users to make sure that the constraints define
-#! a group.
+#! @InsertChunk need-lmp
 #!
 #! @InsertChunk valueoption
 #! @BeginExampleSession
@@ -113,12 +174,14 @@ DeclareGlobalFunction("VoleFind.Rep");
 DeclareGlobalFunction("VoleFind.Group");
 
 #! @Arguments constraints...
-#! @Returns A right coset of a permutation group, or <K>fail</K>
+#! @Returns A &GAP; right coset of a permutation group, or <K>fail</K>
 #! @Description
 #! Text about `VoleFind.Coset`.
 #!
 #! @InsertChunk group-ingroup
 #! @InsertChunk posint-lmp
+#!
+#! @InsertChunk need-lmp
 #!
 #! @InsertChunk valueoption
 #! @BeginExampleSession
@@ -128,47 +191,8 @@ DeclareGlobalFunction("VoleFind.Group");
 DeclareGlobalFunction("VoleFind.Coset");
 
 
-#! @Section Bounds associated with a constraint or refiner
-
-#! In &GAP;, all permutations are implicitly defined on the set of all positive
-#! integers, although there are limits on the points that can be involved that
-#! are prescribed by the computer and the laws of physics.
-#! Finite support.
-#!
-#! But there's a potential for danger here with (nearly) infinite stuff.
-#! So we need to bound the search somehow.
-#! We want to be doing stuff with finite groups.
-#! We actually want to do a search in Sym([1..k]) for some posint `k`,
-#! or even in Sym(C) for some finite subset of `PositiveIntegers`.
-#!
-#! <B>Largest required point</B>
-#!
-#! The largest required point of a 'constraint' is either
-#! <K>infinity</K>, or a positive integer `k` such that for any permutation `x`:
-#! * `x` satisfies the constraint if and only if
-#!   `x` preserves `[1..k]` as a set, and the restriction of `x` to `[1..k]`
-#!   satisfies the constraint.
-#!
-#! The constraint only concerns (at most) the points [1..k], and that the action
-#! of a permutation on the points greater than `k` is irrelevant to whether the
-#! constraint is satisfied.
-#!
-#! In particular, there exists some permutation that satisfies the constraint
-#! if and only if there exists a permutation in Sym([1..k]) that satisfies
-#! the constraint. This also a search for a representative
-#!
-#! <B>Largest moved point</B>
-#!
-#! The largest moved point is either <K>infinity</K>,
-#! or a positive integer `m` for
-#! which it is known a priori that any permutation satisfying the
-#! 'constraint' fixes all points > `m`.
-#! For many 'constraints' there is no such bound, or at least none can be easily
-#! deduced. For instance, the constraint "is even" can be satisfied by
-#! some permutation that moves any given point.
-
-
 #! @Section Searching for canonical permutations and images with the native interface
+#! @SectionLabel interface_canonical
 
 #! @Arguments G, constraints...
 #! @Returns A record
@@ -183,13 +207,23 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! the constraint is a stabiliser of some `object` under an `action`.
 #! For example, `VoleCon.Normalise(G)`!
 #!
+#! This excludes `InGroup` style refiners!
+#!
 #! Suppose the i-th constraint is equivalent to
 #! `VoleCon.Stabilise(object_i,action_i)`.
 #!
 #! Then `VoleFind.Canonical` searches for the canonical image of
 #!
 #! @InsertChunk valueoption
-#! @InsertChunk canonical-warning
+#!
+#! @InsertChunk canonical-warning-session
+#! @InsertChunk canonical-warning-ordering
+#!
+#! * <Ref Func="Vole.CanonicalPerm"/>
+#! * <Ref Func="Vole.CanonicalImage"/>
+#! * <Ref Func="Vole.DigraphCanonicalLabelling"/>
+#! * <Ref Func="Vole.CanonicalDigraph"/>
+#!
 #! @BeginExampleSession
 #! gap> true;
 #! true
@@ -199,17 +233,38 @@ DeclareGlobalFunction("VoleFind.Canonical");
 #! @Arguments G, constraints...
 #! @Returns A permutation
 #! @Description
-#! This function returns the `perm` component of the record returned by
-#! <Ref Func="VoleFind.Canonical"/>, when given the same arguments.
-#!
-#! In other words, this returns
+#! This function returns
 #! `VoleFind.Canonical(<A>G</A>,<A>constraints...</A>).perm`.
+#! This is the `perm` component of the record returned by
+#! <Ref Func="VoleFind.Canonical"/>, under the same arguments.
 #!
 #! Please see the documentation of <Ref Func="VoleFind.Canonical"/> for more
 #! information.
 #!
+#! For users who wish to provide only one constraint, and who do not wish to
+#! specify a particular refiner, the function <Ref Func="Vole.CanonicalPerm"/>
+#! provides a simpler interface for executing the same computation.
+#!
+#! @InsertChunk canonical-warning-session
+#! @InsertChunk canonical-warning-ordering
+#!
+#! The following example shows how to compute a ‘canonical permutation’
+#! for the group $\langle (1\,2) \rangle$ under conjugation by $A_{4}$:
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
+#! >  VoleCon.Normalise(Group([ (1,2) ]))
+#! > );
+#! (1,4)(2,3)
+#! @EndExampleSession
+#! This second example shows how to compute a ‘canonical permutation’
+#! for the pair $[S, D]$ under the specified componentwise action of $S_{4}$,
+#! where $S$ is the set-of-sets $\{ \{1,2\}, \{1,4\}, \{2,3\}, \{3,4\} \}$,
+#! and $D$ is the cycle digraph on four vertices:
+#! @BeginExampleSession
+#! gap> VoleFind.CanonicalPerm(SymmetricGroup(4),
+#! >  VoleCon.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),
+#! >  VoleCon.Stabilise(CycleDigraph(4), OnDigraphs)
+#! > );
+#! (1,2,3)
 #! @EndExampleSession
 DeclareGlobalFunction("VoleFind.CanonicalPerm");
