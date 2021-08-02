@@ -71,7 +71,7 @@
 
 #! @BeginChunk need-lrp
 #! For at least one of the <A>arguments</A>, &Vole; must be able to immediately
-#! a positive integer `k`, such that for the corresponding constraint:
+#! deduce a positive integer `k`, such that for the corresponding constraint:
 #! * there exists a permutation satisfying the constraint
 #!   if and only if there exists an element of `Sym([1..k])` satisfying
 #!   the constraint.
@@ -221,7 +221,7 @@ DeclareGlobalFunction("VoleFind.Coset");
 #!   same orbit of $G$ on $X$.
 #!
 #! In other words, a canoniser maps a point $x \in X$ to a canonical element
-#! of its orbit, under the action of $G$.
+#! of its orbit under the action of $G$.
 #!
 #! This canonical element is known as the **canonical image** of $x$ with
 #! respect to the action of $G$. It is sometimes called the **canonical form**
@@ -245,30 +245,33 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! See the beginning of Section&nbsp;<Ref Sect="Section_interface_canonical"/>
 #! for a definition of these terms.
 #!
-#! The first argument, <A>G</A>, must be the group in which to canonise.
-#! The remaining <A>arguments</A> specify the rest of the canonisation problem
-#! (i.e. the object and the action)
-#! in a way that we describe below.
-#!
-#! <B>Please note</B> that the forthcoming details are crucial for obtaining
+#! **<B>Please note</B> that the forthcoming details are crucial for obtaining
 #! meaningful and comparable results from <Ref Func="VoleFind.Canonical"/>.
-#! Therefore, for users who:
-#! * wish to compute a canonical permutation/image
+#! Therefore, for users who:**
+#! * **wish to compute a canonical permutation/image
 #!   of an object under an action that is listed in the table in
-#!   <Ref Func="VoleCon.Stabilise"/>, and
-#! * do not wish to specify particular refiners for this
+#!   <Ref Func="VoleCon.Stabilise"/>, and**
+#! * **do not wish to specify particular refiners for this
 #!   (refiners are introduced and discussed in
-#!    Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>),
-#! we suggest using the functions <Ref Func="Vole.CanonicalPerm"/> and
+#!    Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>),**
+#! **we suggest using the functions <Ref Func="Vole.CanonicalPerm"/> and
 #! <Ref Func="Vole.CanonicalImage"/>, which provide a much simpler interface
-#! to accommodate this simpler use case.
+#! to accommodate this simpler use case.**
+#!
+#! The first argument to <Ref Func="VoleFind.Canonical"/>
+#! must be the group <A>G</A> in which to canonise.
+#! The remaining <A>arguments</A> specify the rest of the canonisation problem;
+#! in particular, they define the object and the action.
 #!
 #! The <A>arguments</A> that follow <A>G</A> may be given separately,
 #! or as a list.
-#! These must be certain kinds of &Vole; constraints
-#! (Chapter&nbsp;<Ref Chap="Chapter_Constraints"/>), and/or
-#! certain kinds of refiners (Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>; note
-#! that a refiner implies a constraint).
+#! Each of the <A>arguments</A> must be an instance of a &Vole; constraint
+#! <Ref Func="VoleCon.Stabilise"/>,
+#! <Ref Func="VoleCon.Normalise"/>, or
+#! <Ref Func="VoleCon.Centralise"/>
+#! (Chapter&nbsp;<Ref Chap="Chapter_Constraints"/>),
+#! or a special kind of refiner
+#! (Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>).
 #!
 #! In particular, the constraint implied by each of the <A>arguments</A>
 #! must be such that...
@@ -283,9 +286,6 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! must be definable as the set of permutations that stabilise some object
 #! under an action of <A>G</A>.
 #! The &Vole; constraints of this kind are
-#! <Ref Func="VoleCon.Stabilise"/>,
-#! <Ref Func="VoleCon.Normalise"/>, and
-#! <Ref Func="VoleCon.Centralise"/>.
 #! In particular, the constraint <Ref Func="VoleCon.InGroup"/> is not permitted,
 #! in general.
 #!
