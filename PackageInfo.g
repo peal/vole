@@ -86,7 +86,7 @@ Dependencies := rec(
   NeededOtherPackages := [
     [ "BacktrackKit", ">= 0.4.1" ],
     [ "Digraphs", ">= 1.1.1" ],
-    [ "GraphBacktracking", ">= 0.4.0" ],
+    [ "GraphBacktracking", ">= 0.4.1" ],
     # to enable GAP and rust to talk to each other
     [ "IO", ">= 4.7.0" ],
     [ "json", ">= 2.0.1" ],
