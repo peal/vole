@@ -49,7 +49,6 @@ end;
 VoleFind.Coset := function(arguments...)
     local conf, constraints, bounds, ret;
 
-    
     if IsEmpty(arguments) then
         ErrorNoReturn("at least one argument must be given");
     fi;
@@ -64,7 +63,6 @@ VoleFind.Coset := function(arguments...)
     elif ret.cosetrep <> fail then
         return RightCoset(ret.group, ret.cosetrep);
     fi;
-
     return fail;
 end;
 

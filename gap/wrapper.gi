@@ -25,18 +25,7 @@ Vole.Intersection := function(permcolls...)
     if ForAll(permcolls, IsPermGroup) then
         return VoleFind.Group(permcolls);
     else
-        # FIXME when VoleFind.Coset is implemented, just use it directly.
-        ret := VoleFind.Rep(permcolls);
-        if ret = fail then
-            return [];
-        else
-            for i in [1 .. Length(permcolls)] do
-                if IsRightCoset(permcolls[i]) then
-                    permcolls[i] := ActingDomain(permcolls[i]);
-                fi;
-            od;
-            return VoleFind.Group(permcolls) * ret;
-        fi;
+        return VoleFind.Coset(permcolls);
     fi;
 end;
 

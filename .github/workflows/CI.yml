@@ -85,7 +85,7 @@ jobs:
       - name: "Setup tmate session"
         uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
-        timeout-minutes: 5
+        timeout-minutes: 15
 
   # The documentation job
   manual:
