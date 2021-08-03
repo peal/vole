@@ -29,6 +29,10 @@ impl UnionFind {
         self.orbit_mins.len()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.orbit_mins.is_empty()
+    }
+
     pub fn find(&self, mut p: usize) -> usize {
         while self.orbit_mins[p] != usize::MAX {
             p = self.orbit_mins[p];
