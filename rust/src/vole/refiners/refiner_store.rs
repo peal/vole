@@ -20,14 +20,20 @@ use crate::{gap_chat::GapChatType, perm::Permutation, vole::domain_state::Domain
 
 use std::any::Any;
 
+/// Store all refiners, and the current state of the refiners
 pub struct RefinerStore {
+    /// List of refiners
     refiners: Vec<Box<dyn Refiner>>,
+    /// For each refiner, the number of fixed values in the partition the last time the refiner was called
     base_fixed_values_considered: Vec<Backtracking<usize>>,
+    /// For each refiner, the number of cells of the partition last time the refiner was called
     cells_considered: Vec<Backtracking<usize>>,
+    /// The number of times 'save_state' has been called
     saved_depth: usize,
 }
 
 impl RefinerStore {
+    /// Create a new RefinerStore from a list of refiners
     pub fn new_from_refiners(refiners: Vec<Box<dyn Refiner>>) -> Self {
         let len = refiners.len();
         Self {
@@ -38,6 +44,7 @@ impl RefinerStore {
         }
     }
 
+    /// Initialise the refiners
     pub fn init_refine(&mut self, state: &mut DomainState, side: Side, stats: &mut Stats) -> trace::Result<()> {
         let _span = trace_span!("init_refine:", side = debug(side)).entered();
         for (i, r) in self.refiners.iter_mut().enumerate() {
@@ -49,6 +56,7 @@ impl RefinerStore {
         self.do_refine(state, side, stats)
     }
 
+    /// Run all refiners, based on changes to the state (assumes init_refine was previously called)
     pub fn do_refine(&mut self, state: &mut DomainState, side: Side, stats: &mut Stats) -> trace::Result<()> {
         let _span = trace_span!("do_refine").entered();
         loop {
@@ -86,16 +94,19 @@ impl RefinerStore {
         }
     }
 
+    /// Inform all refiners that 'state' is currently the 'rbase', in case they need to store any information
     pub fn snapshot_rbase(&mut self, state: &mut DomainState) {
         for refiner in &mut self.refiners {
             refiner.snapshot_rbase(state);
         }
     }
 
+    /// Get the 'image' of each refiner under the permutation 'p'
     pub fn get_canonical_images(&self, p: &Permutation) -> Vec<Box<dyn Any>> {
         return self.refiners.iter().map(|r| r.any_image(p, Side::Left)).collect();
     }
 
+    /// Check if applying 'p' produces a small image than 'prev'.
     pub fn get_smaller_canonical_image(
         &self,
         p: &Permutation,
@@ -135,6 +146,7 @@ impl RefinerStore {
         None
     }
 
+    /// Check if current DomainState produces a smaller canonical image
     pub fn check_canonical(&mut self, state: &mut DomainState, sols: &mut Solutions, stats: &mut Stats) {
         let part = state.partition();
         let pnts = part.base_domain_size();

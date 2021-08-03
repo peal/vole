@@ -9,6 +9,7 @@ use super::{solutions::Solutions, subsearch::sub_simple_search};
 
 use tracing::{info, trace, trace_span};
 
+/// This contains config for the search which is not expected to change during search
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct SearchConfig {
     pub full_graph_refine: bool,
