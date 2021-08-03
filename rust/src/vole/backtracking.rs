@@ -61,7 +61,7 @@ impl<T: Clone + fmt::Debug> DerefMut for Backtracking<T> {
 }
 
 impl<T: Clone + fmt::Debug> Backtracking<T> {
-    /// Get object at depth `d` (as returned from [saved_depths])
+    /// Get object at depth `d` (as returned from [Backtracking::state_depth])
     pub fn get_depth(&self, d: usize) -> &T {
         &self.stack[d]
     }

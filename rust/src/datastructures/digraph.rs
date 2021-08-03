@@ -134,9 +134,9 @@ impl Digraph {
     /// itself, and the elements of digraphs, but it may be larger
     /// in some cases (due to hash collisions).
     /// The `in_depth` argument is used to "stack" calls to merge,
-    /// so merging [a,b,c,d,e] at depth 0 will produce the same graph
-    /// as first mergeing [a,b] at depth 0, the [c,d,e] at depth 2.
-    /// whereas merging [a,b] at depth 0, then [c,d,e] at depth 0 will
+    /// so merging \[a,b,c,d,e\] at depth 0 will produce the same graph
+    /// as first mergeing \[a,b\] at depth 0, then \[c,d,e\] at depth 2.
+    /// whereas merging \[a,b\] at depth 0, then \[c,d,e\] at depth 0 will
     /// produce a different graph
     pub fn merge(&mut self, digraphs: &[Self], in_depth: usize) {
         let mut resort = HashSet::new();
