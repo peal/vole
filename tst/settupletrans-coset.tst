@@ -5,12 +5,11 @@ true
 
 #
 gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
->      local s2, max, res, p, grp;
->      max := Maximum(Maximum(Flat(s)), LargestMovedPoint(g),2);
+>      local s2, res, p, grp;
 >      p := Random(g);
 >      s2 := OnSetsTuples(s,p);
 >      grp := Stabilizer(g, s, OnSetsTuples);
->      res := VoleFind.Coset([VoleCon.Transport(s,s2,OnSetsTuples), BTKit_Con.InGroupSimple(max, g)]);
+>      res := VoleFind.Coset(VoleCon.Transport(s,s2,OnSetsTuples), BTKit_Con.InGroupSimple(g));
 >      if res <> RightCoset(grp, p) then
 >          return StringFormatted("Failure: {} {} {}", s2, p, res);
 >      fi;
