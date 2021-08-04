@@ -16,7 +16,7 @@ gap> VoleComp(5, [VoleCon.Stabilize([2,3,4], OnSets), VoleCon.Stabilize([3,4,5],
 gap> VoleComp(7, [VoleCon.Stabilize([2,3,4], OnSets), VoleCon.Stabilize([5], OnTuples)]);
 gap> VoleComp(5, [VoleCon.Stabilize([2,3,4], OnSets), VoleCon.Stabilize([5], OnTuples)]);
 gap> VoleComp(5, [VoleCon.Stabilize([[2,4],[1,3],[2,4],[1,3],[]], OnDigraphs)]);
-gap> VoleComp(5, [BTKit_Con.SetStab(5, [2,3])]);
+gap> VoleComp(5, [BTKit_Con.SetStab([2,3])]);
 gap> VoleComp(12, [VoleCon.Stabilize(neigh, OnDigraphs)]);
 
 # Bug found by Mun See Chang and fixed in commit 11e06f
