@@ -60,14 +60,14 @@ true
 gap> VoleFind.Group(VoleCon.InGroup(M12),
 >                   VoleCon.Stabilize(S, OnSets),
 >                   VoleCon.InGroup(G),
->                   GB_Con.NormaliserSimple(12, H))
+>                   GB_Con.NormaliserSimple(H))
 > = answer;
 true
 gap> VoleFind.Group(VoleCon.InGroup(M12),
 >                   VoleCon.Stabilize(S, OnSets),
 >                   VoleCon.InGroup(G),
 >                   VoleCon.Normalise(H),
->                   GB_Con.NormaliserSimple(12, H))
+>                   GB_Con.NormaliserSimple(H))
 > = answer;
 true
 

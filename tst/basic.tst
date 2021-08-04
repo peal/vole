@@ -20,7 +20,7 @@ gap> VoleComp(5, [BTKit_Con.SetStab([2,3])]);
 gap> VoleComp(12, [VoleCon.Stabilize(neigh, OnDigraphs)]);
 
 # Bug found by Mun See Chang and fixed in commit 11e06f
-gap> VoleComp(7, [GB_Con.NormaliserSimple(7, Group([(1,2,3,4), (1,2), (5,6,7)]))]);
+gap> VoleComp(7, [GB_Con.NormaliserSimple(Group([(1,2,3,4), (1,2), (5,6,7)]))]);
 
 #
 gap> r := VoleFind.Rep([VoleCon.Transport([2,3,4,5], [1,3,5,4], OnTuples)] : points := 5);;

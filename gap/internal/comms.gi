@@ -378,7 +378,7 @@ function(points, find_single, find_coset, find_canonical, constraints, canonical
     points := Maximum(2, points);
 
     if canonical_group <> false then
-        constraints := Concatenation([GB_Con.InGroupSimple(points, canonical_group)], constraints);
+        constraints := Concatenation([GB_Con.InGroupSimple(canonical_group)], constraints);
     fi;
 
     gapcons := [];

@@ -32,7 +32,7 @@ FerretSolve := function(p, l)
             c := c.con;
         fi;
         if IsRefiner(c) then
-            g := GB_SimpleSearch(PartitionStack(p), [GB_Con.InGroup(p, g), c]);
+            g := GB_SimpleSearch(PartitionStack(p), [GB_Con.InGroup(g), c]);
         elif IsBound(c.SetStab) then
             g := Solve([ConInGroup(g), ConStabilize(c.SetStab.points, OnSets)]);
         elif IsBound(c.TupleStab) then
@@ -75,7 +75,7 @@ function(p, l)
         fi;
         
         if IsRefiner(c) then
-            g := GB_SimpleSearch(PartitionStack(p), [GB_Con.InGroup(p, g), c]);
+            g := GB_SimpleSearch(PartitionStack(p), [GB_Con.InGroup(g), c]);
         elif IsBound(c.SetStab) then
             g := Stabilizer(g, c.SetStab.points, OnSets);
         elif IsBound(c.TupleStab) then

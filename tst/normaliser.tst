@@ -6,7 +6,7 @@ true
 #
 gap> for i in [2..6] do
 >    for j in [1..NrTransitiveGroups(i)] do
->        VoleComp(i, [GB_Con.NormaliserSimple(i,TransitiveGroup(i,j))]);
+>        VoleComp(i, [GB_Con.NormaliserSimple(TransitiveGroup(i,j))]);
 >    od;
 > od;
 

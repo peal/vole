@@ -88,7 +88,7 @@ VoleCon.InGroup := function(G)
     fi;
     # TODO special case NaturalAlternatingGroup too?
     
-    return GB_Con.InGroup(_Vole.lmp(G), G);
+    return GB_Con.InGroup( G);
 end;
 
 VoleCon.InCoset := function(U)
@@ -111,7 +111,7 @@ VoleCon.InRightCoset := function(G, x)
     # TODO special case a coset of a natural symmetric group?
 
     # TODO is this the 'best' bound?
-    return GB_Con.InCosetSimple(Maximum(_Vole.lmp(G), _Vole.lmp(x)), G, x);
+    return GB_Con.InCosetSimple(G, x);
 end;
 
 VoleCon.InLeftCoset := function(G, x)
@@ -129,7 +129,7 @@ VoleCon.Normalize := function(G)
     if not IsPermGroup(G) then
         ErrorNoReturn("VoleCon.Normalize: the argument must be a perm group");
     fi;
-    return GB_Con.NormaliserSimple2(LargestMovedPoint(G), G);
+    return GB_Con.NormaliserSimple2(G);
 end;
 VoleCon.Normalise := VoleCon.Normalize;
 
