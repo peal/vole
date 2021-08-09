@@ -1,7 +1,7 @@
 Roadmap for vole
 ================
 
-Vole is intended to be a replacement for ferret, implementing GraphBacktracking
+Vole is intended to be a replacement for ferret, implementing the graph backtracking framework.
 
 
 Core
@@ -37,17 +37,13 @@ Search types
 * Perform search finding all solutions 🎉
 * Perform search finding only generators 🎉
 * Coset search for single element 🎉
-* Coset search for single element + generators (OPTIONAL)
+* Coset search for single element + generators 🎉
 * Canonical image 🎉
 
 Support
 =======
 * GAP package 🎉
-* Documentation
+* Documentation (in progress)
 * Testing 🎉
-* Website
+* Website 🎉
 * Benchmarks
-
-
-
-
