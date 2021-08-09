@@ -10,7 +10,9 @@ if LoadPackage("AutoDoc", "2019.09.04") = fail then
                   "the manual.");
 fi;
 
-# TODO make more robust (i.e. what if more than one Vole is installed?)
+# Choosing the appropriate PackageInfo record could made more robust, since this
+# might end up choosing the wrong version of Vole if more than one is installed.
+
 _voleinfo := PackageInfo("vole")[1];
 _strip := function(str)
   str := ReplacedString(str, ">=", "");
@@ -63,7 +65,9 @@ _autodoc := rec(
 );
 
 _entities := _autodoc.scaffold.entities;
-# TODO could extract the dependency URLs too from their own PackageInfo files?
+# Ideas:
+# * We could extract the dependencies' URLs from their own PackageInfo files &
+#   have &PackageNameWWWHome;
 for _dep in Concatenation(_voleinfo.Dependencies.NeededOtherPackages,
                           _voleinfo.Dependencies.SuggestedOtherPackages) do
     # &PackageName; -> <Package>PackageName</Package>
