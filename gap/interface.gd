@@ -47,8 +47,8 @@
 #! @EndChunk
 
 #! @BeginChunk canonical-warning-session
-#! <B>Warning</B>: The permutation given by a canonical search, and more
-#! importantly the canonical image that it defines,
+#! <B>Warning</B>: The permutation given by a canonical search and
+#! the canonical image that it defines
 #! are <B>not guaranteed to be the same across different sessions</B>.
 #! In particular, canonical permutations and images may differ in different
 #! versions of &Vole;, in different versions of &GAP;,
@@ -378,7 +378,8 @@ DeclareGlobalFunction("VoleFind.Canonical");
 #! (1,4)(2,3)
 #! @EndExampleSession
 #! Thus the canonical image of $\langle (1\,2) \rangle$ under this action of
-#! $A_{4}$ is the group $\langle (3\,4) \rangle$.
+#! $A_{4}$ is the group ${\langle (1\,2) \rangle}^{(1\,4)(2\,3)}$,
+#! i.e. $\langle (3\,4) \rangle$.
 #!
 #! This second example shows how to compute a canonical permutation
 #! for the pair $[S, D]$ under the specified componentwise action of $S_{4}$,

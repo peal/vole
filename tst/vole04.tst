@@ -51,7 +51,7 @@ gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
 > );
 (1,4)(2,3)
 
-# doc/_Chapter_interface.xml:378-384
+# doc/_Chapter_interface.xml:379-385
 gap> VoleFind.CanonicalPerm(SymmetricGroup(4),
 >  VoleCon.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),
 >  VoleCon.Stabilise(CycleDigraph(4), OnDigraphs)

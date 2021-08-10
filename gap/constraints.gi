@@ -229,6 +229,7 @@ end;
 VoleCon.Normalise := VoleCon.Normalize;
 
 VoleCon.Centralize := function(G)
+    Error("TODO: not yet implemented");
     if IsPermGroup(G) then
         # TODO
     elif IsPerm(G) then
@@ -247,10 +248,7 @@ VoleCon.Centralize := function(G)
         # into a refiner (which makes us choose the number of vertices) at
         # the point that the search happens, at which point we have a 'bound'
         # for the 
-    else
-        ErrorNoReturn("TODO");
     fi;
-    Error("TODO: not yet implemented");
 end;
 VoleCon.Centralise := VoleCon.Centralize;
 

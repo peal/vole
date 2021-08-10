@@ -75,6 +75,14 @@
 #! </Row>
 #! <Row>
 #!   <Item>
+#!     <Ref Func="OnSetsSets" Style="Number" BookName="Ref"/>
+#!   </Item>
+#!   <Item>
+#!     A set of sets of positive integers
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
 #!     <Ref Func="OnSetsTuples" Style="Number" BookName="Ref"/>
 #!   </Item>
 #!   <Item>
@@ -83,10 +91,18 @@
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="OnSetsSets" Style="Number" BookName="Ref"/>
+#!     <Ref Func="OnTuplesSets" Style="Number" BookName="Ref"/>
 #!   </Item>
 #!   <Item>
-#!     A set of sets of positive integers
+#!     A list of sets of positive integers
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="OnTuplesTuples" Style="Number" BookName="Ref"/>
+#!   </Item>
+#!   <Item>
+#!     A list of lists of positive integers
 #!   </Item>
 #! </Row>
 #! <Row>
