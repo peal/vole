@@ -115,9 +115,7 @@ end;
 # * Replace any positive integer k by VoleCon.LargestMovedPoint(k)
 _Vole.processConstraints := function(constraints)
     local i;
-    if Length(constraints) = 1 and IsList(constraints[1]) then
-        constraints := ShallowCopy(constraints[1]);
-    fi;
+    constraints := Flat(constraints);
     for i in [1 .. Length(constraints)] do
         if IsPermGroup(constraints[i]) then
             constraints[i] := VoleCon.InGroup(constraints[i]);

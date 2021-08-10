@@ -71,11 +71,11 @@ VoleFind.Canonical := function(G, arguments...)
 
     if IsEmpty(arguments) then
         ErrorNoReturn("at least two arguments must be given");
-    elif Length(arguments) = 1 and IsList(arguments[1]) then
-        arguments := ShallowCopy(arguments[1]);
+    else
+        constraints := Flat(arguments);
     fi;
+    # We don't do any processing to the given constraints, currently.
 
-    constraints := arguments; # We don't do any processing
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(Concatenation(constraints, [G]), conf.points, false);
     ret := _Vole.CanonicalSolve(bounds.max, G, constraints);
