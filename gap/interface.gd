@@ -235,6 +235,9 @@ DeclareGlobalFunction("VoleFind.Group");
 #! RightCoset(Group([ (5,6), (4,5,6) ]),(3,4,6))
 #! gap> VoleFind.Coset(AlternatingGroup(4), tuple_transport);
 #! fail
+#! gap> VoleFind.Coset(AlternatingGroup(5), VoleCon.Transport(
+#! > CycleDigraph(5), DigraphReverse(CycleDigraph(5)), OnDigraphs));
+#! RightCoset(Group([ (1,2,3,4,5) ]),(1,4)(2,3))
 #! @EndExampleSession
 DeclareGlobalFunction("VoleFind.Coset");
 
