@@ -65,12 +65,11 @@ ArchiveFormats := ".tar.gz",
 
 Status := "dev",
 
-AbstractHTML :=  Concatenation(
-  "<B>Vole</B> is a <B>GAP</B> package that implements ",
-  "graph backtracking, which can be used to solve many problems in finite ",
-  "permutation groups, such as subgroup intersections, normalisers, ",
-  "set stabilisers, and canonical images of groups."
-),
+AbstractHTML := """
+<B>Vole</B> is a <B>GAP</B> package that implements
+graph backtracking, which can be used to solve many problems in finite
+permutation groups, such as subgroup intersections, normalisers,
+set stabilisers, and canonical images of groups.""",
 
 PackageDoc := rec(
   BookName  := ~.PackageName,

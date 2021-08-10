@@ -10,34 +10,48 @@
 #
 gap> START_TEST("vole04.tst");
 
-# doc/_Chapter_interface.xml:35-39
+# doc/_Chapter_interface.xml:40-44
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(VoleFind));
 [ "Canonical", "CanonicalPerm", "Coset", "Group", "Rep", "Representative" ]
 
-# doc/_Chapter_interface.xml:82-85
+# doc/_Chapter_interface.xml:87-93
+gap> tuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;
+gap> VoleFind.Rep(VoleCon.InGroup(SymmetricGroup(4)), tuple_transport);
+(3,4)
+gap> VoleFind.Rep(AlternatingGroup(4), tuple_transport);
+fail
+
+# doc/_Chapter_interface.xml:125-131
+gap> graph_auto := VoleCon.Stabilise(JohnsonDigraph(4,2), OnDigraphs);;
+gap> set_stab := VoleCon.Stabilise([2,4,6], OnSets);;
+gap> G := VoleFind.Group(graph_auto, set_stab, 6);;
+gap> G = Group([ (2,4)(3,5), (1,3,5)(2,6,4) ]);
+true
+
+# doc/_Chapter_interface.xml:135-142
+gap> norm_PSL25 := VoleCon.Normalise(PSL(2,5));;
+gap> in_A6  := VoleCon.InGroup(AlternatingGroup(6));;
+gap> in_D12 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 12));;
+gap> G := VoleFind.Group(in_A6, in_D12, norm_PSL25);;
+gap> G = Group([ (1,3,5)(2,4,6) ]);
+true
+
+# doc/_Chapter_interface.xml:183-186
 gap> true;
 true
 
-# doc/_Chapter_interface.xml:117-120
+# doc/_Chapter_interface.xml:329-332
 gap> true;
 true
 
-# doc/_Chapter_interface.xml:161-164
-gap> true;
-true
-
-# doc/_Chapter_interface.xml:307-310
-gap> true;
-true
-
-# doc/_Chapter_interface.xml:337-342
+# doc/_Chapter_interface.xml:359-364
 gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
 >  VoleCon.Normalise(Group([ (1,2) ]))
 > );
 (1,4)(2,3)
 
-# doc/_Chapter_interface.xml:352-358
+# doc/_Chapter_interface.xml:374-380
 gap> VoleFind.CanonicalPerm(SymmetricGroup(4),
 >  VoleCon.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),
 >  VoleCon.Stabilise(CycleDigraph(4), OnDigraphs)

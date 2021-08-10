@@ -20,6 +20,10 @@
 #! @Section The concept of constraints
 #! @SectionLabel concept
 
+#! A <E>constraint</E> is a property of individual permutations.
+#!
+#! such that for any individual permutation, it is possible to answer
+#!
 #! Constraints and refiners are kind of two names for the same things.
 #! Well, depending on your definitions.
 #!
@@ -148,7 +152,8 @@ DeclareGlobalFunction("VoleCon.InCoset");
 #! This constraint is satisfied by precisely those permutations in the right
 #! coset of the group <A>G</A> determined by the permutation <A>x</A>.
 #!
-#! See also <Ref Func="VoleCon.InLeftCoset"/>.
+#! See also <Ref Func="VoleCon.InLeftCoset"/> for the left-hand version,
+#! and <Ref Func="VoleCon.InCoset"/> for a &GAP; right coset object.
 #! @BeginExampleSession
 #! gap> true;
 #! true
@@ -163,7 +168,8 @@ DeclareGlobalFunction("VoleCon.InRightCoset");
 #! This constraint is satisfied by precisely those permutations in the left
 #! coset of the group <A>G</A> determined by the permutation <A>x</A>.
 #! 
-#! See also <Ref Func="VoleCon.InRightCoset"/>.
+#! See also <Ref Func="VoleCon.InRightCoset"/> for the right-hand version,
+#! and <Ref Func="VoleCon.InCoset"/> for a &GAP; right coset object.
 #! @BeginExampleSession
 #! gap> true;
 #! true

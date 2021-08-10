@@ -75,10 +75,10 @@
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="OnTuplesSets" Style="Number" BookName="Ref"/>
+#!     <Ref Func="OnSetsTuples" Style="Number" BookName="Ref"/>
 #!   </Item>
 #!   <Item>
-#!     A list of sets of positive integers
+#!     A sets of lists of positive integers
 #!   </Item>
 #! </Row>
 #! <Row>

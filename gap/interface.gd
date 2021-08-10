@@ -87,17 +87,22 @@
 #! @ChapterLabel interface
 
 #! The native interface to &Vole; is similar to that provided by &ferret;,
-#! &BacktrackKit;, and &GraphBacktracking;, so it should be somewhat
-#! familiar to users of those packages.
+#! &BacktrackKit;, and &GraphBacktracking;.
 #!
-#! At a basic level, a search is executed by calling the appropriate function
-#! with a suitable list of constraints
-#! (and/or refiners, for more expert users).
+#! At a basic level, a search can be executed by choosing a suitable
+#! list of constraints
+#! (and/or refiners, for more expert users)
+#! to define the problem to be solved,
+#! and then calling the appropriate function on these constraints.
 #! * The name of the function determines the **kind** of search to be executed
 #!   (whether for a single permutation, or for a group, or for a canonical
-#!    image, etc).
-#! * Broadly speaking, the arguments are a list of properties that together
-#!   specify the permutations to be searched for.
+#!    image, etc).  These functions are described in the rest of this chapter.
+#! * Broadly speaking, constraints and/or refiners define properties that
+#!   together specify the permutations that are valid solutions to the search
+#!   problem.
+#!   Constraints and refiners are described in
+#!   Chapters&nbsp;<Ref Chap="Chapter_Constraints"/>
+#!   and&nbsp;<Ref Chap="Chapter_Refiners"/>, respectively.
 
 
 #! @Section The <C>VoleFind</C> record
@@ -105,7 +110,7 @@
 
 #! @Description
 #!
-#! `VoleFind` is a record that contains the functions providing the
+#! <Ref Var="VoleFind"/> is a record that contains the functions providing the
 #! native interface to &Vole;.
 #!
 #! @BeginExampleSession
@@ -148,8 +153,11 @@ DeclareGlobalFunction("VoleFind.Representative");
 #! @Arguments arguments...
 #! @Group Rep
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> tuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;
+#! gap> VoleFind.Rep(VoleCon.InGroup(SymmetricGroup(4)), tuple_transport);
+#! (3,4)
+#! gap> VoleFind.Rep(AlternatingGroup(4), tuple_transport);
+#! fail
 #! @EndExampleSession
 DeclareGlobalFunction("VoleFind.Rep");
 
@@ -173,7 +181,19 @@ DeclareGlobalFunction("VoleFind.Rep");
 #!
 #! @InsertChunk valueoption
 #! @BeginExampleSession
-#! gap> true;
+#! gap> graph_auto := VoleCon.Stabilise(JohnsonDigraph(4,2), OnDigraphs);;
+#! gap> set_stab := VoleCon.Stabilise([2,4,6], OnSets);;
+#! gap> G := VoleFind.Group(graph_auto, set_stab, 6);;
+#! gap> G = Group([ (2,4)(3,5), (1,3,5)(2,6,4) ]);
+#! true
+#! @EndExampleSession
+#! Note that multiple groups-by-generators may be given as constraints:
+#! @BeginExampleSession
+#! gap> norm_PSL25 := VoleCon.Normalise(PSL(2,5));;
+#! gap> in_A6  := VoleCon.InGroup(AlternatingGroup(6));;
+#! gap> in_D12 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 12));;
+#! gap> G := VoleFind.Group(in_A6, in_D12, norm_PSL25);;
+#! gap> G = Group([ (1,3,5)(2,4,6) ]);
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleFind.Group");
@@ -183,7 +203,7 @@ DeclareGlobalFunction("VoleFind.Group");
 #! @Description
 #!
 #! For this function, it is assumed, although not verified,
-#! that for each constraint defined by one of the arguments,
+#! that for each constraint defined by the arguments,
 #! the set of permutations satisfying it either is empty,
 #! or forms a right coset of some group.
 #! It is the responsibility of the user to ensure that this is the case.
