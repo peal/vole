@@ -6,6 +6,8 @@
 # Implementations: Vole constraints
 
 VoleCon.Stabilize := function(object, action...)
+
+    # Determine action: default is OnPoints
     if Length(action) = 1 and IsFunction(action[1]) then
         action := action[1];
     elif Length(action) = 0 then
@@ -14,27 +16,50 @@ VoleCon.Stabilize := function(object, action...)
         ErrorNoReturn("VoleCon.Stabilize args: object[, action]");
     fi;
 
-    if action = OnSets and IsSet(object) and ForAll(object, IsPosInt) then
+    # Determine which refiner(s) to return, based on the object and the action
+
+    # OnPoints
+    if action = OnPoints and IsPosInt(object) then
+        return VoleRefiner.TupleStab([object]);
+
+    # OnSets
+    elif action = OnSets and IsSet(object) and ForAll(object, IsPosInt) then
         return VoleRefiner.SetStab(object);
-    elif action = OnTuples
-      and IsHomogeneousList(object) and ForAll(object, IsPosInt) then
+
+    # OnTuples
+    elif action = OnTuples and IsHomogeneousList(object)
+      and ForAll(object, IsPosInt) then
         return VoleRefiner.TupleStab(object);
-    elif action = OnSetsSets
-      and IsSet(object)
+
+    # OnSetsSets
+    elif action = OnSetsSets and IsSet(object)
       and ForAll(object, x -> IsSet(x) and ForAll(x, IsPosInt)) then 
         return VoleRefiner.SetSetStab(object);
-    elif action = OnSetsTuples
-      and IsSet(object)
+
+    # OnSetsTuples
+    elif action = OnSetsTuples and IsSet(object)
       and ForAll(object, x -> IsHomogeneousList(x) and ForAll(x, IsPosInt)) then
         return VoleRefiner.SetTupleStab(object);
+
+    # OnTuplesSets
+    elif action = OnTuplesSets and IsHomogeneousList(object)
+      and ForAll(object, x -> IsSet(x) and ForAll(x, IsPosInt)) then
+        return List(object, VoleRefiner.SetStab);
+
+    # OnTuplesTuples
+    elif action = OnTuplesTuples and IsHomogeneousList(object)
+      and ForAll(object, x -> IsHomogeneousList(x) and ForAll(x, IsPosInt)) then
+        return List(object, VoleRefiner.TupleStab);
+
+    # OnDigraphs / list of adjacencies
     elif action = OnDigraphs and IsList(object)
-      and ForAll(object, x -> IsHomogeneousList(x) and
-                              ForAll(x, y -> y in [1 .. Length(object)])) then
+      and ForAll(object, x -> IsHomogeneousList(x)) then
         return VoleRefiner.DigraphStab(object);
+
+    # OnDigraphs / Digraphs package object
     elif action = OnDigraphs and IsDigraph(object) then
         return VoleRefiner.DigraphStab(OutNeighbours(object));
-    elif action = OnPoints and IsPosInt(object) then
-        return VoleRefiner.TupleStab([object]);
+
     fi;
     ErrorNoReturn("VoleCon.Stabilize: Unrecognised combination of ",
                   "<object> and <action>: ",
@@ -43,6 +68,8 @@ end;
 VoleCon.Stabilise := VoleCon.Stabilize;
 
 VoleCon.Transport := function(object1, object2, action...)
+
+    # Determine action: default is OnPoints
     if Length(action) = 1 and IsFunction(action[1]) then
         action := action[1];
     elif Length(action) = 0 then
@@ -51,26 +78,94 @@ VoleCon.Transport := function(object1, object2, action...)
         ErrorNoReturn("VoleCon.Transport args: object1, object2[, action]");
     fi;
 
-    if action = OnSets then
-        return VoleRefiner.SetTransporter(object1, object2);
-    elif action = OnTuples then
-        return VoleRefiner.TupleTransporter(object1, object2);
-    elif action = OnSetsSets then 
-        return VoleRefiner.SetSetTransporter(object1, object2);
-    elif action = OnSetsTuples then
-        return VoleRefiner.SetTupleTransporter(object1, object2);
-    elif action = OnDigraphs
-      and IsHomogeneousList(object1) and IsList(object2)
-      and ForAll(object1, x -> IsHomogeneousList(x) and
-                               ForAll(x, y -> y in [1 .. Length(object1)]))
-      and ForAll(object1, x -> IsHomogeneousList(x) and
-                               ForAll(x, y -> y in [1 .. Length(object2)])) then
-        return VoleRefiner.DigraphTransporter(object1, object2);
-    elif action = OnDigraphs and IsDigraph(object1) and IsDigraph(object2) then
-        return VoleRefiner.DigraphTransporter(OutNeighbours(object1),
-                                              OutNeighbours(object2));
-    elif action = OnPoints and IsPosInt(object1) and IsPosInt(object2) then
+    # Determine which refiner(s) to return, based on the objects and the action
+
+    # OnPoints
+    if action = OnPoints and IsPosInt(object1) and IsPosInt(object2) then
         return VoleRefiner.TupleTransporter([object1], [object2]);
+
+    # OnSets
+    elif action = OnSets and IsSet(object1) and ForAll(object1, IsPosInt)
+      and IsSet(object2) and ForAll(object2, IsPosInt) then
+        if Length(object1) <> Length(object2) then
+            return VoleCon.None();
+        else
+            return VoleRefiner.SetTransporter(object1, object2);
+        fi;
+
+    # OnTuples
+    elif action = OnTuples and ForAll([object1, object2], IsHomogeneousList)
+      and ForAll(object1, IsPosInt) and ForAll(object2, IsPosInt) then
+        if Length(object1) <> Length(object2) then
+            return VoleCon.None();
+        else
+            return VoleRefiner.TupleTransporter(object1, object2);
+        fi;
+
+    # OnSetsSets
+    elif action = OnSetsSets and ForAll([object1, object2], IsSet)
+      and ForAll(object1, x -> IsSet(x) and ForAll(x, IsPosInt))
+      and ForAll(object2, x -> IsSet(x) and ForAll(x, IsPosInt)) then
+        if Length(object1) <> Length(object2) then
+            return VoleCon.None();
+        else
+            return VoleRefiner.SetSetTransporter(object1, object2);
+        fi;
+
+    # OnSetsTuples
+    elif action = OnSetsTuples and ForAll([object1, object2], IsSet)
+      and ForAll(object1, x -> IsHomogeneousList(x) and ForAll(x, IsPosInt))
+      and ForAll(object2, x -> IsHomogeneousList(x) and ForAll(x, IsPosInt))
+      then
+        if Length(object1) <> Length(object2) then
+            return VoleCon.None();
+        else
+            return VoleRefiner.SetTupleTransporter(object1, object2);
+        fi;
+
+    # OnTuplesSets
+    elif action = OnTuplesSets and ForAll([object1, object2], IsHomogeneousList)
+      and ForAll(object1, x -> IsSet(x) and ForAll(x, IsPosInt))
+      and ForAll(object2, x -> IsSet(x) and ForAll(x, IsPosInt)) then
+        if Length(object1) <> Length(object2) then
+            return VoleCon.None();
+        else
+            return List([1 .. Length(object1)], i ->
+                        VoleRefiner.SetTransporter(object1[i], object2[i]));
+        fi;
+
+    # OnTuplesTuples
+    elif action = OnTuplesTuples
+      and ForAll([object1, object2], IsHomogeneousList)
+      and ForAll(object1, x -> IsHomogeneousList(x) and ForAll(x, IsPosInt))
+      and ForAll(object2, x -> IsHomogeneousList(x) and ForAll(x, IsPosInt))
+      then
+        if Length(object1) <> Length(object2) then
+            return VoleCon.None();
+        else
+            return List([1 .. Length(object1)], i ->
+                        VoleRefiner.TupleTransporter(object1[i], object2[i]));
+        fi;
+
+    # OnDigraphs / lists of adjacencies
+    elif action = OnDigraphs and ForAll([object1, object2], IsList)
+      and ForAll([object1, object2], o -> ForAll(o, x -> IsHomogeneousList(x)))
+      then
+        if Length(object1) <> Length(object2) then
+            return VoleCon.None();
+        else
+            return VoleRefiner.DigraphTransporter(object1, object2);
+        fi;
+
+    # OnDigraphs / Digraphs package objects
+    elif action = OnDigraphs and IsDigraph(object1) and IsDigraph(object2) then
+        if DigraphNrVertices(object1) <> DigraphNrVertices(object2) then
+            return VoleCon.None();
+        else
+            return VoleRefiner.DigraphTransporter(OutNeighbours(object1),
+                                                  OutNeighbours(object2));
+        fi;
+
     fi;
     ErrorNoReturn("VoleCon.Stabilize: Unrecognised combination of ",
                   "<object1>, <object2>, and <action>: ",
