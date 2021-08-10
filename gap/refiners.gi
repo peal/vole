@@ -22,4 +22,4 @@ VoleRefiner.SetTransporter      := {s,t} -> rec( bounds := rec(largest_required_
 VoleRefiner.TupleTransporter    := {s,t} -> rec( bounds := rec(largest_required_point :=_Vole.lmp(s,t)), con := rec(TupleTransport    := rec(left_points := s, right_points := t)));
 VoleRefiner.SetSetTransporter   := {s,t} -> rec( bounds := rec(largest_required_point :=_Vole.lmp(s,t)), con := rec(SetSetTransport   := rec(left_points := s, right_points := t)));
 VoleRefiner.SetTupleTransporter := {s,t} -> rec( bounds := rec(largest_required_point :=_Vole.lmp(s,t)), con := rec(SetTupleTransport := rec(left_points := s, right_points := t)));
-VoleRefiner.DigraphTransporter  := {s,t} -> rec( bounds := rec(largest_required_point :=_Vole.lmp(s,t)), con := rec(DigraphStab       := rec(left_edges := _Vole.Digraph(s), right_edges := _Vole.Digraph(t))));
+VoleRefiner.DigraphTransporter  := {s,t} -> rec( bounds := rec(largest_required_point :=_Vole.lmp(s,t)), con := rec(DigraphTransport  := rec(left_edges := _Vole.Digraph(s), right_edges := _Vole.Digraph(t))));
