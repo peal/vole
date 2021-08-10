@@ -76,6 +76,8 @@ impl PartialOrd<Self> for Digraph {
     }
 }
 
+pub type RawDigraph = Vec<Vec<(usize, Wrapping<QHash>)>>;
+
 impl Digraph {
     /// The empty digraph on n vertices
     pub fn empty(n: usize) -> Self {
@@ -105,6 +107,14 @@ impl Digraph {
         }*/
 
         Self { edges }
+    }
+
+    /// Transforms a digraph into a Vec<HashMap<>>
+    pub fn to_raw_unordered(&self) -> RawDigraph {
+        self.edges
+            .iter()
+            .map(|n| n.iter().map(|(&k, &v)| (k, v)).collect())
+            .collect()
     }
 
     /// [Digraph::from_vec], where the vertices are 1-indexed.
@@ -285,6 +295,21 @@ mod tests {
         assert_eq!(d, d);
         assert!(!(d < d));
         assert!(d <= d);
+    }
+
+    fn empty_hash_map() {
+        let d = Digraph::empty(3);
+        assert_eq!(d.to_raw_unordered(), vec![vec![]; 3]);
+    }
+
+    fn cycle_hash_map() {
+        let d = Digraph::from_vec(vec![vec![1], vec![2], vec![0]]);
+        let h = d.to_raw_unordered();
+        assert!(h.iter().all(|a| a.len() == 1));
+        let key = h[0][0].1;
+        assert_eq!(h[0], vec![(1, key)]);
+        assert_eq!(h[1], vec![(2, key)]);
+        assert_eq!(h[2], vec![(0, key)]);
     }
 
     #[test]

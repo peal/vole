@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use super::Refiner;
 use super::{super::domain_state::DomainState, Side};
+use crate::datastructures::digraph::RawDigraph;
 use crate::perm::Permutation;
 use crate::vole::trace;
 use crate::{datastructures::digraph::Digraph, vole::backtracking::Backtrack};
@@ -9,17 +10,29 @@ use crate::{datastructures::digraph::Digraph, vole::backtracking::Backtrack};
 pub struct DigraphTransporter {
     digraph_left: Arc<Digraph>,
     digraph_right: Arc<Digraph>,
+    digraph_raw_left: Arc<RawDigraph>,
+    digraph_raw_right: Arc<RawDigraph>,
 }
 
 impl DigraphTransporter {
     pub fn new_stabilizer(digraph: Arc<Digraph>) -> Self {
-        Self::new_transporter(digraph.clone(), digraph)
+        let raw = Arc::new(digraph.to_raw_unordered());
+        Self {
+            digraph_left: digraph.clone(),
+            digraph_right: digraph,
+            digraph_raw_left: raw.clone(),
+            digraph_raw_right: raw,
+        }
     }
 
     pub fn new_transporter(digraph_left: Arc<Digraph>, digraph_right: Arc<Digraph>) -> Self {
+        let digraph_raw_left = Arc::new(digraph_left.to_raw_unordered());
+        let digraph_raw_right = Arc::new(digraph_right.to_raw_unordered());
         Self {
             digraph_left,
             digraph_right,
+            digraph_raw_left,
+            digraph_raw_right,
         }
     }
 
@@ -51,14 +64,41 @@ impl Refiner for DigraphTransporter {
     }
 
     fn check(&self, p: &Permutation) -> bool {
-        // Old Slower implementation: &(*self.digraph_left) ^ p == *self.digraph_right
-
+        // For problems with many graphs (like finding two-closures), this function can takes >50% of runtime, so it
+        // is stupidly optimised. We:
+        // * Store graphs as vec<vec<>>, for fastest iteration and (binary) searching
+        // * Special-case when we (a) map a graph to itself and (b) map a point to itself.
+        //   In that case we check after applying permutation if we need to point is mapped to itself.
         for i in 0..self.digraph_left.vertices() {
+            let neighbours = &self.digraph_raw_left[i];
+
             let i_img = p.apply(i);
-            let img_neighbours = self.digraph_right.neighbours(i_img);
-            for (&target, colour) in self.digraph_left.neighbours(i) {
-                if img_neighbours.get(&p.apply(target)) != Some(colour) {
-                    return false;
+            let img_neighbours = &self.digraph_raw_right[i_img];
+
+            // Special case when many points are fixed in the permutation
+            if std::ptr::eq(img_neighbours, neighbours) {
+                for (target, colour) in neighbours {
+                    let t_img = p.apply(*target);
+                    if t_img != *target {
+                        let equal = match img_neighbours.binary_search_by_key(&t_img, |(a, _)| *a) {
+                            Ok(x) => img_neighbours[x].1 == *colour,
+                            Err(_) => false,
+                        };
+                        if !equal {
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                for (target, colour) in neighbours {
+                    let t_img = p.apply(*target);
+                    let equal = match img_neighbours.binary_search_by_key(&t_img, |(a, _)| *a) {
+                        Ok(x) => img_neighbours[x].1 == *colour,
+                        Err(_) => false,
+                    };
+                    if !equal {
+                        return false;
+                    }
                 }
             }
         }
