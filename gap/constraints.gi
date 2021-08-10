@@ -174,3 +174,6 @@ VoleCon.LargestMovedPoint := function(point)
     fi;
     return VoleRefiner.InSymmetricGroup([1 .. point]);
 end;
+
+# TODO Perhaps have a nicer wrapper than just ReturnFail, and fail
+VoleCon.None := ReturnFail;

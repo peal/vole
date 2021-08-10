@@ -41,6 +41,11 @@
 #!   constraint <Ref Func="VoleCon.LargestMovedPoint"/> with argument <A>k</A>.
 #! @EndChunk
 
+#! @BeginChunk fail-none
+#! * The value <K>fail</K>, which is interpreted as an instance of the
+#!   constraint <Ref Func="VoleCon.None"/>.
+#! @EndChunk
+
 #! @BeginChunk canonical-warning-session
 #! <B>Warning</B>: The permutation given by a canonical search, and more
 #! importantly the canonical image that it defines,
@@ -143,6 +148,7 @@ InstallValue(VoleFind, rec());
 #! @InsertChunk group-ingroup
 #! @InsertChunk coset-incoset
 #! @InsertChunk posint-lmp
+#! @InsertChunk fail-none
 #!
 #! @InsertChunk need-lrp
 #!
@@ -219,6 +225,7 @@ DeclareGlobalFunction("VoleFind.Group");
 #! @InsertChunk group-ingroup
 #! @InsertChunk coset-incoset
 #! @InsertChunk posint-lmp
+#! @InsertChunk fail-none
 #!
 #! @InsertChunk need-lmp
 #!

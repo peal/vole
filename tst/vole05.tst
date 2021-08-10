@@ -14,7 +14,7 @@ gap> START_TEST("vole05.tst");
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(VoleCon));
 [ "Centralise", "Centralize", "InCoset", "InGroup", "InLeftCoset", 
-  "InRightCoset", "LargestMovedPoint", "MovedPoints", "Normalise", 
+  "InRightCoset", "LargestMovedPoint", "MovedPoints", "None", "Normalise", 
   "Normalize", "Stabilise", "Stabilize", "Transport" ]
 
 # doc/_Chapter_Constraints.xml:116-121
@@ -65,6 +65,10 @@ true
 gap> con := VoleCon.LargestMovedPoint(5);;
 gap> VoleFind.Group(con) = SymmetricGroup(5);
 true
+
+# doc/_Chapter_Constraints.xml:363-366
+gap> VoleFind.Rep(VoleCon.None());
+fail
 
 #
 gap> STOP_TEST("vole05.tst", 1);

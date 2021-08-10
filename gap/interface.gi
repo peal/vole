@@ -11,8 +11,11 @@ VoleFind.Representative := function(arguments...)
     if IsEmpty(arguments) then
         ErrorNoReturn("at least one argument must be given");
     fi;
-
     constraints := _Vole.processConstraints(arguments);
+    if ForAny(constraints, x -> x = fail) then
+        return fail;
+    fi;
+
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(constraints, conf.points, true);
     ret := _Vole.CosetSolve(Minimum(bounds.min, bounds.max), constraints);
@@ -52,8 +55,11 @@ VoleFind.Coset := function(arguments...)
     if IsEmpty(arguments) then
         ErrorNoReturn("at least one argument must be given");
     fi;
-
     constraints := _Vole.processConstraints(arguments);
+    if ForAny(constraints, x -> x = fail) then
+        return fail;
+    fi;
+
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(constraints, conf.points, false);
     ret := _Vole.CosetSolve(bounds.max, constraints);

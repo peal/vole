@@ -52,7 +52,7 @@
 #! gap> LoadPackage("vole", false);;
 #! gap> Set(RecNames(VoleCon));
 #! [ "Centralise", "Centralize", "InCoset", "InGroup", "InLeftCoset", 
-#!   "InRightCoset", "LargestMovedPoint", "MovedPoints", "Normalise", 
+#!   "InRightCoset", "LargestMovedPoint", "MovedPoints", "None", "Normalise", 
 #!   "Normalize", "Stabilise", "Stabilize", "Transport" ]
 #!  @EndExampleSession
 DeclareGlobalVariable("VoleCon");
@@ -308,6 +308,20 @@ DeclareGlobalFunction("VoleCon.MovedPoints");
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.LargestMovedPoint");
+
+
+#! @Arguments
+#! @Returns <K>fail</K>
+#! @Description
+#! This constraint is satisfied by no permutations.
+#!
+#! Normally, this constraint should not be required by the user,
+#! except for purposes of demonstration and experimentation.
+#! @BeginExampleSession
+#! gap> VoleFind.Rep(VoleCon.None());
+#! fail
+#! @EndExampleSession
+DeclareGlobalFunction("VoleCon.None");
 
 
 #! @Section Bounds associated with a constraint or refiner
