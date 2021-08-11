@@ -46,7 +46,7 @@
 #! <Table Align="ll">
 #! <Row>
 #!   <Item><B>Permitted action</B></Item>
-#!   <Item><B>Corresponding object</B></Item>
+#!   <Item><B>Corresponding object/pair of objects</B></Item>
 #! </Row>
 #! <HorLine/>
 #! <Row>
@@ -86,7 +86,7 @@
 #!     <Ref Func="OnSetsTuples" Style="Number" BookName="Ref"/>
 #!   </Item>
 #!   <Item>
-#!     A sets of lists of positive integers
+#!     A set of lists of positive integers
 #!   </Item>
 #! </Row>
 #! <Row>
@@ -443,6 +443,29 @@ DeclareGlobalFunction("Vole.Centralizer");
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.IsConjugate");
 #! @EndGroup
+
+
+# TODO: would currently require the OrbitalGraphs package.
+# TODO: Also, does it apply to all groups or (like GAP) only to transitive ones?
+# @BeginGroup TwoClosure
+# @GroupTitle TwoClosure
+# @Arguments G
+# @Returns A permutation group
+# @Description
+# <Ref Func="Vole.TwoClosure"/> emulates the built-in &GAP; function
+# <Ref Attr="TwoClosure" BookName="Ref" Style="Number"/>.
+#
+# The <E>2-closure</E> of...
+# 
+# @BeginExampleSession
+# gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;
+# gap> (3,6) in G;
+# false
+# gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
+# true
+# @EndExampleSession
+#DeclareGlobalFunction("Vole.TwoClosure");
+# @EndGroup
 
 
 #! @Section &Vole; functions emulating the &images; package
