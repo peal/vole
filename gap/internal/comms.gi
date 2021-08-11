@@ -398,10 +398,10 @@ function(points, find_single, find_coset, find_canonical, constraints, canonical
               rec(
                   config := rec(
                       points         := points,
-                      find_coset    := find_coset,
+                      find_coset     := find_coset,
                       find_canonical := find_canonical,
                       root_search    := root_search,
-                      search_config := rec(full_graph_refine := false, find_single:= find_single),
+                      search_config  := rec(full_graph_refine := false, find_single:= find_single),
                   ),
                   constraints := constraints),
               gapcons,
@@ -424,6 +424,7 @@ function(points, find_single, find_coset, find_canonical, constraints, canonical
             else
                 Assert(0, gens[1] = (), "Invalid group");
             fi;
+            Remove(gens, 1);
         fi;
         group := Group(gens, ());
         if not IsEmpty(ret.rbase_branches) then
