@@ -18,9 +18,17 @@ VoleCon.Stabilize := function(object, action...)
 
     # Determine which refiner(s) to return, based on the object and the action
 
-    # OnPoints
+    # OnPoints and pos int
     if action = OnPoints and IsPosInt(object) then
         return VoleRefiner.TupleStab([object]);
+
+    # OnPoints and perm
+    elif action = OnPoints and IsPerm(object) then
+        return VoleCon.Centralise(object);
+
+    # OnPoints and perm group
+    elif action = OnPoints and IsPermGroup(object) then
+        return VoleCon.Normalise(object);
 
     # OnSets
     elif action = OnSets and IsSet(object) and ForAll(object, IsPosInt) then
@@ -80,9 +88,17 @@ VoleCon.Transport := function(object1, object2, action...)
 
     # Determine which refiner(s) to return, based on the objects and the action
 
-    # OnPoints
+    # OnPoints and pos ints
     if action = OnPoints and IsPosInt(object1) and IsPosInt(object2) then
         return VoleRefiner.TupleTransporter([object1], [object2]);
+
+    # OnPoints and perms
+    elif action = OnPoints and IsPerm(object1) and IsPerm(object2) then
+        return VoleCon.Conjugate(object1, object2);
+
+    # OnPoints and perm groups
+    elif action = OnPoints and ForAll([object1, object2], IsPermGroup) then
+        return VoleCon.Conjugate(object1, object2);
 
     # OnSets
     elif action = OnSets and IsSet(object1) and ForAll(object1, IsPosInt)
@@ -183,7 +199,7 @@ VoleCon.InGroup := function(G)
     fi;
     # TODO special case NaturalAlternatingGroup too?
     
-    return GB_Con.InGroup( G);
+    return GB_Con.InGroup(G);
 end;
 
 VoleCon.InCoset := function(U)
@@ -220,37 +236,34 @@ VoleCon.InLeftCoset := function(G, x)
     return VoleCon.InRightCoset(G ^ x, x);
 end;
 
-VoleCon.Normalize := function(G)
+VoleCon.Normalise := function(G)
     if not IsPermGroup(G) then
-        ErrorNoReturn("VoleCon.Normalize: the argument must be a perm group");
+        ErrorNoReturn("VoleCon.Normalise: the argument must be a perm group");
     fi;
     return GB_Con.NormaliserSimple2(G);
 end;
-VoleCon.Normalise := VoleCon.Normalize;
+VoleCon.Normalize := VoleCon.Normalise;
 
-VoleCon.Centralize := function(G)
-    Error("TODO: not yet implemented");
+VoleCon.Centralise := function(G)
     if IsPermGroup(G) then
-        # TODO
+        return List(GeneratorsOfGroup(G), VoleCon.Centralise);
     elif IsPerm(G) then
-        # TODO: return a digraph refiner for the digraph of the permutation
-        # Potential problem: how many vertices should the digraph have?
-        # For x = (1,3), should you want to solve
-        # [VoleCon.InGroup(A4), VoleCon.Centralize(x)]
-        # The perm (1,3)(2,4) should be a solution to this, but this
-        # perm does not stabilize any digraph on 3 vertices!
-        # Therefore you would want the digraph to be on [1..4] (but how should
-        # VoleCon.Centralize know to use 4?!) or you'd want the digraph
-        # to be on only the MovedPoints of the perm - which is general, but so
-        # far Digraphs are no allowed to have "holes".
-        #
-        # Or, this is an example where we only want to turn the constraint
-        # into a refiner (which makes us choose the number of vertices) at
-        # the point that the search happens, at which point we have a 'bound'
-        # for the 
+        return GB_Con.PermConjugacy(G, G);
     fi;
+    ErrorNoReturn("VoleCon.Centralise: ",
+                  "the argument must be a perm or perm group");
 end;
-VoleCon.Centralise := VoleCon.Centralize;
+VoleCon.Centralize := VoleCon.Centralise;
+
+VoleCon.Conjugate := function(G, H)
+    if IsPermGroup(G) and IsPermGroup(H) then
+      ErrorNoReturn("not yet implemented, sorry");
+    elif IsPerm(G) and IsPerm(H) then
+        return GB_Con.PermConjugacy(G, H);
+    fi;
+    ErrorNoReturn("VoleCon.Conjugate: ",
+                  "the arguments must be two perms or two perm groups");
+end;
 
 VoleCon.MovedPoints := function(pointlist)
     if not IsList(pointlist) or not ForAll(pointlist, IsPosInt) then

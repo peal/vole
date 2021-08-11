@@ -51,9 +51,9 @@
 #! @BeginExampleSession
 #! gap> LoadPackage("vole", false);;
 #! gap> Set(RecNames(VoleCon));
-#! [ "Centralise", "Centralize", "InCoset", "InGroup", "InLeftCoset", 
-#!   "InRightCoset", "LargestMovedPoint", "MovedPoints", "None", "Normalise", 
-#!   "Normalize", "Stabilise", "Stabilize", "Transport" ]
+#! [ "Centralise", "Centralize", "Conjugate", "InCoset", "InGroup", 
+#!   "InLeftCoset", "InRightCoset", "LargestMovedPoint", "MovedPoints", "None", 
+#!   "Normalise", "Normalize", "Stabilise", "Stabilize", "Transport" ]
 #!  @EndExampleSession
 DeclareGlobalVariable("VoleCon");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable

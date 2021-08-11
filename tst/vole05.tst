@@ -13,9 +13,9 @@ gap> START_TEST("vole05.tst");
 # doc/_Chapter_Constraints.xml:41-47
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(VoleCon));
-[ "Centralise", "Centralize", "InCoset", "InGroup", "InLeftCoset", 
-  "InRightCoset", "LargestMovedPoint", "MovedPoints", "None", "Normalise", 
-  "Normalize", "Stabilise", "Stabilize", "Transport" ]
+[ "Centralise", "Centralize", "Conjugate", "InCoset", "InGroup", 
+  "InLeftCoset", "InRightCoset", "LargestMovedPoint", "MovedPoints", "None", 
+  "Normalise", "Normalize", "Stabilise", "Stabilize", "Transport" ]
 
 # doc/_Chapter_Constraints.xml:116-121
 gap> con1 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 8));;
