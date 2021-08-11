@@ -28,7 +28,7 @@
 
 #! At its core, &Vole; searches for permutations that satisfy a collection
 #! of constraints.
-#! A <E>constraint</E> is a property, such that for any given permutation,
+#! A <E>constraint</E> is a property such that for any given permutation,
 #! it is easy to check whether that permutation has the property or not.
 #! In addition, if the set of permutations that satisfy a property is nonempty,
 #! then that set must be a (possibly infinite) permutation group,
@@ -55,13 +55,12 @@
 #!
 #! The term ‘constraint’ comes from the computer science field of constraint
 #! satisfaction problems, constraint programming, and constraint solvers,
-#! computer science, with which backtrack search algorithms are very closely
-#! linked.
+#! with which backtrack search algorithms are very closely linked.
 #!
 #! To use &Vole; via its native interface
 #! (Chapter&nbsp;<Ref Chap="Chapter_interface"/>),
 #! it is necessary to choose a selection of constraints that, in conjunction,
-#! define the permutation(s) for which you wish to search.
+#! define the permutation(s) that you wish to find.
 #! &Vole; provides a number of built-in constraints. These can be created with
 #! the functions contained in the <Ref Var="VoleCon"/> record,
 #! which are documented individually in
@@ -72,7 +71,8 @@
 #!
 #! Internally, a constraint is eventually converted into one or more refiners
 #! by that the time that the search takes place. Refiners are introduced in
-#! Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>.
+#! Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>, and can be given in place
+#! of constraints.
 #! We do not explicitly document the conversion of &Vole;
 #! constraints into refiners;
 #! the conversion may change in future versions of &Vole;
@@ -249,7 +249,7 @@ DeclareGlobalFunction("VoleCon.InLeftCoset");
 #! @Returns A constraint
 #! @Description
 #! This constraint is satisfied by precisely those permutations that fix
-#! <A>object</A> under <A>action</A>,
+#! <A>object</A> under the given group <A>action</A>,
 #! i.e. all permutations `g` such that
 #! `<A>action</A>(<A>object</A>,g)=<A>object</A>`.
 #! @InsertChunk maybeinfinite
@@ -281,7 +281,7 @@ DeclareGlobalFunction("VoleCon.Stabilize");
 #! @Returns A constraint
 #! @Description
 #! This constraint is satisfied by precisely those permutations that map
-#! <A>object1</A> to <A>object2</A> under <A>action</A>,
+#! <A>object1</A> to <A>object2</A> under the given group <A>action</A>,
 #! i.e. all permutations `g` such that
 #! `<A>action</A>(<A>object1</A>,g)=<A>object2</A>`.
 #! @InsertChunk maybeinfinite
@@ -290,6 +290,9 @@ DeclareGlobalFunction("VoleCon.Stabilize");
 #! `VoleCon.Transport` are given in the table below.
 #!
 #! @InsertChunk DefaultAction
+#!
+#! **Warning**: the `OnPoints` action for permutation groups (i.e.
+#! group conjugacy) is not yet implemented, sorry. We are working on it.
 #!
 #! @InsertChunk ActionsTable
 #! @BeginExampleSession
@@ -372,6 +375,7 @@ DeclareGlobalFunction("VoleCon.Centralize");
 #! `VoleCon.Transport(<A>x</A>,<A>y</A>,OnPoints)`.
 #!
 #! **Warning**: this is not yet implemented for permutation groups, sorry.
+#! We are working on it.
 #! @BeginExampleSession
 #! gap> con := VoleCon.Conjugate((3,4)(2,5,1), (1,2,3)(4,5));;
 #! gap> VoleFind.Rep(con);
@@ -416,7 +420,7 @@ DeclareGlobalFunction("VoleCon.LargestMovedPoint");
 #! @Description
 #! This constraint is satisfied by no permutations.
 #!
-#! This constraint will typically not be required by the typical user.
+#! This constraint will typically not be required by the user.
 #! @BeginExampleSession
 #! gap> VoleFind.Rep(VoleCon.None());
 #! fail
@@ -428,7 +432,7 @@ DeclareGlobalFunction("VoleCon.None");
 #! @SectionLabel bounds
 
 #! In &GAP;, permutations are defined on the set of all positive
-#! integers (although each permutation may only move a finite set of points,
+#! integers (although each permutation may move only a finite set of points,
 #! and there is a system-dependent maximum point that is allowed to be moved).
 #!
 #! &Vole; can only search within a concrete finite symmetric group.
@@ -438,7 +442,7 @@ DeclareGlobalFunction("VoleCon.None");
 #! `k` such that the whole search can take place within `Sym([1..k])`.
 #! This guarantees that &Vole; will terminate (given sufficient resources).
 #!
-#! To help &Vole; make such a deduction, each constraint and refiner,
+#! To help &Vole; make such a deduction, each constraint and refiner
 #! is associated with the following values:
 #! a **largest moved point**, and a **largest required point**.
 #!
@@ -459,10 +463,9 @@ DeclareGlobalFunction("VoleCon.None");
 #! `VoleCon.InGroup(G)` is `LargestMovedPoint(G)`, see
 #! <Ref Attr="LargestMovedPoint" BookName="Ref" Style="Number"
 #!      Label="for a list or collection of permutations"/>.
-#! On the other hand, for any point `k`,
-#! the hypothetical constraint “is an even permutation”
-#! can be satisfied by some permutation that moves `k+1`, and so the largest
-#! moved point of such a constraint would have to be <K>infinity</K>.
+#! On the other hand, any permutation stabilises the empty set, so there is not
+#! largest moved point of the constraint `VoleCon.Stabilise([],OnSets)`;
+#! therefore the value in this case must be <K>infinity</K>.
 #!
 #! <B>Largest required point</B>
 #!
@@ -472,5 +475,8 @@ DeclareGlobalFunction("VoleCon.None");
 #! permutation in `Sym([1..k])` satisfying the constraint.
 #!
 #! For example, if `set` is a set of positive integers, then the largest
-#! required point of the constraint `VoleCon.Stabilise(set, OnSets)` is
+#! required point of the constraint `VoleCon.Stabilise(set,OnSets)` is
 #! `Maximum(set)`.
+#!
+#! The largest moved point of a constraint can serve as an upper bound for the
+#! largest required point of a constraint.

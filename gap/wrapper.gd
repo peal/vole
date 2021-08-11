@@ -54,7 +54,7 @@
 #!     <Ref Func="OnPoints" Style="Number" BookName="Ref"/> [default]
 #!   </Item>
 #!   <Item>
-#!     A point, or permutation, or perm group
+#!     A positive integer, permutation, or perm group
 #!   </Item>
 #! </Row>
 #! <Row>
@@ -347,7 +347,7 @@ DeclareGlobalFunction("Vole.Stabilizer");
 #!
 #! This function returns an element
 #! of the permutation group <A>G</A> that maps <A>object1</A> to <A>object2</A>
-#! under the action <A>action</A>, if such an element exists,
+#! under the given group <A>action</A>, if such an element exists,
 #! and it returns <K>fail</K> otherwise.
 #!
 #! @InsertChunk AvailableActions
