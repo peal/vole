@@ -6,6 +6,9 @@
 # Declarations: Vole constraints
 
 
+################################################################################
+## Chunks
+
 #! @BeginChunk maybeinfinite
 #! Note that the set of such permutations may be infinite.
 #! @EndChunk
@@ -14,28 +17,72 @@
 #! Note that the set of such permutations is infinite.
 #! @EndChunk
 
+## End chunks
+################################################################################
+
 
 #! @Chapter Constraints
 
-#! @Section The concept of constraints
+#! @Section The concept of constraints in &Vole;
 #! @SectionLabel concept
 
-#! A <E>constraint</E> is a property of individual permutations.
+#! At its core, &Vole; searches for permutations that satisfy a collection
+#! of constraints.
+#! A <E>constraint</E> is a property, such that for any given permutation,
+#! it is easy to check whether that permutation has the property or not.
+#! In addition, if the set of permutations that satisfy a property is nonempty,
+#! then that set must be a (possibly infinite) permutation group,
+#! or a coset thereof.
 #!
-#! such that for any individual permutation, it is possible to answer
+#! For example:
+#! * “is even”,
+#! * “commutes with the permutation $x$”,
+#! * “conjugates the group $G = \langle X \rangle$ to the group
+#!   $H = \langle Y \rangle$”,
+#! * “is an automorphism of the graph $\Gamma$”, and
+#! * “is a member of the group $G = \langle X \rangle$”
+#! 
+#! are all examples of constraints.
+#! On the other hand:
+#! * “is a member of the socle of the group $G$”, and
+#! * “is a member of a largest maximal subgroup of the group $G$”
 #!
-#! Constraints and refiners are kind of two names for the same things.
-#! Well, depending on your definitions.
+#! do not qualify, unless generating sets for the socle and the largest
+#! maximal subgroups of $G$ are **already** known,  and there is a unique such
+#! maximal subgroup
+#! (in which case these properties become instances of the constraint
+#! “is a member of the group defined by the generating set...”).
 #!
-#! When solving a problem, a 'constraint' will be mapped into one or more
-#! low-level 'refiners'.
+#! The term ‘constraint’ comes from the computer science field of constraint
+#! satisfaction problems, constraint programming, and constraint solvers,
+#! computer science, with which backtrack search algorithms are very closely
+#! linked.
 #!
-#! The choice of refiner(s) can vary depending on the
-#! input, and may be changed between versions of Vole as better refiners are
-#! created.
+#! To use &Vole; via its native interface
+#! (Chapter&nbsp;<Ref Chap="Chapter_interface"/>),
+#! it is necessary to choose a selection of constraints that, in conjunction,
+#! define the permutation(s) for which you wish to search.
+#! &Vole; provides a number of built-in constraints. These can be created with
+#! the functions contained in the <Ref Var="VoleCon"/> record,
+#! which are documented individually in
+#! Section&nbsp;<Ref Sect="Section_providedcons"/>.
+#! While the included constraints are not exhaustive,
+#! they do cover a wide range of problems in computational group theory,
+#! and we welcome suggestions of additional constraints that we could implement.
 #!
-#! A constraint is a property that you can say whether or not any individual
-#! given permutation has that property.
+#! Internally, a constraint is eventually converted into one or more refiners
+#! by that the time that the search takes place. Refiners are introduced in
+#! Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>.
+#! We do not explicitly document the conversion of &Vole;
+#! constraints into refiners;
+#! the conversion may change in future versions of &Vole;
+#! as we introduce improve our refiners and introduce new ones.
+#! In addition, we do not explicitly document the kind of object that a
+#! &Vole; constraint is. Currently, constraints may be
+#! &Vole; refiners,
+#! &GraphBacktracking; refiners,
+#! &BacktrackKit; refiners,
+#! records, lists, or the value <K>fail</K>.
 
 
 #! @Section The <C>VoleCon</C> record
@@ -43,11 +90,14 @@
 
 #! @Description
 #!
-#! `VoleCon` is a record that contains all of the constraints that &Vole;
-#! provides.
+#! <Ref Var="VoleCon"/> is a record that contains functions for producing
+#! all of the constraints that &Vole; provides.
 #!
-#! These constraints are documented in
+#! The members of <Ref Var="VoleCon"/> are documented individually in
 #! Section&nbsp;<Ref Sect="Section_providedcons"/>.
+#!
+#! The members whose names differ only by their “-ise” and “-ize” endings
+#! are synonyms, included to accommodate different spellings in English.
 #! @BeginExampleSession
 #! gap> LoadPackage("vole", false);;
 #! gap> Set(RecNames(VoleCon));
@@ -60,10 +110,16 @@ DeclareGlobalVariable("VoleCon");
 InstallValue(VoleCon, rec());
 
 
-#! @Section Constraints provided in the <C>VoleCon</C> record
+#! @Section &Vole; constraints via the <C>VoleCon</C> record
 #! @SectionLabel providedcons
 
-#! Some text, explaining the following table.
+#! In this section, we individually document the functions of the
+#! <Ref Var="VoleCon"/> record, which can be used to create the
+#! built-in constraints provided by &Vole;
+#!
+#! Many of these constraints come in pairs, with a “group” version,
+#! and a corresponding “coset” version.
+#! These relationships are given in the following table.
 
 #! <Table Align="ll">
 #! <Row>
@@ -76,20 +132,20 @@ InstallValue(VoleCon, rec());
 #!   <Item>
 #!     <Ref Func="VoleCon.InCoset"/>
 #!     <P/>
-#!     <Ref Func="VoleCon.InLeftCoset"/>
-#!     <P/>
 #!     <Ref Func="VoleCon.InRightCoset"/>
+#!     <P/>
+#!     <Ref Func="VoleCon.InLeftCoset"/>
 #!   </Item>
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="VoleCon.Stabilize"/>
+#!     <Ref Func="VoleCon.Stabilise"/>
 #!   </Item>
 #!   <Item><Ref Func="VoleCon.Transport"/></Item>
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="VoleCon.Normalize"/>
+#!     <Ref Func="VoleCon.Normalise"/>
 #!   </Item>
 #!   <Item>
 #!     <Ref Func="VoleCon.Conjugate"/>
@@ -97,7 +153,7 @@ InstallValue(VoleCon, rec());
 #! </Row>
 #! <Row>
 #!   <Item>
-#!     <Ref Func="VoleCon.Centralize"/>
+#!     <Ref Func="VoleCon.Centralise"/>
 #!   </Item>
 #!   <Item>
 #!     <Ref Func="VoleCon.Conjugate"/>
@@ -111,16 +167,18 @@ InstallValue(VoleCon, rec());
 #!   <Item><Ref Func="VoleCon.LargestMovedPoint"/></Item>
 #!   <Item>N/A</Item>
 #! </Row>
+#! <Row>
+#!   <Item>N/A</Item>
+#!   <Item><Ref Func="VoleCon.None"/></Item>
+#! </Row>
 #! </Table>
-
-#! Perhaps some final text?
 
 
 #! @Arguments G
 #! @Returns A constraint
 #! @Description
 #! This constraint is satisfied by precisely those permutations in the
-#! group <A>G</A>.
+#! permutation group <A>G</A>.
 #! @BeginExampleSession
 #! gap> con1 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 8));;
 #! gap> con2 := VoleCon.InGroup(AlternatingGroup(4));;
@@ -140,7 +198,11 @@ DeclareGlobalFunction("VoleCon.InGroup");
 #! and <Ref Func="VoleCon.InRightCoset"/>, which allow a coset to be specifed
 #! by a subgroup and a representative element.
 #! @BeginExampleSession
-#! gap> true;
+#! gap> U := PSL(2,5) * (3,4,6);
+#! RightCoset(Group([ (3,5)(4,6), (1,2,5)(3,4,6) ]),(3,4,6))
+#! gap> x := VoleFind.Coset(VoleCon.InCoset(U), AlternatingGroup(6));
+#! RightCoset(Group([ (3,5)(4,6), (2,4)(5,6), (1,2,6,5,4) ]),(1,5)(2,3,4,6))
+#! gap> x = Intersection(U, AlternatingGroup(6));
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.InCoset");
@@ -155,11 +217,13 @@ DeclareGlobalFunction("VoleCon.InCoset");
 #! See also <Ref Func="VoleCon.InLeftCoset"/> for the left-hand version,
 #! and <Ref Func="VoleCon.InCoset"/> for a &GAP; right coset object.
 #! @BeginExampleSession
-#! gap> true;
+#! gap> x := VoleFind.Coset(VoleCon.InRightCoset(PSL(2,5), (3,4,6)),
+#! >                        VoleCon.InGroup(AlternatingGroup(6)));
+#! RightCoset(Group([ (3,5)(4,6), (2,4)(5,6), (1,2,6,5,4) ]),(1,5)(2,3,4,6))
+#! gap> x = Intersection(PSL(2,5) * (3,4,6), AlternatingGroup(6));
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.InRightCoset");
-
 
 
 #! @Arguments G, x
@@ -171,7 +235,10 @@ DeclareGlobalFunction("VoleCon.InRightCoset");
 #! See also <Ref Func="VoleCon.InRightCoset"/> for the right-hand version,
 #! and <Ref Func="VoleCon.InCoset"/> for a &GAP; right coset object.
 #! @BeginExampleSession
-#! gap> true;
+#! gap> x := VoleFind.Rep(VoleCon.InLeftCoset(PSL(2,5), (3,4,6)),
+#! >                      VoleCon.InGroup(AlternatingGroup(6)));
+#! (1,6,2,3,4)
+#! gap> SignPerm(x) = 1 and ForAny(PSL(2,5), g -> x = (3,4,6) * g);
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.InLeftCoset");
@@ -198,8 +265,14 @@ DeclareGlobalFunction("VoleCon.Stabilise");
 #! @Arguments object[, action]
 #! @Group StabiliseDoc
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> con1 := VoleCon.Stabilise(CycleDigraph(6), OnDigraphs);;
+#! gap> con2 := VoleCon.Stabilise([2,4,6], OnSets);;
+#! gap> VoleFind.Group(con1, 6);
+#! Group([ (1,2,3,4,5,6) ])
+#! gap> VoleFind.Group(con2, 6);
+#! Group([ (4,6), (2,4,6), (3,5)(4,6), (1,3,5)(2,4,6) ])
+#! gap> VoleFind.Group(con1, con2, 6);
+#! Group([ (1,3,5)(2,4,6) ])
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.Stabilize");
 
@@ -220,8 +293,15 @@ DeclareGlobalFunction("VoleCon.Stabilize");
 #!
 #! @InsertChunk ActionsTable
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> setofsets1 := [[1, 3, 6], [2, 3, 6], [2, 4, 7], [4, 5, 7]];;
+#! gap> setofsets2 := [[1, 2, 5], [1, 5, 7], [3, 4, 6], [4, 6, 7]];;
+#! gap> con := VoleCon.Transport(setofsets1, setofsets2, OnSetsSets);;
+#! gap> VoleFind.Rep(con);
+#! (1,2,7,6)(3,5)
+#! gap> VoleFind.Rep(con, AlternatingGroup(7) * (1,2));
+#! (1,2,7,6,5,3)
+#! gap> VoleFind.Rep(con, DihedralGroup(IsPermGroup, 14));
+#! fail
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.Transport");
 
@@ -240,7 +320,14 @@ DeclareGlobalFunction("VoleCon.Normalise");
 #! @Arguments G
 #! @Group NormaliseDoc
 #! @BeginExampleSession
-#! gap> true;
+#! gap> con := VoleCon.Normalise(PSL(2,5));;
+#! gap> N := VoleFind.Group(con, SymmetricGroup(6));
+#! Group([ (3,4,5,6), (2,3,5,6), (1,2,4,3,6) ])
+#! gap> (3,4,5,6) in N and not (3,4,5,6) in PSL(2,5);
+#! true
+#! gap> Index(N, PSL(2,5));
+#! 2
+#! gap> PSL(2,5) = VoleFind.Group(con, AlternatingGroup(6));
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.Normalize");
@@ -260,7 +347,13 @@ DeclareGlobalFunction("VoleCon.Centralise");
 #! @Arguments G
 #! @Group CentraliseDoc
 #! @BeginExampleSession
-#! gap> true;
+#! gap> D12 := DihedralGroup(IsPermGroup, 12);;
+#! gap> VoleFind.Group(6, VoleCon.Centralise(D12));
+#! Group([ (1,4)(2,5)(3,6) ])
+#! gap> x := (1,6)(2,5)(3,4);;
+#! gap> G := VoleFind.Group(AlternatingGroup(6), VoleCon.Centralise(x));
+#! Group([ (2,3)(4,5), (2,4)(3,5), (1,2,3)(4,6,5) ])
+#! gap> ForAll(G, g -> SignPerm(g) = 1 and g * x = x * g);
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.Centralize");
@@ -274,9 +367,17 @@ DeclareGlobalFunction("VoleCon.Centralize");
 #! both permutations, or both permutation groups.
 #!
 #! @InsertChunk maybeinfinite
+#!
+#! This constraint is equivalent to
+#! `VoleCon.Transport(<A>x</A>,<A>y</A>,OnPoints)`.
+#!
+#! **Warning**: this is not yet implemented for permutation groups, sorry.
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> con := VoleCon.Conjugate((3,4)(2,5,1), (1,2,3)(4,5));;
+#! gap> VoleFind.Rep(con);
+#! (1,2,3,5)
+#! gap> VoleFind.Rep(con, PSL(2,5));
+#! (1,3,4,5,2)
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.Conjugate");
 
@@ -315,8 +416,7 @@ DeclareGlobalFunction("VoleCon.LargestMovedPoint");
 #! @Description
 #! This constraint is satisfied by no permutations.
 #!
-#! Normally, this constraint should not be required by the user,
-#! except for purposes of demonstration and experimentation.
+#! This constraint will typically not be required by the typical user.
 #! @BeginExampleSession
 #! gap> VoleFind.Rep(VoleCon.None());
 #! fail
@@ -327,39 +427,50 @@ DeclareGlobalFunction("VoleCon.None");
 #! @Section Bounds associated with a constraint or refiner
 #! @SectionLabel bounds
 
-#! In &GAP;, all permutations are implicitly defined on the set of all positive
-#! integers, although there are limits on the points that can be involved that
-#! are prescribed by the computer and the laws of physics.
-#! Finite support.
+#! In &GAP;, permutations are defined on the set of all positive
+#! integers (although each permutation may only move a finite set of points,
+#! and there is a system-dependent maximum point that is allowed to be moved).
 #!
-#! But there's a potential for danger here with (nearly) infinite stuff.
-#! So we need to bound the search somehow.
-#! We want to be doing stuff with finite groups.
-#! We actually want to do a search in Sym([1..k]) for some posint `k`,
-#! or even in Sym(C) for some finite subset of `PositiveIntegers`.
+#! &Vole; can only search within a concrete finite symmetric group.
+#! Therefore, when giving &Vole; a collection of constraints that define a
+#! search problem, the search space must be bounded.
+#! More specifically, &Vole; must be easily able to deduce a positive integer
+#! `k` such that the whole search can take place within `Sym([1..k])`.
+#! This guarantees that &Vole; will terminate (given sufficient resources).
 #!
-#! <B>Largest required point</B>
+#! To help &Vole; make such a deduction, each constraint and refiner,
+#! is associated with the following values:
+#! a **largest moved point**, and a **largest required point**.
 #!
-#! The largest required point of a 'constraint' is either
-#! <K>infinity</K>, or a positive integer `k` such that for any permutation `x`:
-#! * `x` satisfies the constraint if and only if
-#!   `x` preserves `[1..k]` as a set, and the restriction of `x` to `[1..k]`
-#!   satisfies the constraint.
-#!
-#! The constraint only concerns (at most) the points [1..k], and that the action
-#! of a permutation on the points greater than `k` is irrelevant to whether the
-#! constraint is satisfied.
-#!
-#! In particular, there exists some permutation that satisfies the constraint
-#! if and only if there exists a permutation in Sym([1..k]) that satisfies
-#! the constraint. This also a search for a representative
+#! Any call to <Ref Func="VoleFind.Group"/> or <Ref Func="VoleFind.Coset"/>
+#! requires at least one constraint that defines a **finite** largest moved
+#! point, and any call to <Ref Func="VoleFind.Representative"/> requires at
+#! least one constraint that defines a finite largest required point
+#! or a finite largest moved point.
 #!
 #! <B>Largest moved point</B>
 #!
-#! The largest moved point is either <K>infinity</K>,
-#! or a positive integer `m` for
+#! The largest **moved** point of a constraint is either <K>infinity</K>,
+#! or a positive integer `k` for
 #! which it is known a priori that any permutation satisfying the
-#! 'constraint' fixes all points > `m`.
-#! For many 'constraints' there is no such bound, or at least none can be easily
-#! deduced. For instance, the constraint "is even" can be satisfied by
-#! some permutation that moves any given point.
+#! constraint fixes all points strictly greater than `k`.
+#!
+#! For example, the largest moved point of the constraint
+#! `VoleCon.InGroup(G)` is `LargestMovedPoint(G)`, see
+#! <Ref Attr="LargestMovedPoint" BookName="Ref" Style="Number"
+#!      Label="for a list or collection of permutations"/>.
+#! On the other hand, for any point `k`,
+#! the hypothetical constraint “is an even permutation”
+#! can be satisfied by some permutation that moves `k+1`, and so the largest
+#! moved point of such a constraint would have to be <K>infinity</K>.
+#!
+#! <B>Largest required point</B>
+#!
+#! The largest **required** point of a constraint is either
+#! <K>infinity</K>, or a positive integer `k` such that there exists a
+#! permutation satisfying the constraint if and only if there exists a
+#! permutation in `Sym([1..k])` satisfying the constraint.
+#!
+#! For example, if `set` is a set of positive integers, then the largest
+#! required point of the constraint `VoleCon.Stabilise(set, OnSets)` is
+#! `Maximum(set)`.

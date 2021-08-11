@@ -197,8 +197,6 @@ VoleCon.InGroup := function(G)
     if IsNaturalSymmetricGroup(G) then
         return VoleRefiner.InSymmetricGroup(MovedPoints(G));
     fi;
-    # TODO special case NaturalAlternatingGroup too?
-    
     return GB_Con.InGroup(G);
 end;
 
@@ -218,10 +216,6 @@ VoleCon.InRightCoset := function(G, x)
         ErrorNoReturn("VoleCon.InRightCoset: ",
                       "the second argument must be a permutation");
     fi;
-    # TODO should we check whether x in G? And return VoleCon.InGroup if so?
-    # TODO special case a coset of a natural symmetric group?
-
-    # TODO is this the 'best' bound?
     return GB_Con.InCosetSimple(G, x);
 end;
 
@@ -257,6 +251,7 @@ VoleCon.Centralize := VoleCon.Centralise;
 
 VoleCon.Conjugate := function(G, H)
     if IsPermGroup(G) and IsPermGroup(H) then
+      # TODO: Implement a refiner for subgroup conjugacy
       ErrorNoReturn("not yet implemented, sorry");
     elif IsPerm(G) and IsPerm(H) then
         return GB_Con.PermConjugacy(G, H);
@@ -281,5 +276,4 @@ VoleCon.LargestMovedPoint := function(point)
     return VoleRefiner.InSymmetricGroup([1 .. point]);
 end;
 
-# TODO Perhaps have a nicer wrapper than just ReturnFail, and fail
 VoleCon.None := ReturnFail;
