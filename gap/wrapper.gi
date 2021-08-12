@@ -97,6 +97,34 @@ Vole.RepresentativeAction := function(G, object1, object2, action...)
     return VoleFind.Representative(G, VoleCon.Transport(object1, object2, action));
 end;
 
+Vole.TwoClosure := function(G)
+    local points, func, digraphs, digraph_cons;
+    if not IsPermGroup(G) then
+        ErrorNoReturn("Vole.TwoClosure: ",
+                      "The argument must be a perm group");
+    fi;
+
+    points := MovedPoints(G);
+    if not IsPackageLoaded("OrbitalGraphs") then
+        ErrorNoReturn("Vole.TwoClosure requires the OrbitalGraphs package, ",
+                      "which is not currently loaded");
+        #The following is quite slow, we don't include it for now
+        #orbitals := Orbits(G, Arrangements(points, 2), OnPairs);
+        #digraphs := List(orbitals, DigraphByEdges);
+    else
+        func := EvalString("OrbitalGraphs"); # Hack to avoid syntax warnings
+        digraphs := func(G);
+    fi;
+
+    if Length(digraphs) = 1 then
+        # 1 OrbitalGraph -> complete digraph -> two-closure is symmetric group
+        return SymmetricGroup(points);
+    else
+        digraph_cons := List(digraphs, D -> VoleCon.Stabilise(D, OnDigraphs));
+        return VoleFind.Group(VoleCon.MovedPoints(points), digraph_cons);
+    fi;
+end;
+
 
 ################################################################################
 # Wrapper for the images package

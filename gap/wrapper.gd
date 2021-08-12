@@ -199,7 +199,8 @@
 #! [ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
 #!   "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", 
 #!   "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", 
-#!   "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer" ]
+#!   "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer", 
+#!   "TwoClosure" ]
 #! @EndExampleSession
 DeclareGlobalVariable("Vole");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
@@ -445,27 +446,34 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #! @EndGroup
 
 
-# TODO: would currently require the OrbitalGraphs package.
 # TODO: Also, does it apply to all groups or (like GAP) only to transitive ones?
-# @BeginGroup TwoClosure
-# @GroupTitle TwoClosure
-# @Arguments G
-# @Returns A permutation group
-# @Description
-# <Ref Func="Vole.TwoClosure"/> emulates the built-in &GAP; function
-# <Ref Attr="TwoClosure" BookName="Ref" Style="Number"/>.
-#
-# The <E>2-closure</E> of...
-# 
-# @BeginExampleSession
-# gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;
-# gap> (3,6) in G;
-# false
-# gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
-# true
-# @EndExampleSession
-#DeclareGlobalFunction("Vole.TwoClosure");
-# @EndGroup
+#! @BeginGroup TwoClosure
+#! @GroupTitle TwoClosure
+#! @Arguments G
+#! @Returns A permutation group
+#! @Description
+#! <Ref Func="Vole.TwoClosure"/> emulates the built-in &GAP; function
+#! <Ref Attr="TwoClosure" BookName="Ref" Style="Number"/>.
+#!
+#! The <E>2-closure</E> of a permutation group <A>G</A> is the largest group
+#! whose orbitals (orbits on pairs of positive integers) coincide with those
+#! of <A>G</A>;
+#! equivalently, it is the intersection of the automorphism groups of the
+#! orbital graphs of <A>G</A>.
+#!
+#! <B>Warning</B>: this function currently requires the &OrbitalGraphs;
+#! package.
+#! 
+#! @BeginExampleSession
+#! gap> LoadPackage("OrbitalGraphs", false);;
+#! gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;
+#! gap> (3,6) in G;
+#! false
+#! gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.TwoClosure");
+#! @EndGroup
 
 
 #! @Section &Vole; functions emulating the &images; package

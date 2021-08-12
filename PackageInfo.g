@@ -96,6 +96,7 @@ Dependencies := rec(
     [ "AutoDoc", ">= 2019.09.04" ], # to compile documentation
     [ "ferret", ">= 1.0.2" ],       # used in tests
     [ "QuickCheck", ">= 0.1" ],     # used in tests
+    [ "OrbitalGraphs", ">= 0.1" ],  # for Vole.TwoClosure
   ],
   ExternalConditions := [
     "To compile Vole, Rust needs to be installed and available.",

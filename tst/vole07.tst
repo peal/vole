@@ -10,13 +10,14 @@
 #
 gap> START_TEST("vole07.tst");
 
-# doc/_Chapter_Refiners.xml:31-38
+# doc/_Chapter_Refiners.xml:31-39
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(Vole));
 [ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
   "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", 
   "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", 
-  "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer" ]
+  "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer", 
+  "TwoClosure" ]
 
 #
 gap> STOP_TEST("vole07.tst", 1);
