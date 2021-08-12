@@ -40,27 +40,27 @@ impl RefinerDescription for DigraphStab {
 /// Store a Digraph Transporter constraint sent from GAP
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DigraphTransport {
-    edges_left: Vec<Vec<usize>>,
-    edges_right: Vec<Vec<usize>>,
+    left_edges: Vec<Vec<usize>>,
+    right_edges: Vec<Vec<usize>>,
 }
 
 impl RefinerDescription for DigraphTransport {
     fn build_refiner(&self) -> Box<dyn Refiner> {
-        let edges_left = self
-            .edges_left
+        let left_edges = self
+            .left_edges
             .iter()
             .map(|v| v.iter().map(|x| *x - 1).collect())
             .collect();
 
-        let edges_right = self
-            .edges_right
+        let right_edges = self
+            .right_edges
             .iter()
             .map(|v| v.iter().map(|x| *x - 1).collect())
             .collect();
 
         Box::new(DigraphTransporter::new_transporter(
-            Arc::new(Digraph::from_vec(edges_left)),
-            Arc::new(Digraph::from_vec(edges_right)),
+            Arc::new(Digraph::from_vec(left_edges)),
+            Arc::new(Digraph::from_vec(right_edges)),
         ))
     }
 }

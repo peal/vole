@@ -1,4 +1,4 @@
-#@local edges, frucht, neigh, r
+#@local edges, frucht, neigh, r, D, con_stab, con_trans, p
 gap> START_TEST("basic.tst");
 gap> LoadPackage("vole", false);
 true
@@ -34,6 +34,17 @@ true
 gap> VoleFind.Group(VoleRefiner.InSymmetricGroup([2,4,8,6])) = SymmetricGroup([2,4,6,8]);
 true
 gap> VoleFind.Group(VoleRefiner.InSymmetricGroup([])) = Group(());
+true
+
+# https://github.com/peal/vole/issues/15
+gap> D := CycleDigraph(5);;
+gap> con_stab := VoleCon.Stabilize(D, OnDigraphs);;
+gap> con_trans := VoleCon.Transport(D, D, OnDigraphs);;
+gap> p := VoleFind.Rep(con_stab);;
+gap> OnDigraphs(D, p) = D;
+true
+gap> p := VoleFind.Rep(con_trans);;
+gap> OnDigraphs(D, p) = D;
 true
 
 #
