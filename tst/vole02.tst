@@ -14,7 +14,7 @@ gap> START_TEST("vole02.tst");
 gap> LoadPackage("vole", false);
 true
 
-# doc/_Chapter_install.xml:232-239
+# doc/_Chapter_install.xml:233-240
 gap> A4 := AlternatingGroup(4);
 Alt( [ 1 .. 4 ] )
 gap> D8 := DihedralGroup(IsPermGroup, 8);

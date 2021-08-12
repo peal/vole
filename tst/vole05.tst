@@ -10,104 +10,53 @@
 #
 gap> START_TEST("vole05.tst");
 
-# doc/_Chapter_Constraints.xml:103-109
+# doc/_Chapter_interface.xml:40-44
 gap> LoadPackage("vole", false);;
-gap> Set(RecNames(VoleCon));
-[ "Centralise", "Centralize", "Conjugate", "InCoset", "InGroup", 
-  "InLeftCoset", "InRightCoset", "LargestMovedPoint", "MovedPoints", "None", 
-  "Normalise", "Normalize", "Stabilise", "Stabilize", "Transport" ]
+gap> Set(RecNames(VoleFind));
+[ "Canonical", "CanonicalPerm", "Coset", "Group", "Rep", "Representative" ]
 
-# doc/_Chapter_Constraints.xml:187-192
-gap> con1 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 8));;
-gap> con2 := VoleCon.InGroup(AlternatingGroup(4));;
-gap> VoleFind.Group(con1, con2) = Group([(1,3)(2,4), (1,4)(2,3)]);
-true
-
-# doc/_Chapter_Constraints.xml:210-217
-gap> U := PSL(2,5) * (3,4,6);
-RightCoset(Group([ (3,5)(4,6), (1,2,5)(3,4,6) ]),(3,4,6))
-gap> x := VoleFind.Coset(VoleCon.InCoset(U), AlternatingGroup(6));
-RightCoset(Group([ (3,5)(4,6), (2,4)(5,6), (1,2,6,5,4) ]),(1,5)(2,3,4,6))
-gap> x = Intersection(U, AlternatingGroup(6));
-true
-
-# doc/_Chapter_Constraints.xml:234-240
-gap> x := VoleFind.Coset(VoleCon.InRightCoset(PSL(2,5), (3,4,6)),
->                        VoleCon.InGroup(AlternatingGroup(6)));
-RightCoset(Group([ (3,5)(4,6), (2,4)(5,6), (1,2,6,5,4) ]),(1,5)(2,3,4,6))
-gap> x = Intersection(PSL(2,5) * (3,4,6), AlternatingGroup(6));
-true
-
-# doc/_Chapter_Constraints.xml:257-263
-gap> x := VoleFind.Rep(VoleCon.InLeftCoset(PSL(2,5), (3,4,6)),
->                      VoleCon.InGroup(AlternatingGroup(6)));
-(1,6,2,3,4)
-gap> SignPerm(x) = 1 and ForAny(PSL(2,5), g -> x = (3,4,6) * g);
-true
-
-# doc/_Chapter_Constraints.xml:291-300
-gap> con1 := VoleCon.Stabilise(CycleDigraph(6), OnDigraphs);;
-gap> con2 := VoleCon.Stabilise([2,4,6], OnSets);;
-gap> VoleFind.Group(con1, 6);
-Group([ (1,2,3,4,5,6) ])
-gap> VoleFind.Group(con2, 6);
-Group([ (4,6), (2,4,6), (3,5)(4,6), (1,3,5)(2,4,6) ])
-gap> VoleFind.Group(con1, con2, 6);
-Group([ (1,3,5)(2,4,6) ])
-
-# doc/_Chapter_Constraints.xml:330-340
-gap> setofsets1 := [[1, 3, 6], [2, 3, 6], [2, 4, 7], [4, 5, 7]];;
-gap> setofsets2 := [[1, 2, 5], [1, 5, 7], [3, 4, 6], [4, 6, 7]];;
-gap> con := VoleCon.Transport(setofsets1, setofsets2, OnSetsSets);;
-gap> VoleFind.Rep(con);
-(1,2,7,6)(3,5)
-gap> VoleFind.Rep(con, AlternatingGroup(7) * (1,2));
-(1,2,7,6,5,3)
-gap> VoleFind.Rep(con, DihedralGroup(IsPermGroup, 14));
+# doc/_Chapter_interface.xml:89-95
+gap> tuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;
+gap> VoleFind.Rep(VoleCon.InGroup(SymmetricGroup(4)), tuple_transport);
+(3,4)
+gap> VoleFind.Rep(AlternatingGroup(4), tuple_transport);
 fail
 
-# doc/_Chapter_Constraints.xml:359-369
-gap> con := VoleCon.Normalise(PSL(2,5));;
-gap> N := VoleFind.Group(con, SymmetricGroup(6));
-Group([ (3,4,5,6), (2,3,5,6), (1,2,4,3,6) ])
-gap> (3,4,5,6) in N and not (3,4,5,6) in PSL(2,5);
-true
-gap> Index(N, PSL(2,5));
-2
-gap> PSL(2,5) = VoleFind.Group(con, AlternatingGroup(6));
+# doc/_Chapter_interface.xml:127-133
+gap> graph_auto := VoleCon.Stabilise(JohnsonDigraph(4,2), OnDigraphs);;
+gap> set_stab := VoleCon.Stabilise([2,4,6], OnSets);;
+gap> G := VoleFind.Group(graph_auto, set_stab, 6);;
+gap> G = Group([ (2,4)(3,5), (1,3,5)(2,6,4) ]);
 true
 
-# doc/_Chapter_Constraints.xml:388-397
-gap> D12 := DihedralGroup(IsPermGroup, 12);;
-gap> VoleFind.Group(6, VoleCon.Centralise(D12));
-Group([ (1,4)(2,5)(3,6) ])
-gap> x := (1,6)(2,5)(3,4);;
-gap> G := VoleFind.Group(AlternatingGroup(6), VoleCon.Centralise(x));
-Group([ (2,3)(4,5), (2,4)(3,5), (1,2,3)(4,6,5) ])
-gap> ForAll(G, g -> SignPerm(g) = 1 and g * x = x * g);
+# doc/_Chapter_interface.xml:137-144
+gap> norm_PSL25 := VoleCon.Normalise(PSL(2,5));;
+gap> in_A6  := VoleCon.InGroup(AlternatingGroup(6));;
+gap> in_D12 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 12));;
+gap> G := VoleFind.Group(in_A6, in_D12, norm_PSL25);;
+gap> G = Group([ (1,3,5)(2,4,6) ]);
 true
 
-# doc/_Chapter_Constraints.xml:421-427
-gap> con := VoleCon.Conjugate((3,4)(2,5,1), (1,2,3)(4,5));;
-gap> VoleFind.Rep(con);
-(1,2,3,5)
-gap> VoleFind.Rep(con, PSL(2,5));
-(1,3,4,5,2)
-
-# doc/_Chapter_Constraints.xml:442-447
-gap> con1 := VoleCon.MovedPoints([1..5]);;
-gap> con2 := VoleCon.MovedPoints([2,6,4,5]);;
-gap> VoleFind.Group(con1, con2) = SymmetricGroup([2,4,5]);
+# doc/_Chapter_interface.xml:187-190
+gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:462-466
-gap> con := VoleCon.LargestMovedPoint(5);;
-gap> VoleFind.Group(con) = SymmetricGroup(5);
+# doc/_Chapter_interface.xml:333-336
+gap> true;
 true
 
-# doc/_Chapter_Constraints.xml:481-484
-gap> VoleFind.Rep(VoleCon.None());
-fail
+# doc/_Chapter_interface.xml:363-368
+gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
+>  VoleCon.Normalise(Group([ (1,2) ]))
+> );
+(1,4)(2,3)
+
+# doc/_Chapter_interface.xml:379-385
+gap> VoleFind.CanonicalPerm(SymmetricGroup(4),
+>  VoleCon.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),
+>  VoleCon.Stabilise(CycleDigraph(4), OnDigraphs)
+> );
+(1,2,3)
 
 #
 gap> STOP_TEST("vole05.tst", 1);

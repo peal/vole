@@ -7,7 +7,7 @@ give directions, hints, and explanations about its use.
 
 In this manual, a **permutation** is defined on the set of all positive
 integers, but moves only finitely many points;
-a **group** is a finite permutation group
+unless otherwise stated, a **group** is a finite permutation group
 (which, by the definition of a permutation, necessarily has a finite set of
 moved points);
 and a **coset** is a left or right coset of such a group determined by some
@@ -15,7 +15,8 @@ permutation (the parent group is unspecified).
 
 In full generality,
 &Vole; can be used to find permutations
-(groups, cosets, or representative elements)
+(groups given by strong generating sets, cosets thereof,
+or individual representative elements)
 that satisfy conjunctions of particular
 kinds of properties, or **constraints**; details of these properties are
 given later.
@@ -62,14 +63,14 @@ The rest of this introduction discusses the place of &Vole; in the &GAP;
 Installation instructions for &Vole; are given in
 Chapter&nbsp;<Ref Chap="Chapter_install"/>,
 and Chapter&nbsp;<Ref Chap="Chapter_tut"/> gives a tutorial for the package.
+Chapter&nbsp;<Ref Chap="Chapter_wrapper"/> describes an interface to &Vole;
+that emulates the existing related functionality of &GAP; and its packages.
 Chapter&nbsp;<Ref Chap="Chapter_interface"/> documents the main interface to
 &Vole;.
 Chapter&nbsp;<Ref Chap="Chapter_Constraints"/> describes the constraints that
 can be used with &Vole;,
 while Chapter&nbsp;<Ref Chap="Chapter_Refiners"/> explains refiners, and gives
 details of those that are available.
-Chapter&nbsp;<Ref Chap="Chapter_wrapper"/> describes an interface to &Vole;
-that emulates the existing related functionality of &GAP; and its packages.
 Chapter&nbsp;<Ref Chap="Chapter_expert"/> gives lower-level details, and
 instructions for the expert use of &Vole;.
 
@@ -160,7 +161,7 @@ and&nbsp;<Ref Chap="Chapter_expert"/> are more likely change.
 The main focus of our future work on &Vole; will be on improving the performance
 of &Vole;, through both technical and mathematical means.  This may involve
 changes to the design of the algorithm itself, and the improvement or addition
-of refiners, especially for normalisers and conjugacy.
+of refiners, especially for subgroup normalisers and conjugacy.
 See Section&nbsp;<Ref Sect="Section_performance"/> for further comments on the
 performance of &Vole;.
 
@@ -210,8 +211,8 @@ may make it slower overall.
 &Vole; does not yet attempt to mitigate this issue.
 For example, we do not yet expect &Vole; to match the performance of &nauty;
 (available through the &Digraphs; and &GRAPE; packages)
-at computing automorphisms of graphs, and canonical images of graphs in the
-whole symmetric group.
+at computing automorphisms of graphs, and canonical images of graphs in a
+symmetric group.
 
 In addition, we do not expect &Vole; to beat &images;
 at computing canonical images of sets in groups.
@@ -219,8 +220,8 @@ at computing canonical images of sets in groups.
 There are further reasons why existing implementations may beat the current
 version of &Vole;, in some situations.
 
-* <B>No special cases:</B>
-  &Vole; passes every problem that it receives on to the
+* <B>Very few special cases:</B>
+  &Vole; passes almost every problem that it receives on to the
   full graph backtracking algorithm,
   with its corresponding overheads and poor worst-case complexity.
   On the other hand, other implementations
@@ -237,7 +238,7 @@ version of &Vole;, in some situations.
   component if necessary.
   The check itself can take a noticeable amount of time,
   but compilation takes much longer.
-  To avoid this, we recommend that you manually recompile &Vole;
+  To minimise the effect, we recommend that you manually recompile &Vole;
   when you update your &Vole; installation via the `make` command,
   as described in Section&nbsp;<Ref Subsect="Section_install"/>.
 
@@ -245,7 +246,7 @@ version of &Vole;, in some situations.
   There is also a delay that is incurred when the &GAP;-level interface of
   &Vole; communicates with the Rust component of &Vole;.
   This is exacerbated by the fact that &Vole; does not yet include its
-  full own implementation of stabiliser chains, and so it uses &GAP;'s
+  own Rust-level implementation of stabiliser chains, and so it uses &GAP;'s
   stabiliser chains instead. This means that &GAP; and the Rust component must
   communicate heavily during a typical search, and this can incur a significant
   time penalty.  Implementing Rust-level stabiliser chains is a work in
@@ -259,7 +260,7 @@ version of &Vole;, in some situations.
   unfruitful branch that a different algorithm accidentally avoids.
 
 These factors together highlight the principle that, for users for whom
-performance is very important, it makes sense to compare and experiment with the
+performance is very important, it makes sense to experiment with the
 range of available tools when running computations.
 
 Please also make sure that you are running the newest version of &Vole;, since

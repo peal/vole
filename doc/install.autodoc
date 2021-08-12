@@ -10,7 +10,7 @@ please
   <Link>&VoleIssues;</Link>
   <LinkText>create an issue on our issue tracker</LinkText>
 </URL>,
-or to contact us by any other appropriate means.  See the title page of this
+or contact us by any other appropriate means.  See the title page of this
 manual for our contact details.  We published &Vole; so that our ideas and
 algorithms could be used by, and be useful to, others in the community. But
 without feedback, it can be difficult to know whether we are achieving this aim.
@@ -28,7 +28,7 @@ packages to run, and Rust is required to compile &Vole;.
 
 @BeginChunk CygwinSkip
 Please note that if you are using &Vole; via a &GAP; Cygwin release
-(i.e. if you installed &GAP; in Windows via an installer which included &Vole;),
+(i.e. if you installed &GAP; in Windows via an installer that included &Vole;),
 then &Vole; came ready-compiled, and the included versions of &GAP; and its
 packages are sufficient to run &Vole; out-of-the-box.
 Therefore you may skip straight to Section&nbsp;<Ref Sect="Section_loading"/>.
@@ -46,7 +46,7 @@ cargo 1.54.0
 If Rust is not available, then running the command `cargo --version` will give
 an error such as `cargo: command not found`. If this is the case, then please
 follow the instructions at <URL>https://www.rust-lang.org/tools/install</URL>
-for installing Rust.
+or <URL>https://rustup.rs</URL> for installing Rust.
 
 In addition, the following &GAP; packages must be available in order to use
 &Vole;.  This means that &Vole; will not load if one or more of these packages
@@ -95,7 +95,7 @@ then please consult the documentation for that package in order to resolve
 the problem.
 
 The following &GAP; packages are needed to run &Vole;'s test suite, but they are
-not required to use rest of &Vole;, and are therefore optional.
+not required to use the rest of &Vole;, and are therefore optional.
 * <URL>
     <Link>https://github.com/ChrisJefferson/QuickCheck</Link>
     <LinkText>&QuickCheck;</LinkText>
@@ -114,7 +114,7 @@ In order to compile the &Vole; documentation,
   <Link>https://gap-packages.github.io/AutoDoc</Link>
   <LinkText>&AutoDoc;</LinkText>
 </URL> version &AutoDocVersion; or newer must be available.
-This is usually unnecessary, and is not required in order to use &Vole;.
+This step is usually unnecessary, and is not required in order to use &Vole;.
 See Section&nbsp;<Ref Sect="Section_compiling_manual"/> for more information
 about compiling the documentation.
 
@@ -183,8 +183,8 @@ See Section&nbsp;<Ref Sect="Section_loading"/>.
 @Section Loading &Vole;
 @SectionLabel loading
 
-If &Vole; is available to load, then to do so it suffices
-to call the function <Ref Func="LoadPackage" BookName="Ref"/>
+If &Vole; is available to load, then it can be loaded by
+calling the function <Ref Func="LoadPackage" BookName="Ref"/>
 with the argument `"vole"`,
 from within the relevant &GAP; installation. This should return <K>true</K>.
 
@@ -197,7 +197,8 @@ If `LoadPackage` instead returns <K>fail</K>, then &Vole; has failed to load.
 This is probably because &GAP; cannot find &Vole; or &Vole; is not compiled
 (Section&nbsp;<Ref Sect="Section_install"/>), or one of the dependencies of
 &Vole; is not available (Section&nbsp;<Ref Sect="Section_deps"/>).
-In this case, please see the <Ref Func="LoadPackage" BookName="ref"/>
+If &Vole; fails to load, then please see the
+<Ref Func="LoadPackage" BookName="ref"/>
 documentation for ways to help diagnose the problem further.
 
 @InsertChunk contact
@@ -276,15 +277,15 @@ gap> Read("makedoc.g");
 @EndLogSession
 
 Alternatively, the <F>makedoc.g</F> file can be read into &GAP; by giving its
-path as an argument to the &GAP; executable.
+path as an argument to &GAP;.
 
 @BeginLogSession
 $ gap makedoc.g
 @EndLogSession
 
 Finally, running `make doc` in the &Vole; directory should compile the
-documentation of &Vole; if <F>../../bin/gap.sh</F> is the path of a &GAP;
-executable, relative to &Vole;.
+documentation of &Vole; if &Vole; is installed in the <F>pkg</F> subdirectory
+of the appropriate &GAP; installation.
 
 @BeginLogSession
 $ make doc

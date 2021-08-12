@@ -129,10 +129,13 @@
 #! &Vole; has its own native interface, which is described in
 #! Chapter&nbsp;<Ref Chap="Chapter_interface"/>, and which offers
 #! highly configurable access to the underlying graph backtracking algorithm.
-#! This is the recommended interface to &Vole;.
+#! This is the recommended interface to &Vole; for most users.
 #!
 #! However, &Vole; also provides wrappers around its native
 #! interface that allow &Vole; to emulate some existing interfaces.
+#! The purpose of these wrappers is to lower the ‘barrier to entry’ of &Vole;,
+#! so that users who are already familiar with the existing &GAP;/package
+#! functions can quickly get started.
 #!
 #! Where we identify that &GAP;, or a package, provides a function whose result
 #! could reasonably be computed with &Vole;,
@@ -154,11 +157,8 @@
 #! <Ref Func="Vole.Normaliser"/>, which can be used in the same way.
 #! Thus `Normaliser(<A>G</A>,<A>U</A>)` and `Vole.Normaliser(<A>G</A>,<A>U</A>)`
 #! will (barring bugs!)
-#! return equal groups – the normaliser of <A>U</A> in <A>G</A> – for
+#! return equal groups for
 #! all permutation groups <A>G</A> and <A>U</A>.
-#!
-#! The purpose of these wrappers is to make &Vole; easier to learn, and use, for
-#! those who are already familiar with the existing &GAP;/package functions.
 #!
 #! <B>A warning</B>
 #!

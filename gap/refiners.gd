@@ -5,7 +5,8 @@
 #
 # Declarations: Vole refiners
 
-#! @Chapter Refiners
+#! @Chapter Refiners in &Vole;
+#! @ChapterLabel Refiners
 
 #! @Section Refiners
 

@@ -5,8 +5,8 @@
 @Section Computing the intersection of a normaliser and a stabiliser
 
 Suppose that we wish to compute the intersection of the stabiliser in
-$M_{12}$ of the set $\{1,2,4,5\}$ with the normaliser of $H$ in $G$,
-where $H$ and $G$ are defined by the generating sets below.
+$M_{12}$ of the set $S:=\{1,2,4,5\}$ with the normaliser of $H$ in $G$,
+where $H$ and $G$ are defined by the generating sets given below:
 
 @BeginExampleSession
 gap> M12 := MathieuGroup(12);;
@@ -18,7 +18,8 @@ gap> H := Group([(1,2,3,4,9,10,5,6,11,8)(7,12), (1,5,9)(6,12)(8,10)]);;
 Thus we wish to compute
 ${Stab}_{M_{12}}(\{1,2,3,5\}) \cap N_{G}(H)$.
 
-For future reference, we note that the result is a dihedral group of order 8:
+For future reference, we note that the result is a dihedral group with eight
+elements.
 
 @BeginExampleSession
 gap> answer := Group([(1,2)(3,10)(4,5)(6,7)(8,9)(11,12),
@@ -42,7 +43,7 @@ gap> Intersection(Stabiliser(M12, S, OnSets),
 true
 @EndExampleSession
 
-Or we can slightly re-think the task, and first intersect $M_{12}$ with $G$,
+Or we can slightly reformulate the task, and first intersect $M_{12}$ with $G$,
 and then compute the stabiliser of the set in that smaller group,
 and finally compute the normaliser of $H$ in that (even smaller) stabiliser: 
 
@@ -80,16 +81,16 @@ true
 We quickly realise that solving our problem with the &GAP; library interface
 really requires three separate steps to be undertaken in sequence.
 This raises some potential disadvantages.
-* Although it is clear that each of the above strategies will give
-  the correct answer, it is not clear which approach gives the best performance:
+* Although each of the above strategies will give the correct answer,
+  it is not obvious which approach gives the best performance:
   should we compute the normaliser in the stabiliser, or vice versa, or
-  should we do something else? It is not necessarily clear.
+  should we do something else? It is not necessarily easy to answer this.
 * Breaking the problem up into three separate steps requires three
   instances of a backtrack search, where each instance is unaware of the ones to
   come. This is not ideal for a number of reasons.
   * Firstly, backtrack search can be expensive, and so we
     should aim to minimise the number of times that it is required.
-  * Secondly, a search tends to be quicker when there are more ’restrictions’ on
+  * Secondly, a search tends to be quicker when there are more ‘restrictions’ on
     the search space.
     Therefore, it is typically better to perform one search with many
     restrictions rather than performing several searches that each have few
@@ -138,7 +139,8 @@ well-suited to the technique that the refiner `GB_Con.NormaliserSimple` from the
 &GraphBacktracking; package uses to refine for the normaliser.
 This refiner may be included instead of, or as well as, the constraint
 `VoleCon.Normalize(H)`, since the refiner implies that constraint,
-but it is perfectly acceptable to use multiple refiners for the same constraint.
+but it is perfectly acceptable (and sometimes a good idea)
+to use multiple refiners for the same constraint.
 
 @BeginExampleSession
 gap> VoleFind.Group(VoleCon.InGroup(M12),

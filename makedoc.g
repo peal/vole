@@ -26,10 +26,10 @@ _autodoc := rec(
                    "doc/intro.autodoc",
                    "doc/install.autodoc",
                    "doc/tutorial.autodoc",
+                   "gap/wrapper.gd",
                    "gap/interface.gd",
                    "gap/constraints.gd",
                    "gap/refiners.gd",
-                   "gap/wrapper.gd",
                    "doc/expert.autodoc",
                  ],
         scan_dirs := [

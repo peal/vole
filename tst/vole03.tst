@@ -16,39 +16,39 @@ gap> S := [ 1, 2, 4, 5 ];;
 gap> G := Group([(1,8,7,2,3,10,9,4)(5,6,11,12), (3,11)(4,12,6,8,10)]);;
 gap> H := Group([(1,2,3,4,9,10,5,6,11,8)(7,12), (1,5,9)(6,12)(8,10)]);;
 
-# doc/_Chapter_tut.xml:30-36
+# doc/_Chapter_tut.xml:31-37
 gap> answer := Group([(1,2)(3,10)(4,5)(6,7)(8,9)(11,12),
 >                     (2,4)(3,7)(8,12)(9,11)]);
 Group([ (1,2)(3,10)(4,5)(6,7)(8,9)(11,12), (2,4)(3,7)(8,12)(9,11) ])
 gap> StructureDescription(answer);
 "D8"
 
-# doc/_Chapter_tut.xml:48-53
+# doc/_Chapter_tut.xml:49-54
 gap> Intersection(Stabiliser(M12, S, OnSets),
 >                 Normaliser(G, H))
 > = answer;
 true
 
-# doc/_Chapter_tut.xml:61-66
+# doc/_Chapter_tut.xml:62-67
 gap> M12andG := Intersection(M12, G);;
 gap> stab := Stabiliser(M12andG, S, OnSets);;
 gap> Normaliser(stab, H) = answer;
 true
 
-# doc/_Chapter_tut.xml:73-78
+# doc/_Chapter_tut.xml:74-79
 gap> M12andG := Intersection(M12, G);;
 gap> norm := Normaliser(M12andG, H);;
 gap> Stabiliser(norm, S, OnSets) = answer;
 true
 
-# doc/_Chapter_tut.xml:88-94
+# doc/_Chapter_tut.xml:89-95
 gap> LoadPackage("vole", false);;
 gap> stab := Vole.Stabiliser(M12, S, OnSets);;
 gap> norm := Vole.Normaliser(G, H);;
 gap> answer = Vole.Intersection(stab, norm);
 true
 
-# doc/_Chapter_tut.xml:153-160
+# doc/_Chapter_tut.xml:154-161
 gap> VoleFind.Group(VoleCon.InGroup(M12),
 >                   VoleCon.Stabilize(S, OnSets),
 >                   VoleCon.InGroup(G),
@@ -56,7 +56,7 @@ gap> VoleFind.Group(VoleCon.InGroup(M12),
 > = answer;
 true
 
-# doc/_Chapter_tut.xml:179-193
+# doc/_Chapter_tut.xml:181-195
 gap> VoleFind.Group(VoleCon.InGroup(M12),
 >                   VoleCon.Stabilize(S, OnSets),
 >                   VoleCon.InGroup(G),
