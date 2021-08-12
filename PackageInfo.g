@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "Vole",
 Subtitle := "Backtrack search in permutation groups with graphs",
-Version := "0.4.2",
-Date := "30/07/2021", # dd/mm/yyyy format
+Version := "0.5.0",
+Date := "09/08/2021", # dd/mm/yyyy format
 License := "MPL-2.0",
 
 Persons := [
@@ -65,12 +65,11 @@ ArchiveFormats := ".tar.gz",
 
 Status := "dev",
 
-AbstractHTML :=  Concatenation(
-  "<B>Vole</B> is a <B>GAP</B> package that implements ",
-  "graph backtracking, which can be used to solve many problems in finite ",
-  "permutation groups, such as subgroup intersections, normalisers, ",
-  "set stabilisers, and canonical images of groups."
-),
+AbstractHTML := """
+<B>Vole</B> is a <B>GAP</B> package that implements
+graph backtracking, which can be used to solve many problems in finite
+permutation groups, such as subgroup intersections, normalisers,
+set stabilisers, and canonical images of groups.""",
 
 PackageDoc := rec(
   BookName  := ~.PackageName,
@@ -84,9 +83,9 @@ PackageDoc := rec(
 Dependencies := rec(
   GAP := ">= 4.11.0",
   NeededOtherPackages := [
-    [ "BacktrackKit", ">= 0.4.1" ],
+    [ "BacktrackKit", ">= 0.5.0" ],
     [ "Digraphs", ">= 1.1.1" ],
-    [ "GraphBacktracking", ">= 0.4.0" ],
+    [ "GraphBacktracking", ">= 0.5.0" ],
     # to enable GAP and rust to talk to each other
     [ "IO", ">= 4.7.0" ],
     [ "json", ">= 2.0.1" ],
