@@ -255,8 +255,7 @@ VoleCon.Centralize := VoleCon.Centralise;
 
 VoleCon.Conjugate := function(G, H)
     if IsPermGroup(G) and IsPermGroup(H) then
-      # TODO: Implement a graph backtracking refiner for subgroup conjugacy
-        return BTKit_Con.BasicGroupConjugacy(G, H);
+        return GB_Con.GroupConjugacySimple2(G,H);
     elif IsPerm(G) and IsPerm(H) then
         return GB_Con.PermConjugacy(G, H);
     fi;
