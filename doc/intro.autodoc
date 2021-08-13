@@ -55,7 +55,7 @@ Graph backtracking is a form of depth-first backtrack search that can be
 performed in a finite symmetric group, and which uses labelled digraphs to
 represent various aspects of the problem at hand in order to guide the search
 and prune the search space.  The specification of the problem is given by a
-collection of <E>constraints</E>, and a collection of <E>refiners</E> are used
+collection of **constraints**, and a collection of **refiners** are used
 to prune the search according to those constraints.
 
 The rest of this introduction discusses the place of &Vole; in the &GAP;
@@ -108,10 +108,10 @@ graph developments of <Cite Key="NewRefiners"/>.
 
 The &images; package <Cite Key="images"/> provides a &GAP;-level implementation
 of the custom breadth-first search that was introduced in
-<Cite Key="MinimalCanonical"/> to compute the <E>canonical image</E> of any set
+<Cite Key="MinimalCanonical"/> to compute the **canonical image** of any set
 of points under the action of an arbitrary permutation group.
 This algorithm built upon the original algorithm of Steve Linton <Cite
-Key="Linton"/> for computing <E>minimal images</E> of sets of points,
+Key="Linton"/> for computing **minimal images** of sets of points,
 which is available in the &GRAPE; package <Cite Key="GRAPE"/> in
 <URL>
   <LinkText><F>lib/smallestimage.g</F></LinkText>

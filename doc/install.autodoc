@@ -94,8 +94,16 @@ If one of the above packages does not load in your &GAP; installation,
 then please consult the documentation for that package in order to resolve
 the problem.
 
+The following &GAP; packages are necessary to use a small, non-core subset of
+&Vole;'s features, and are therefore optional.
+* <URL>
+    <Link>https://github.com/gap-packages/OrbitalGraphs</Link>
+    <LinkText>&OrbitalGraphs;</LinkText>
+  </URL> version &OrbitalGraphsVersion;, or newer
+  (required for <Ref Func="Vole.TwoClosure"/>).
+
 The following &GAP; packages are needed to run &Vole;'s test suite, but they are
-not required to use the rest of &Vole;, and are therefore optional.
+not required to use the rest of &Vole;, and are therefore also optional.
 * <URL>
     <Link>https://github.com/ChrisJefferson/QuickCheck</Link>
     <LinkText>&QuickCheck;</LinkText>

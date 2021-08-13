@@ -10,7 +10,7 @@
 #
 gap> START_TEST("vole04.tst");
 
-# doc/_Chapter_wrapper.xml:82-90
+# doc/_Chapter_wrapper.xml:96-104
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(Vole));
 [ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
@@ -19,7 +19,7 @@ gap> Set(RecNames(Vole));
   "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer", 
   "TwoClosure" ]
 
-# doc/_Chapter_wrapper.xml:211-220
+# doc/_Chapter_wrapper.xml:235-244
 gap> A6 := AlternatingGroup(6);;
 gap> D12 := DihedralGroup(IsPermGroup, 12);;
 gap> Vole.Intersection(A6, D12);
@@ -29,30 +29,35 @@ RightCoset(Group([ (2,6)(3,5), (1,3,5)(2,4,6) ]),(1,5)(2,3,4))
 gap> Vole.Intersection(A6 * (1,2), D12 * (3,4), PSL(2,5));
 [  ]
 
-# doc/_Chapter_wrapper.xml:253-263
+# doc/_Chapter_wrapper.xml:277-287
 gap> Vole.Stabiliser(PGL(2,5), [1,2,3], OnSets);
 Group([ (1,3)(5,6), (1,2,3)(4,5,6) ])
 gap> D := JohnsonDigraph(4,2);;
-gap> G := Stabiliser(PSL(2,5), JohnsonDigraph(4,2), OnDigraphs);;
+gap> G := Stabiliser(PSL(2,5), D, OnDigraphs);;
 gap> G = Group([ (1,4,5)(2,6,3), (1,4)(3,6) ]);
 true
 gap> Elements(G)
 >  = SortedList(Filtered(PSL(2,5), g -> OnDigraphs(D, g) = D));
 true
 
-# doc/_Chapter_wrapper.xml:298-301
+# doc/_Chapter_wrapper.xml:322-330
+gap> Vole.RepresentativeAction(SymmetricGroup(4), (1,2,3), (1,2,4));
+(1,4,3,2)
+gap> RepresentativeAction(AlternatingGroup(4), (1,2,3), (1,2,4));
+fail
+gap> D := CycleDigraph(6);;
+gap> Vole.RepresentativeAction(PGL(2,5), D, DigraphReverse(D), OnDigraphs);
+(1,4)(2,3)(5,6)
+
+# doc/_Chapter_wrapper.xml:359-362
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:330-333
+# doc/_Chapter_wrapper.xml:380-383
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:351-354
-gap> true;
-true
-
-# doc/_Chapter_wrapper.xml:385-395
+# doc/_Chapter_wrapper.xml:414-424
 gap> # Conjugacy of permutations
 gap> x := (1,2,3,4,5);; y := (1,2,3,4,6);;
 gap> IsConjugate(SymmetricGroup(6), x, y);
@@ -63,7 +68,7 @@ gap> IsConjugate(Group([ (5,6) ]), x, y);
 true
 gap> # Conjugacy of groups
 
-# doc/_Chapter_wrapper.xml:420-427
+# doc/_Chapter_wrapper.xml:450-457
 gap> LoadPackage("orbitalgraphs", false);;
 gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;
 gap> (3,6) in G;
@@ -71,23 +76,23 @@ false
 gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
 true
 
-# doc/_Chapter_wrapper.xml:488-491
+# doc/_Chapter_wrapper.xml:518-521
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:523-526
+# doc/_Chapter_wrapper.xml:553-556
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:598-601
+# doc/_Chapter_wrapper.xml:628-631
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:624-627
+# doc/_Chapter_wrapper.xml:654-657
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:650-653
+# doc/_Chapter_wrapper.xml:680-683
 gap> true;
 true
 

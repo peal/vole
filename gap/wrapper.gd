@@ -150,19 +150,17 @@
 #! interface that allow &Vole; to emulate some existing interfaces.
 #! The purpose of these wrappers is to lower the ‘barrier to entry’ of &Vole;,
 #! so that users who are already familiar with the existing &GAP;/package
-#! functions can quickly get started.
+#! functions can quickly get started with &Vole;.
 #!
 #! Where we identify that &GAP;, or a package, provides a function whose result
 #! could reasonably be computed with &Vole;,
-#! we provide a function in &Vole; whose interface closely
-#! matches that of the original function, and which uses &Vole; to perform the
-#! computation.
-#! All such functions are contained in the
-#! <Ref Var="Vole"/> record, which is documented
-#! in Section&nbsp;<Ref Sect="Section_VoleRec"/>.
-#! The functions themselves are individually documented in
-#! Sections&nbsp;<Ref Sect="Section_gap_wrapper"/>–<Ref
-#!   Sect="Section_digraphs_wrapper"/>.
+#! we provide a wrapper function whose interface closely
+#! matches that of the original function, but which uses &Vole;
+#! to perform the computation.
+#! <B>We do not claim that the</B>
+#! &Vole;
+#! <B>wrapper functions are necesarily faster than the original functions</B>;
+#! see Section&nbsp;<Ref Sect="Subsection_warning"/>.
 #!
 #! For example,
 #! the &GAP; function <Ref Oper="Normaliser" Style="Number" BookName="Ref"/> can
@@ -175,26 +173,33 @@
 #! return equal groups for
 #! all permutation groups <A>G</A> and <A>U</A>.
 #!
-#! <B>A warning</B>
+#! All such functions are contained in the
+#! <Ref Var="Vole"/> record, which is documented
+#! in Section&nbsp;<Ref Sect="Section_VoleRec"/>.
+#! The functions themselves are individually documented in
+#! Sections&nbsp;<Ref Sect="Section_gap_wrapper"/>–<Ref
+#!   Sect="Section_digraphs_wrapper"/>.
 #!
-#! These emulated interfaces are not necessarily the best way to use &Vole; for
-#! those users who are interesting in obtaining the best performance,
-#! and in exploiting the full flexibility of &Vole;.
+#! @Subsection A warning
+#! @SubsectionLabel warning
 #!
-#! &Vole; has to guess refiners.
+#! &Vole;'s emulated interfaces do not necessarily exhibit the full flexibility,
+#! power, and speed of &Vole;.
+#! This is especially for those users who are interesting in controlling and
+#! specifying the refiners that are used in a given search,
+#! for whom the native interface (Chapter&nbsp;<Ref Chap="Chapter_interface"/>)
+#! is necessary.
 #!
+#! In addition, please note that the &Vole; wrapper functions
+#! (almost) always use the graph backtracking algorithm,
+#! and so they may be significantly slower than the
+#! corresponding original functions when those functions can cleverly simplify
+#! the problem (and perhaps even choose a completely different algorithm),
+#! based on the properties of the groups and permutations that are involved.
 #!
-#! The built-in &GAP; function is aware of this and it attempts to deal with
-#! special case appropriately (and quickly)
-#!
-#! Note that these functions always use graph backtracking, so may be significantly
-#! slower than &GAP;'s built in functions when those functions can greatly
-#! simplify solving using group properties.
-#!
-#! ...perhaps even without seach.
-#!
-#! See also Section&nbsp;<Ref Sect="Section_performance"/> for further
-#! comments about the performance of &Vole;
+#! See Section&nbsp;<Ref Sect="Section_performance"/> for further
+#! comments about the relative performance of &Vole; in comparison to other
+#! tools.
 
 
 #! @Section The <C>Vole</C> record
@@ -206,7 +211,11 @@
 #! that are provided to emulate aspects of &GAP;, and its packages
 #! &images; and &Digraphs;.
 #! The components of this record are functions that are named to coincide
-#! with the corresponding &GAP;/&images;/&Digraphs; function.
+#! with the corresponding &GAP;/&images;/&Digraphs; functions.
+#!
+#! For example, 
+#! <Ref Func="Vole.Normaliser"/>
+#! emulates <Ref Oper="Normaliser" Style="Number" BookName="Ref"/>.
 #!
 #! @BeginExampleSession
 #! gap> LoadPackage("vole", false);;
@@ -224,11 +233,11 @@ InstallValue(Vole, rec());
 
 #! @Section The group actions built into &Vole;
 
-# TODO Or should it actually be a "Chunk" that I can insert in multiple places?
-# TODO Also OnTuplesSets, OnTuplesTuples, etc?
-#! The supported combinations of objects and actions are the same for all of the
-#! functions in this chapter that require one or two objects and a corresponding
-#! action. This applies here to:
+#! The supported combinations of objects and actions are the same for the
+#! functions in this chapter that require one or two objects, and a
+#! corresponding action.
+#! This information is shown in the following table and applies, in particular,
+#! to:
 #! * <Ref Func="Vole.Stabiliser"/>
 #! * <Ref Func="Vole.RepresentativeAction"/>
 #! * <Ref Func="Vole.CanonicalPerm"/>
@@ -295,6 +304,14 @@ InstallValue(Vole, rec());
 #!   </Item>
 #!   <Item>
 #!     <Ref Oper="IsConjugate" BookName="Ref" Style="Number" />
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.TwoClosure"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Attr="TwoClosure" BookName="Ref" Style="Number" />
 #!   </Item>
 #! </Row>
 #! </Table>
@@ -364,7 +381,7 @@ DeclareGlobalFunction("Vole.Stabiliser");
 #! gap> Vole.Stabiliser(PGL(2,5), [1,2,3], OnSets);
 #! Group([ (1,3)(5,6), (1,2,3)(4,5,6) ])
 #! gap> D := JohnsonDigraph(4,2);;
-#! gap> G := Stabiliser(PSL(2,5), JohnsonDigraph(4,2), OnDigraphs);;
+#! gap> G := Stabiliser(PSL(2,5), D, OnDigraphs);;
 #! gap> G = Group([ (1,4,5)(2,6,3), (1,4)(3,6) ]);
 #! true
 #! gap> Elements(G)
@@ -384,9 +401,9 @@ DeclareGlobalFunction("Vole.Stabilizer");
 #! <Ref Func="Vole.RepresentativeAction"/> emulates the built-in &GAP; function
 #! <Ref Oper="RepresentativeAction" BookName="Ref" Style="Number"/>.
 #!
-#! This function returns an element
-#! of the perm group <A>G</A> that maps <A>object1</A> to <A>object2</A>
-#! under the given group <A>action</A>, if such an element exists,
+#! This function returns an element of the permutation group <A>G</A>
+#! that maps <A>object1</A> to <A>object2</A> under the given group
+#! <A>action</A>, if such an element exists,
 #! and it returns <K>fail</K> otherwise.
 #!
 #! @InsertChunk AvailableActions
@@ -397,8 +414,13 @@ DeclareGlobalFunction("Vole.Stabilizer");
 #! @InsertChunk betterrep
 #!
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> Vole.RepresentativeAction(SymmetricGroup(4), (1,2,3), (1,2,4));
+#! (1,4,3,2)
+#! gap> RepresentativeAction(AlternatingGroup(4), (1,2,3), (1,2,4));
+#! fail
+#! gap> D := CycleDigraph(6);;
+#! gap> Vole.RepresentativeAction(PGL(2,5), D, DigraphReverse(D), OnDigraphs);
+#! (1,4)(2,3)(5,6)
 #! @EndExampleSession
 #! @InsertChunk ActionsTable
 DeclareGlobalFunction("Vole.RepresentativeAction");
@@ -495,16 +517,17 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #! @Returns A permutation group
 #! @Description
 #! <Ref Func="Vole.TwoClosure"/> emulates the built-in &GAP; function
-#! <Ref Attr="TwoClosure" BookName="Ref" Style="Number"/>.
+#! <Ref Attr="TwoClosure" BookName="Ref" Style="Number"/>
+#! for a permutation group.
 #!
-#! The <E>2-closure</E> of a permutation group <A>G</A> is the largest group
+#! The **2-closure** of a permutation group <A>G</A> is the largest group
 #! whose orbitals (orbits on pairs of positive integers) coincide with those
 #! of <A>G</A>;
 #! equivalently, it is the intersection of the automorphism groups of the
 #! orbital graphs of <A>G</A>.
 #!
 #! <B>Warning</B>: this function currently requires the &OrbitalGraphs;
-#! package.
+#! package, and it will give an error if &OrbitalGraphs; is not yet loaded.
 #! 
 #! @BeginExampleSession
 #! gap> LoadPackage("orbitalgraphs", false);;

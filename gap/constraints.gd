@@ -28,7 +28,7 @@
 
 #! At its core, &Vole; searches for permutations that satisfy a collection
 #! of constraints.
-#! A <E>constraint</E> is a property such that for any given permutation,
+#! A **constraint** is a property such that for any given permutation,
 #! it is easy to check whether that permutation has the property or not.
 #! In addition, if the set of permutations that satisfy a property is nonempty,
 #! then that set must be a (possibly infinite) permutation group,
