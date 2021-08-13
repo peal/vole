@@ -37,21 +37,80 @@ gap> G := VoleFind.Group(in_A6, in_D12, norm_PSL25);;
 gap> G = Group([ (1,3,5)(2,4,6) ]);
 true
 
-# doc/_Chapter_interface.xml:187-190
-gap> true;
+# doc/_Chapter_interface.xml:187-193
+gap> tuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;
+gap> VoleFind.Coset(VoleCon.InGroup(SymmetricGroup(6)), tuple_transport);
+RightCoset(Group([ (5,6), (4,5,6) ]),(3,4,6))
+gap> VoleFind.Coset(AlternatingGroup(4), tuple_transport);
+fail
+
+# doc/_Chapter_interface.xml:320-329
+gap> cycle := CycleDigraph(6);;
+gap> reverse := DigraphReverse(cycle);;
+gap> A6 := AlternatingGroup(6);;
+gap> canon1 := VoleFind.Canonical(A6, VoleCon.Stabilise(cycle, OnDigraphs));
+rec( canonical := (1,3,4,6,5), group := Group([ (1,3,5)(2,4,6) ]) )
+gap> canon2 := VoleFind.Canonical(A6,
+>                                 VoleCon.Stabilise(reverse, OnDigraphs));
+rec( canonical := (1,4,5), group := Group([ (1,3,5)(2,4,6) ]) )
+
+# doc/_Chapter_interface.xml:334-339
+gap> SignPerm(canon1.canonical) = 1 and SignPerm(canon2.canonical) = 1
+> and canon1.group = Vole.Stabiliser(A6, cycle, OnDigraphs)
+> and canon2.group = Vole.Stabiliser(A6, reverse, OnDigraphs);
 true
 
-# doc/_Chapter_interface.xml:333-336
-gap> true;
+# doc/_Chapter_interface.xml:345-351
+gap> OnDigraphs(cycle, canon1.canonical)
+> = OnDigraphs(reverse, canon2.canonical);
+true
+gap> Vole.RepresentativeAction(A6, cycle, reverse, OnDigraphs);
+(1,5)(2,4)
+
+# doc/_Chapter_interface.xml:357-361
+gap> G := Group([ (1,2,3,4,6), (1,4)(5,6) ]);;
+gap> Vole.RepresentativeAction(G, cycle, reverse, OnDigraphs) <> fail;
 true
 
-# doc/_Chapter_interface.xml:363-368
+# doc/_Chapter_interface.xml:367-370
+gap> colours1 := [[1,3,5],[2,4,6]];;
+gap> colours2 := [[2,4,6],[1,3,5]];;
+
+# doc/_Chapter_interface.xml:377-386
+gap> canon1 := VoleFind.Canonical(G,
+>                                 VoleCon.Stabilise(cycle, OnDigraphs),
+>                                 VoleCon.Stabilise(colours1, OnTuplesSets));
+rec( canonical := (1,5,2,3,6), group := Group(()) )
+gap> canon2 := VoleFind.Canonical(G,
+>                                 VoleCon.Stabilise(reverse, OnDigraphs),
+>                                 VoleCon.Stabilise(colours2, OnTuplesSets));
+rec( canonical := (1,6,5,4,3), group := Group(()) )
+
+# doc/_Chapter_interface.xml:390-394
+gap> OnDigraphs(cycle, canon1.canonical)
+> = OnDigraphs(reverse, canon2.canonical);
+false
+
+# doc/_Chapter_interface.xml:399-411
+gap> canon1 := VoleFind.Canonical(SymmetricGroup(6),
+>                                 VoleCon.Stabilise(cycle, OnDigraphs),
+>                                 VoleCon.Stabilise(colours1, OnTuplesSets));
+rec( canonical := (1,5,2,3,4,6), group := Group([ (1,3,5)(2,4,6) ]) )
+gap> canon2 := VoleFind.Canonical(SymmetricGroup(6),
+>                                 VoleCon.Stabilise(reverse, OnDigraphs),
+>                                 VoleCon.Stabilise(colours2, OnTuplesSets));
+rec( canonical := (1,3)(2,5,6,4), group := Group([ (1,3,5)(2,4,6) ]) )
+gap> OnDigraphs(cycle, canon1.canonical)
+> = OnDigraphs(reverse, canon2.canonical);
+true
+
+# doc/_Chapter_interface.xml:438-443
 gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
 >  VoleCon.Normalise(Group([ (1,2) ]))
 > );
 (1,4)(2,3)
 
-# doc/_Chapter_interface.xml:379-385
+# doc/_Chapter_interface.xml:454-460
 gap> VoleFind.CanonicalPerm(SymmetricGroup(4),
 >  VoleCon.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),
 >  VoleCon.Stabilise(CycleDigraph(4), OnDigraphs)

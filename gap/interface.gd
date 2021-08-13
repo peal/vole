@@ -230,8 +230,11 @@ DeclareGlobalFunction("VoleFind.Group");
 #!
 #! @InsertChunk valueoption
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> tuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;
+#! gap> VoleFind.Coset(VoleCon.InGroup(SymmetricGroup(6)), tuple_transport);
+#! RightCoset(Group([ (5,6), (4,5,6) ]),(3,4,6))
+#! gap> VoleFind.Coset(AlternatingGroup(4), tuple_transport);
+#! fail
 #! @EndExampleSession
 DeclareGlobalFunction("VoleFind.Coset");
 
@@ -271,85 +274,149 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! See the beginning of Section&nbsp;<Ref Sect="Section_interface_canonical"/>
 #! for a definition of these terms.
 #!
-#! **<B>Please note</B> that the forthcoming details are crucial for obtaining
-#! meaningful and comparable results from <Ref Func="VoleFind.Canonical"/>.
-#! Therefore, for users who:**
-#! * **wish to compute a canonical permutation/image
-#!   of an object under an action that is listed in the table in
-#!   <Ref Func="VoleCon.Stabilise"/>, and**
-#! * **do not wish to specify particular refiners for this
-#!   (refiners are introduced and discussed in
-#!    Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>),**
-#! **we suggest using the functions <Ref Func="Vole.CanonicalPerm"/> and
-#! <Ref Func="Vole.CanonicalImage"/>, which provide a much simpler interface
-#! to accommodate this simpler use case.**
+#! The forthcoming details are crucial for obtaining
+#! meaningful results from <Ref Func="VoleFind.Canonical"/>.
+#!
+#! **For users who
+#! wish to canonise an object under an action listed in the table in
+#! <Ref Func="VoleCon.Stabilise"/>, and who
+#! do not wish to specify particular refiners,
+#! it may be easier to use the simpler functions
+#! <Ref Func="Vole.CanonicalPerm"/> and
+#! <Ref Func="Vole.CanonicalImage"/>.**
 #!
 #! The first argument to <Ref Func="VoleFind.Canonical"/>
 #! must be the group <A>G</A> in which to canonise.
 #! The remaining <A>arguments</A> specify the rest of the canonisation problem;
-#! in particular, they define the object and the action.
+#! in particular, they define the relevant object and action.
 #!
 #! The <A>arguments</A> that follow <A>G</A> may be given separately,
-#! or as a list.
-#! Each of the <A>arguments</A> must be an instance of a &Vole; constraint
-#! <Ref Func="VoleCon.Stabilise"/>,
-#! <Ref Func="VoleCon.Normalise"/>, or
-#! <Ref Func="VoleCon.Centralise"/>
-#! (Chapter&nbsp;<Ref Chap="Chapter_Constraints"/>),
-#! or a special kind of refiner
-#! (Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>).
+#! or in a list.
+#! Each of the <A>arguments</A> must be an instance of a
+#! <Ref Func="VoleCon.Stabilise"/> constraint,
+#! either directly, or indirectly as an instance of
+#! <Ref Func="VoleCon.Normalise"/> or
+#! <Ref Func="VoleCon.Centralise"/>.
+#! <B>Note that it is not permitted to include constraints of the kind
+#! produced by</B>
+#! <Ref Func="VoleCon.InGroup"/>.
 #!
-#! In particular, the constraint implied by each of the <A>arguments</A>
-#! must be such that...
+#! It is also permitted to include special kinds of refiners as arguments
+#! to <Ref Func="VoleFind.Canonical"/>, although we do not yet document the
+#! details of this,
+#! since the theory and implementation is still under active development.
+#! (Refiners will be documented in Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>).
 #!
-#! Moreover, for users who wish to canonise multiple objects with respect to the
-#! same group and action (which is the typical use case),
-#! then
-#! it is crucial to perform these computations in the same &GAP; session,
-#! with the constraints given in a consistent way.
+#! For the following, we will suppose that <A>arguments...</A> is a list of
+#! `k` constraints `VoleCon.Stabilise(object_i,action_i)`,
+#! for `i=1..k` in sequence.
+#! Then <Ref Func="VoleFind.Canonical"/> canonises the `k`-tuple
+#! `[object_1,...,object_k]`, where the action on the `i`-th coordinate is
+#! `action_i`.
 #!
-#! For each constraint, the set of permutations satisfying the constraint
-#! must be definable as the set of permutations that stabilise some object
-#! under an action of <A>G</A>.
-#! The &Vole; constraints of this kind are
-#! In particular, the constraint <Ref Func="VoleCon.InGroup"/> is not permitted,
-#! in general.
+#! In order to canonise in <A>G</A> another `k`-tuple of the same kind, such as
+#! `[nextobject_1,...,nextobject_k]` with respect to the same action,
+#! and in a way that is comparable to the first canonisation,
+#! it is necessary to call <Ref Func="VoleFind.Canonical"/> with the same group
+#! <A>G</A> followed by the <A>arguments...</A>
+#! `VoleCon.Stabilise(nextobject_i,action_i)`, <B>in the same order</B>.
 #!
-#! It is guaranteed that when canonising, &Vole; constraints are
-#! translated into refiners in a way that is nice.
-#!
-#! As a side effect of computing a canonical permutation,
-#! you get the stabiliser.
-#!
-#! Note: you have to give the same constraints in the same order
-#!
-#! The constraints must be (equivalent) to something of the form
-#! `VoleCon.Stabilise(object,action)`, such that <A>G</A> "acts
-#! on" <A>object</A>.
-#!
-#! Refiners must form a refiner family.
-#!
-#! In the sense that the set of all permutations satisfying
-#! the constraint is a stabiliser of some `object` under an `action`.
-#! For example, `VoleCon.Normalise(G)`!
-#!
-#! Suppose the i-th constraint is equivalent to
-#! `VoleCon.Stabilise(object_i,action_i)`.
-#!
-#! Then `VoleFind.Canonical` searches for the canonical image of
-#!
-#! The result of <Ref Func="VoleFind.Canonical"/> is given as a record, with the
-#! following components:
-#! * `canonical`: blah
-#! * `group`: blah
+#! The result of <Ref Func="VoleFind.Canonical"/> is given as a record,
+#! with the following components
+#! (see the beginning of Section&nbsp;<Ref Sect="Section_interface_canonical"/>
+#! for a definition of some of the following terms):
+#! * `canonical`: a canonical permutation in <A>G</A> for the object, with
+#!    respect to the action.
+#! * `group`: the stabiliser of the object in <A>G</A>, under the action.
+#!   This is computed as a by-product of canonisation.
 #!
 #! @InsertChunk valueoption
 #!
 #! @InsertChunk canonical-warning-session
 #! @InsertChunk canonical-warning-ordering
 #!
+#! In the following examples, we first show how to canonise two cycle digraphs
+#! in the alternating group of degree $6$, to find that they are indeed in the
+#! same orbit of $A_6$ under the natural action.
+#! We canonise them again in a different group, but this time as
+#! **vertex-coloured** digraphs, by canonising them digraph simultaneously
+#! with a corresponding colouring of the vertices.
 #! @BeginExampleSession
-#! gap> true;
+#! gap> cycle := CycleDigraph(6);;
+#! gap> reverse := DigraphReverse(cycle);;
+#! gap> A6 := AlternatingGroup(6);;
+#! gap> canon1 := VoleFind.Canonical(A6, VoleCon.Stabilise(cycle, OnDigraphs));
+#! rec( canonical := (1,3,4,6,5), group := Group([ (1,3,5)(2,4,6) ]) )
+#! gap> canon2 := VoleFind.Canonical(A6,
+#! >                                 VoleCon.Stabilise(reverse, OnDigraphs));
+#! rec( canonical := (1,4,5), group := Group([ (1,3,5)(2,4,6) ]) )
+#! @EndExampleSession
+#! Let us verify that the canonical permutations are indeed in $A_6$, and
+#! that the `group` record component is indeed the stabiliser in $A_6$:
+#! @BeginExampleSession
+#! gap> SignPerm(canon1.canonical) = 1 and SignPerm(canon2.canonical) = 1
+#! > and canon1.group = Vole.Stabiliser(A6, cycle, OnDigraphs)
+#! > and canon2.group = Vole.Stabiliser(A6, reverse, OnDigraphs);
+#! true
+#! @EndExampleSession
+#! Next, let's compare the canonical images of the digraphs,
+#! to test whether they are in the same orbit of $A_6$.
+#! et us also verify this result with <Ref Func="Vole.RepresentativeAction"/>:
+#! @BeginExampleSession
+#! gap> OnDigraphs(cycle, canon1.canonical)
+#! > = OnDigraphs(reverse, canon2.canonical);
+#! true
+#! gap> Vole.RepresentativeAction(A6, cycle, reverse, OnDigraphs);
+#! (1,5)(2,4)
+#! @EndExampleSession
+#! Next, we turn to vertex-coloured digraphs. This time, we will canonise
+#! in the 2-transitive group `G` defined below. We first verify that `cycle`
+#! and `reverse` are in the same orbit of `G`, as digraphs:
+#! @BeginExampleSession
+#! gap> G := Group([ (1,2,3,4,6), (1,4)(5,6) ]);;
+#! gap> Vole.RepresentativeAction(G, cycle, reverse, OnDigraphs) <> fail;
+#! true
+#! @EndExampleSession
+#! We will colour the vertices `1`, `3`, and `5` of `cycle` with colour `1`,
+#! and the remainder with colour `2`; and we will colour the vertices of
+#! `reverse` in the opposite way.
+#! @BeginExampleSession
+#! gap> colours1 := [[1,3,5],[2,4,6]];;
+#! gap> colours2 := [[2,4,6],[1,3,5]];;
+#! @EndExampleSession
+#! We may therefore consider a vertex-coloured digraph as a pair
+#! `[digraph,colours]`, with `colours` in the above form, and a permutation
+#! group acts on vertex-coloured digraphs by acting via `OnDigraphs` on the
+#! first component, and acting via `OnTuplesSets` on the second component.
+#! @BeginExampleSession
+#! gap> canon1 := VoleFind.Canonical(G,
+#! >                                 VoleCon.Stabilise(cycle, OnDigraphs),
+#! >                                 VoleCon.Stabilise(colours1, OnTuplesSets));
+#! rec( canonical := (1,5,2,3,6), group := Group(()) )
+#! gap> canon2 := VoleFind.Canonical(G,
+#! >                                 VoleCon.Stabilise(reverse, OnDigraphs),
+#! >                                 VoleCon.Stabilise(colours2, OnTuplesSets));
+#! rec( canonical := (1,6,5,4,3), group := Group(()) )
+#! @EndExampleSession
+#! We find that these vertex-coloured digraphs are not in the same orbit of `G`:
+#! @BeginExampleSession
+#! gap> OnDigraphs(cycle, canon1.canonical)
+#! > = OnDigraphs(reverse, canon2.canonical);
+#! false
+#! @EndExampleSession
+#! However, if we canonise them again in the whole symmetric group of degree 6,
+#! we find that they **are** in the same orbit of it as coloured digraphs:
+#! @BeginExampleSession
+#! gap> canon1 := VoleFind.Canonical(SymmetricGroup(6),
+#! >                                 VoleCon.Stabilise(cycle, OnDigraphs),
+#! >                                 VoleCon.Stabilise(colours1, OnTuplesSets));
+#! rec( canonical := (1,5,2,3,4,6), group := Group([ (1,3,5)(2,4,6) ]) )
+#! gap> canon2 := VoleFind.Canonical(SymmetricGroup(6),
+#! >                                 VoleCon.Stabilise(reverse, OnDigraphs),
+#! >                                 VoleCon.Stabilise(colours2, OnTuplesSets));
+#! rec( canonical := (1,3)(2,5,6,4), group := Group([ (1,3,5)(2,4,6) ]) )
+#! gap> OnDigraphs(cycle, canon1.canonical)
+#! > = OnDigraphs(reverse, canon2.canonical);
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("VoleFind.Canonical");

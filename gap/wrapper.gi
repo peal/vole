@@ -138,8 +138,9 @@ end;
 ################################################################################
 # Wrapper for the images package
 
-# Ignores raw := true
+# Respects raw := true
 Vole.CanonicalPerm := function(G, object, action...)
+    local ret;
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.CanonicalPerm: ",
                       "The first argument must be a perm group");
@@ -150,14 +151,20 @@ Vole.CanonicalPerm := function(G, object, action...)
     else
         action := OnPoints;
     fi;
-    return VoleFind.CanonicalPerm(G, VoleCon.Stabilize(object, action));
+    ret := VoleFind.Canonical(G, VoleCon.Stabilize(object, action));
+    if IsBound(ret.raw) then
+        return ret;
+    else
+        return ret.canonical;
+    fi;
 end;
 Vole.CanonicalImagePerm := Vole.CanonicalPerm;
 
 # Ignores raw := true
 Vole.CanonicalImage := function(G, object, action...)
-    local x;
-    x := CallFuncList(Vole.CanonicalPerm, Concatenation([G, object], action));
+    local x, args;
+    args := Concatenation([G, object], action);
+    x := CallFuncList(Vole.CanonicalPerm, args : raw := false);
     return action[1](object, x);
 end;
 

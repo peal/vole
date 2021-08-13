@@ -161,4 +161,5 @@ true
 
 @Section Computing a canonical image
 
-Not yet written.
+See the end of the manual entry for <Ref Func="VoleFind.Canonical"/>
+for an example of canonisation with &Vole;.
