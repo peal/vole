@@ -18,7 +18,7 @@ true
 gap> Vole.Intersection(SymmetricGroup(5), AlternatingGroup(5))
 > = AlternatingGroup(5);
 true
-gap> Vole.Intersection(SymmetricGroup(5), AlternatingGroup(5)
+gap> Vole.Intersection([SymmetricGroup(5), AlternatingGroup(5)]
 > : raw := true).group
 > = AlternatingGroup(5);
 true

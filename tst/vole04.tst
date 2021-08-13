@@ -82,7 +82,7 @@ false
 gap> Vole.IsConjugate(Group([ (5,6) ]), x, y);
 true
 
-# doc/_Chapter_wrapper.xml:476-483
+# doc/_Chapter_wrapper.xml:480-487
 gap> LoadPackage("orbitalgraphs", false);;
 gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;  # A4 on six points
 gap> (3,6) in G;
@@ -90,23 +90,35 @@ false
 gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
 true
 
-# doc/_Chapter_wrapper.xml:544-547
+# doc/_Chapter_wrapper.xml:558-561
+gap> Vole.CanonicalPerm(PSL(2,5), JohnsonDigraph(4,2), OnDigraphs);
+(1,2,6)(3,4,5)
+
+# doc/_Chapter_wrapper.xml:597-612
+gap> tuple1 := [1,2,3,4];; tuple2 := [1,2,3,5];; tuple3 := [1,5,2,3];;
+gap> A5 := AlternatingGroup(5);;
+gap> Vole.CanonicalImage(A5, tuple1, OnTuples);
+[ 5, 4, 3, 2 ]
+gap> Vole.CanonicalImage(A5, tuple2, OnTuples);
+[ 4, 5, 3, 2 ]
+gap> Vole.CanonicalImage(A5, tuple3, OnTuples);
+[ 4, 5, 3, 2 ]
+gap> Vole.RepresentativeAction(A5, tuple1, tuple2, OnTuples);
+fail
+gap> Vole.RepresentativeAction(A5, tuple1, tuple3, OnTuples);
+fail
+gap> Vole.RepresentativeAction(A5, tuple2, tuple3, OnTuples);
+(2,5,3)
+
+# doc/_Chapter_wrapper.xml:684-687
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:579-582
+# doc/_Chapter_wrapper.xml:710-713
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:654-657
-gap> true;
-true
-
-# doc/_Chapter_wrapper.xml:680-683
-gap> true;
-true
-
-# doc/_Chapter_wrapper.xml:706-709
+# doc/_Chapter_wrapper.xml:736-739
 gap> true;
 true
 

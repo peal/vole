@@ -552,6 +552,8 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #! <B>Warning</B>: this function currently requires the &OrbitalGraphs;
 #! package, and it will give an error if &OrbitalGraphs; is not yet loaded.
 #! 
+#! @InsertChunk gap-faster
+#! @InsertChunk bettergroup
 #! @BeginExampleSession
 #! gap> LoadPackage("orbitalgraphs", false);;
 #! gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;  # A4 on six points
@@ -600,27 +602,39 @@ DeclareGlobalFunction("Vole.TwoClosure");
 #! @Arguments G, object[, action]
 #! @Returns A permutation
 #! @Description
-#! This function emulates <Ref Func="CanonicalImagePerm" BookName="images" Style="Number" />
-#! from the &images; package,
-#! although it supports a wider range of objects and actions.
+#! These functions, which are synonyms of each other, emulate
+#! <Ref Func="CanonicalImagePerm" BookName="images" Style="Number" />
+#! from the &images; package, although they supports a wider range of
+#! objects and actions.
 #!
-#! Text about `Vole.CanonicalPerm`...
+#! Suppose that <A>G</A> is a group,
+#! and that <A>object</A> and `object2` belong to a set on which <A>G</A>
+#! has a group <A>action</A>.
+#! Then `Vole.CanonicalPerm(<A>G</A>,<A>object</A>,<A>action</A>)` returns
+#! an element `g` of <A>G</A>,
+#! and `Vole.CanonicalPerm(<A>G</A>,object2,<A>action</A>)` returns
+#! an element `h` of <A>G</A>,
+#! such that <A>object</A> and `object2` are in the same orbit of <A>G</A>
+#! under <A>action</A> if and only if `<A>object</A>^g = object2^h`.
 #!
 #! @InsertChunk AvailableActions
 #!
 #! @InsertChunk DefaultAction
 #!
-#! <Ref Func="VoleFind.CanonicalPerm"/>
+#! @BeginChunk native-canonical
+#! The native &Vole; interface for this kind of computation is provided by
+#! <Ref Func="VoleFind.CanonicalPerm"/>.
+#! @EndChunk
+#! @InsertChunk native-canonical
 #!
 #! @InsertChunk canonical-warning-session
 #! @EndGroup
 DeclareGlobalFunction("Vole.CanonicalPerm");
 #! @Arguments G, object[, action]
 #! @Group CanonicalPerm
-
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> Vole.CanonicalPerm(PSL(2,5), JohnsonDigraph(4,2), OnDigraphs);
+#! (1,2,6)(3,4,5)
 #! @EndExampleSession
 #! @InsertChunk ActionsTable
 DeclareGlobalFunction("Vole.CanonicalImagePerm");
@@ -636,19 +650,40 @@ DeclareGlobalFunction("Vole.CanonicalImagePerm");
 #! from the &images; package,
 #! although it supports a wider range of objects and actions.
 #!
-#! Text about `Vole.CanonicalImage`...
+#! <Ref Func="Vole.CanonicalImage"/> returns `<A>object</A>^g`, where
+#! `g` is the permutation returned by
+#! Vole.CanonicalPerm(<A>G</A>,<A>object</A>,<A>action</A>).
+#! See <Ref Func="Vole.CanonicalPerm"/> for more information.
 #!
 #! @InsertChunk AvailableActions
 #!
 #! @InsertChunk DefaultAction
 #!
-#! <Ref Func="VoleFind.CanonicalPerm"/>
+#! @InsertChunk native-canonical
 #!
 #! @InsertChunk canonical-warning-session
-
+#!
+#! In the following example, we find that three different tuples of points
+#! have two different canonical images in $A_5$:
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> tuple1 := [1,2,3,4];; tuple2 := [1,2,3,5];; tuple3 := [1,5,2,3];;
+#! gap> A5 := AlternatingGroup(5);;
+#! gap> Vole.CanonicalImage(A5, tuple1, OnTuples);
+#! [ 5, 4, 3, 2 ]
+#! gap> Vole.CanonicalImage(A5, tuple2, OnTuples);
+#! [ 4, 5, 3, 2 ]
+#! gap> Vole.CanonicalImage(A5, tuple3, OnTuples);
+#! [ 4, 5, 3, 2 ]
+#! @EndExampleSession
+#! Therefore, the tuples with the same canonical image are in the same orbit
+#! of $A_5$, and those with different canonical images are in different orbits:
+#! @BeginExampleSession
+#! gap> Vole.RepresentativeAction(A5, tuple1, tuple2, OnTuples);
+#! fail
+#! gap> Vole.RepresentativeAction(A5, tuple1, tuple3, OnTuples);
+#! fail
+#! gap> Vole.RepresentativeAction(A5, tuple2, tuple3, OnTuples);
+#! (2,5,3)
 #! @EndExampleSession
 #! @InsertChunk ActionsTable
 DeclareGlobalFunction("Vole.CanonicalImage");
