@@ -8,7 +8,9 @@
 VoleCon.Stabilize := function(object, action...)
 
     # Determine action: default is OnPoints
-    if Length(action) = 1 and IsFunction(action[1]) then
+    if Length(action) = 1 and IsFunction(action[1]) and
+      (NumberArgumentsFunction(action[1]) = 2 or
+       NumberArgumentsFunction(action[1]) < 0) then
         action := action[1];
     elif Length(action) = 0 then
         action := OnPoints;
@@ -78,7 +80,9 @@ VoleCon.Stabilise := VoleCon.Stabilize;
 VoleCon.Transport := function(object1, object2, action...)
 
     # Determine action: default is OnPoints
-    if Length(action) = 1 and IsFunction(action[1]) then
+    if Length(action) = 1 and IsFunction(action[1]) and
+      (NumberArgumentsFunction(action[1]) = 2 or
+       NumberArgumentsFunction(action[1]) < 0) then
         action := action[1];
     elif Length(action) = 0 then
         action := OnPoints;
