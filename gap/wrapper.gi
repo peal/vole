@@ -9,6 +9,7 @@
 ################################################################################
 # Wrapper for the GAP library
 
+# Respects raw := true
 Vole.Intersection := function(permcolls...)
     local ret, i;
     if IsEmpty(permcolls) then
@@ -26,23 +27,25 @@ Vole.Intersection := function(permcolls...)
         return VoleFind.Group(permcolls);
     else
         ret := VoleFind.Coset(permcolls);
-        if ret = fail then
-            return [];
+        if ret <> fail then
+            return ret; # Always returns here if ValueOption raw := true
         else
-            return ret;
+            return [];
         fi;
     fi;
 end;
 
+# Respects raw := true
 Vole.Stabilizer := function(G, object, action...)
     local con, ret;
     con := CallFuncList(VoleCon.Stabilize, Concatenation([object], action));
     ret := VoleFind.Group(G, con);
-    SetParent(ret, G);
+    _Vole.setParent(ret, G);
     return ret;
 end;
 Vole.Stabiliser := Vole.Stabilizer;
 
+# Respects raw := true
 Vole.Normalizer := function(G, U)
     local ret;
     if not IsPermGroup(G) then
@@ -56,11 +59,12 @@ Vole.Normalizer := function(G, U)
         ErrorNoReturn("Vole.Normalizer: The second argument ",
                       "must a perm group or a permutation");
     fi;
-    SetParent(ret, G);
+    _Vole.setParent(ret, G);
     return ret;
 end;
 Vole.Normaliser := Vole.Normalizer;
 
+# Respects raw := true
 Vole.Centralizer := function(G, x)
     local ret;
     if not IsPermGroup(G) then
@@ -71,11 +75,12 @@ Vole.Centralizer := function(G, x)
                       "must be a perm group or a permutation");
     fi;
     ret := VoleFind.Group(G, VoleCon.Centralize(x));
-    SetParent(ret, G);
+    _Vole.setParent(ret, G);
     return ret;
 end;
 Vole.Centraliser := Vole.Centralizer;
 
+# Ignores raw := true
 Vole.IsConjugate := function(G, x, y)
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.IsConjugate: ",
@@ -84,9 +89,10 @@ Vole.IsConjugate := function(G, x, y)
         ErrorNoReturn("Vole.IsConjugate: The second and third arguments ",
                       "must either be both permutations or both perm groups");
     fi;
-    return Vole.RepresentativeAction(G, x, y) <> fail;
+    return Vole.RepresentativeAction(G, x, y : raw := false) <> fail;
 end;
 
+# Respects raw := true
 Vole.RepresentativeAction := function(G, object1, object2, action...)
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.RepresentativeAction: ",
@@ -102,6 +108,7 @@ Vole.RepresentativeAction := function(G, object1, object2, action...)
     return VoleFind.Representative(G, VoleCon.Transport(object1, object2, action));
 end;
 
+# Sometimes respects raw := true (depending on whether it does a search)
 Vole.TwoClosure := function(G)
     local points, func, digraphs, digraph_cons;
     if not IsPermGroup(G) then
@@ -134,6 +141,7 @@ end;
 ################################################################################
 # Wrapper for the images package
 
+# Ignores raw := true
 Vole.CanonicalPerm := function(G, object, action...)
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.CanonicalPerm: ",
@@ -149,6 +157,7 @@ Vole.CanonicalPerm := function(G, object, action...)
 end;
 Vole.CanonicalImagePerm := Vole.CanonicalPerm;
 
+# Ignores raw := true
 Vole.CanonicalImage := function(G, object, action...)
     local x;
     x := CallFuncList(Vole.CanonicalPerm, Concatenation([G, object], action));
@@ -159,50 +168,33 @@ end;
 ################################################################################
 # Wrapper for the Digraphs package
 
+# Respects raw := true
 Vole.AutomorphismGroup := function(D, colours...)
-    local verts;
     if not IsDigraph(D) then
         ErrorNoReturn("Vole.AutomorphismGroup: ",
                       "The first argument must be a digraph");
-    fi;
-    verts := DigraphVertices(D);
-    # TODO: is there are benefit/necessity to special case these tiny cases?
-    if Length(verts) <= 1 then
-        return TrivialGroup(IsPermGroup);
-    fi;
-    if not IsEmpty(colours) then
+    elif not IsEmpty(colours) then
         ErrorNoReturn("not yet implemented for vertex/edge colours");
     fi;
-    return Vole.Stabilizer(SymmetricGroup(verts), D, OnDigraphs);
+    return Vole.Stabilizer(SymmetricGroup(DigraphVertices(D)), D, OnDigraphs);
 end;
 
+# Ignores raw := true
 Vole.CanonicalDigraph := function(D)
-    local verts;
     if not IsDigraph(D) then
         ErrorNoReturn("Vole.AutomorphismGroup: ",
                       "The first argument must be a digraph");
     fi;
-    verts := DigraphVertices(D);
-    # TODO: is there are benefit/necessity to special case these tiny cases?
-    if Length(verts) <= 1 then
-        return D;
-    fi;
-    return Vole.CanonicalImage(SymmetricGroup(verts), D, OnDigraphs);
+    return Vole.CanonicalImage(SymmetricGroup(DigraphVertices(D)), D, OnDigraphs);
 end;
 
+# Ignores raw := true
 Vole.DigraphCanonicalLabelling := function(D, colours...)
-    local verts;
     if not IsDigraph(D) then
         ErrorNoReturn("Vole.AutomorphismGroup: ",
                       "The first argument must be a digraph");
-    fi;
-    verts := DigraphVertices(D);
-    # TODO: is there are benefit/necessity to special case these tiny cases?
-    if Length(verts) <= 1 then
-        return ();
-    fi;
-    if not IsEmpty(colours) then
+    elif not IsEmpty(colours) then
         ErrorNoReturn("not yet implemented for vertex/edge colours");
     fi;
-    return Vole.CanonicalPerm(SymmetricGroup(verts), D, OnDigraphs);
+    return Vole.CanonicalPerm(SymmetricGroup(DigraphVertices(D)), D, OnDigraphs);
 end;

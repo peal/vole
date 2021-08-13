@@ -466,14 +466,22 @@ DeclareGlobalFunction("Vole.Normalizer");
 #! <Ref Func="Vole.Centraliser"/> emulates the built-in &GAP; operation
 #! <Ref Oper="Centraliser" BookName="Ref" Style="Number"/>.
 #!
-#! Text about this
+#! If <A>G</A> is a group and <A>x</A> is a permutation, then
+#! this function returns the subgroup of <A>G</A> comprising its elements
+#! that commute with <A>x</A>.
+#!
+#! If instead <A>x</A> is group, then this function returns the subgroup
+#! of <A>G</A> comprising its elements that commute with all elements
+#! of <A>x</A>.
 DeclareGlobalFunction("Vole.Centraliser");
 #! @EndGroup
 #! @Arguments G, x
 #! @Group Cent
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> Vole.Centraliser(MathieuGroup(12), (1,11,9,4,3,2)(5,7,8,6,12,10));
+#! Group([ (1,2,3,4,9,11)(5,10,12,6,8,7), (1,5,3,12,9,8)(2,10,4,6,11,7) ])
+#! gap> Vole.Centraliser(Group((1,2,3,4,5,6)), DihedralGroup(IsPermGroup, 12));
+#! Group([ (1,4)(2,5)(3,6) ])
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.Centralizer");
 
@@ -499,17 +507,28 @@ DeclareGlobalFunction("Vole.Centralizer");
 #!
 #! @InsertChunk gap-faster
 #! @InsertChunk betterrep
-
+#!
+#! Conjugacy of permutations:
 #! @BeginExampleSession
 #! gap> # Conjugacy of permutations
 #! gap> x := (1,2,3,4,5);; y := (1,2,3,4,6);;
-#! gap> IsConjugate(SymmetricGroup(6), x, y);
+#! gap> Vole.IsConjugate(SymmetricGroup(6), x, y);
 #! true
-#! gap> IsConjugate(AlternatingGroup(6), x, y);
+#! gap> Vole.IsConjugate(AlternatingGroup(6), x, y);
 #! false
-#! gap> IsConjugate(Group([ (5,6) ]), x, y);
+#! gap> Vole.IsConjugate(Group([ (5,6) ]), x, y);
 #! true
-#! gap> # Conjugacy of groups
+#! @EndExampleSession
+#! Conjugacy of groups:
+#! @BeginExampleSession
+#! gap> x := Group([ (1,2,3,4,5) ]);;
+#! gap> y := Group([ (1,2,3,4,6) ]);;
+#! gap> Vole.IsConjugate(SymmetricGroup(6), x, y);
+#! true
+#! gap> Vole.IsConjugate(Group([ (1,2)(3,4) ]), x, y);
+#! false
+#! gap> Vole.IsConjugate(Group([ (5,6) ]), x, y);
+#! true
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.IsConjugate");
 #! @EndGroup
