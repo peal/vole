@@ -436,8 +436,9 @@ DeclareGlobalFunction("Vole.RepresentativeAction");
 #! <Ref Oper="Normaliser" BookName="Ref" Style="Number"/>.
 #!
 #! If <A>G</A> and <A>U</A> are permutation groups, then
-#! this function returns the **normaliser** $N_{G}(U)$ of <A>U</A> in
-#! <A>G</A>, which is the stabiliser of <A>U</A> under conjugation by <A>G</A>.
+#! this function returns the **normaliser** of <A>U</A> in <A>G</A>,
+#! $N_{G}(U)$,
+#! which is the stabiliser of <A>U</A> under conjugation by <A>G</A>.
 #! If <A>U</A> is instead a permutation, then
 #! `Vole.Normalizer(<A>G</A>,<A>U</A>)` returns $N_{G}(\langle U \rangle)$.
 #!
@@ -448,7 +449,10 @@ DeclareGlobalFunction("Vole.Normaliser");
 #! @Arguments G, U
 #! @Group Norm
 #! @BeginExampleSession
-#! gap> true;
+#! gap> Vole.Normaliser(SymmetricGroup(6), PSL(2,5)) = PGL(2,5);
+#! true
+#! gap> D12 := DihedralGroup(IsPermGroup, 12);;
+#! gap> Vole.Normaliser(SymmetricGroup(6), (1,2,3,4,5,6)) = D12;
 #! true
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.Normalizer");
@@ -531,7 +535,7 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #! 
 #! @BeginExampleSession
 #! gap> LoadPackage("orbitalgraphs", false);;
-#! gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;
+#! gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;  # A4 on six points
 #! gap> (3,6) in G;
 #! false
 #! gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));

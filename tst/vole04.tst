@@ -49,15 +49,18 @@ gap> D := CycleDigraph(6);;
 gap> Vole.RepresentativeAction(PGL(2,5), D, DigraphReverse(D), OnDigraphs);
 (1,4)(2,3)(5,6)
 
-# doc/_Chapter_wrapper.xml:359-362
+# doc/_Chapter_wrapper.xml:360-366
+gap> Vole.Normaliser(SymmetricGroup(6), PSL(2,5)) = PGL(2,5);
+true
+gap> D12 := DihedralGroup(IsPermGroup, 12);;
+gap> Vole.Normaliser(SymmetricGroup(6), (1,2,3,4,5,6)) = D12;
+true
+
+# doc/_Chapter_wrapper.xml:384-387
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:380-383
-gap> true;
-true
-
-# doc/_Chapter_wrapper.xml:414-424
+# doc/_Chapter_wrapper.xml:418-428
 gap> # Conjugacy of permutations
 gap> x := (1,2,3,4,5);; y := (1,2,3,4,6);;
 gap> IsConjugate(SymmetricGroup(6), x, y);
@@ -68,31 +71,31 @@ gap> IsConjugate(Group([ (5,6) ]), x, y);
 true
 gap> # Conjugacy of groups
 
-# doc/_Chapter_wrapper.xml:450-457
+# doc/_Chapter_wrapper.xml:454-461
 gap> LoadPackage("orbitalgraphs", false);;
-gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;
+gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;  # A4 on six points
 gap> (3,6) in G;
 false
 gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
 true
 
-# doc/_Chapter_wrapper.xml:518-521
+# doc/_Chapter_wrapper.xml:522-525
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:553-556
+# doc/_Chapter_wrapper.xml:557-560
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:628-631
+# doc/_Chapter_wrapper.xml:632-635
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:654-657
+# doc/_Chapter_wrapper.xml:658-661
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:680-683
+# doc/_Chapter_wrapper.xml:684-687
 gap> true;
 true
 
