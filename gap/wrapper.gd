@@ -6,28 +6,36 @@
 # Declarations: Wrappers for Vole functions that emulate GAP/images/Digraphs
 
 #! @Chunk better
-#! Note that it may be possible to obtain better performance from &Vole; with
-#! the native interface, see
+#! It may be possible to obtain better performance from &Vole; by
+#! specifying custom refiners with the native interface, see
+#! @EndChunk
+
+#! @Chunk refiner-chapref
+#! and Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>.
 #! @EndChunk
 
 #! @Chunk bettergroup
 #! @InsertChunk better
-#! <Ref Func="VoleFind.Group"/>.
+#! <Ref Func="VoleFind.Group"/>
+#! @InsertChunk refiner-chapref
 #! @EndChunk
 
 #! @Chunk betterrep
 #! @InsertChunk better
-#! <Ref Func="VoleFind.Rep"/>.
+#! <Ref Func="VoleFind.Rep"/>
+#! @InsertChunk refiner-chapref
 #! @EndChunk
 
 #! @Chunk bettercanonical
 #! @InsertChunk better
-#! <Ref Func="VoleFind.Canonical"/>.
+#! <Ref Func="VoleFind.Canonical"/>
+#! @InsertChunk refiner-chapref
 #! @EndChunk
 
 #! @Chunk betterall
 #! @InsertChunk better
-#! Chapter&nbsp;<Ref Chap="Chapter_Constraints"/>.
+#! Chapter&nbsp;<Ref Chap="Chapter_interface"/>
+#! @InsertChunk refiner-chapref
 #! @EndChunk
 
 #! @BeginChunk DefaultAction
@@ -38,8 +46,15 @@
 #! See <Ref Oper="\^" BookName="Ref"/>.
 #! @EndChunk
 
+#! @BeginChunk gap-faster
+#! There are many reasons why &GAP; may be faster than &Vole; for any
+#! particular problem; see Section&nbsp;<Ref Sect="Section_performance"/>
+#! for some discussion about this.
+#! @EndChunk
+
 #! @BeginChunk AvailableActions
-#! TODO: some text about which actions &Vole; supports.
+#! The permitted combinations of objects and actions are given in the table
+#! below.
 #! @EndChunk
 
 #! @BeginChunk ActionsTable
@@ -225,10 +240,8 @@ InstallValue(Vole, rec());
 #! @Section &Vole; functions emulating built-in &GAP; functions
 #! @SectionLabel gap_wrapper
 
-#! The following table gives a summary of the correspondence between &Vole; and
-#! &GAP; functions
-
-#! Some more text, explaining the following table.
+#! The following table gives a summary of the
+#! &Vole; wrapper functions and the corresponding &GAP; functions.
 
 #! <Table Align="ll">
 #! <Row>
@@ -293,20 +306,31 @@ InstallValue(Vole, rec());
 #! @Returns A perm group, a right coset, or an empty list
 #! @Description
 #! <Ref Func="Vole.Intersection"/> emulates the built-in &GAP; operation
-#! <Ref Oper="Intersection" BookName="Ref" Style="Number" />.
+#! <Ref Oper="Intersection" BookName="Ref" Style="Number" />,
+#! and returns the intersection of the groups and/or right coset arguments.
 #!
-#! Can be permgroups and/or right cosets.
+#! If all of the arguments are groups, then <Ref Func="Vole.Intersection"/>
+#! again returns a group.
+#! Otherwise, if the result is nonempty, then <Ref Func="Vole.Intersection"/>
+#! returns a &GAP; right coset object.
+#! Note that this non-group case differs from &GAP;'s
+#! <Ref Oper="Intersection" BookName="Ref" Style="Number" />,
+#! which always returns a list.
 #!
-#! Note that &Vole; is cool because it does all of the intersection
-#! simultaneously in one search, rather than iteratively intersecting pairs of
-#! things.
+#! Note that &Vole; performs the whole intersection in one search,
+#! rather than iteratively intersecting the arguments.
 #!
-#! &GAP; might have some clever special cases that we don't bother with.
-#!
+#! @InsertChunk gap-faster
 #! @InsertChunk betterall
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> A6 := AlternatingGroup(6);;
+#! gap> D12 := DihedralGroup(IsPermGroup, 12);;
+#! gap> Vole.Intersection(A6, D12);
+#! Group([ (2,6)(3,5), (1,3,5)(2,4,6) ])
+#! gap> Vole.Intersection(A6 * (1,2), D12 * (3,4));
+#! RightCoset(Group([ (2,6)(3,5), (1,3,5)(2,4,6) ]),(1,5)(2,3,4))
+#! gap> Vole.Intersection(A6 * (1,2), D12 * (3,4), PSL(2,5));
+#! [  ]
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.Intersection");
 #! @EndGroup
@@ -320,20 +344,34 @@ DeclareGlobalFunction("Vole.Intersection");
 #! <Ref Func="Vole.Stabiliser"/> emulates the built-in &GAP; operation
 #! <Ref Oper="Stabiliser" BookName="Ref" Style="Number"/>.
 #!
-#! Text about this.
+#! The **stabiliser** of an <A>object</A> in a group <A>G</A>
+#! under some group <A>action</A> is the subgroup of <A>G</A> of those
+#! elements that fix <A>object</A> under <A>action</A>,
+#! i.e. all permutations `g` in <A>G</A> such that
+#! `<A>action</A>(<A>object</A>,g)=<A>object</A>`.
 #!
 #! @InsertChunk AvailableActions
+#!
 #! @InsertChunk DefaultAction
 #!
+#! @InsertChunk gap-faster
 #! @InsertChunk bettergroup
 DeclareGlobalFunction("Vole.Stabiliser");
 #! @EndGroup
 #! @Arguments G, object[, action]
 #! @Group Stab
 #! @BeginExampleSession
-#! gap> true;
+#! gap> Vole.Stabiliser(PGL(2,5), [1,2,3], OnSets);
+#! Group([ (1,3)(5,6), (1,2,3)(4,5,6) ])
+#! gap> D := JohnsonDigraph(4,2);;
+#! gap> G := Stabiliser(PSL(2,5), JohnsonDigraph(4,2), OnDigraphs);;
+#! gap> G = Group([ (1,4,5)(2,6,3), (1,4)(3,6) ]);
+#! true
+#! gap> Elements(G)
+#! >  = SortedList(Filtered(PSL(2,5), g -> OnDigraphs(D, g) = D));
 #! true
 #! @EndExampleSession
+#! @InsertChunk ActionsTable
 DeclareGlobalFunction("Vole.Stabilizer");
 
 
@@ -347,19 +385,22 @@ DeclareGlobalFunction("Vole.Stabilizer");
 #! <Ref Oper="RepresentativeAction" BookName="Ref" Style="Number"/>.
 #!
 #! This function returns an element
-#! of the permutation group <A>G</A> that maps <A>object1</A> to <A>object2</A>
+#! of the perm group <A>G</A> that maps <A>object1</A> to <A>object2</A>
 #! under the given group <A>action</A>, if such an element exists,
 #! and it returns <K>fail</K> otherwise.
 #!
 #! @InsertChunk AvailableActions
+#!
 #! @InsertChunk DefaultAction
 #!
+#! @InsertChunk gap-faster
 #! @InsertChunk betterrep
 #!
 #! @BeginExampleSession
 #! gap> true;
 #! true
 #! @EndExampleSession
+#! @InsertChunk ActionsTable
 DeclareGlobalFunction("Vole.RepresentativeAction");
 #! @EndGroup
 
@@ -378,6 +419,7 @@ DeclareGlobalFunction("Vole.RepresentativeAction");
 #! If <A>U</A> is instead a permutation, then
 #! `Vole.Normalizer(<A>G</A>,<A>U</A>)` returns $N_{G}(\langle U \rangle)$.
 #!
+#! @InsertChunk gap-faster
 #! @InsertChunk bettergroup
 DeclareGlobalFunction("Vole.Normaliser");
 #! @EndGroup
@@ -429,6 +471,7 @@ DeclareGlobalFunction("Vole.Centralizer");
 #! <Ref Func="Vole.RepresentativeAction"/>, which finds a representative
 #! conjugating element, or proves that none exists.
 #!
+#! @InsertChunk gap-faster
 #! @InsertChunk betterrep
 
 #! @BeginExampleSession
@@ -446,7 +489,6 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #! @EndGroup
 
 
-# TODO: Also, does it apply to all groups or (like GAP) only to transitive ones?
 #! @BeginGroup TwoClosure
 #! @GroupTitle TwoClosure
 #! @Arguments G
@@ -464,14 +506,14 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #! <B>Warning</B>: this function currently requires the &OrbitalGraphs;
 #! package.
 #! 
-#! @BeginLogSession
-#! gap> LoadPackage("OrbitalGraphs", false);;
+#! @BeginExampleSession
+#! gap> LoadPackage("orbitalgraphs", false);;
 #! gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;
 #! gap> (3,6) in G;
 #! false
 #! gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
 #! true
-#! @EndLogSession
+#! @EndExampleSession
 DeclareGlobalFunction("Vole.TwoClosure");
 #! @EndGroup
 
@@ -519,6 +561,7 @@ DeclareGlobalFunction("Vole.TwoClosure");
 #! Text about `Vole.CanonicalPerm`...
 #!
 #! @InsertChunk AvailableActions
+#!
 #! @InsertChunk DefaultAction
 #!
 #! <Ref Func="VoleFind.CanonicalPerm"/>
@@ -533,6 +576,7 @@ DeclareGlobalFunction("Vole.CanonicalPerm");
 #! gap> true;
 #! true
 #! @EndExampleSession
+#! @InsertChunk ActionsTable
 DeclareGlobalFunction("Vole.CanonicalImagePerm");
 
 
@@ -549,6 +593,7 @@ DeclareGlobalFunction("Vole.CanonicalImagePerm");
 #! Text about `Vole.CanonicalImage`...
 #!
 #! @InsertChunk AvailableActions
+#!
 #! @InsertChunk DefaultAction
 #!
 #! <Ref Func="VoleFind.CanonicalPerm"/>
@@ -559,6 +604,7 @@ DeclareGlobalFunction("Vole.CanonicalImagePerm");
 #! gap> true;
 #! true
 #! @EndExampleSession
+#! @InsertChunk ActionsTable
 DeclareGlobalFunction("Vole.CanonicalImage");
 #! @EndGroup
 

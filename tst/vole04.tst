@@ -19,27 +19,40 @@ gap> Set(RecNames(Vole));
   "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer", 
   "TwoClosure" ]
 
-# doc/_Chapter_wrapper.xml:206-209
+# doc/_Chapter_wrapper.xml:211-220
+gap> A6 := AlternatingGroup(6);;
+gap> D12 := DihedralGroup(IsPermGroup, 12);;
+gap> Vole.Intersection(A6, D12);
+Group([ (2,6)(3,5), (1,3,5)(2,4,6) ])
+gap> Vole.Intersection(A6 * (1,2), D12 * (3,4));
+RightCoset(Group([ (2,6)(3,5), (1,3,5)(2,4,6) ]),(1,5)(2,3,4))
+gap> Vole.Intersection(A6 * (1,2), D12 * (3,4), PSL(2,5));
+[  ]
+
+# doc/_Chapter_wrapper.xml:253-263
+gap> Vole.Stabiliser(PGL(2,5), [1,2,3], OnSets);
+Group([ (1,3)(5,6), (1,2,3)(4,5,6) ])
+gap> D := JohnsonDigraph(4,2);;
+gap> G := Stabiliser(PSL(2,5), JohnsonDigraph(4,2), OnDigraphs);;
+gap> G = Group([ (1,4,5)(2,6,3), (1,4)(3,6) ]);
+true
+gap> Elements(G)
+>  = SortedList(Filtered(PSL(2,5), g -> OnDigraphs(D, g) = D));
+true
+
+# doc/_Chapter_wrapper.xml:298-301
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:235-238
+# doc/_Chapter_wrapper.xml:330-333
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:268-271
+# doc/_Chapter_wrapper.xml:351-354
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:296-299
-gap> true;
-true
-
-# doc/_Chapter_wrapper.xml:317-320
-gap> true;
-true
-
-# doc/_Chapter_wrapper.xml:349-359
+# doc/_Chapter_wrapper.xml:385-395
 gap> # Conjugacy of permutations
 gap> x := (1,2,3,4,5);; y := (1,2,3,4,6);;
 gap> IsConjugate(SymmetricGroup(6), x, y);
@@ -50,23 +63,31 @@ gap> IsConjugate(Group([ (5,6) ]), x, y);
 true
 gap> # Conjugacy of groups
 
-# doc/_Chapter_wrapper.xml:451-454
+# doc/_Chapter_wrapper.xml:420-427
+gap> LoadPackage("orbitalgraphs", false);;
+gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;
+gap> (3,6) in G;
+false
+gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
+true
+
+# doc/_Chapter_wrapper.xml:488-491
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:483-486
+# doc/_Chapter_wrapper.xml:523-526
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:556-559
+# doc/_Chapter_wrapper.xml:598-601
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:582-585
+# doc/_Chapter_wrapper.xml:624-627
 gap> true;
 true
 
-# doc/_Chapter_wrapper.xml:608-611
+# doc/_Chapter_wrapper.xml:650-653
 gap> true;
 true
 

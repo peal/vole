@@ -110,7 +110,7 @@ Vole.TwoClosure := function(G)
     fi;
 
     points := MovedPoints(G);
-    if not IsPackageLoaded("OrbitalGraphs") then
+    if not IsPackageLoaded("orbitalgraphs") then
         ErrorNoReturn("Vole.TwoClosure requires the OrbitalGraphs package, ",
                       "which is not currently loaded");
         #The following is quite slow, we don't include it for now
