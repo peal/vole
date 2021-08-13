@@ -127,3 +127,18 @@ _Vole.processConstraints := function(constraints)
     od;
     return constraints;
 end;
+
+# For some wrapper functions, we are explicitly asking for a subgroup of
+# the first argument G. GAP sets the parent of the result to be G, so we
+# should do this too. However, the result is sometimes a group, or sometimes
+# a record (in the 'raw' case), and so we have this little helper function
+# to reduce code repetition.
+_Vole.setParent := function(ret, G)
+    local obj;
+    if IsPermGroup(ret) then
+        obj := ret;
+    else
+        obj := ret.group;
+    fi;
+    SetParent(obj, G);
+end;
