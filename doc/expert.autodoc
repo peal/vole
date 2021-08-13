@@ -1,11 +1,6 @@
 @Chapter Expert use of &Vole;
 @ChapterLabel expert
 
-@Section Intro to that stuff
-
-This is doing to show how you can use configuration options,
-and perhaps lots of tips and tricks?
-
 @Section <C>InfoVole</C> – getting extra information about a &Vole; search
 @SectionLabel infovole
 
@@ -24,7 +19,53 @@ and perhaps lots of tips and tricks?
 @Section Options with the native &Vole; interface
 @SectionLabel options
 
-&Vole;...
+Most &Vole; functions support several options, which are implemented with the
+&GAP; options system, which is described in
+the &GAP; reference manual; see
+<Ref Chap="Options Stack" BookName="Ref"/>.
 
-* `raw`
-* `points`
+In brief, options can be set for a function call by first giving the arguments,
+then writing a colon, and then assigning values to some or all of the permitted
+option names.
+Note that <B>options are passed down to subsequent function calls</B> that are
+initiated by the original call.
+
+Here is an example of a &Vole; function call with the option `raw` set to
+<K>true</K>:
+@BeginLogSession
+gap> ret := Vole.Intersection(AlternatingGroup(6), PGL(2,5) : raw := true);
+rec( cosetrep := (), group := Group([ (3,5)(4,6), (2,3,4,6,5), (1,2,6)(3,4,5)
+     ]),
+  raw := rec( canonical := fail, rbase_branches := [ 1, 2, 3 ],
+      search_fix_order := [ 1, 2, 3, 6, 5, 4 ],
+      sols := [ [  ], [ 1, 2, 5, 6, 3, 4 ], [ 1, 3, 4, 6, 2, 5 ],
+          [ 2, 6, 4, 5, 3, 1 ] ],
+      stats := rec( bad_canonical := 0, bad_iso := 3, equal_canonical := 0,
+          gap_callbacks := rec( begin := 2, canonicalmin_time := 0,
+              changed := 24, check := 11, compare := 0, fixed := 38,
+              image := 0, is_group := 0, name := 0, rBaseFinished := 2,
+              refiner_time := 40, restore_state := 24, save_state := 24 ),
+          good_iso := 4, improve_canonical := 0, refiner_calls := 64,
+          search_nodes := 13, trace_fail_nodes := 0, vole_time := 136 ) ),
+  sols := [ (), (3,5)(4,6), (2,3,4,6,5), (1,2,6)(3,4,5) ], time := 220 )
+gap> ret.group = PSL(2,5);
+true
+@EndLogSession
+
+@Subsection Supported options
+
+* `points`: a non-negative integer or (default) <K>infinity</K>:
+    * This option can be used in place of the constraint
+      `VoleCon.LargestMovedPoint(points)`;
+      see <Ref Func="VoleCon.LargestMovedPoint"/>.
+    * Note that for relevant functions that accept constraints,
+      an integer argument is interpreted as an instance of a ‘largest moved
+      point’ constraint, which achieves the same affect as this option more
+      simply.
+* `raw`: <K>true</K> or (default) <K>false</K>:
+    * If <K>true</K>, then rather than returning an object as documented,
+      the function returns a record that contains detailed information
+      about the execution and result of the graph backtracking algorithm
+      that was executed. The meaning of this information is not yet documented,
+      sorry.
+    * Not all &Vole; functions support this option, although most do.
