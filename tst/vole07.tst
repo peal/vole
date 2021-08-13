@@ -10,7 +10,7 @@
 #
 gap> START_TEST("vole07.tst");
 
-# doc/_Chapter_Refiners.xml:31-38
+# doc/_Chapter_Refiners.xml:27-34
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(VoleRefiner));
 [ "DigraphStab", "DigraphTransporter", "InSymmetricGroup", "PointStab", 

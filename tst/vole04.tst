@@ -94,7 +94,7 @@ true
 gap> Vole.CanonicalPerm(PSL(2,5), JohnsonDigraph(4,2), OnDigraphs);
 (1,2,6)(3,4,5)
 
-# doc/_Chapter_wrapper.xml:597-612
+# doc/_Chapter_wrapper.xml:600-609
 gap> tuple1 := [1,2,3,4];; tuple2 := [1,2,3,5];; tuple3 := [1,5,2,3];;
 gap> A5 := AlternatingGroup(5);;
 gap> Vole.CanonicalImage(A5, tuple1, OnTuples);
@@ -103,6 +103,8 @@ gap> Vole.CanonicalImage(A5, tuple2, OnTuples);
 [ 4, 5, 3, 2 ]
 gap> Vole.CanonicalImage(A5, tuple3, OnTuples);
 [ 4, 5, 3, 2 ]
+
+# doc/_Chapter_wrapper.xml:614-621
 gap> Vole.RepresentativeAction(A5, tuple1, tuple2, OnTuples);
 fail
 gap> Vole.RepresentativeAction(A5, tuple1, tuple3, OnTuples);
@@ -110,17 +112,17 @@ fail
 gap> Vole.RepresentativeAction(A5, tuple2, tuple3, OnTuples);
 (2,5,3)
 
-# doc/_Chapter_wrapper.xml:684-687
-gap> true;
-true
+# doc/_Chapter_wrapper.xml:701-704
+gap> Vole.AutomorphismGroup(JohnsonDigraph(4,2));
+Group([ (3,4), (2,3,5,4), (1,2,6,5)(3,4) ])
 
-# doc/_Chapter_wrapper.xml:710-713
-gap> true;
-true
+# doc/_Chapter_wrapper.xml:734-737
+gap> Vole.DigraphCanonicalLabelling(JohnsonDigraph(4,2));
+(1,2,4,5,3,6)
 
-# doc/_Chapter_wrapper.xml:736-739
-gap> true;
-true
+# doc/_Chapter_wrapper.xml:764-767
+gap> Vole.CanonicalDigraph(JohnsonDigraph(4,2));
+<immutable digraph with 6 vertices, 24 edges>
 
 #
 gap> STOP_TEST("vole04.tst", 1);

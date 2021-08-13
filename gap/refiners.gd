@@ -10,13 +10,13 @@
 
 #! @Section Refiners
 
-#! Something.
-#! Something else.
+#! Refiners in &Vole; are still a work in progress, and are not yet documented.
+#! Please check back in the next version.
 
-#! There can be multiple refiners implemented for the same mathematical property
-#! with different tradeoffs, and also refiners implemented for special cases
-#! (such as symmetric and alternating groups). In general most users will want to
-#! use <Ref Var="VoleCon"/>, which provides a higher-level interface.
+# There can be multiple refiners implemented for the same mathematical property
+# with different tradeoffs, and also refiners implemented for special cases
+# (such as symmetric and alternating groups). In general most users will want to
+# use <Ref Var="VoleCon"/>, which provides a higher-level interface.
 
 
 #! @Section The <C>VoleRefiner</C> record

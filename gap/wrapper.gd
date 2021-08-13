@@ -739,24 +739,65 @@ DeclareGlobalFunction("Vole.CanonicalImage");
 
 #! @BeginGroup AutomorphismGroup
 #! @GroupTitle AutomorphismGroup
-#! @Arguments D[, vert_colours[, edge_colours]]
+#! @Arguments D
+#TODO: Implement @Arguments D[, vert_colours[, edge_colours]]
 #! @Returns A permutation group
 #! @Description
-#! <Ref Func="AutomorphismGroup" BookName="Digraphs" Style="Number" />
+#! <Ref Func="Vole.AutomorphismGroup"/> emulates the &Digraphs; package
+#! functions
+#! <Ref Attr="AutomorphismGroup" BookName="Digraphs" Style="Number" />,
+#! <Ref Attr="NautyAutomorphismGroup" BookName="Digraphs" Style="Number" />,
+#! and
+#! <Ref Attr="BlissAutomorphismGroup" BookName="Digraphs" Style="Number" />.
 #!
-#! <Ref Attr="NautyAutomorphismGroup" BookName="Digraphs" Style="Number" />
+#! This function returns the automorphism group of the digraph <A>D</A>.
+#! The **automorphism group** of <A>D</A> is the stabiliser of <A>D</A> in
+#! `SymmetricGroup(DigraphVertices(D))` under its natural action
+#! on digraphs, namely
+#! <Ref Oper="OnDigraphs" BookName="Digraphs" Style="Number"/>.
+#! The &Vole; function <Ref Func="Vole.Stabiliser"/> can be used
+#! to compute the stabiliser of <A>D</A> in an arbitrary permutation group.
 #!
-#! <Ref Attr="BlissAutomorphismGroup" BookName="Digraphs" Style="Number" />
-#!
-#! TODO
-#!
-#! <Ref Func="VoleFind.Group"/>
+#! @BeginChunk colours-NYI
+#! Support for specifying vertex and/or edge colours has not yet been
+#! implemented, sorry. We are working on it!
+#! @EndChunk
+#! @InsertChunk colours-NYI
 #!
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> Vole.AutomorphismGroup(JohnsonDigraph(4,2));
+#! Group([ (3,4), (2,3,5,4), (1,2,6,5)(3,4) ])
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.AutomorphismGroup");
+#! @EndGroup
+
+
+#! @BeginGroup DigraphCanonicalLabelling
+#! @GroupTitle DigraphCanonicalLabelling
+#TODO Implement @Arguments D[, colours]
+#! @Arguments D
+#! @Returns A permutation
+#! @Description
+#! <Ref Func="Vole.DigraphCanonicalLabelling"/> emulates the &Digraphs; package
+#! functions
+#! <Ref Attr="BlissCanonicalLabelling" BookName="Digraphs" Style="Number"/>
+#! and
+#! <Ref Attr="NautyCanonicalLabelling" BookName="Digraphs" Style="Number"/>.
+#!
+#! If <A>D</A> is a digraph, and `G=SymmetricGroup(DigraphVertices(<A>D</A>))`,
+#! then this function is a shortcut to
+#! `Vole.CanonicalPerm(G,<A>D</A>,OnDigraphs)`.
+#! It is also possible to use <Ref Func="Vole.CanonicalPerm"/> to canonise
+#! <A>D</A> in an arbitrary permutation group.
+#!
+#! @InsertChunk colours-NYI
+#!
+#! @InsertChunk canonical-warning-session
+#! @BeginExampleSession
+#! gap> Vole.DigraphCanonicalLabelling(JohnsonDigraph(4,2));
+#! (1,2,4,5,3,6)
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.DigraphCanonicalLabelling");
 #! @EndGroup
 
 
@@ -765,44 +806,22 @@ DeclareGlobalFunction("Vole.AutomorphismGroup");
 #! @Arguments D
 #! @Returns A digraph
 #! @Description
+#! <Ref Func="Vole.CanonicalDigraph"/> emulates the &Digraphs; package
+#! functions
 #! <Ref Oper="BlissCanonicalDigraph" BookName="Digraphs" Style="Number" />
 #! and
-#! <Ref Oper="NautyCanonicalDigraph" BookName="Digraphs" Style="Number" />
+#! <Ref Oper="NautyCanonicalDigraph" BookName="Digraphs" Style="Number" />.
 #!
-#! TODO
-#!
-#! <Ref Func="VoleFind.CanonicalPerm"/>
+#! If <A>D</A> is a digraph, and `G=SymmetricGroup(DigraphVertices(<A>D</A>))`,
+#! then this function is a shortcut to
+#! `Vole.CanonicalImage(G,<A>D</A>,OnDigraphs)`.
+#! It is also possible to use <Ref Func="Vole.CanonicalImage"/> to canonise
+#! <A>D</A> in an arbitrary permutation group.
 #!
 #! @InsertChunk canonical-warning-session
-
 #! @BeginExampleSession
-#! gap> true;
-#! true
+#! gap> Vole.CanonicalDigraph(JohnsonDigraph(4,2));
+#! <immutable digraph with 6 vertices, 24 edges>
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.CanonicalDigraph");
 #! @EndGroup
-
-
-#! @BeginGroup DigraphCanonicalLabelling
-#! @GroupTitle DigraphCanonicalLabelling
-#! @Arguments D[, colours]
-#! @Returns A permutation
-#! @Description
-#! <Ref Attr="BlissCanonicalLabelling" BookName="Digraphs" Style="Number" />
-#!
-#! <Ref Attr="NautyCanonicalLabelling" BookName="Digraphs" Style="Number" />
-#!
-#! TODO
-#!
-#! <Ref Func="VoleFind.CanonicalPerm"/>
-#!
-#! @InsertChunk canonical-warning-session
-
-#! @BeginExampleSession
-#! gap> true;
-#! true
-#! @EndExampleSession
-DeclareGlobalFunction("Vole.DigraphCanonicalLabelling");
-#! @EndGroup
-
-# TODO warning: canonical images and perms can change!

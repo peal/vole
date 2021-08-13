@@ -50,8 +50,8 @@
 #! <B>Warning</B>: The permutation given by a canonical search and
 #! the canonical image that it defines
 #! are <B>not guaranteed to be the same across different sessions</B>.
-#! In particular, canonical permutations and images may differ in different
-#! versions of &Vole;, in different versions of &GAP;,
+#! In particular, canonical permutations/labellings and images may differ
+#! in different versions of &Vole;, in different versions of &GAP;,
 #! and on different hardware.
 #! @EndChunk
 #! @BeginChunk canonical-warning-ordering
