@@ -464,14 +464,14 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #! <B>Warning</B>: this function currently requires the &OrbitalGraphs;
 #! package.
 #! 
-#! @BeginExampleSession
+#! @BeginLogSession
 #! gap> LoadPackage("OrbitalGraphs", false);;
 #! gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;
 #! gap> (3,6) in G;
 #! false
 #! gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
 #! true
-#! @EndExampleSession
+#! @EndLogSession
 DeclareGlobalFunction("Vole.TwoClosure");
 #! @EndGroup
 

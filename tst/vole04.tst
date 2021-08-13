@@ -50,14 +50,6 @@ gap> IsConjugate(Group([ (5,6) ]), x, y);
 true
 gap> # Conjugacy of groups
 
-# doc/_Chapter_wrapper.xml:384-391
-gap> LoadPackage("OrbitalGraphs", false);;
-gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;
-gap> (3,6) in G;
-false
-gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
-true
-
 # doc/_Chapter_wrapper.xml:451-454
 gap> true;
 true
