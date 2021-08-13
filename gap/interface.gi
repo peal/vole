@@ -75,12 +75,64 @@ end;
 VoleFind.Canonical := function(G, arguments...)
     local constraints, conf, bounds, ret;
 
-    if IsEmpty(arguments) then
+    if not IsPermGroup(G) then
+        ErrorNoReturn("the first argument must be a perm group");
+    elif IsEmpty(arguments) then
         ErrorNoReturn("at least two arguments must be given");
     else
         constraints := Flat(arguments);
     fi;
-    # We don't do any processing to the given constraints, currently.
+
+    if ForAny(constraints, IsPermGroup) then
+        # We don't do any interpretation of 'GAP object' arguments into
+        # constraints, i.e. we don't assume that a group 'G' corresponds to
+        # VoleCon.Normalise(G). Maybe we should do this eventually, but for now
+        # I am worried that this will lead to confusion, since for
+        # VoleFind.Group, an argument 'G' is interpreted as VoleCon.InGroup(G).
+        ErrorNoReturn("VoleFind.Canonical: ",
+                      "a perm group is not valid additional argument; ",
+                      "to canonise a group under conjugation, ",
+                      "use the constraint VoleCon.Normalise, ",
+                      "or give a specific normaliser refiner;");
+
+    elif ForAny(constraints, c -> not IsRefiner(c) and not (IsRecord(c) and IsBound(c.con))) then
+        # Check that the args are refiners/records
+        ErrorNoReturn("VoleFind.Canonical: ",
+                      "the additional arguments must be Vole constraints, or ",
+                      "(potentially custom) Vole, GraphBacktracking, or ",
+                      "BacktrackKit refiners;");
+
+    elif ForAny(constraints, c -> IsRefiner(c) and StartsWith(c!.name, "InGroup"))
+      or ForAny(constraints, c -> IsRecord(c) and IsBound(c.con.InSymmetricGroup))
+      then
+        # Try to check that no "in-group-by-generators" refiner was been given.
+        ErrorNoReturn("VoleFind.Canonical: ",
+                      "the additional arguments must not include any ",
+                      "constraints/refiners that are ",
+                      "(directly or indirectly) of the kind ",
+                      "'in-group-given-by-generators'; ",
+                      "i.e. VoleCon.InGroup(H) and ",
+                      "VoleCon.LargestMovedPoint(k) are not allowed. ",
+                      "To canonise a group under conjugation, ",
+                      "use the constraint VoleCon.Normalise, ",
+                      "or give a specific normaliser refiner. ",
+                      "To restrict the moved points, canonise in a different ",
+                      "group;");
+
+    elif ForAny(constraints, c -> IsRefiner(c) and StartsWith(c!.name, "InCoset"))
+      or ForAny(constraints, c -> IsRecord(c) and EndsWith(RecNames(c.con)[1], "Transport"))
+      or ForAny(constraints, c -> IsRefiner(c) and IsBound(c!.check) and not c!.check(()))
+      or ForAny(constraints, c -> IsRefiner(c) and not IsBound(c!.check) and c!.image(()) <> c!.result)
+      then
+        # Try to check for "coset" refiners/constraints
+        ErrorNoReturn("VoleFind.Canonical: ",
+                      "each additional argument must (at least implicitly) ",
+                      "be a constraint or refiner ",
+                      "for the stabiliser of some object under some ",
+                      "group action; constraints/refiners for cosets that are ",
+                      "groups are not allowed; Vole 'Transporter' ",
+                      "constraints/refiners are not allowed either;");
+    fi;
 
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(Concatenation(constraints, [G]), conf.points, false);
