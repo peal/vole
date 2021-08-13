@@ -43,7 +43,7 @@ VoleCon.Stabilize := function(object, action...)
 
     # OnSetsSets
     elif action = OnSetsSets and IsSet(object)
-      and ForAll(object, x -> IsSet(x) and ForAll(x, IsPosInt)) then 
+      and ForAll(object, x -> IsSet(x) and ForAll(x, IsPosInt)) then
         return VoleRefiner.SetSetStab(object);
 
     # OnSetsTuples
@@ -72,7 +72,7 @@ VoleCon.Stabilize := function(object, action...)
 
     fi;
     ErrorNoReturn("VoleCon.Stabilize: Unrecognised combination of ",
-                  "<object> and <action>: ",
+                  "<object> and <action>:\n",
                   ViewString(object), " and ", NameFunction(action));
 end;
 VoleCon.Stabilise := VoleCon.Stabilize;
@@ -188,7 +188,7 @@ VoleCon.Transport := function(object1, object2, action...)
 
     fi;
     ErrorNoReturn("VoleCon.Stabilize: Unrecognised combination of ",
-                  "<object1>, <object2>, and <action>: ",
+                  "<object1>, <object2>, and <action>:\n",
                   ViewString(object1), ", ", ViewString(object2), " and ",
                   NameFunction(action));
 end;

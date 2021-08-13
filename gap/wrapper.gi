@@ -5,30 +5,28 @@
 #
 # Implementations: Wrappers for Vole functions that emulate GAP/images/Digraphs
 
-
 ################################################################################
 # Wrapper for the GAP library
 
 # Respects raw := true
 Vole.Intersection := function(permcolls...)
-    local ret, i;
+    local ret;
+    if Length(permcolls) = 1 and IsList(permcolls[1]) then
+        permcolls := permcolls[1];
+    fi;
     if IsEmpty(permcolls) then
         ErrorNoReturn("Vole.Intersection: The arguments must specify at least ",
                       "one perm group or right coset");
-    elif Length(permcolls) = 1 and IsList(permcolls[1]) then
-        permcolls := ShallowCopy(permcolls[1]);
-    fi;
-    if not ForAll(permcolls, x -> IsPermGroup(x) or IsRightCoset(x)) then
+    elif not ForAll(permcolls, x -> IsPermGroup(x) or IsRightCoset(x)) then
         ErrorNoReturn("Vole.Intersection: The arguments must be ",
                       "(a list containing) perm groups and/or ",
                       "right cosets of perm groups");
-    fi;
-    if ForAll(permcolls, IsPermGroup) then
+    elif ForAll(permcolls, IsPermGroup) then
         return VoleFind.Group(permcolls);
     else
         ret := VoleFind.Coset(permcolls);
         if ret <> fail then
-            return ret; # Always returns here if ValueOption raw := true
+            return ret;  # Always returns here if ValueOption raw := true
         else
             return [];
         fi;
@@ -120,11 +118,11 @@ Vole.TwoClosure := function(G)
     if not IsPackageLoaded("orbitalgraphs") then
         ErrorNoReturn("Vole.TwoClosure requires the OrbitalGraphs package, ",
                       "which is not currently loaded");
-        #The following is quite slow, we don't include it for now
-        #orbitals := Orbits(G, Arrangements(points, 2), OnPairs);
-        #digraphs := List(orbitals, DigraphByEdges);
+        # The following is quite slow, we don't include it for now
+        # orbitals := Orbits(G, Arrangements(points, 2), OnPairs);
+        # digraphs := List(orbitals, DigraphByEdges);
     else
-        func := EvalString("OrbitalGraphs"); # Hack to avoid syntax warnings
+        func     := EvalString("OrbitalGraphs");  # Hack to avoid warnings
         digraphs := func(G);
     fi;
 
@@ -136,7 +134,6 @@ Vole.TwoClosure := function(G)
         return VoleFind.Group(VoleCon.MovedPoints(points), digraph_cons);
     fi;
 end;
-
 
 ################################################################################
 # Wrapper for the images package
@@ -163,7 +160,6 @@ Vole.CanonicalImage := function(G, object, action...)
     x := CallFuncList(Vole.CanonicalPerm, Concatenation([G, object], action));
     return action[1](object, x);
 end;
-
 
 ################################################################################
 # Wrapper for the Digraphs package

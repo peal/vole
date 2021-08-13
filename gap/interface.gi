@@ -16,9 +16,9 @@ VoleFind.Representative := function(arguments...)
         return fail;
     fi;
 
-    conf := _Vole.getConfig(rec(raw := false, points := infinity));
+    conf   := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(constraints, conf.points, true);
-    ret := _Vole.CosetSolve(Minimum(bounds.min, bounds.max), constraints);
+    ret    := _Vole.CosetSolve(Minimum(bounds.min, bounds.max), constraints);
 
     if conf.raw then
         return ret;
@@ -38,9 +38,9 @@ VoleFind.Group := function(arguments...)
     fi;
 
     constraints := _Vole.processConstraints(arguments);
-    conf := _Vole.getConfig(rec(raw := false, points := infinity));
-    bounds := _Vole.getBounds(constraints, conf.points, false);
-    ret := _Vole.GroupSolve(bounds.max, constraints);
+    conf        := _Vole.getConfig(rec(raw := false, points := infinity));
+    bounds      := _Vole.getBounds(constraints, conf.points, false);
+    ret         := _Vole.GroupSolve(bounds.max, constraints);
 
     if conf.raw then
         return ret;
@@ -60,9 +60,9 @@ VoleFind.Coset := function(arguments...)
         return fail;
     fi;
 
-    conf := _Vole.getConfig(rec(raw := false, points := infinity));
+    conf   := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(constraints, conf.points, false);
-    ret := _Vole.CosetSolve(bounds.max, constraints);
+    ret    := _Vole.CosetSolve(bounds.max, constraints);
 
     if conf.raw then
         return ret;
@@ -77,9 +77,11 @@ VoleFind.Canonical := function(G, arguments...)
     local constraints, conf, bounds, ret;
 
     if not IsPermGroup(G) then
-        ErrorNoReturn("VoleFind.Canonical: The first argument must be a perm group");
+        ErrorNoReturn("VoleFind.Canonical: ",
+                      "The first argument must be a perm group");
     elif IsEmpty(arguments) then
-        ErrorNoReturn("VoleFind.Canonical: At least two arguments must be given");
+        ErrorNoReturn("VoleFind.Canonical: ",
+                      "At least two arguments must be given");
     else
         constraints := Flat(arguments);
     fi;
@@ -134,9 +136,9 @@ VoleFind.Canonical := function(G, arguments...)
                       "constraints/refiners are not allowed either;");
     fi;
 
-    conf := _Vole.getConfig(rec(raw := false, points := infinity));
+    conf   := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(Concatenation(constraints, [G]), conf.points, false);
-    ret := _Vole.CanonicalSolve(bounds.max, G, constraints);
+    ret    := _Vole.CanonicalSolve(bounds.max, G, constraints);
 
     if conf.raw then
         return ret;
