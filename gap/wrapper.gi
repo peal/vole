@@ -25,7 +25,12 @@ Vole.Intersection := function(permcolls...)
     if ForAll(permcolls, IsPermGroup) then
         return VoleFind.Group(permcolls);
     else
-        return VoleFind.Coset(permcolls);
+        ret := VoleFind.Coset(permcolls);
+        if ret = fail then
+            return [];
+        else
+            return ret;
+        fi;
     fi;
 end;
 
