@@ -163,7 +163,7 @@ Vole.AutomorphismGroup := function(D, colours...)
     local verts;
     if not IsDigraph(D) then
         ErrorNoReturn("Vole.AutomorphismGroup: ",
-                      "the first argument must be a digraph");
+                      "The first argument must be a digraph");
     fi;
     verts := DigraphVertices(D);
     # TODO: is there are benefit/necessity to special case these tiny cases?
@@ -171,7 +171,7 @@ Vole.AutomorphismGroup := function(D, colours...)
         return TrivialGroup(IsPermGroup);
     fi;
     if not IsEmpty(colours) then
-        ErrorNoReturn("not yet implemented support for vertex/edge colours");
+        ErrorNoReturn("not yet implemented for vertex/edge colours");
     fi;
     return Vole.Stabilizer(SymmetricGroup(verts), D, OnDigraphs);
 end;
@@ -180,7 +180,7 @@ Vole.CanonicalDigraph := function(D)
     local verts;
     if not IsDigraph(D) then
         ErrorNoReturn("Vole.AutomorphismGroup: ",
-                      "the first argument must be a digraph");
+                      "The first argument must be a digraph");
     fi;
     verts := DigraphVertices(D);
     # TODO: is there are benefit/necessity to special case these tiny cases?
@@ -194,7 +194,7 @@ Vole.DigraphCanonicalLabelling := function(D, colours...)
     local verts;
     if not IsDigraph(D) then
         ErrorNoReturn("Vole.AutomorphismGroup: ",
-                      "the first argument must be a digraph");
+                      "The first argument must be a digraph");
     fi;
     verts := DigraphVertices(D);
     # TODO: is there are benefit/necessity to special case these tiny cases?
@@ -202,7 +202,7 @@ Vole.DigraphCanonicalLabelling := function(D, colours...)
         return ();
     fi;
     if not IsEmpty(colours) then
-        ErrorNoReturn("not yet implemented support for vertex/edge colours");
+        ErrorNoReturn("not yet implemented for vertex/edge colours");
     fi;
     return Vole.CanonicalPerm(SymmetricGroup(verts), D, OnDigraphs);
 end;

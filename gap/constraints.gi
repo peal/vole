@@ -195,7 +195,7 @@ end;
 
 VoleCon.InGroup := function(G)
     if not IsPermGroup(G) then
-        ErrorNoReturn("VoleCon.InGroup: the argument must be a perm group");
+        ErrorNoReturn("VoleCon.InGroup: The argument must be a perm group");
     fi;
 
     if IsNaturalSymmetricGroup(G) then
@@ -207,7 +207,7 @@ end;
 VoleCon.InCoset := function(U)
     if not IsRightCoset(U) then
         ErrorNoReturn("VoleCon.InCoset: ",
-                      "the argument must be a GAP right coset object");
+                      "The argument must be a GAP right coset object");
     fi;
     return VoleCon.InRightCoset(ActingDomain(U), Representative(U));
 end;
@@ -215,10 +215,10 @@ end;
 VoleCon.InRightCoset := function(G, x)
     if not IsPermGroup(G) then
         ErrorNoReturn("VoleCon.InRightCoset: ",
-                      "the first argument must be a perm group");
+                      "The first argument must be a perm group");
     elif not IsPerm(x) then
         ErrorNoReturn("VoleCon.InRightCoset: ",
-                      "the second argument must be a permutation");
+                      "The second argument must be a permutation");
     fi;
     return GB_Con.InCosetSimple(G, x);
 end;
@@ -226,17 +226,17 @@ end;
 VoleCon.InLeftCoset := function(G, x)
     if not IsPermGroup(G) then
       ErrorNoReturn("VoleCon.InLeftCoset: ",
-                    "the first argument must be a perm group");
+                    "The first argument must be a perm group");
     elif not IsPerm(x) then
       ErrorNoReturn("VoleCon.InRightCoset: ",
-                    "the second argument must be a permutation");
+                    "The second argument must be a permutation");
     fi;
     return VoleCon.InRightCoset(G ^ x, x);
 end;
 
 VoleCon.Normalise := function(G)
     if not IsPermGroup(G) then
-        ErrorNoReturn("VoleCon.Normalise: the argument must be a perm group");
+        ErrorNoReturn("VoleCon.Normalise: The argument must be a perm group");
     fi;
     return GB_Con.NormaliserSimple2(G);
 end;
@@ -249,7 +249,7 @@ VoleCon.Centralise := function(G)
         return GB_Con.PermConjugacy(G, G);
     fi;
     ErrorNoReturn("VoleCon.Centralise: ",
-                  "the argument must be a perm or perm group");
+                  "The argument must be a perm or perm group");
 end;
 VoleCon.Centralize := VoleCon.Centralise;
 
@@ -261,13 +261,13 @@ VoleCon.Conjugate := function(G, H)
         return GB_Con.PermConjugacy(G, H);
     fi;
     ErrorNoReturn("VoleCon.Conjugate: ",
-                  "the arguments must be two perms or two perm groups");
+                  "The arguments must be two perms or two perm groups");
 end;
 
 VoleCon.MovedPoints := function(pointlist)
     if not IsList(pointlist) or not ForAll(pointlist, IsPosInt) then
         ErrorNoReturn("VoleCon.MovedPoints: ",
-                      "the argument must be a list of positive integers");
+                      "The argument must be a list of positive integers");
     fi;
     return VoleRefiner.InSymmetricGroup(pointlist);
 end;
@@ -275,7 +275,7 @@ end;
 VoleCon.LargestMovedPoint := function(point)
     if not IsPosInt(point) then
         ErrorNoReturn("VoleCon.LargestMovedPoint: ",
-                      "the argument must be a positive integer");
+                      "The argument must be a positive integer");
     fi;
     return VoleRefiner.InSymmetricGroup([1 .. point]);
 end;
