@@ -291,9 +291,6 @@ DeclareGlobalFunction("VoleCon.Stabilize");
 #!
 #! @InsertChunk DefaultAction
 #!
-#! **Warning**: the `OnPoints` action for permutation groups (i.e.
-#! group conjugacy) is not yet implemented, sorry. We are working on it.
-#!
 #! @InsertChunk ActionsTable
 #! @BeginExampleSession
 #! gap> setofsets1 := [[1, 3, 6], [2, 3, 6], [2, 4, 7], [4, 5, 7]];;
@@ -374,8 +371,6 @@ DeclareGlobalFunction("VoleCon.Centralize");
 #! This constraint is equivalent to
 #! `VoleCon.Transport(<A>x</A>,<A>y</A>,OnPoints)`.
 #!
-#! **Warning**: this is not yet implemented for permutation groups, sorry.
-#! We are working on it.
 #! @BeginExampleSession
 #! gap> con := VoleCon.Conjugate((3,4)(2,5,1), (1,2,3)(4,5));;
 #! gap> VoleFind.Rep(con);

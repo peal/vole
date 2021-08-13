@@ -55,7 +55,7 @@ Group([ (4,6), (2,4,6), (3,5)(4,6), (1,3,5)(2,4,6) ])
 gap> VoleFind.Group(con1, con2, 6);
 Group([ (1,3,5)(2,4,6) ])
 
-# doc/_Chapter_Constraints.xml:330-340
+# doc/_Chapter_Constraints.xml:327-337
 gap> setofsets1 := [[1, 3, 6], [2, 3, 6], [2, 4, 7], [4, 5, 7]];;
 gap> setofsets2 := [[1, 2, 5], [1, 5, 7], [3, 4, 6], [4, 6, 7]];;
 gap> con := VoleCon.Transport(setofsets1, setofsets2, OnSetsSets);;
@@ -66,7 +66,7 @@ gap> VoleFind.Rep(con, AlternatingGroup(7) * (1,2));
 gap> VoleFind.Rep(con, DihedralGroup(IsPermGroup, 14));
 fail
 
-# doc/_Chapter_Constraints.xml:359-369
+# doc/_Chapter_Constraints.xml:356-366
 gap> con := VoleCon.Normalise(PSL(2,5));;
 gap> N := VoleFind.Group(con, SymmetricGroup(6));
 Group([ (3,4,5,6), (2,3,5,6), (1,2,4,3,6) ])
@@ -77,7 +77,7 @@ gap> Index(N, PSL(2,5));
 gap> PSL(2,5) = VoleFind.Group(con, AlternatingGroup(6));
 true
 
-# doc/_Chapter_Constraints.xml:388-397
+# doc/_Chapter_Constraints.xml:385-394
 gap> D12 := DihedralGroup(IsPermGroup, 12);;
 gap> VoleFind.Group(6, VoleCon.Centralise(D12));
 Group([ (1,4)(2,5)(3,6) ])
@@ -87,25 +87,25 @@ Group([ (2,3)(4,5), (2,4)(3,5), (1,2,3)(4,6,5) ])
 gap> ForAll(G, g -> SignPerm(g) = 1 and g * x = x * g);
 true
 
-# doc/_Chapter_Constraints.xml:421-427
+# doc/_Chapter_Constraints.xml:416-422
 gap> con := VoleCon.Conjugate((3,4)(2,5,1), (1,2,3)(4,5));;
 gap> VoleFind.Rep(con);
 (1,2,3,5)
 gap> VoleFind.Rep(con, PSL(2,5));
 (1,3,4,5,2)
 
-# doc/_Chapter_Constraints.xml:442-447
+# doc/_Chapter_Constraints.xml:437-442
 gap> con1 := VoleCon.MovedPoints([1..5]);;
 gap> con2 := VoleCon.MovedPoints([2,6,4,5]);;
 gap> VoleFind.Group(con1, con2) = SymmetricGroup([2,4,5]);
 true
 
-# doc/_Chapter_Constraints.xml:462-466
+# doc/_Chapter_Constraints.xml:457-461
 gap> con := VoleCon.LargestMovedPoint(5);;
 gap> VoleFind.Group(con) = SymmetricGroup(5);
 true
 
-# doc/_Chapter_Constraints.xml:481-484
+# doc/_Chapter_Constraints.xml:476-479
 gap> VoleFind.Rep(VoleCon.None());
 fail
 
