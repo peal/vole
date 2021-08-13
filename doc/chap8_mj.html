@@ -25,34 +25,28 @@
 <p id="mathjaxlink" class="pcenter"><a href="chap8.html">[MathJax off]</a></p>
 <p><a id="X85AB4D7A8774546F" name="X85AB4D7A8774546F"></a></p>
 <div class="ChapSects"><a href="chap8_mj.html#X85AB4D7A8774546F">8 <span class="Heading">Expert use of <strong class="pkg">Vole</strong></span></a>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap8_mj.html#X83D66D54790AD39E">8.1 <span class="Heading">Intro to that stuff</span></a>
-</span>
-</div>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap8_mj.html#X7E52D3BA7F302957">8.2 <span class="Heading"><code class="code">InfoVole</code> – getting extra information about a <strong class="pkg">Vole</strong> search</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap8_mj.html#X7E52D3BA7F302957">8.1 <span class="Heading"><code class="code">InfoVole</code> – getting extra information about a <strong class="pkg">Vole</strong> search</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap8_mj.html#X792D695280159384">8.2-1 InfoVole</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap8_mj.html#X792D695280159384">8.1-1 InfoVole</a></span>
 </div></div>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap8_mj.html#X793CB7997868D411">8.3 <span class="Heading">Options with the native <strong class="pkg">Vole</strong> interface</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap8_mj.html#X793CB7997868D411">8.2 <span class="Heading">Options with the native <strong class="pkg">Vole</strong> interface</span></a>
 </span>
-</div>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap8_mj.html#X78B2EE748686C51F">8.2-1 <span class="Heading">Supported options</span></a>
+</span>
+</div></div>
 </div>
 
 <h3>8 <span class="Heading">Expert use of <strong class="pkg">Vole</strong></span></h3>
 
-<p><a id="X83D66D54790AD39E" name="X83D66D54790AD39E"></a></p>
-
-<h4>8.1 <span class="Heading">Intro to that stuff</span></h4>
-
-<p>This is doing to show how you can use configuration options, and perhaps lots of tips and tricks?</p>
-
 <p><a id="X7E52D3BA7F302957" name="X7E52D3BA7F302957"></a></p>
 
-<h4>8.2 <span class="Heading"><code class="code">InfoVole</code> – getting extra information about a <strong class="pkg">Vole</strong> search</span></h4>
+<h4>8.1 <span class="Heading"><code class="code">InfoVole</code> – getting extra information about a <strong class="pkg">Vole</strong> search</span></h4>
 
 <p><a id="X792D695280159384" name="X792D695280159384"></a></p>
 
-<h5>8.2-1 InfoVole</h5>
+<h5>8.1-1 InfoVole</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; InfoVole</code></td><td class="tdright">(&nbsp;info class&nbsp;)</td></tr></table></div>
 <p><code class="code">InfoVole</code> is the primary info class for <strong class="pkg">Vole</strong>. See <a href="../../../doc/ref/chap7_mj.html#X7A9C902479CB6F7C"><span class="RefLink">Reference: Info Functions</span></a> for a description of info classes in <strong class="pkg">GAP</strong>.</p>
@@ -61,15 +55,64 @@
 
 <p><a id="X793CB7997868D411" name="X793CB7997868D411"></a></p>
 
-<h4>8.3 <span class="Heading">Options with the native <strong class="pkg">Vole</strong> interface</span></h4>
+<h4>8.2 <span class="Heading">Options with the native <strong class="pkg">Vole</strong> interface</span></h4>
+
+<p>Most <strong class="pkg">Vole</strong> functions support several options, which are implemented with the <strong class="pkg">GAP</strong> options system, which is described in the <strong class="pkg">GAP</strong> reference manual; see <a href="../../../doc/ref/chap8_mj.html#X7FD84061873F72A2"><span class="RefLink">Reference: Options Stack</span></a>.</p>
+
+<p>In brief, options can be set for a function call by first giving the arguments, then writing a colon, and then assigning values to some or all of the permitted option names. Note that <strong class="button">options are passed down to subsequent function calls</strong> that are initiated by the original call.</p>
+
+<p>Here is an example of a <strong class="pkg">Vole</strong> function call with the option <code class="code">raw</code> set to <code class="keyw">true</code>:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">ret := Vole.Intersection(AlternatingGroup(6), PGL(2,5) : raw := true);</span>
+rec( cosetrep := (), group := Group([ (3,5)(4,6), (2,3,4,6,5), (1,2,6)(3,4,5)
+     ]),
+  raw := rec( canonical := fail, rbase_branches := [ 1, 2, 3 ],
+      search_fix_order := [ 1, 2, 3, 6, 5, 4 ],
+      sols := [ [  ], [ 1, 2, 5, 6, 3, 4 ], [ 1, 3, 4, 6, 2, 5 ],
+          [ 2, 6, 4, 5, 3, 1 ] ],
+      stats := rec( bad_canonical := 0, bad_iso := 3, equal_canonical := 0,
+          gap_callbacks := rec( begin := 2, canonicalmin_time := 0,
+              changed := 24, check := 11, compare := 0, fixed := 38,
+              image := 0, is_group := 0, name := 0, rBaseFinished := 2,
+              refiner_time := 40, restore_state := 24, save_state := 24 ),
+          good_iso := 4, improve_canonical := 0, refiner_calls := 64,
+          search_nodes := 13, trace_fail_nodes := 0, vole_time := 136 ) ),
+  sols := [ (), (3,5)(4,6), (2,3,4,6,5), (1,2,6)(3,4,5) ], time := 220 )
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">ret.group = PSL(2,5);</span>
+true
+</pre></div>
+
+<p><a id="X78B2EE748686C51F" name="X78B2EE748686C51F"></a></p>
+
+<h5>8.2-1 <span class="Heading">Supported options</span></h5>
 
 
 <ul>
-<li><p><code class="code">raw</code></p>
+<li><p><code class="code">points</code>: a non-negative integer or (default) <code class="keyw">infinity</code>:</p>
+
+
+<ul>
+<li><p>This option can be used in place of the constraint <code class="code">VoleCon.LargestMovedPoint(points)</code>; see <code class="func">VoleCon.LargestMovedPoint</code> (<a href="chap6_mj.html#X821F077482DE97E6"><span class="RefLink">6.3-11</span></a>).</p>
 
 </li>
-<li><p><code class="code">points</code></p>
+<li><p>Note that for relevant functions that accept constraints, an integer argument is interpreted as an instance of a ‘largest moved point’ constraint, which achieves the same affect as this option more simply.</p>
 
+</li>
+</ul>
+</li>
+<li><p><code class="code">raw</code>: <code class="keyw">true</code> or (default) <code class="keyw">false</code>:</p>
+
+
+<ul>
+<li><p>If <code class="keyw">true</code>, then rather than returning an object as documented, the function returns a record that contains detailed information about the execution and result of the graph backtracking algorithm that was executed. The meaning of this information is not yet documented, sorry.</p>
+
+</li>
+<li><p>Not all <strong class="pkg">Vole</strong> functions support this option, although most do.</p>
+
+</li>
+</ul>
 </li>
 </ul>
 

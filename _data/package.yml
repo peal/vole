@@ -51,6 +51,9 @@ suggested-pkgs:
     - name: "QuickCheck"
       version: ">= 0.1"
       url: "https://gap-packages.github.io/QuickCheck/"
+    - name: "OrbitalGraphs"
+      version: ">= 0.1"
+      url: "https://markuspf.github.io/OrbitalGraphs/"
 
 www: https://peal.github.io/vole
 readme: README.md
@@ -86,17 +89,17 @@ citeas: |
 bibtex: |
     @misc{ Vole0.5.0,
       author =           {Chang, M. S. and Jefferson, C. and Wilson, W. A.},
-      title =            {{Vole},  Backtrack  search  in permutation groups with
+      title =            {{Vole},  Backtrack  search in permutation groups with
                           graphs, {V}ersion 0.5.0},
       month =            {Aug},
       year =             {2021},
       note =             {GAP package},
-      howpublished =     {\href                    {https://peal.github.io/vole}
+      howpublished =     {\href                   {https://peal.github.io/vole}
                           {\texttt{https://peal.github.io/}\discretionary
                           {}{}{}\texttt{vole}}},
-      keywords =         {permutation  group;  backtrack;  search; backtracking;
-                          graph;  digraph;  normaliser;  normalizer; stabiliser;
-                          stabilizer;  group; subgroup; intersection; conjugacy;
+      keywords =         {permutation  group;  backtrack; search; backtracking;
+                          graph;  digraph;  normaliser; normalizer; stabiliser;
+                          stabilizer; group; subgroup; intersection; conjugacy;
                           coset; transporter},
       printedkey =       {CJW21}
     }

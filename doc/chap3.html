@@ -41,7 +41,7 @@
 
 <h4>3.1 <span class="Heading">Computing the intersection of a normaliser and a stabiliser</span></h4>
 
-<p>Suppose that we wish to compute the intersection of the stabiliser in <span class="Math">M_{12}</span> of the set <span class="Math">\{1,2,4,5\}</span> with the normaliser of <span class="Math">H</span> in <span class="Math">G</span>, where <span class="Math">H</span> and <span class="Math">G</span> are defined by the generating sets below.</p>
+<p>Suppose that we wish to compute the intersection of the stabiliser in <span class="Math">M_{12}</span> of the set <span class="Math">S:=\{1,2,4,5\}</span> with the normaliser of <span class="Math">H</span> in <span class="Math">G</span>, where <span class="Math">H</span> and <span class="Math">G</span> are defined by the generating sets given below:</p>
 
 
 <div class="example"><pre>
@@ -53,7 +53,7 @@
 
 <p>Thus we wish to compute <span class="Math">{Stab}_{M_{12}}(\{1,2,3,5\}) \cap N_{G}(H)</span>.</p>
 
-<p>For future reference, we note that the result is a dihedral group of order 8:</p>
+<p>For future reference, we note that the result is a dihedral group with eight elements.</p>
 
 
 <div class="example"><pre>
@@ -78,7 +78,7 @@ Group([ (1,2)(3,10)(4,5)(6,7)(8,9)(11,12), (2,4)(3,7)(8,12)(9,11) ])
 true
 </pre></div>
 
-<p>Or we can slightly re-think the task, and first intersect <span class="Math">M_{12}</span> with <span class="Math">G</span>, and then compute the stabiliser of the set in that smaller group, and finally compute the normaliser of <span class="Math">H</span> in that (even smaller) stabiliser:</p>
+<p>Or we can slightly reformulate the task, and first intersect <span class="Math">M_{12}</span> with <span class="Math">G</span>, and then compute the stabiliser of the set in that smaller group, and finally compute the normaliser of <span class="Math">H</span> in that (even smaller) stabiliser:</p>
 
 
 <div class="example"><pre>
@@ -98,7 +98,7 @@ true
 true
 </pre></div>
 
-<p>There are several further combinations. Each of the above strategies can be emulated in <strong class="pkg">Vole</strong> by prepending “<code class="code">Vole.</code>” to the beginning of each call to <code class="code">Stabiliser</code>, <code class="code">Normaliser</code>, and <code class="code">Intersection</code>, as described in Chapter <a href="chap7.html#X7C9C24D97DB3662F"><span class="RefLink">7</span></a>. However, this is not the recommended approach, as we will see below.</p>
+<p>There are several further combinations. Each of the above strategies can be emulated in <strong class="pkg">Vole</strong> by prepending “<code class="code">Vole.</code>” to the beginning of each call to <code class="code">Stabiliser</code>, <code class="code">Normaliser</code>, and <code class="code">Intersection</code>, as described in Chapter <a href="chap4.html#X7C9C24D97DB3662F"><span class="RefLink">4</span></a>. However, this is not the recommended approach, as we will see below.</p>
 
 
 <div class="example"><pre>
@@ -113,7 +113,7 @@ true
 
 
 <ul>
-<li><p>Although it is clear that each of the above strategies will give the correct answer, it is not clear which approach gives the best performance: should we compute the normaliser in the stabiliser, or vice versa, or should we do something else? It is not necessarily clear.</p>
+<li><p>Although each of the above strategies will give the correct answer, it is not obvious which approach gives the best performance: should we compute the normaliser in the stabiliser, or vice versa, or should we do something else? It is not necessarily easy to answer this.</p>
 
 </li>
 <li><p>Breaking the problem up into three separate steps requires three instances of a backtrack search, where each instance is unaware of the ones to come. This is not ideal for a number of reasons.</p>
@@ -123,7 +123,7 @@ true
 <li><p>Firstly, backtrack search can be expensive, and so we should aim to minimise the number of times that it is required.</p>
 
 </li>
-<li><p>Secondly, a search tends to be quicker when there are more ’restrictions’ on the search space. Therefore, it is typically better to perform one search with many restrictions rather than performing several searches that each have few restrictions.</p>
+<li><p>Secondly, a search tends to be quicker when there are more ‘restrictions’ on the search space. Therefore, it is typically better to perform one search with many restrictions rather than performing several searches that each have few restrictions.</p>
 
 </li>
 </ul>
@@ -133,9 +133,9 @@ true
 
 <h5>3.1-2 <span class="Heading">The general <strong class="pkg">Vole</strong> approach</span></h5>
 
-<p>The ‘<strong class="pkg">Vole</strong>’ way of solving this is problem is to do it in one step with the function <code class="func">VoleFind.Group</code> (<a href="chap4.html#X7A6FC97E7F94FC49"><span class="RefLink">4.2-2</span></a>).</p>
+<p>The ‘<strong class="pkg">Vole</strong>’ way of solving this is problem is to do it in one step with the function <code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>).</p>
 
-<p>For most users, the easiest way to solve the problem with <code class="func">VoleFind.Group</code> (<a href="chap4.html#X7A6FC97E7F94FC49"><span class="RefLink">4.2-2</span></a>) is to find a collection of <em>constraints</em> that together specify the problem. Constraints are discussed in Chapter <a href="chap5.html#X79EAB456814AB11C"><span class="RefLink">5</span></a>. The constraints directly offered by <strong class="pkg">Vole</strong> are contained in the record <code class="func">VoleCon</code> (<a href="chap5.html#X78F3F7F58416EE54"><span class="RefLink">5.2-1</span></a>), and are sufficient to solve the problem at hand.</p>
+<p>For most users, the easiest way to solve the problem with <code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>) is to find a collection of <em>constraints</em> that together specify the problem. Constraints are discussed in Chapter <a href="chap6.html#X79EAB456814AB11C"><span class="RefLink">6</span></a>. The constraints directly offered by <strong class="pkg">Vole</strong> are contained in the record <code class="func">VoleCon</code> (<a href="chap6.html#X78F3F7F58416EE54"><span class="RefLink">6.2-1</span></a>), and are sufficient to solve the problem at hand.</p>
 
 <p>Specifically, we are looking for all permutations that are contained in <span class="Math">M_{12}</span>, that stabilise the set <span class="Math">\{1,2,3,5\}</span>, that are also contained in <span class="Math">G</span>, and that normalise <span class="Math">H</span>. Therefore, we can solve the problem with the following constraints:</p>
 
@@ -151,9 +151,9 @@ true
 
 <p><strong class="pkg">Vole</strong> performs only one search to solve the whole problem.</p>
 
-<p>In order to solve the problem as specified, <strong class="pkg">Vole</strong> chooses appropriate refiners for the given collection of constraints. Refiners are documented in Chapter <a href="chap6.html#X786EF6928319D57A"><span class="RefLink">6</span></a>. The more confident user may wish to directly specify one or more refiners instead of, and/or in addition to, some of the constraints.</p>
+<p>In order to solve the problem as specified, <strong class="pkg">Vole</strong> chooses appropriate refiners for the given collection of constraints. Refiners are documented in Chapter <a href="chap7.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a>. The more confident user may wish to directly specify one or more refiners instead of, and/or in addition to, some of the constraints.</p>
 
-<p>For example, a user may know (or just hope) that the group <span class="Math">H</span> is well-suited to the technique that the refiner <code class="code">GB_Con.NormaliserSimple</code> from the <strong class="pkg">GraphBacktracking</strong> package uses to refine for the normaliser. This refiner may be included instead of, or as well as, the constraint <code class="code">VoleCon.Normalize(H)</code>, since the refiner implies that constraint, but it is perfectly acceptable to use multiple refiners for the same constraint.</p>
+<p>For example, a user may know (or just hope) that the group <span class="Math">H</span> is well-suited to the technique that the refiner <code class="code">GB_Con.NormaliserSimple</code> from the <strong class="pkg">GraphBacktracking</strong> package uses to refine for the normaliser. This refiner may be included instead of, or as well as, the constraint <code class="code">VoleCon.Normalize(H)</code>, since the refiner implies that constraint, but it is perfectly acceptable (and sometimes a good idea) to use multiple refiners for the same constraint.</p>
 
 
 <div class="example"><pre>
@@ -176,7 +176,7 @@ true
 
 <h4>3.2 <span class="Heading">Computing a canonical image</span></h4>
 
-<p>Not yet written.</p>
+<p>See the end of the manual entry for <code class="func">VoleFind.Canonical</code> (<a href="chap5.html#X7A32626983FEB066"><span class="RefLink">5.3-1</span></a>) for an example of canonisation with <strong class="pkg">Vole</strong>.</p>
 
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap2.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap4.html">[Next Chapter]</a>&nbsp;  </div>

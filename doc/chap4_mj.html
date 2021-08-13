@@ -8,7 +8,7 @@
 <script type="text/javascript"
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
-<title>GAP (Vole) - Chapter 4: The native Vole interface</title>
+<title>GAP (Vole) - Chapter 4: Emulating traditional interfaces with Vole</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta name="generator" content="GAPDoc2HTML" />
 <link rel="stylesheet" type="text/css" href="manual.css" />
@@ -23,341 +23,758 @@
 <div class="chlinkprevnexttop">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap3_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap5_mj.html">[Next Chapter]</a>&nbsp;  </div>
 
 <p id="mathjaxlink" class="pcenter"><a href="chap4.html">[MathJax off]</a></p>
-<p><a id="X8722B8157E8CAB1D" name="X8722B8157E8CAB1D"></a></p>
-<div class="ChapSects"><a href="chap4_mj.html#X8722B8157E8CAB1D">4 <span class="Heading">The native <strong class="pkg">Vole</strong> interface</span></a>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4_mj.html#X85B877CA78602A63">4.1 <span class="Heading">The <code class="code">VoleFind</code> record</span></a>
+<p><a id="X7C9C24D97DB3662F" name="X7C9C24D97DB3662F"></a></p>
+<div class="ChapSects"><a href="chap4_mj.html#X7C9C24D97DB3662F">4 <span class="Heading">Emulating traditional interfaces with <strong class="pkg">Vole</strong></span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4_mj.html#X7A4C79E57A55150B">4.1 <span class="Heading">The concept</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X86BB4FFE81AEC046">4.1-1 VoleFind</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X7A54C0D57E5B4A8D">4.1-1 <span class="Heading">A warning</span></a>
+</span>
 </div></div>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4_mj.html#X80D258A285AEEF1C">4.2 <span class="Heading">Searching for groups, cosets, and representatives with the native interface</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4_mj.html#X7F8DAE2379A72BB8">4.2 <span class="Heading">The <code class="code">Vole</code> record</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X8712249F879D9FA9">4.2-1 VoleFind.Representative</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X7A6FC97E7F94FC49">4.2-2 VoleFind.Group</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X7A99C3238317F649">4.2-3 VoleFind.Coset</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X877669AE7981FCED">4.2-1 Vole</a></span>
 </div></div>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4_mj.html#X83018A5A7C687170">4.3 <span class="Heading">Canonising with the native <strong class="pkg">Vole</strong> interface</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4_mj.html#X793F8D777FEB7D60">4.3 <span class="Heading">The group actions built into <strong class="pkg">Vole</strong></span></a>
+</span>
+</div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4_mj.html#X800CAA4182BAB6D7">4.4 <span class="Heading"><strong class="pkg">Vole</strong> functions emulating built-in <strong class="pkg">GAP</strong> functions</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X7A32626983FEB066">4.3-1 VoleFind.Canonical</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X7ACA1CDC80D12604">4.3-2 VoleFind.CanonicalPerm</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X851069107CACF98E">4.4-1 <span class="Heading">Intersection</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X8606859F87CD8FB0">4.4-2 <span class="Heading">Stabiliser</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X857DC7B085EB0539">4.4-3 <span class="Heading">RepresentativeAction</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X874824B47C09B1AF">4.4-4 <span class="Heading">Normaliser</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X7AD6E7EA84C2BB59">4.4-5 <span class="Heading">Centraliser</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X83DD148D7DA2ABA9">4.4-6 <span class="Heading">IsConjugate</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X7A2D046B83DD5F5F">4.4-7 <span class="Heading">TwoClosure</span></a>
+</span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4_mj.html#X7A2FDAA7838D97A1">4.5 <span class="Heading"><strong class="pkg">Vole</strong> functions emulating the <strong class="pkg">images</strong> package</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X7DFC113D842DD5BC">4.5-1 <span class="Heading">CanonicalPerm</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X780189E3873B7A42">4.5-2 <span class="Heading">CanonicalImage</span></a>
+</span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4_mj.html#X7E533E72831AC20B">4.6 <span class="Heading"><strong class="pkg">Vole</strong> functions emulating the <strong class="pkg">Digraphs</strong> package</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X87677B0787B4461A">4.6-1 <span class="Heading">AutomorphismGroup</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X81115B82856B08DA">4.6-2 <span class="Heading">DigraphCanonicalLabelling</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X860ADFA77D2FC5A4">4.6-3 <span class="Heading">CanonicalDigraph</span></a>
+</span>
 </div></div>
 </div>
 
-<h3>4 <span class="Heading">The native <strong class="pkg">Vole</strong> interface</span></h3>
+<h3>4 <span class="Heading">Emulating traditional interfaces with <strong class="pkg">Vole</strong></span></h3>
 
-<p>The native interface to <strong class="pkg">Vole</strong> is similar to that provided by <strong class="pkg">ferret</strong>, <strong class="pkg">BacktrackKit</strong>, and <strong class="pkg">GraphBacktracking</strong>.</p>
+<p><a id="X7A4C79E57A55150B" name="X7A4C79E57A55150B"></a></p>
 
-<p>At a basic level, a search can be executed by choosing a suitable list of constraints (and/or refiners, for more expert users) to define the problem to be solved, and then calling the appropriate function on these constraints.</p>
+<h4>4.1 <span class="Heading">The concept</span></h4>
 
+<p>The functionality of <strong class="pkg">Vole</strong> overlaps with that of <strong class="pkg">GAP</strong> and its other packages, such as <strong class="pkg">images</strong> and <strong class="pkg">Digraphs</strong>.</p>
 
-<ul>
-<li><p>The name of the function determines the <em>kind</em> of search to be executed (whether for a single permutation, or for a group, or for a canonical image, etc). These functions are described in the rest of this chapter.</p>
+<p><strong class="pkg">Vole</strong> has its own native interface, which is described in Chapter <a href="chap5_mj.html#X8722B8157E8CAB1D"><span class="RefLink">5</span></a>, and which offers highly configurable access to the underlying graph backtracking algorithm. This is the recommended interface to <strong class="pkg">Vole</strong> for most users.</p>
 
-</li>
-<li><p>Broadly speaking, constraints and/or refiners define properties that together specify the permutations that are valid solutions to the search problem. Constraints and refiners are described in Chapters <a href="chap5_mj.html#X79EAB456814AB11C"><span class="RefLink">5</span></a> and <a href="chap6_mj.html#X786EF6928319D57A"><span class="RefLink">6</span></a>, respectively.</p>
+<p>However, <strong class="pkg">Vole</strong> also provides wrappers around its native interface that allow <strong class="pkg">Vole</strong> to emulate some existing interfaces. The purpose of these wrappers is to lower the ‘barrier to entry’ of <strong class="pkg">Vole</strong>, so that users who are already familiar with the existing <strong class="pkg">GAP</strong>/package functions can quickly get started with <strong class="pkg">Vole</strong>.</p>
 
-</li>
-</ul>
-<p><a id="X85B877CA78602A63" name="X85B877CA78602A63"></a></p>
+<p>Where we identify that <strong class="pkg">GAP</strong>, or a package, provides a function whose result could reasonably be computed with <strong class="pkg">Vole</strong>, we provide a wrapper function whose interface closely matches that of the original function, but which uses <strong class="pkg">Vole</strong> to perform the computation. <strong class="button">We do not claim that the</strong> <strong class="pkg">Vole</strong> <strong class="button">wrapper functions are necesarily faster than the original functions</strong>; see Section <a href="chap4_mj.html#X7A54C0D57E5B4A8D"><span class="RefLink">4.1-1</span></a>.</p>
 
-<h4>4.1 <span class="Heading">The <code class="code">VoleFind</code> record</span></h4>
+<p>For example, the <strong class="pkg">GAP</strong> function <code class="func">Normaliser</code> (<a href="../../../doc/ref/chap39_mj.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>) can be used to compute normalisers of permutation groups. Since <strong class="pkg">Vole</strong> can also be used for such computations, we provide the corresponding function <code class="func">Vole.Normaliser</code> (<a href="chap4_mj.html#X874824B47C09B1AF"><span class="RefLink">4.4-4</span></a>), which can be used in the same way. Thus <code class="code">Normaliser(<var class="Arg">G</var>,<var class="Arg">U</var>)</code> and <code class="code">Vole.Normaliser(<var class="Arg">G</var>,<var class="Arg">U</var>)</code> will (barring bugs!) return equal groups for all permutation groups <var class="Arg">G</var> and <var class="Arg">U</var>.</p>
 
-<p><a id="X86BB4FFE81AEC046" name="X86BB4FFE81AEC046"></a></p>
+<p>All such functions are contained in the <code class="func">Vole</code> (<a href="chap4_mj.html#X877669AE7981FCED"><span class="RefLink">4.2-1</span></a>) record, which is documented in Section <a href="chap4_mj.html#X7F8DAE2379A72BB8"><span class="RefLink">4.2</span></a>. The functions themselves are individually documented in Sections <a href="chap4_mj.html#X800CAA4182BAB6D7"><span class="RefLink">4.4</span></a>–<a href="chap4_mj.html#X7E533E72831AC20B"><span class="RefLink">4.6</span></a>.</p>
 
-<h5>4.1-1 VoleFind</h5>
+<p><a id="X7A54C0D57E5B4A8D" name="X7A54C0D57E5B4A8D"></a></p>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind</code></td><td class="tdright">(&nbsp;global variable&nbsp;)</td></tr></table></div>
-<p><code class="func">VoleFind</code> is a record that contains the functions providing the native interface to <strong class="pkg">Vole</strong>.</p>
+<h5>4.1-1 <span class="Heading">A warning</span></h5>
+
+<p><strong class="pkg">Vole</strong>'s emulated interfaces do not necessarily exhibit the full flexibility, power, and speed of <strong class="pkg">Vole</strong>. This is especially for those users who are interesting in controlling and specifying the refiners that are used in a given search, for whom the native interface (Chapter <a href="chap5_mj.html#X8722B8157E8CAB1D"><span class="RefLink">5</span></a>) is necessary.</p>
+
+<p>In addition, please note that the <strong class="pkg">Vole</strong> wrapper functions (almost) always use the graph backtracking algorithm, and so they may be significantly slower than the corresponding original functions when those functions can cleverly simplify the problem (and perhaps even choose a completely different algorithm), based on the properties of the groups and permutations that are involved.</p>
+
+<p>See Section <a href="chap1_mj.html#X854F8C5579845066"><span class="RefLink">1.4</span></a> for further comments about the relative performance of <strong class="pkg">Vole</strong> in comparison to other tools.</p>
+
+<p><a id="X7F8DAE2379A72BB8" name="X7F8DAE2379A72BB8"></a></p>
+
+<h4>4.2 <span class="Heading">The <code class="code">Vole</code> record</span></h4>
+
+<p><a id="X877669AE7981FCED" name="X877669AE7981FCED"></a></p>
+
+<h5>4.2-1 Vole</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole</code></td><td class="tdright">(&nbsp;global variable&nbsp;)</td></tr></table></div>
+<p><code class="code">Vole</code> is a record that contains all of the <strong class="pkg">Vole</strong> wrapper functions that are provided to emulate aspects of <strong class="pkg">GAP</strong>, and its packages <strong class="pkg">images</strong> and <strong class="pkg">Digraphs</strong>. The components of this record are functions that are named to coincide with the corresponding <strong class="pkg">GAP</strong>/<strong class="pkg">images</strong>/<strong class="pkg">Digraphs</strong> functions.</p>
+
+<p>For example, <code class="func">Vole.Normaliser</code> (<a href="chap4_mj.html#X874824B47C09B1AF"><span class="RefLink">4.4-4</span></a>) emulates <code class="func">Normaliser</code> (<a href="../../../doc/ref/chap39_mj.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>).</p>
 
 
 <div class="example"><pre>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">LoadPackage("vole", false);;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Set(RecNames(VoleFind));</span>
-[ "Canonical", "CanonicalPerm", "Coset", "Group", "Rep", "Representative" ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Set(RecNames(Vole));</span>
+[ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
+  "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", 
+  "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", 
+  "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer", 
+  "TwoClosure" ]
 </pre></div>
 
-<p><a id="X80D258A285AEEF1C" name="X80D258A285AEEF1C"></a></p>
+<p><a id="X793F8D777FEB7D60" name="X793F8D777FEB7D60"></a></p>
 
-<h4>4.2 <span class="Heading">Searching for groups, cosets, and representatives with the native interface</span></h4>
+<h4>4.3 <span class="Heading">The group actions built into <strong class="pkg">Vole</strong></span></h4>
 
-<p><a id="X8712249F879D9FA9" name="X8712249F879D9FA9"></a></p>
+<p>The supported combinations of objects and actions are the same for the functions in this chapter that require one or two objects, and a corresponding action. This information is shown in the following table and applies, in particular, to:</p>
 
-<h5>4.2-1 VoleFind.Representative</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.Representative</code>( <var class="Arg">arguments...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.Rep</code>( <var class="Arg">arguments...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<ul>
+<li><p><code class="func">Vole.Stabiliser</code> (<a href="chap4_mj.html#X8606859F87CD8FB0"><span class="RefLink">4.4-2</span></a>)</p>
+
+</li>
+<li><p><code class="func">Vole.RepresentativeAction</code> (<a href="chap4_mj.html#X857DC7B085EB0539"><span class="RefLink">4.4-3</span></a>)</p>
+
+</li>
+<li><p><code class="func">Vole.CanonicalPerm</code> (<a href="chap4_mj.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>)</p>
+
+</li>
+<li><p><code class="func">Vole.CanonicalImage</code> (<a href="chap4_mj.html#X780189E3873B7A42"><span class="RefLink">4.5-2</span></a>)</p>
+
+</li>
+</ul>
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft"><strong class="button">Permitted action</strong></td>
+<td class="tdleft"><strong class="button">Corresponding object/pair of objects</strong></td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft">A positive integer, permutation, or perm group</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft">A list of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="../../../doc/ref/chap41_mj.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft">A set of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="../../../doc/ref/chap41_mj.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft">A set of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
+<td class="tdleft">A set of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="../../../doc/ref/chap41_mj.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft">A list of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
+<td class="tdleft">A list of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft">A digraph object, or a list of adjacencies</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
+
+<p><a id="X800CAA4182BAB6D7" name="X800CAA4182BAB6D7"></a></p>
+
+<h4>4.4 <span class="Heading"><strong class="pkg">Vole</strong> functions emulating built-in <strong class="pkg">GAP</strong> functions</span></h4>
+
+<p>The following table gives a summary of the <strong class="pkg">Vole</strong> wrapper functions and the corresponding <strong class="pkg">GAP</strong> functions.</p>
+
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft"><strong class="pkg">Vole</strong> function</td>
+<td class="tdleft">Built-in <strong class="pkg">GAP</strong> function</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.Intersection</code> (<a href="chap4_mj.html#X851069107CACF98E"><span class="RefLink">4.4-1</span></a>)</td>
+<td class="tdleft"><code class="func">Intersection</code> (<a href="../../../doc/ref/chap30_mj.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.Stabiliser</code> (<a href="chap4_mj.html#X8606859F87CD8FB0"><span class="RefLink">4.4-2</span></a>)</td>
+<td class="tdleft"><code class="func">Stabiliser</code> (<a href="../../../doc/ref/chap41_mj.html#X86FB962786397E02"><span class="RefLink">Ref 41.5-2</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.RepresentativeAction</code> (<a href="chap4_mj.html#X857DC7B085EB0539"><span class="RefLink">4.4-3</span></a>)</td>
+<td class="tdleft"><code class="func">RepresentativeAction</code> (<a href="../../../doc/ref/chap41_mj.html#X857DC7B085EB0539"><span class="RefLink">Ref 41.6-1</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.Normaliser</code> (<a href="chap4_mj.html#X874824B47C09B1AF"><span class="RefLink">4.4-4</span></a>)</td>
+<td class="tdleft"><code class="func">Normaliser</code> (<a href="../../../doc/ref/chap39_mj.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.Centraliser</code> (<a href="chap4_mj.html#X7AD6E7EA84C2BB59"><span class="RefLink">4.4-5</span></a>)</td>
+<td class="tdleft"><code class="func">Centraliser</code> (<a href="../../../doc/ref/chap35_mj.html#X7DE33AFC823C7873"><span class="RefLink">Ref 35.4-4</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.IsConjugate</code> (<a href="chap4_mj.html#X83DD148D7DA2ABA9"><span class="RefLink">4.4-6</span></a>)</td>
+<td class="tdleft"><code class="func">IsConjugate</code> (<a href="../../../doc/ref/chap39_mj.html#X83DD148D7DA2ABA9"><span class="RefLink">Ref 39.10-9</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.TwoClosure</code> (<a href="chap4_mj.html#X7A2D046B83DD5F5F"><span class="RefLink">4.4-7</span></a>)</td>
+<td class="tdleft"><code class="func">TwoClosure</code> (<a href="../../../doc/ref/chap43_mj.html#X7A2D046B83DD5F5F"><span class="RefLink">Ref 43.12-3</span></a>)</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
+
+<p><a id="X851069107CACF98E" name="X851069107CACF98E"></a></p>
+
+<h5>4.4-1 <span class="Heading">Intersection</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Intersection</code>( <var class="Arg">U1</var>, <var class="Arg">U2</var>, <var class="Arg">...</var>, <var class="Arg">Uk</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A perm group, a right coset, or an empty list</p>
+
+<p><code class="func">Vole.Intersection</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Intersection</code> (<a href="../../../doc/ref/chap30_mj.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>), and returns the intersection of the groups and/or right coset arguments.</p>
+
+<p>If all of the arguments are groups, then <code class="func">Vole.Intersection</code> again returns a group. Otherwise, if the result is nonempty, then <code class="func">Vole.Intersection</code> returns a <strong class="pkg">GAP</strong> right coset object. Note that this non-group case differs from <strong class="pkg">GAP</strong>'s <code class="func">Intersection</code> (<a href="../../../doc/ref/chap30_mj.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>), which always returns a list.</p>
+
+<p>Note that <strong class="pkg">Vole</strong> performs the whole intersection in one search, rather than iteratively intersecting the arguments.</p>
+
+<p>There are many reasons why <strong class="pkg">GAP</strong> may be faster than <strong class="pkg">Vole</strong> for any particular problem; see Section <a href="chap1_mj.html#X854F8C5579845066"><span class="RefLink">1.4</span></a> for some discussion about this. It may be possible to obtain better performance from <strong class="pkg">Vole</strong> by specifying custom refiners with the native interface, see Chapter <a href="chap5_mj.html#X8722B8157E8CAB1D"><span class="RefLink">5</span></a> and Chapter <a href="chap7_mj.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">A6 := AlternatingGroup(6);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">D12 := DihedralGroup(IsPermGroup, 12);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.Intersection(A6, D12);</span>
+Group([ (2,6)(3,5), (1,3,5)(2,4,6) ])
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.Intersection(A6 * (1,2), D12 * (3,4));</span>
+RightCoset(Group([ (2,6)(3,5), (1,3,5)(2,4,6) ]),(1,5)(2,3,4))
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.Intersection(A6 * (1,2), D12 * (3,4), PSL(2,5));</span>
+[  ]
+</pre></div>
+
+<p><a id="X8606859F87CD8FB0" name="X8606859F87CD8FB0"></a></p>
+
+<h5>4.4-2 <span class="Heading">Stabiliser</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Stabiliser</code>( <var class="Arg">G</var>, <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Stabilizer</code>( <var class="Arg">G</var>, <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: An permutation group</p>
+
+<p><code class="func">Vole.Stabiliser</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Stabiliser</code> (<a href="../../../doc/ref/chap41_mj.html#X86FB962786397E02"><span class="RefLink">Ref 41.5-2</span></a>).</p>
+
+<p>The <em>stabiliser</em> of an <var class="Arg">object</var> in a group <var class="Arg">G</var> under some group <var class="Arg">action</var> is the subgroup of <var class="Arg">G</var> of those elements that fix <var class="Arg">object</var> under <var class="Arg">action</var>, i.e. all permutations <code class="code">g</code> in <var class="Arg">G</var> such that <code class="code"><var class="Arg">action</var>(<var class="Arg">object</var>,g)=<var class="Arg">object</var></code>.</p>
+
+<p>The permitted combinations of objects and actions are given in the table below.</p>
+
+<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="../../../doc/ref/chap4_mj.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+
+<p>There are many reasons why <strong class="pkg">GAP</strong> may be faster than <strong class="pkg">Vole</strong> for any particular problem; see Section <a href="chap1_mj.html#X854F8C5579845066"><span class="RefLink">1.4</span></a> for some discussion about this. It may be possible to obtain better performance from <strong class="pkg">Vole</strong> by specifying custom refiners with the native interface, see <code class="func">VoleFind.Group</code> (<a href="chap5_mj.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>) and Chapter <a href="chap7_mj.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.Stabiliser(PGL(2,5), [1,2,3], OnSets);</span>
+Group([ (1,3)(5,6), (1,2,3)(4,5,6) ])
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">D := JohnsonDigraph(4,2);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G := Stabiliser(PSL(2,5), D, OnDigraphs);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G = Group([ (1,4,5)(2,6,3), (1,4)(3,6) ]);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Elements(G)</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"> = SortedList(Filtered(PSL(2,5), g -&gt; OnDigraphs(D, g) = D));</span>
+true
+</pre></div>
+
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft"><strong class="button">Permitted action</strong></td>
+<td class="tdleft"><strong class="button">Corresponding object/pair of objects</strong></td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft">A positive integer, permutation, or perm group</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft">A list of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="../../../doc/ref/chap41_mj.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft">A set of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="../../../doc/ref/chap41_mj.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft">A set of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
+<td class="tdleft">A set of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="../../../doc/ref/chap41_mj.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft">A list of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
+<td class="tdleft">A list of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft">A digraph object, or a list of adjacencies</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
+
+<p><a id="X857DC7B085EB0539" name="X857DC7B085EB0539"></a></p>
+
+<h5>4.4-3 <span class="Heading">RepresentativeAction</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.RepresentativeAction</code>( <var class="Arg">G</var>, <var class="Arg">object1</var>, <var class="Arg">object2</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A permutation, or <code class="keyw">fail</code></p>
 
-<p><code class="func">VoleFind.Representative</code> returns a single permutation that satisfies all of the constraints defined by the <var class="Arg">arguments</var>, if one exists, and it returns <code class="keyw">fail</code> otherwise. <code class="func">VoleFind.Rep</code> is a synonym for <code class="func">VoleFind.Representative</code>.</p>
+<p><code class="func">Vole.RepresentativeAction</code> emulates the built-in <strong class="pkg">GAP</strong> function <code class="func">RepresentativeAction</code> (<a href="../../../doc/ref/chap41_mj.html#X857DC7B085EB0539"><span class="RefLink">Ref 41.6-1</span></a>).</p>
 
-<p>The <var class="Arg">arguments</var> may be given separately, or as a single list. Each argument may be a <strong class="pkg">Vole</strong> constraint (Chapter <a href="chap5_mj.html#X79EAB456814AB11C"><span class="RefLink">5</span></a>), a refiner (Chapter <a href="chap6_mj.html#X786EF6928319D57A"><span class="RefLink">6</span></a>; note that a refiner implies a constraint), or one of the following objects:</p>
+<p>This function returns an element of the permutation group <var class="Arg">G</var> that maps <var class="Arg">object1</var> to <var class="Arg">object2</var> under the given group <var class="Arg">action</var>, if such an element exists, and it returns <code class="keyw">fail</code> otherwise.</p>
 
+<p>The permitted combinations of objects and actions are given in the table below.</p>
 
-<ul>
-<li><p>A permutation group <var class="Arg">G</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.InGroup</code> (<a href="chap5_mj.html#X7FD1D7EB7F8EF940"><span class="RefLink">5.3-1</span></a>) with argument <var class="Arg">G</var>.</p>
+<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="../../../doc/ref/chap4_mj.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
 
-</li>
-</ul>
-
-<ul>
-<li><p>A <strong class="pkg">GAP</strong> right coset object <var class="Arg">U</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.InCoset</code> (<a href="chap5_mj.html#X7F27DDB6818F24DB"><span class="RefLink">5.3-2</span></a>) with argument <var class="Arg">U</var>.</p>
-
-</li>
-</ul>
-
-<ul>
-<li><p>A positive integer <var class="Arg">k</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.LargestMovedPoint</code> (<a href="chap5_mj.html#X821F077482DE97E6"><span class="RefLink">5.3-11</span></a>) with argument <var class="Arg">k</var>.</p>
-
-</li>
-</ul>
-
-<ul>
-<li><p>The value <code class="keyw">fail</code>, which is interpreted as an instance of the constraint <code class="func">VoleCon.None</code> (<a href="chap5_mj.html#X7B55675E8510E6AE"><span class="RefLink">5.3-12</span></a>).</p>
-
-</li>
-</ul>
-<p>For at least one of the <var class="Arg">arguments</var>, <strong class="pkg">Vole</strong> must be able to immediately deduce a positive integer <code class="code">k</code>, such that for the corresponding constraint:</p>
-
-
-<ul>
-<li><p>there exists a permutation satisfying the constraint if and only if there exists an element of <code class="code">Sym([1..k])</code> satisfying the constraint.</p>
-
-</li>
-</ul>
-<p>Otherwise, an error is given. This guarantees that <strong class="pkg">Vole</strong> terminates (given sufficient resources). See Section <a href="chap5_mj.html#X83C3802E816A5013"><span class="RefLink">5.4</span></a> for examples and further information.</p>
-
-<p>This function supports various options, which are documented in Section <a href="chap8_mj.html#X793CB7997868D411"><span class="RefLink">8.3</span></a>.</p>
+<p>There are many reasons why <strong class="pkg">GAP</strong> may be faster than <strong class="pkg">Vole</strong> for any particular problem; see Section <a href="chap1_mj.html#X854F8C5579845066"><span class="RefLink">1.4</span></a> for some discussion about this. It may be possible to obtain better performance from <strong class="pkg">Vole</strong> by specifying custom refiners with the native interface, see <code class="func">VoleFind.Rep</code> (<a href="chap5_mj.html#X8712249F879D9FA9"><span class="RefLink">5.2-1</span></a>) and Chapter <a href="chap7_mj.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a>.</p>
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">tuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Rep(VoleCon.InGroup(SymmetricGroup(4)), tuple_transport);</span>
-(3,4)
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Rep(AlternatingGroup(4), tuple_transport);</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.RepresentativeAction(SymmetricGroup(4), (1,2,3), (1,2,4));</span>
+(1,4,3,2)
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">RepresentativeAction(AlternatingGroup(4), (1,2,3), (1,2,4));</span>
 fail
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">D := CycleDigraph(6);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.RepresentativeAction(PGL(2,5), D, DigraphReverse(D), OnDigraphs);</span>
+(1,4)(2,3)(5,6)
 </pre></div>
 
-<p><a id="X7A6FC97E7F94FC49" name="X7A6FC97E7F94FC49"></a></p>
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft"><strong class="button">Permitted action</strong></td>
+<td class="tdleft"><strong class="button">Corresponding object/pair of objects</strong></td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft">A positive integer, permutation, or perm group</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft">A list of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="../../../doc/ref/chap41_mj.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft">A set of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="../../../doc/ref/chap41_mj.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft">A set of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
+<td class="tdleft">A set of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="../../../doc/ref/chap41_mj.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft">A list of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
+<td class="tdleft">A list of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft">A digraph object, or a list of adjacencies</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
 
-<h5>4.2-2 VoleFind.Group</h5>
+<p><a id="X874824B47C09B1AF" name="X874824B47C09B1AF"></a></p>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.Group</code>( <var class="Arg">arguments...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<h5>4.4-4 <span class="Heading">Normaliser</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Normaliser</code>( <var class="Arg">G</var>, <var class="Arg">U</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Normalizer</code>( <var class="Arg">G</var>, <var class="Arg">U</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: An permutation group</p>
+
+<p><code class="func">Vole.Normaliser</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Normaliser</code> (<a href="../../../doc/ref/chap39_mj.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>).</p>
+
+<p>If <var class="Arg">G</var> and <var class="Arg">U</var> are permutation groups, then this function returns the <em>normaliser</em> of <var class="Arg">U</var> in <var class="Arg">G</var>, <span class="SimpleMath">\(N_{G}(U)\)</span>, which is the stabiliser of <var class="Arg">U</var> under conjugation by <var class="Arg">G</var>. If <var class="Arg">U</var> is instead a permutation, then <code class="code">Vole.Normalizer(<var class="Arg">G</var>,<var class="Arg">U</var>)</code> returns <span class="SimpleMath">\(N_{G}(\langle U \rangle)\)</span>.</p>
+
+<p>There are many reasons why <strong class="pkg">GAP</strong> may be faster than <strong class="pkg">Vole</strong> for any particular problem; see Section <a href="chap1_mj.html#X854F8C5579845066"><span class="RefLink">1.4</span></a> for some discussion about this. It may be possible to obtain better performance from <strong class="pkg">Vole</strong> by specifying custom refiners with the native interface, see <code class="func">VoleFind.Group</code> (<a href="chap5_mj.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>) and Chapter <a href="chap7_mj.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.Normaliser(SymmetricGroup(6), PSL(2,5)) = PGL(2,5);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">D12 := DihedralGroup(IsPermGroup, 12);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.Normaliser(SymmetricGroup(6), (1,2,3,4,5,6)) = D12;</span>
+true
+</pre></div>
+
+<p><a id="X7AD6E7EA84C2BB59" name="X7AD6E7EA84C2BB59"></a></p>
+
+<h5>4.4-5 <span class="Heading">Centraliser</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Centraliser</code>( <var class="Arg">G</var>, <var class="Arg">x</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Centralizer</code>( <var class="Arg">G</var>, <var class="Arg">x</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: An permutation group</p>
+
+<p><code class="func">Vole.Centraliser</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Centraliser</code> (<a href="../../../doc/ref/chap35_mj.html#X7DE33AFC823C7873"><span class="RefLink">Ref 35.4-4</span></a>).</p>
+
+<p>If <var class="Arg">G</var> is a group and <var class="Arg">x</var> is a permutation, then this function returns the subgroup of <var class="Arg">G</var> comprising its elements that commute with <var class="Arg">x</var>.</p>
+
+<p>If instead <var class="Arg">x</var> is group, then this function returns the subgroup of <var class="Arg">G</var> comprising its elements that commute with all elements of <var class="Arg">x</var>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.Centraliser(MathieuGroup(12), (1,11,9,4,3,2)(5,7,8,6,12,10));</span>
+Group([ (1,2,3,4,9,11)(5,10,12,6,8,7), (1,5,3,12,9,8)(2,10,4,6,11,7) ])
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.Centraliser(Group((1,2,3,4,5,6)), DihedralGroup(IsPermGroup, 12));</span>
+Group([ (1,4)(2,5)(3,6) ])
+</pre></div>
+
+<p><a id="X83DD148D7DA2ABA9" name="X83DD148D7DA2ABA9"></a></p>
+
+<h5>4.4-6 <span class="Heading">IsConjugate</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.IsConjugate</code>( <var class="Arg">G</var>, <var class="Arg">x</var>, <var class="Arg">y</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
+
+<p><code class="func">Vole.IsConjugate</code> emulates the built-in <strong class="pkg">GAP</strong> function <code class="func">IsConjugate</code> (<a href="../../../doc/ref/chap39_mj.html#X83DD148D7DA2ABA9"><span class="RefLink">Ref 39.10-9</span></a>).</p>
+
+<p>This function returns <code class="keyw">true</code> if there exists an element of the permutation group <var class="Arg">G</var> that conjugates <var class="Arg">x</var> to <var class="Arg">y</var>, and <code class="keyw">false</code> otherwise, where <var class="Arg">x</var> and <var class="Arg">y</var> are either both permutations, or both permutation groups. Note that <var class="Arg">x</var> and <var class="Arg">y</var> are not required to be contained in <var class="Arg">G</var>.</p>
+
+<p>This function immediately delegates to <code class="func">Vole.RepresentativeAction</code> (<a href="chap4_mj.html#X857DC7B085EB0539"><span class="RefLink">4.4-3</span></a>), which finds a representative conjugating element, or proves that none exists.</p>
+
+<p>There are many reasons why <strong class="pkg">GAP</strong> may be faster than <strong class="pkg">Vole</strong> for any particular problem; see Section <a href="chap1_mj.html#X854F8C5579845066"><span class="RefLink">1.4</span></a> for some discussion about this. It may be possible to obtain better performance from <strong class="pkg">Vole</strong> by specifying custom refiners with the native interface, see <code class="func">VoleFind.Rep</code> (<a href="chap5_mj.html#X8712249F879D9FA9"><span class="RefLink">5.2-1</span></a>) and Chapter <a href="chap7_mj.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a>.</p>
+
+<p>Conjugacy of permutations:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Conjugacy of permutations</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">x := (1,2,3,4,5);; y := (1,2,3,4,6);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.IsConjugate(SymmetricGroup(6), x, y);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.IsConjugate(AlternatingGroup(6), x, y);</span>
+false
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.IsConjugate(Group([ (5,6) ]), x, y);</span>
+true
+</pre></div>
+
+<p>Conjugacy of groups:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">x := Group([ (1,2,3,4,5) ]);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">y := Group([ (1,2,3,4,6) ]);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.IsConjugate(SymmetricGroup(6), x, y);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.IsConjugate(Group([ (1,2)(3,4) ]), x, y);</span>
+false
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.IsConjugate(Group([ (5,6) ]), x, y);</span>
+true
+</pre></div>
+
+<p><a id="X7A2D046B83DD5F5F" name="X7A2D046B83DD5F5F"></a></p>
+
+<h5>4.4-7 <span class="Heading">TwoClosure</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.TwoClosure</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A permutation group</p>
 
-<p><code class="func">VoleFind.Group</code> returns the group of permutations that satisfy the constraints defined by the <var class="Arg">arguments</var>. It is assumed, although not verified, that for each such constraint, the set of permutations satisfying it forms a group: this is the responsibility of the user.</p>
+<p><code class="func">Vole.TwoClosure</code> emulates the built-in <strong class="pkg">GAP</strong> function <code class="func">TwoClosure</code> (<a href="../../../doc/ref/chap43_mj.html#X7A2D046B83DD5F5F"><span class="RefLink">Ref 43.12-3</span></a>) for a permutation group.</p>
 
-<p>The <var class="Arg">arguments</var> may be given separately, or as a single list. Each argument may be a <strong class="pkg">Vole</strong> constraint (Chapter <a href="chap5_mj.html#X79EAB456814AB11C"><span class="RefLink">5</span></a>), a refiner (Chapter <a href="chap6_mj.html#X786EF6928319D57A"><span class="RefLink">6</span></a>; note that a refiner implies a constraint), or one of the following objects:</p>
+<p>The <em>2-closure</em> of a permutation group <var class="Arg">G</var> is the largest group whose orbitals (orbits on pairs of positive integers) coincide with those of <var class="Arg">G</var>; equivalently, it is the intersection of the automorphism groups of the orbital graphs of <var class="Arg">G</var>.</p>
 
+<p><strong class="button">Warning</strong>: this function currently requires the <strong class="pkg">OrbitalGraphs</strong> package, and it will give an error if <strong class="pkg">OrbitalGraphs</strong> is not yet loaded.</p>
 
-<ul>
-<li><p>A permutation group <var class="Arg">G</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.InGroup</code> (<a href="chap5_mj.html#X7FD1D7EB7F8EF940"><span class="RefLink">5.3-1</span></a>) with argument <var class="Arg">G</var>.</p>
-
-</li>
-</ul>
-
-<ul>
-<li><p>A positive integer <var class="Arg">k</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.LargestMovedPoint</code> (<a href="chap5_mj.html#X821F077482DE97E6"><span class="RefLink">5.3-11</span></a>) with argument <var class="Arg">k</var>.</p>
-
-</li>
-</ul>
-<p>For at least one of the <var class="Arg">arguments</var>, <strong class="pkg">Vole</strong> must be able to immediately deduce a (finite) largest moved point of all the permutations that satisfy the corresponding constraint. Otherwise, an error is given. This guarantees that <strong class="pkg">Vole</strong> terminates (given sufficient resources). See Section <a href="chap5_mj.html#X83C3802E816A5013"><span class="RefLink">5.4</span></a> for examples and further information.</p>
-
-<p>This function supports various options, which are documented in Section <a href="chap8_mj.html#X793CB7997868D411"><span class="RefLink">8.3</span></a>.</p>
+<p>There are many reasons why <strong class="pkg">GAP</strong> may be faster than <strong class="pkg">Vole</strong> for any particular problem; see Section <a href="chap1_mj.html#X854F8C5579845066"><span class="RefLink">1.4</span></a> for some discussion about this. It may be possible to obtain better performance from <strong class="pkg">Vole</strong> by specifying custom refiners with the native interface, see <code class="func">VoleFind.Group</code> (<a href="chap5_mj.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>) and Chapter <a href="chap7_mj.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a>.</p>
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">graph_auto := VoleCon.Stabilise(JohnsonDigraph(4,2), OnDigraphs);;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">set_stab := VoleCon.Stabilise([2,4,6], OnSets);;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G := VoleFind.Group(graph_auto, set_stab, 6);;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G = Group([ (2,4)(3,5), (1,3,5)(2,6,4) ]);</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">LoadPackage("orbitalgraphs", false);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;  # A4 on six points</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">(3,6) in G;</span>
+false
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.TwoClosure(G) = ClosureGroup(G, (3,6));</span>
 true
 </pre></div>
 
-<p>Note that multiple groups-by-generators may be given as constraints:</p>
+<p><a id="X7A2FDAA7838D97A1" name="X7A2FDAA7838D97A1"></a></p>
 
+<h4>4.5 <span class="Heading"><strong class="pkg">Vole</strong> functions emulating the <strong class="pkg">images</strong> package</span></h4>
 
-<div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">norm_PSL25 := VoleCon.Normalise(PSL(2,5));;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">in_A6  := VoleCon.InGroup(AlternatingGroup(6));;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">in_D12 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 12));;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G := VoleFind.Group(in_A6, in_D12, norm_PSL25);;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G = Group([ (1,3,5)(2,4,6) ]);</span>
-true
-</pre></div>
+<p>The following table gives a summary of the correspondence between <strong class="pkg">Vole</strong> and the <strong class="pkg">images</strong> package.</p>
 
-<p><a id="X7A99C3238317F649" name="X7A99C3238317F649"></a></p>
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft"><strong class="pkg">Vole</strong> function</td>
+<td class="tdleft"><strong class="pkg">images</strong> package function</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.CanonicalPerm</code> (<a href="chap4_mj.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>)</td>
+<td class="tdleft"><code class="func">CanonicalImagePerm</code> (<a href="../../../pkg/images/doc/chap2_mj.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.CanonicalImage</code> (<a href="chap4_mj.html#X780189E3873B7A42"><span class="RefLink">4.5-2</span></a>)</td>
+<td class="tdleft"><code class="func">CanonicalImage</code> (<a href="../../../pkg/images/doc/chap2_mj.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>)</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
 
-<h5>4.2-3 VoleFind.Coset</h5>
+<p><a id="X7DFC113D842DD5BC" name="X7DFC113D842DD5BC"></a></p>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.Coset</code>( <var class="Arg">arguments...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: A <strong class="pkg">GAP</strong> right coset of a permutation group, or <code class="keyw">fail</code></p>
+<h5>4.5-1 <span class="Heading">CanonicalPerm</span></h5>
 
-<p>For this function, it is assumed, although not verified, that for each constraint defined by the arguments, the set of permutations satisfying it either is empty, or forms a right coset of some group. It is the responsibility of the user to ensure that this is the case.</p>
-
-<p>Given this, <code class="func">VoleFind.Coset</code> returns the set of permutations that satisfy the constraints defined by the <var class="Arg">arguments</var>, in the case that the set is nonempty, and it returns <code class="keyw">fail</code> otherwise. The set of permutations is returned as a <strong class="pkg">GAP</strong> right coset object.</p>
-
-<p>The <var class="Arg">arguments</var> may be given separately, or as a single list. Each argument may be a <strong class="pkg">Vole</strong> constraint (Chapter <a href="chap5_mj.html#X79EAB456814AB11C"><span class="RefLink">5</span></a>), a refiner (Chapter <a href="chap6_mj.html#X786EF6928319D57A"><span class="RefLink">6</span></a>; note that a refiner implies a constraint), or one of the following objects:</p>
-
-
-<ul>
-<li><p>A permutation group <var class="Arg">G</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.InGroup</code> (<a href="chap5_mj.html#X7FD1D7EB7F8EF940"><span class="RefLink">5.3-1</span></a>) with argument <var class="Arg">G</var>.</p>
-
-</li>
-</ul>
-
-<ul>
-<li><p>A <strong class="pkg">GAP</strong> right coset object <var class="Arg">U</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.InCoset</code> (<a href="chap5_mj.html#X7F27DDB6818F24DB"><span class="RefLink">5.3-2</span></a>) with argument <var class="Arg">U</var>.</p>
-
-</li>
-</ul>
-
-<ul>
-<li><p>A positive integer <var class="Arg">k</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.LargestMovedPoint</code> (<a href="chap5_mj.html#X821F077482DE97E6"><span class="RefLink">5.3-11</span></a>) with argument <var class="Arg">k</var>.</p>
-
-</li>
-</ul>
-
-<ul>
-<li><p>The value <code class="keyw">fail</code>, which is interpreted as an instance of the constraint <code class="func">VoleCon.None</code> (<a href="chap5_mj.html#X7B55675E8510E6AE"><span class="RefLink">5.3-12</span></a>).</p>
-
-</li>
-</ul>
-<p>For at least one of the <var class="Arg">arguments</var>, <strong class="pkg">Vole</strong> must be able to immediately deduce a (finite) largest moved point of all the permutations that satisfy the corresponding constraint. Otherwise, an error is given. This guarantees that <strong class="pkg">Vole</strong> terminates (given sufficient resources). See Section <a href="chap5_mj.html#X83C3802E816A5013"><span class="RefLink">5.4</span></a> for examples and further information.</p>
-
-<p>This function supports various options, which are documented in Section <a href="chap8_mj.html#X793CB7997868D411"><span class="RefLink">8.3</span></a>.</p>
-
-
-<div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
-true
-</pre></div>
-
-<p><a id="X83018A5A7C687170" name="X83018A5A7C687170"></a></p>
-
-<h4>4.3 <span class="Heading">Canonising with the native <strong class="pkg">Vole</strong> interface</span></h4>
-
-<p>Given a group <span class="SimpleMath">\(G\)</span>, a set <span class="SimpleMath">\(X\)</span>, and an action of <span class="SimpleMath">\(G\)</span> on <span class="SimpleMath">\(X\)</span>, then a <em>canoniser</em> for <span class="SimpleMath">\(X\)</span> with respect to the action of <span class="SimpleMath">\(G\)</span> is a function <span class="SimpleMath">\(f\)</span> from <span class="SimpleMath">\(X\)</span> to itself such that:</p>
-
-
-<ul>
-<li><p>for all <span class="SimpleMath">\(x \in X\)</span>, <span class="SimpleMath">\(x\)</span> and <span class="SimpleMath">\(f(x)\)</span> are in the same orbit of <span class="SimpleMath">\(G\)</span> on <span class="SimpleMath">\(X\)</span>; and</p>
-
-</li>
-<li><p>for all <span class="SimpleMath">\(x, y \in X\)</span>, <span class="SimpleMath">\(f(x) = f(y)\)</span> if and only if <span class="SimpleMath">\(x\)</span> and <span class="SimpleMath">\(y\)</span> are in the same orbit of <span class="SimpleMath">\(G\)</span> on <span class="SimpleMath">\(X\)</span>.</p>
-
-</li>
-</ul>
-<p>In other words, a canoniser maps a point <span class="SimpleMath">\(x \in X\)</span> to a canonical element of its orbit under the action of <span class="SimpleMath">\(G\)</span>.</p>
-
-<p>This canonical element is known as the <em>canonical image</em> of <span class="SimpleMath">\(x\)</span> with respect to the action of <span class="SimpleMath">\(G\)</span>. It is sometimes called the <em>canonical form</em> of <span class="SimpleMath">\(X\)</span>.</p>
-
-<p>In this context, a <em>canonical permutation</em> for <span class="SimpleMath">\(x\)</span> is any element of <span class="SimpleMath">\(G\)</span> that maps <span class="SimpleMath">\(x\)</span> to its canonical image under the action of <span class="SimpleMath">\(G\)</span> on <span class="SimpleMath">\(x\)</span>. This is sometimes called a <em>canonical labelling</em>. Note that there is not necessarily a unique canonical permutation for each element of <span class="SimpleMath">\(X\)</span>. Indeed, by the orbit-stabiliser theorem, the number of canonical permutations for <span class="SimpleMath">\(x \in X\)</span> is equal to the size of the stabiliser of <span class="SimpleMath">\(x\)</span> in <span class="SimpleMath">\(G\)</span>.</p>
-
-<p><a id="X7A32626983FEB066" name="X7A32626983FEB066"></a></p>
-
-<h5>4.3-1 VoleFind.Canonical</h5>
-
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.Canonical</code>( <var class="Arg">G</var>, <var class="Arg">arguments...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: A record</p>
-
-<p><code class="func">VoleFind.Canonical</code> is the main function in <strong class="pkg">Vole</strong> for canonising various kinds of objects, i.e. finding canonical images and permutations. See the beginning of Section <a href="chap4_mj.html#X83018A5A7C687170"><span class="RefLink">4.3</span></a> for a definition of these terms.</p>
-
-<p><em><strong class="button">Please note</strong> that the forthcoming details are crucial for obtaining meaningful and comparable results from <code class="func">VoleFind.Canonical</code>. Therefore, for users who:</em></p>
-
-
-<ul>
-<li><p><em>wish to compute a canonical permutation/image of an object under an action that is listed in the table in <code class="func">VoleCon.Stabilise</code> (<a href="chap5_mj.html#X80BEBD297D7403C0"><span class="RefLink">5.3-5</span></a>), and</em></p>
-
-</li>
-<li><p><em>do not wish to specify particular refiners for this (refiners are introduced and discussed in Chapter <a href="chap6_mj.html#X786EF6928319D57A"><span class="RefLink">6</span></a>),</em></p>
-
-</li>
-</ul>
-<p><em>we suggest using the functions <code class="func">Vole.CanonicalPerm</code> (<a href="chap7_mj.html#X7DFC113D842DD5BC"><span class="RefLink">7.5-1</span></a>) and <code class="func">Vole.CanonicalImage</code> (<a href="chap7_mj.html#X780189E3873B7A42"><span class="RefLink">7.5-2</span></a>), which provide a much simpler interface to accommodate this simpler use case.</em></p>
-
-<p>The first argument to <code class="func">VoleFind.Canonical</code> must be the group <var class="Arg">G</var> in which to canonise. The remaining <var class="Arg">arguments</var> specify the rest of the canonisation problem; in particular, they define the object and the action.</p>
-
-<p>The <var class="Arg">arguments</var> that follow <var class="Arg">G</var> may be given separately, or as a list. Each of the <var class="Arg">arguments</var> must be an instance of a <strong class="pkg">Vole</strong> constraint <code class="func">VoleCon.Stabilise</code> (<a href="chap5_mj.html#X80BEBD297D7403C0"><span class="RefLink">5.3-5</span></a>), <code class="func">VoleCon.Normalise</code> (<a href="chap5_mj.html#X7E0A525884A020DE"><span class="RefLink">5.3-7</span></a>), or <code class="func">VoleCon.Centralise</code> (<a href="chap5_mj.html#X7B72EC9F797FEB6C"><span class="RefLink">5.3-8</span></a>) (Chapter <a href="chap5_mj.html#X79EAB456814AB11C"><span class="RefLink">5</span></a>), or a special kind of refiner (Chapter <a href="chap6_mj.html#X786EF6928319D57A"><span class="RefLink">6</span></a>).</p>
-
-<p>In particular, the constraint implied by each of the <var class="Arg">arguments</var> must be such that...</p>
-
-<p>Moreover, for users who wish to canonise multiple objects with respect to the same group and action (which is the typical use case), then it is crucial to perform these computations in the same <strong class="pkg">GAP</strong> session, with the constraints given in a consistent way.</p>
-
-<p>For each constraint, the set of permutations satisfying the constraint must be definable as the set of permutations that stabilise some object under an action of <var class="Arg">G</var>. The <strong class="pkg">Vole</strong> constraints of this kind are In particular, the constraint <code class="func">VoleCon.InGroup</code> (<a href="chap5_mj.html#X7FD1D7EB7F8EF940"><span class="RefLink">5.3-1</span></a>) is not permitted, in general.</p>
-
-<p>It is guaranteed that when canonising, <strong class="pkg">Vole</strong> constraints are translated into refiners in a way that is nice.</p>
-
-<p>As a side effect of computing a canonical permutation, you get the stabiliser.</p>
-
-<p>Note: you have to give the same constraints in the same order</p>
-
-<p>The constraints must be (equivalent) to something of the form <code class="code">VoleCon.Stabilise(object,action)</code>, such that <var class="Arg">G</var> "acts on" <var class="Arg">object</var>.</p>
-
-<p>Refiners must form a refiner family.</p>
-
-<p>In the sense that the set of all permutations satisfying the constraint is a stabiliser of some <code class="code">object</code> under an <code class="code">action</code>. For example, <code class="code">VoleCon.Normalise(G)</code>!</p>
-
-<p>Suppose the i-th constraint is equivalent to <code class="code">VoleCon.Stabilise(object_i,action_i)</code>.</p>
-
-<p>Then <code class="code">VoleFind.Canonical</code> searches for the canonical image of</p>
-
-<p>The result of <code class="func">VoleFind.Canonical</code> is given as a record, with the following components:</p>
-
-
-<ul>
-<li><p><code class="code">canonical</code>: blah</p>
-
-</li>
-<li><p><code class="code">group</code>: blah</p>
-
-</li>
-</ul>
-<p>This function supports various options, which are documented in Section <a href="chap8_mj.html#X793CB7997868D411"><span class="RefLink">8.3</span></a>.</p>
-
-<p><strong class="button">Warning</strong>: The permutation given by a canonical search and the canonical image that it defines are <strong class="button">not guaranteed to be the same across different sessions</strong>. In particular, canonical permutations and images may differ in different versions of <strong class="pkg">Vole</strong>, in different versions of <strong class="pkg">GAP</strong>, and on different hardware. In addition, please note that the result also depends on order in which the <var class="Arg">arguments</var> are given, and on the specific arguments that are used.</p>
-
-
-<div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
-true
-</pre></div>
-
-<p><a id="X7ACA1CDC80D12604" name="X7ACA1CDC80D12604"></a></p>
-
-<h5>4.3-2 VoleFind.CanonicalPerm</h5>
-
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleFind.CanonicalPerm</code>( <var class="Arg">G</var>, <var class="Arg">arguments...</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.CanonicalPerm</code>( <var class="Arg">G</var>, <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.CanonicalImagePerm</code>( <var class="Arg">G</var>, <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A permutation</p>
 
-<p>This function returns <code class="code">VoleFind.Canonical(<var class="Arg">G</var>,<var class="Arg">arguments...</var>).canonical</code>. This is the <code class="code">canonical</code> component of the record returned by <code class="func">VoleFind.Canonical</code> (<a href="chap4_mj.html#X7A32626983FEB066"><span class="RefLink">4.3-1</span></a>), under the same arguments.</p>
+<p>These functions, which are synonyms of each other, emulate <code class="func">CanonicalImagePerm</code> (<a href="../../../pkg/images/doc/chap2_mj.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>) from the <strong class="pkg">images</strong> package, although they supports a wider range of objects and actions.</p>
 
-<p>Please see the documentation of <code class="func">VoleFind.Canonical</code> (<a href="chap4_mj.html#X7A32626983FEB066"><span class="RefLink">4.3-1</span></a>) for much more information.</p>
+<p>Suppose that <var class="Arg">G</var> is a group, and that <var class="Arg">object</var> and <code class="code">object2</code> belong to a set on which <var class="Arg">G</var> has a group <var class="Arg">action</var>. Then <code class="code">Vole.CanonicalPerm(<var class="Arg">G</var>,<var class="Arg">object</var>,<var class="Arg">action</var>)</code> returns an element <code class="code">g</code> of <var class="Arg">G</var>, and <code class="code">Vole.CanonicalPerm(<var class="Arg">G</var>,object2,<var class="Arg">action</var>)</code> returns an element <code class="code">h</code> of <var class="Arg">G</var>, such that <var class="Arg">object</var> and <code class="code">object2</code> are in the same orbit of <var class="Arg">G</var> under <var class="Arg">action</var> if and only if <code class="code"><var class="Arg">object</var>^g = object2^h</code>.</p>
 
-<p><strong class="button">Warning</strong>: The permutation given by a canonical search and the canonical image that it defines are <strong class="button">not guaranteed to be the same across different sessions</strong>. In particular, canonical permutations and images may differ in different versions of <strong class="pkg">Vole</strong>, in different versions of <strong class="pkg">GAP</strong>, and on different hardware. In addition, please note that the result also depends on order in which the <var class="Arg">arguments</var> are given, and on the specific arguments that are used.</p>
+<p>The permitted combinations of objects and actions are given in the table below.</p>
 
-<p>The following example shows how to compute a canonical permutation for the group <span class="SimpleMath">\(\langle (1\,2) \rangle\)</span> under conjugation by <span class="SimpleMath">\(A_{4}\)</span>:</p>
+<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="../../../doc/ref/chap4_mj.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+
+<p>The native <strong class="pkg">Vole</strong> interface for this kind of computation is provided by <code class="func">VoleFind.CanonicalPerm</code> (<a href="chap5_mj.html#X7ACA1CDC80D12604"><span class="RefLink">5.3-2</span></a>).</p>
+
+<p><strong class="button">Warning</strong>: The permutation given by a canonical search and the canonical image that it defines are <strong class="button">not guaranteed to be the same across different sessions</strong>. In particular, canonical permutations/labellings and images may differ in different versions of <strong class="pkg">Vole</strong>, in different versions of <strong class="pkg">GAP</strong>, and on different hardware.</p>
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.CanonicalPerm(AlternatingGroup(4),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput"> VoleCon.Normalise(Group([ (1,2) ]))</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">);</span>
-(1,4)(2,3)
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.CanonicalPerm(PSL(2,5), JohnsonDigraph(4,2), OnDigraphs);</span>
+(1,2,6)(3,4,5)
 </pre></div>
 
-<p>Thus the canonical image of <span class="SimpleMath">\(\langle (1\,2) \rangle\)</span> under this action of <span class="SimpleMath">\(A_{4}\)</span> is the group <span class="SimpleMath">\({\langle (1\,2) \rangle}^{(1\,4)(2\,3)}\)</span>, i.e. <span class="SimpleMath">\(\langle (3\,4) \rangle\)</span>.</p>
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft"><strong class="button">Permitted action</strong></td>
+<td class="tdleft"><strong class="button">Corresponding object/pair of objects</strong></td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft">A positive integer, permutation, or perm group</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft">A list of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="../../../doc/ref/chap41_mj.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft">A set of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="../../../doc/ref/chap41_mj.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft">A set of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
+<td class="tdleft">A set of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="../../../doc/ref/chap41_mj.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft">A list of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
+<td class="tdleft">A list of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft">A digraph object, or a list of adjacencies</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
 
-<p>This second example shows how to compute a canonical permutation for the pair <span class="SimpleMath">\([S, D]\)</span> under the specified componentwise action of <span class="SimpleMath">\(S_{4}\)</span>, where <span class="SimpleMath">\(S\)</span> is the set-of-sets <span class="SimpleMath">\(\{ \{1,2\}, \{1,4\}, \{2,3\}, \{3,4\} \}\)</span>, and <span class="SimpleMath">\(D\)</span> is the cycle digraph on four vertices:</p>
+<p><a id="X780189E3873B7A42" name="X780189E3873B7A42"></a></p>
+
+<h5>4.5-2 <span class="Heading">CanonicalImage</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.CanonicalImage</code>( <var class="Arg">G</var>, <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: An image of <var class="Arg">object</var></p>
+
+<p>This function emulates <code class="func">CanonicalImage</code> (<a href="../../../pkg/images/doc/chap2_mj.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>) from the <strong class="pkg">images</strong> package, although it supports a wider range of objects and actions.</p>
+
+<p><code class="func">Vole.CanonicalImage</code> returns <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> is the permutation returned by Vole.CanonicalPerm(<var class="Arg">G</var>,<var class="Arg">object</var>,<var class="Arg">action</var>). See <code class="func">Vole.CanonicalPerm</code> (<a href="chap4_mj.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>) for more information.</p>
+
+<p>The permitted combinations of objects and actions are given in the table below.</p>
+
+<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="../../../doc/ref/chap4_mj.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+
+<p>The native <strong class="pkg">Vole</strong> interface for this kind of computation is provided by <code class="func">VoleFind.CanonicalPerm</code> (<a href="chap5_mj.html#X7ACA1CDC80D12604"><span class="RefLink">5.3-2</span></a>).</p>
+
+<p><strong class="button">Warning</strong>: The permutation given by a canonical search and the canonical image that it defines are <strong class="button">not guaranteed to be the same across different sessions</strong>. In particular, canonical permutations/labellings and images may differ in different versions of <strong class="pkg">Vole</strong>, in different versions of <strong class="pkg">GAP</strong>, and on different hardware.</p>
+
+<p>In the following example, we find that three different tuples of points have two different canonical images in <span class="SimpleMath">\(A_5\)</span>:</p>
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.CanonicalPerm(SymmetricGroup(4),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput"> VoleCon.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput"> VoleCon.Stabilise(CycleDigraph(4), OnDigraphs)</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">);</span>
-(1,2,3)
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">tuple1 := [1,2,3,4];; tuple2 := [1,2,3,5];; tuple3 := [1,5,2,3];;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">A5 := AlternatingGroup(5);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.CanonicalImage(A5, tuple1, OnTuples);</span>
+[ 5, 4, 3, 2 ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.CanonicalImage(A5, tuple2, OnTuples);</span>
+[ 4, 5, 3, 2 ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.CanonicalImage(A5, tuple3, OnTuples);</span>
+[ 4, 5, 3, 2 ]
+</pre></div>
+
+<p>Therefore, the tuples with the same canonical image are in the same orbit of <span class="SimpleMath">\(A_5\)</span>, and those with different canonical images are in different orbits:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.RepresentativeAction(A5, tuple1, tuple2, OnTuples);</span>
+fail
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.RepresentativeAction(A5, tuple1, tuple3, OnTuples);</span>
+fail
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.RepresentativeAction(A5, tuple2, tuple3, OnTuples);</span>
+(2,5,3)
+</pre></div>
+
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft"><strong class="button">Permitted action</strong></td>
+<td class="tdleft"><strong class="button">Corresponding object/pair of objects</strong></td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft">A positive integer, permutation, or perm group</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft">A list of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="../../../doc/ref/chap41_mj.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft">A set of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="../../../doc/ref/chap41_mj.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft">A set of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
+<td class="tdleft">A set of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="../../../doc/ref/chap41_mj.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft">A list of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="../../../doc/ref/chap41_mj.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
+<td class="tdleft">A list of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft">A digraph object, or a list of adjacencies</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
+
+<p><a id="X7E533E72831AC20B" name="X7E533E72831AC20B"></a></p>
+
+<h4>4.6 <span class="Heading"><strong class="pkg">Vole</strong> functions emulating the <strong class="pkg">Digraphs</strong> package</span></h4>
+
+<p>The following table gives a summary of the correspondence between <strong class="pkg">Vole</strong> and the <strong class="pkg">Digraphs</strong> package.</p>
+
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft"><strong class="pkg">Vole</strong> function</td>
+<td class="tdleft"><strong class="pkg">Digraphs</strong> package function</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.AutomorphismGroup</code> (<a href="chap4_mj.html#X87677B0787B4461A"><span class="RefLink">4.6-1</span></a>)</td>
+<td class="tdleft"><code class="func">AutomorphismGroup</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X858C32127A190175"><span class="RefLink">Digraphs 7.2-2</span></a>)</p>
+
+<p><code class="func">NautyAutomorphismGroup</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X857758B18144C0CD"><span class="RefLink">Digraphs 7.2-4</span></a>)</p>
+
+<p><code class="func">BlissAutomorphismGroup</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X7E7B0D88865A89F6"><span class="RefLink">Digraphs 7.2-3</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.CanonicalDigraph</code> (<a href="chap4_mj.html#X860ADFA77D2FC5A4"><span class="RefLink">4.6-3</span></a>)</td>
+<td class="tdleft"><code class="func">NautyCanonicalDigraph</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X877B1D377EC197D7"><span class="RefLink">Digraphs 7.2-9</span></a>)</p>
+
+<p><code class="func">BlissCanonicalDigraph</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X877B1D377EC197D7"><span class="RefLink">Digraphs 7.2-9</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.DigraphCanonicalLabelling</code> (<a href="chap4_mj.html#X81115B82856B08DA"><span class="RefLink">4.6-2</span></a>)</td>
+<td class="tdleft"><code class="func">NautyCanonicalLabelling</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>)</p>
+
+<p><code class="func">BlissCanonicalLabelling</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>)</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
+
+<p><a id="X87677B0787B4461A" name="X87677B0787B4461A"></a></p>
+
+<h5>4.6-1 <span class="Heading">AutomorphismGroup</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.AutomorphismGroup</code>( <var class="Arg">D</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A permutation group</p>
+
+<p><code class="func">Vole.AutomorphismGroup</code> emulates the <strong class="pkg">Digraphs</strong> package functions <code class="func">AutomorphismGroup</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X858C32127A190175"><span class="RefLink">Digraphs 7.2-2</span></a>), <code class="func">NautyAutomorphismGroup</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X857758B18144C0CD"><span class="RefLink">Digraphs 7.2-4</span></a>), and <code class="func">BlissAutomorphismGroup</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X7E7B0D88865A89F6"><span class="RefLink">Digraphs 7.2-3</span></a>).</p>
+
+<p>This function returns the automorphism group of the digraph <var class="Arg">D</var>. The <em>automorphism group</em> of <var class="Arg">D</var> is the stabiliser of <var class="Arg">D</var> in <code class="code">SymmetricGroup(DigraphVertices(D))</code> under its natural action on digraphs, namely <code class="func">OnDigraphs</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>). The <strong class="pkg">Vole</strong> function <code class="func">Vole.Stabiliser</code> (<a href="chap4_mj.html#X8606859F87CD8FB0"><span class="RefLink">4.4-2</span></a>) can be used to compute the stabiliser of <var class="Arg">D</var> in an arbitrary permutation group.</p>
+
+<p>Support for specifying vertex and/or edge colours has not yet been implemented, sorry. We are working on it!</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.AutomorphismGroup(JohnsonDigraph(4,2));</span>
+Group([ (3,4), (2,3,5,4), (1,2,6,5)(3,4) ])
+</pre></div>
+
+<p><a id="X81115B82856B08DA" name="X81115B82856B08DA"></a></p>
+
+<h5>4.6-2 <span class="Heading">DigraphCanonicalLabelling</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.DigraphCanonicalLabelling</code>( <var class="Arg">D</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A permutation</p>
+
+<p><code class="func">Vole.DigraphCanonicalLabelling</code> emulates the <strong class="pkg">Digraphs</strong> package functions <code class="func">BlissCanonicalLabelling</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>) and <code class="func">NautyCanonicalLabelling</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>).</p>
+
+<p>If <var class="Arg">D</var> is a digraph, and <code class="code">G=SymmetricGroup(DigraphVertices(<var class="Arg">D</var>))</code>, then this function is a shortcut to <code class="code">Vole.CanonicalPerm(G,<var class="Arg">D</var>,OnDigraphs)</code>. It is also possible to use <code class="func">Vole.CanonicalPerm</code> (<a href="chap4_mj.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>) to canonise <var class="Arg">D</var> in an arbitrary permutation group.</p>
+
+<p>Support for specifying vertex and/or edge colours has not yet been implemented, sorry. We are working on it!</p>
+
+<p><strong class="button">Warning</strong>: The permutation given by a canonical search and the canonical image that it defines are <strong class="button">not guaranteed to be the same across different sessions</strong>. In particular, canonical permutations/labellings and images may differ in different versions of <strong class="pkg">Vole</strong>, in different versions of <strong class="pkg">GAP</strong>, and on different hardware.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.DigraphCanonicalLabelling(JohnsonDigraph(4,2));</span>
+(1,2,4,5,3,6)
+</pre></div>
+
+<p><a id="X860ADFA77D2FC5A4" name="X860ADFA77D2FC5A4"></a></p>
+
+<h5>4.6-3 <span class="Heading">CanonicalDigraph</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.CanonicalDigraph</code>( <var class="Arg">D</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A digraph</p>
+
+<p><code class="func">Vole.CanonicalDigraph</code> emulates the <strong class="pkg">Digraphs</strong> package functions <code class="func">BlissCanonicalDigraph</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X877B1D377EC197D7"><span class="RefLink">Digraphs 7.2-9</span></a>) and <code class="func">NautyCanonicalDigraph</code> (<a href="../../../pkg/digraphs/doc/chap7_mj.html#X877B1D377EC197D7"><span class="RefLink">Digraphs 7.2-9</span></a>).</p>
+
+<p>If <var class="Arg">D</var> is a digraph, and <code class="code">G=SymmetricGroup(DigraphVertices(<var class="Arg">D</var>))</code>, then this function is a shortcut to <code class="code">Vole.CanonicalImage(G,<var class="Arg">D</var>,OnDigraphs)</code>. It is also possible to use <code class="func">Vole.CanonicalImage</code> (<a href="chap4_mj.html#X780189E3873B7A42"><span class="RefLink">4.5-2</span></a>) to canonise <var class="Arg">D</var> in an arbitrary permutation group.</p>
+
+<p><strong class="button">Warning</strong>: The permutation given by a canonical search and the canonical image that it defines are <strong class="button">not guaranteed to be the same across different sessions</strong>. In particular, canonical permutations/labellings and images may differ in different versions of <strong class="pkg">Vole</strong>, in different versions of <strong class="pkg">GAP</strong>, and on different hardware.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.CanonicalDigraph(JohnsonDigraph(4,2));</span>
+&lt;immutable digraph with 6 vertices, 24 edges&gt;
 </pre></div>
 
 

@@ -5,7 +5,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-<title>GAP (Vole) - Chapter 6: Refiners</title>
+<title>GAP (Vole) - Chapter 6: Constraints</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta name="generator" content="GAPDoc2HTML" />
 <link rel="stylesheet" type="text/css" href="manual.css" />
@@ -20,48 +20,512 @@
 <div class="chlinkprevnexttop">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap5.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap7.html">[Next Chapter]</a>&nbsp;  </div>
 
 <p id="mathjaxlink" class="pcenter"><a href="chap6_mj.html">[MathJax on]</a></p>
-<p><a id="X786EF6928319D57A" name="X786EF6928319D57A"></a></p>
-<div class="ChapSects"><a href="chap6.html#X786EF6928319D57A">6 <span class="Heading">Refiners</span></a>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6.html#X786EF6928319D57A">6.1 <span class="Heading">Refiners</span></a>
+<p><a id="X79EAB456814AB11C" name="X79EAB456814AB11C"></a></p>
+<div class="ChapSects"><a href="chap6.html#X79EAB456814AB11C">6 <span class="Heading">Constraints</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6.html#X7F9028F87E8EB8A7">6.1 <span class="Heading">The concept of constraints in <strong class="pkg">Vole</strong></span></a>
 </span>
 </div>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6.html#X7A04C02B7DC3D43B">6.2 <span class="Heading">The <code class="code">VoleRefiner</code> record</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6.html#X7C8EACBE780DCACB">6.2 <span class="Heading">The <code class="code">VoleCon</code> record</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X83ED5F5485256E51">6.2-1 VoleRefiner</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X78F3F7F58416EE54">6.2-1 VoleCon</a></span>
 </div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6.html#X850A35CC7F02B6C6">6.3 <span class="Heading"><strong class="pkg">Vole</strong> constraints via the <code class="code">VoleCon</code> record</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7FD1D7EB7F8EF940">6.3-1 VoleCon.InGroup</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7F27DDB6818F24DB">6.3-2 VoleCon.InCoset</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7DEA6F208128AF5D">6.3-3 VoleCon.InRightCoset</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X807A0B8780F66AA9">6.3-4 VoleCon.InLeftCoset</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X80BEBD297D7403C0">6.3-5 VoleCon.Stabilise</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7999E7CA8654F16E">6.3-6 VoleCon.Transport</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7E0A525884A020DE">6.3-7 VoleCon.Normalise</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7B72EC9F797FEB6C">6.3-8 VoleCon.Centralise</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7AFA275E862CF966">6.3-9 VoleCon.Conjugate</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X854830F5810A5AD6">6.3-10 VoleCon.MovedPoints</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X821F077482DE97E6">6.3-11 VoleCon.LargestMovedPoint</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7B55675E8510E6AE">6.3-12 VoleCon.None</a></span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6.html#X83C3802E816A5013">6.4 <span class="Heading">Bounds associated with a constraint or refiner</span></a>
+</span>
+</div>
 </div>
 
-<h3>6 <span class="Heading">Refiners</span></h3>
+<h3>6 <span class="Heading">Constraints</span></h3>
 
-<p><a id="X786EF6928319D57A" name="X786EF6928319D57A"></a></p>
+<p><a id="X7F9028F87E8EB8A7" name="X7F9028F87E8EB8A7"></a></p>
 
-<h4>6.1 <span class="Heading">Refiners</span></h4>
+<h4>6.1 <span class="Heading">The concept of constraints in <strong class="pkg">Vole</strong></span></h4>
 
-<p>Something. Something else. There can be multiple refiners implemented for the same mathematical property with different tradeoffs, and also refiners implemented for special cases (such as symmetric and alternating groups). In general most users will want to use <code class="func">VoleCon</code> (<a href="chap5.html#X78F3F7F58416EE54"><span class="RefLink">5.2-1</span></a>), which provides a higher-level interface.</p>
+<p>At its core, <strong class="pkg">Vole</strong> searches for permutations that satisfy a collection of constraints. A <em>constraint</em> is a property such that for any given permutation, it is easy to check whether that permutation has the property or not. In addition, if the set of permutations that satisfy a property is nonempty, then that set must be a (possibly infinite) permutation group, or a coset thereof.</p>
 
-<p><a id="X7A04C02B7DC3D43B" name="X7A04C02B7DC3D43B"></a></p>
+<p>For example:</p>
 
-<h4>6.2 <span class="Heading">The <code class="code">VoleRefiner</code> record</span></h4>
 
-<p><a id="X83ED5F5485256E51" name="X83ED5F5485256E51"></a></p>
+<ul>
+<li><p>“is even”,</p>
 
-<h5>6.2-1 VoleRefiner</h5>
+</li>
+<li><p>“commutes with the permutation <span class="Math">x</span>”,</p>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner</code></td><td class="tdright">(&nbsp;global variable&nbsp;)</td></tr></table></div>
-<p><code class="code">VoleRefiner</code> is a record that contains all of the refiners that are included in <strong class="pkg">Vole</strong>.</p>
+</li>
+<li><p>“conjugates the group <span class="Math">G = \langle X \rangle</span> to the group <span class="Math">H = \langle Y \rangle</span>”,</p>
 
-<p><strong class="pkg">GraphBacktracking</strong> and <strong class="pkg">BacktrackKit</strong> refiners are also compatible with <strong class="pkg">Vole</strong>.</p>
+</li>
+<li><p>“is an automorphism of the graph <span class="Math">\Gamma</span>”, and</p>
+
+</li>
+<li><p>“is a member of the group <span class="Math">G = \langle X \rangle</span>”</p>
+
+</li>
+</ul>
+<p>are all examples of constraints. On the other hand:</p>
+
+
+<ul>
+<li><p>“is a member of the socle of the group <span class="Math">G</span>”, and</p>
+
+</li>
+<li><p>“is a member of a largest maximal subgroup of the group <span class="Math">G</span>”</p>
+
+</li>
+</ul>
+<p>do not qualify, unless generating sets for the socle and the largest maximal subgroups of <span class="Math">G</span> are <em>already</em> known, and there is a unique such maximal subgroup (in which case these properties become instances of the constraint “is a member of the group defined by the generating set...”).</p>
+
+<p>The term ‘constraint’ comes from the computer science field of constraint satisfaction problems, constraint programming, and constraint solvers, with which backtrack search algorithms are very closely linked.</p>
+
+<p>To use <strong class="pkg">Vole</strong> via its native interface (Chapter <a href="chap5.html#X8722B8157E8CAB1D"><span class="RefLink">5</span></a>), it is necessary to choose a selection of constraints that, in conjunction, define the permutation(s) that you wish to find. <strong class="pkg">Vole</strong> provides a number of built-in constraints. These can be created with the functions contained in the <code class="func">VoleCon</code> (<a href="chap6.html#X78F3F7F58416EE54"><span class="RefLink">6.2-1</span></a>) record, which are documented individually in Section <a href="chap6.html#X850A35CC7F02B6C6"><span class="RefLink">6.3</span></a>. While the included constraints are not exhaustive, they do cover a wide range of problems in computational group theory, and we welcome suggestions of additional constraints that we could implement.</p>
+
+<p>Internally, a constraint is eventually converted into one or more refiners by that the time that the search takes place. Refiners are introduced in Chapter <a href="chap7.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a>, and can be given in place of constraints. We do not explicitly document the conversion of <strong class="pkg">Vole</strong> constraints into refiners; the conversion may change in future versions of <strong class="pkg">Vole</strong> as we introduce improve our refiners and introduce new ones. In addition, we do not explicitly document the kind of object that a <strong class="pkg">Vole</strong> constraint is. Currently, constraints may be <strong class="pkg">Vole</strong> refiners, <strong class="pkg">GraphBacktracking</strong> refiners, <strong class="pkg">BacktrackKit</strong> refiners, records, lists, or the value <code class="keyw">fail</code>.</p>
+
+<p><a id="X7C8EACBE780DCACB" name="X7C8EACBE780DCACB"></a></p>
+
+<h4>6.2 <span class="Heading">The <code class="code">VoleCon</code> record</span></h4>
+
+<p><a id="X78F3F7F58416EE54" name="X78F3F7F58416EE54"></a></p>
+
+<h5>6.2-1 VoleCon</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon</code></td><td class="tdright">(&nbsp;global variable&nbsp;)</td></tr></table></div>
+<p><code class="func">VoleCon</code> is a record that contains functions for producing all of the constraints that <strong class="pkg">Vole</strong> provides.</p>
+
+<p>The members of <code class="func">VoleCon</code> are documented individually in Section <a href="chap6.html#X850A35CC7F02B6C6"><span class="RefLink">6.3</span></a>.</p>
+
+<p>The members whose names differ only by their “-ise” and “-ize” endings are synonyms, included to accommodate different spellings in English.</p>
 
 
 <div class="example"><pre>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">LoadPackage("vole", false);;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Set(RecNames(Vole));</span>
-[ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
-  "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", 
-  "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", 
-  "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer" ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Set(RecNames(VoleCon));</span>
+[ "Centralise", "Centralize", "Conjugate", "InCoset", "InGroup", 
+  "InLeftCoset", "InRightCoset", "LargestMovedPoint", "MovedPoints", "None", 
+  "Normalise", "Normalize", "Stabilise", "Stabilize", "Transport" ]
 </pre></div>
+
+<p><a id="X850A35CC7F02B6C6" name="X850A35CC7F02B6C6"></a></p>
+
+<h4>6.3 <span class="Heading"><strong class="pkg">Vole</strong> constraints via the <code class="code">VoleCon</code> record</span></h4>
+
+<p>In this section, we individually document the functions of the <code class="func">VoleCon</code> (<a href="chap6.html#X78F3F7F58416EE54"><span class="RefLink">6.2-1</span></a>) record, which can be used to create the built-in constraints provided by <strong class="pkg">Vole</strong></p>
+
+<p>Many of these constraints come in pairs, with a “group” version, and a corresponding “coset” version. These relationships are given in the following table.</p>
+
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft">Group version</td>
+<td class="tdleft">Coset version</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">VoleCon.InGroup</code> (<a href="chap6.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>)</td>
+<td class="tdleft"><code class="func">VoleCon.InCoset</code> (<a href="chap6.html#X7F27DDB6818F24DB"><span class="RefLink">6.3-2</span></a>)</p>
+
+<p><code class="func">VoleCon.InRightCoset</code> (<a href="chap6.html#X7DEA6F208128AF5D"><span class="RefLink">6.3-3</span></a>)</p>
+
+<p><code class="func">VoleCon.InLeftCoset</code> (<a href="chap6.html#X807A0B8780F66AA9"><span class="RefLink">6.3-4</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">VoleCon.Stabilise</code> (<a href="chap6.html#X80BEBD297D7403C0"><span class="RefLink">6.3-5</span></a>)</td>
+<td class="tdleft"><code class="func">VoleCon.Transport</code> (<a href="chap6.html#X7999E7CA8654F16E"><span class="RefLink">6.3-6</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">VoleCon.Normalise</code> (<a href="chap6.html#X7E0A525884A020DE"><span class="RefLink">6.3-7</span></a>)</td>
+<td class="tdleft"><code class="func">VoleCon.Conjugate</code> (<a href="chap6.html#X7AFA275E862CF966"><span class="RefLink">6.3-9</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">VoleCon.Centralise</code> (<a href="chap6.html#X7B72EC9F797FEB6C"><span class="RefLink">6.3-8</span></a>)</td>
+<td class="tdleft"><code class="func">VoleCon.Conjugate</code> (<a href="chap6.html#X7AFA275E862CF966"><span class="RefLink">6.3-9</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">VoleCon.MovedPoints</code> (<a href="chap6.html#X854830F5810A5AD6"><span class="RefLink">6.3-10</span></a>)</td>
+<td class="tdleft">N/A</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">VoleCon.LargestMovedPoint</code> (<a href="chap6.html#X821F077482DE97E6"><span class="RefLink">6.3-11</span></a>)</td>
+<td class="tdleft">N/A</td>
+</tr>
+<tr>
+<td class="tdleft">N/A</td>
+<td class="tdleft"><code class="func">VoleCon.None</code> (<a href="chap6.html#X7B55675E8510E6AE"><span class="RefLink">6.3-12</span></a>)</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
+
+<p><a id="X7FD1D7EB7F8EF940" name="X7FD1D7EB7F8EF940"></a></p>
+
+<h5>6.3-1 VoleCon.InGroup</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.InGroup</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A constraint</p>
+
+<p>This constraint is satisfied by precisely those permutations in the permutation group <var class="Arg">G</var>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con1 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 8));;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con2 := VoleCon.InGroup(AlternatingGroup(4));;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(con1, con2) = Group([(1,3)(2,4), (1,4)(2,3)]);</span>
+true
+</pre></div>
+
+<p><a id="X7F27DDB6818F24DB" name="X7F27DDB6818F24DB"></a></p>
+
+<h5>6.3-2 VoleCon.InCoset</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.InCoset</code>( <var class="Arg">U</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A constraint</p>
+
+<p>This constraint is satisfied by precisely those permutations in the <strong class="pkg">GAP</strong> right coset object <var class="Arg">U</var>.</p>
+
+<p>See also <code class="func">VoleCon.InLeftCoset</code> (<a href="chap6.html#X807A0B8780F66AA9"><span class="RefLink">6.3-4</span></a>) and <code class="func">VoleCon.InRightCoset</code> (<a href="chap6.html#X7DEA6F208128AF5D"><span class="RefLink">6.3-3</span></a>), which allow a coset to be specifed by a subgroup and a representative element.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">U := PSL(2,5) * (3,4,6);</span>
+RightCoset(Group([ (3,5)(4,6), (1,2,5)(3,4,6) ]),(3,4,6))
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">x := VoleFind.Coset(VoleCon.InCoset(U), AlternatingGroup(6));</span>
+RightCoset(Group([ (3,5)(4,6), (2,4)(5,6), (1,2,6,5,4) ]),(1,5)(2,3,4,6))
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">x = Intersection(U, AlternatingGroup(6));</span>
+true
+</pre></div>
+
+<p><a id="X7DEA6F208128AF5D" name="X7DEA6F208128AF5D"></a></p>
+
+<h5>6.3-3 VoleCon.InRightCoset</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.InRightCoset</code>( <var class="Arg">G</var>, <var class="Arg">x</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A constraint</p>
+
+<p>This constraint is satisfied by precisely those permutations in the right coset of the group <var class="Arg">G</var> determined by the permutation <var class="Arg">x</var>.</p>
+
+<p>See also <code class="func">VoleCon.InLeftCoset</code> (<a href="chap6.html#X807A0B8780F66AA9"><span class="RefLink">6.3-4</span></a>) for the left-hand version, and <code class="func">VoleCon.InCoset</code> (<a href="chap6.html#X7F27DDB6818F24DB"><span class="RefLink">6.3-2</span></a>) for a <strong class="pkg">GAP</strong> right coset object.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">x := VoleFind.Coset(VoleCon.InRightCoset(PSL(2,5), (3,4,6)),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                       VoleCon.InGroup(AlternatingGroup(6)));</span>
+RightCoset(Group([ (3,5)(4,6), (2,4)(5,6), (1,2,6,5,4) ]),(1,5)(2,3,4,6))
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">x = Intersection(PSL(2,5) * (3,4,6), AlternatingGroup(6));</span>
+true
+</pre></div>
+
+<p><a id="X807A0B8780F66AA9" name="X807A0B8780F66AA9"></a></p>
+
+<h5>6.3-4 VoleCon.InLeftCoset</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.InLeftCoset</code>( <var class="Arg">G</var>, <var class="Arg">x</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A constraint</p>
+
+<p>This constraint is satisfied by precisely those permutations in the left coset of the group <var class="Arg">G</var> determined by the permutation <var class="Arg">x</var>.</p>
+
+<p>See also <code class="func">VoleCon.InRightCoset</code> (<a href="chap6.html#X7DEA6F208128AF5D"><span class="RefLink">6.3-3</span></a>) for the right-hand version, and <code class="func">VoleCon.InCoset</code> (<a href="chap6.html#X7F27DDB6818F24DB"><span class="RefLink">6.3-2</span></a>) for a <strong class="pkg">GAP</strong> right coset object.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">x := VoleFind.Rep(VoleCon.InLeftCoset(PSL(2,5), (3,4,6)),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                     VoleCon.InGroup(AlternatingGroup(6)));</span>
+(1,6,2,3,4)
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">SignPerm(x) = 1 and ForAny(PSL(2,5), g -&gt; x = (3,4,6) * g);</span>
+true
+</pre></div>
+
+<p><a id="X80BEBD297D7403C0" name="X80BEBD297D7403C0"></a></p>
+
+<h5>6.3-5 VoleCon.Stabilise</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Stabilise</code>( <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Stabilize</code>( <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A constraint</p>
+
+<p>This constraint is satisfied by precisely those permutations that fix <var class="Arg">object</var> under the given group <var class="Arg">action</var>, i.e. all permutations <code class="code">g</code> such that <code class="code"><var class="Arg">action</var>(<var class="Arg">object</var>,g)=<var class="Arg">object</var></code>. Note that the set of such permutations may be infinite.</p>
+
+<p>The combinations of objects and actions that are supported by <code class="code">VoleCon.Stabilise</code> are given in the table below.</p>
+
+<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="../../../doc/ref/chap4.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft"><strong class="button">Permitted action</strong></td>
+<td class="tdleft"><strong class="button">Corresponding object/pair of objects</strong></td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft">A positive integer, permutation, or perm group</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="../../../doc/ref/chap41.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft">A list of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="../../../doc/ref/chap41.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft">A set of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="../../../doc/ref/chap41.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft">A set of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="../../../doc/ref/chap41.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
+<td class="tdleft">A set of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="../../../doc/ref/chap41.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft">A list of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="../../../doc/ref/chap41.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
+<td class="tdleft">A list of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="../../../pkg/digraphs/doc/chap7.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft">A digraph object, or a list of adjacencies</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con1 := VoleCon.Stabilise(CycleDigraph(6), OnDigraphs);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con2 := VoleCon.Stabilise([2,4,6], OnSets);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(con1, 6);</span>
+Group([ (1,2,3,4,5,6) ])
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(con2, 6);</span>
+Group([ (4,6), (2,4,6), (3,5)(4,6), (1,3,5)(2,4,6) ])
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(con1, con2, 6);</span>
+Group([ (1,3,5)(2,4,6) ])
+</pre></div>
+
+<p><a id="X7999E7CA8654F16E" name="X7999E7CA8654F16E"></a></p>
+
+<h5>6.3-6 VoleCon.Transport</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Transport</code>( <var class="Arg">object1</var>, <var class="Arg">object2</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A constraint</p>
+
+<p>This constraint is satisfied by precisely those permutations that map <var class="Arg">object1</var> to <var class="Arg">object2</var> under the given group <var class="Arg">action</var>, i.e. all permutations <code class="code">g</code> such that <code class="code"><var class="Arg">action</var>(<var class="Arg">object1</var>,g)=<var class="Arg">object2</var></code>. Note that the set of such permutations may be infinite.</p>
+
+<p>The combinations of objects and actions that are supported by <code class="code">VoleCon.Transport</code> are given in the table below.</p>
+
+<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="../../../doc/ref/chap4.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+
+<div class="pcenter"><table class="GAPDocTable">
+<tr>
+<td class="tdleft"><strong class="button">Permitted action</strong></td>
+<td class="tdleft"><strong class="button">Corresponding object/pair of objects</strong></td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="../../../doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft">A positive integer, permutation, or perm group</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="../../../doc/ref/chap41.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft">A list of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="../../../doc/ref/chap41.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft">A set of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="../../../doc/ref/chap41.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft">A set of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="../../../doc/ref/chap41.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
+<td class="tdleft">A set of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="../../../doc/ref/chap41.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft">A list of sets of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="../../../doc/ref/chap41.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
+<td class="tdleft">A list of lists of positive integers</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="../../../pkg/digraphs/doc/chap7.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft">A digraph object, or a list of adjacencies</td>
+</tr>
+</table><br /><p>&nbsp;</p><br />
+</div>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">setofsets1 := [[1, 3, 6], [2, 3, 6], [2, 4, 7], [4, 5, 7]];;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">setofsets2 := [[1, 2, 5], [1, 5, 7], [3, 4, 6], [4, 6, 7]];;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con := VoleCon.Transport(setofsets1, setofsets2, OnSetsSets);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Rep(con);</span>
+(1,2,7,6)(3,5)
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Rep(con, AlternatingGroup(7) * (1,2));</span>
+(1,2,7,6,5,3)
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Rep(con, DihedralGroup(IsPermGroup, 14));</span>
+fail
+</pre></div>
+
+<p><a id="X7E0A525884A020DE" name="X7E0A525884A020DE"></a></p>
+
+<h5>6.3-7 VoleCon.Normalise</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Normalise</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Normalize</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A constraint</p>
+
+<p>This constraint is satisfied by precisely those permutations that normalise the permutation group <var class="Arg">G</var>, i.e. that preserve <var class="Arg">G</var> under conjugation.</p>
+
+<p>Note that the set of such permutations is infinite.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con := VoleCon.Normalise(PSL(2,5));;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">N := VoleFind.Group(con, SymmetricGroup(6));</span>
+Group([ (3,4,5,6), (2,3,5,6), (1,2,4,3,6) ])
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">(3,4,5,6) in N and not (3,4,5,6) in PSL(2,5);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Index(N, PSL(2,5));</span>
+2
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">PSL(2,5) = VoleFind.Group(con, AlternatingGroup(6));</span>
+true
+</pre></div>
+
+<p><a id="X7B72EC9F797FEB6C" name="X7B72EC9F797FEB6C"></a></p>
+
+<h5>6.3-8 VoleCon.Centralise</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Centralise</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Centralize</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A constraint</p>
+
+<p>This constraint is satisfied by precisely those permutations that commute with <var class="Arg">G</var>, if <var class="Arg">G</var> is a permutation, or that commute with every element of <var class="Arg">G</var>, if <var class="Arg">G</var> is a permutation group.</p>
+
+<p>Note that the set of such permutations is infinite.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">D12 := DihedralGroup(IsPermGroup, 12);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(6, VoleCon.Centralise(D12));</span>
+Group([ (1,4)(2,5)(3,6) ])
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">x := (1,6)(2,5)(3,4);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G := VoleFind.Group(AlternatingGroup(6), VoleCon.Centralise(x));</span>
+Group([ (2,3)(4,5), (2,4)(3,5), (1,2,3)(4,6,5) ])
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">ForAll(G, g -&gt; SignPerm(g) = 1 and g * x = x * g);</span>
+true
+</pre></div>
+
+<p><a id="X7AFA275E862CF966" name="X7AFA275E862CF966"></a></p>
+
+<h5>6.3-9 VoleCon.Conjugate</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.Conjugate</code>( <var class="Arg">x</var>, <var class="Arg">y</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A constraint</p>
+
+<p>This constraint is satisfied by precisely those permutations that conjugate <var class="Arg">x</var> to <var class="Arg">y</var>, where <var class="Arg">x</var> and <var class="Arg">y</var> are either both permutations, or both permutation groups.</p>
+
+<p>Note that the set of such permutations may be infinite.</p>
+
+<p>This constraint is equivalent to <code class="code">VoleCon.Transport(<var class="Arg">x</var>,<var class="Arg">y</var>,OnPoints)</code>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con := VoleCon.Conjugate((3,4)(2,5,1), (1,2,3)(4,5));;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Rep(con);</span>
+(1,2,3,5)
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Rep(con, PSL(2,5));</span>
+(1,3,4,5,2)
+</pre></div>
+
+<p><a id="X854830F5810A5AD6" name="X854830F5810A5AD6"></a></p>
+
+<h5>6.3-10 VoleCon.MovedPoints</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.MovedPoints</code>( <var class="Arg">pointlist</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A constraint</p>
+
+<p>This constraint is a shorthand for <code class="code">VoleCon.InGroup(SymmetricGroup(<var class="Arg">pointlist</var>))</code>. See <code class="func">VoleCon.InGroup</code> (<a href="chap6.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>).</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con1 := VoleCon.MovedPoints([1..5]);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con2 := VoleCon.MovedPoints([2,6,4,5]);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(con1, con2) = SymmetricGroup([2,4,5]);</span>
+true
+</pre></div>
+
+<p><a id="X821F077482DE97E6" name="X821F077482DE97E6"></a></p>
+
+<h5>6.3-11 VoleCon.LargestMovedPoint</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.LargestMovedPoint</code>( <var class="Arg">point</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A constraint</p>
+
+<p>This constraint is a shorthand for <code class="code">VoleCon.InGroup(SymmetricGroup(<var class="Arg">point</var>))</code>. See <code class="func">VoleCon.InGroup</code> (<a href="chap6.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>).</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">con := VoleCon.LargestMovedPoint(5);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(con) = SymmetricGroup(5);</span>
+true
+</pre></div>
+
+<p><a id="X7B55675E8510E6AE" name="X7B55675E8510E6AE"></a></p>
+
+<h5>6.3-12 VoleCon.None</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleCon.None</code>(  )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: <code class="keyw">fail</code></p>
+
+<p>This constraint is satisfied by no permutations.</p>
+
+<p>This constraint will typically not be required by the user.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Rep(VoleCon.None());</span>
+fail
+</pre></div>
+
+<p><a id="X83C3802E816A5013" name="X83C3802E816A5013"></a></p>
+
+<h4>6.4 <span class="Heading">Bounds associated with a constraint or refiner</span></h4>
+
+<p>In <strong class="pkg">GAP</strong>, permutations are defined on the set of all positive integers (although each permutation may move only a finite set of points, and there is a system-dependent maximum point that is allowed to be moved).</p>
+
+<p><strong class="pkg">Vole</strong> can only search within a concrete finite symmetric group. Therefore, when giving <strong class="pkg">Vole</strong> a collection of constraints that define a search problem, the search space must be bounded. More specifically, <strong class="pkg">Vole</strong> must be easily able to deduce a positive integer <code class="code">k</code> such that the whole search can take place within <code class="code">Sym([1..k])</code>. This guarantees that <strong class="pkg">Vole</strong> will terminate (given sufficient resources).</p>
+
+<p>To help <strong class="pkg">Vole</strong> make such a deduction, each constraint and refiner is associated with the following values: a <em>largest moved point</em>, and a <em>largest required point</em>.</p>
+
+<p>Any call to <code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>) or <code class="func">VoleFind.Coset</code> (<a href="chap5.html#X7A99C3238317F649"><span class="RefLink">5.2-3</span></a>) requires at least one constraint that defines a <em>finite</em> largest moved point, and any call to <code class="func">VoleFind.Representative</code> (<a href="chap5.html#X8712249F879D9FA9"><span class="RefLink">5.2-1</span></a>) requires at least one constraint that defines a finite largest required point or a finite largest moved point.</p>
+
+<p><strong class="button">Largest moved point</strong></p>
+
+<p>The largest <em>moved</em> point of a constraint is either <code class="keyw">infinity</code>, or a positive integer <code class="code">k</code> for which it is known a priori that any permutation satisfying the constraint fixes all points strictly greater than <code class="code">k</code>.</p>
+
+<p>For example, the largest moved point of the constraint <code class="code">VoleCon.InGroup(G)</code> is <code class="code">LargestMovedPoint(G)</code>, see <code class="func">LargestMovedPoint</code> (<a href="../../../doc/ref/chap42.html#X84AA603987C94AC0"><span class="RefLink">Ref 42.3-2</span></a>). On the other hand, any permutation stabilises the empty set, so there is not largest moved point of the constraint <code class="code">VoleCon.Stabilise([],OnSets)</code>; therefore the value in this case must be <code class="keyw">infinity</code>.</p>
+
+<p><strong class="button">Largest required point</strong></p>
+
+<p>The largest <em>required</em> point of a constraint is either <code class="keyw">infinity</code>, or a positive integer <code class="code">k</code> such that there exists a permutation satisfying the constraint if and only if there exists a permutation in <code class="code">Sym([1..k])</code> satisfying the constraint.</p>
+
+<p>For example, if <code class="code">set</code> is a set of positive integers, then the largest required point of the constraint <code class="code">VoleCon.Stabilise(set,OnSets)</code> is <code class="code">Maximum(set)</code>.</p>
+
+<p>The largest moved point of a constraint can serve as an upper bound for the largest required point of a constraint.</p>
 
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap5.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap7.html">[Next Chapter]</a>&nbsp;  </div>
