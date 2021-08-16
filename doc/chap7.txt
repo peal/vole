@@ -1,0 +1,30 @@
+  
+  [1X7 [33X[0;0YRefiners in [5XVole[105X[101X[1X[133X[101X
+  
+  
+  [1X7.1 [33X[0;0YRefiners[133X[101X
+  
+  [33X[0;0YRefiners  in  [5XVole[105X are still a work in progress, and are not yet documented.
+  Please check back in the next version.[133X
+  
+  
+  [1X7.2 [33X[0;0YThe [10XVoleRefiner[110X[101X[1X record[133X[101X
+  
+  [1X7.2-1 VoleRefiner[101X
+  
+  [33X[1;0Y[29X[2XVoleRefiner[102X [32X global variable[133X
+  
+  [33X[0;0Y[10XVoleRefiner[110X  is a record that contains all of the refiners that are included
+  in [5XVole[105X.[133X
+  
+  [33X[0;0Y[5XGraphBacktracking[105X and [5XBacktrackKit[105X refiners are also compatible with [5XVole[105X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("vole", false);;[127X[104X
+    [4X[25Xgap>[125X [27XSet(RecNames(VoleRefiner));[127X[104X
+    [4X[28X[ "DigraphStab", "DigraphTransporter", "InSymmetricGroup", "PointStab", [128X[104X
+    [4X[28X  "PointTransporter", "SetSetStab", "SetSetTransporter", "SetStab", [128X[104X
+    [4X[28X  "SetTransporter", "SetTupleStab", "SetTupleTransporter", "TupleStab", [128X[104X
+    [4X[28X  "TupleTransporter" ][128X[104X
+  [4X[32X[104X
+  

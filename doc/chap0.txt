@@ -1,1 +1,147 @@
-Placeholder
+  
+  
+                                     [1X Vole [101X
+  
+  
+              [1X Backtrack search in permutation groups with graphs [101X
+  
+  
+                                     0.5.1
+  
+  
+                                 15 August 2021
+  
+  
+                                 Mun See Chang
+  
+                             Christopher Jefferson
+  
+                                 Wilf A. Wilson
+  
+  
+  
+  Mun See Chang
+      Email:    [7Xmailto:msc2@st-andrews.ac.uk[107X
+      Address:  [33X[0;14YSchool  of  Computer  Science,  University  of  St Andrews, St
+                Andrews, Fife, KY16 9SX, Scotland[133X
+  
+  
+  Christopher Jefferson
+      Email:    [7Xmailto:caj21@st-andrews.ac.uk[107X
+      Homepage: [7Xhttps://caj.host.cs.st-andrews.ac.uk[107X
+      Address:  [33X[0;14YSchool  of  Computer  Science,  University  of  St Andrews, St
+                Andrews, Fife, KY16 9SX, Scotland[133X
+  
+  
+  Wilf A. Wilson
+      Email:    [7Xmailto:gap@wilf-wilson.net[107X
+      Homepage: [7Xhttps://wilf.me[107X
+      Address:  [33X[0;14YSchool  of  Computer  Science,  University  of  St Andrews, St
+                Andrews, Fife, KY16 9SX, Scotland[133X
+  
+  
+  
+  -------------------------------------------------------
+  [1XAbstract[101X
+  [33X[0;0Y[12XVole[112X  is a [12XGAP[112X package that implements graph backtracking, which can be used
+  to  solve  many  problems  in  finite  permutation  groups, such as subgroup
+  intersections, normalisers, set stabilisers, and canonical images of groups.[133X
+  
+  
+  -------------------------------------------------------
+  [1XCopyright[101X
+  [33X[0;0Y© 2021 by Christopher Jefferson, Mun See Chang, and Wilf A. Wilson.[133X
+  
+  [33X[0;0Y[5XVole[105X is licensed under the Mozilla Public License, version 2.0.[133X
+  
+  
+  -------------------------------------------------------
+  [1XAcknowledgements[101X
+  [33X[0;0YThe authors would like to thank the Royal Society ([7Xhttps://royalsociety.org[107X)
+  (grant  codes [12XRGF\EA\181005[112X and [12XURF\R\180015[112X) for their financial support at
+  the time that [5XVole[105X was created.[133X
+  
+  
+  -------------------------------------------------------
+  
+  
+  [1XContents (Vole)[101X
+  
+  1 [33X[0;0YIntroduction to [5XVole[105X[133X
+    1.1 [33X[0;0YHigh level overview of [5XVole[105X and this manual[133X
+    1.2 [33X[0;0Y[5XVole[105X's relation to [5XGAP[105X and its other packages[133X
+    1.3 [33X[0;0YWork in progress[133X
+    1.4 [33X[0;0YPerformance[133X
+  2 [33X[0;0YSetting up Vole[133X
+    2.1 [33X[0;0YDependencies[133X
+    2.2 [33X[0;0YInstalling [5XVole[105X[133X
+    2.3 [33X[0;0YLoading [5XVole[105X[133X
+    2.4 [33X[0;0YRunning [5XVole[105X's test suite[133X
+    2.5 [33X[0;0YCompiling the documentation for [5XVole[105X[133X
+  3 [33X[0;0YTutorial[133X
+    3.1 [33X[0;0YComputing the intersection of a normaliser and a stabiliser[133X
+      3.1-1 [33X[0;0YThe general [5XGAP[105X approach[133X
+      3.1-2 [33X[0;0YThe general [5XVole[105X approach[133X
+    3.2 [33X[0;0YComputing a canonical image[133X
+  4 [33X[0;0YEmulating traditional interfaces with [5XVole[105X[133X
+    4.1 [33X[0;0YThe concept[133X
+      4.1-1 [33X[0;0YA warning[133X
+    4.2 [33X[0;0YThe [10XVole[110X record[133X
+      4.2-1 Vole
+    4.3 [33X[0;0YThe group actions built into [5XVole[105X[133X
+    4.4 [33X[0;0Y[5XVole[105X functions emulating built-in [5XGAP[105X functions[133X
+      4.4-1 [33X[0;0YIntersection[133X
+      4.4-2 [33X[0;0YStabiliser[133X
+      4.4-3 [33X[0;0YRepresentativeAction[133X
+      4.4-4 [33X[0;0YNormaliser[133X
+      4.4-5 [33X[0;0YCentraliser[133X
+      4.4-6 [33X[0;0YIsConjugate[133X
+      4.4-7 [33X[0;0YTwoClosure[133X
+    4.5 [33X[0;0Y[5XVole[105X functions emulating the [5Ximages[105X package[133X
+      4.5-1 [33X[0;0YCanonicalPerm[133X
+      4.5-2 [33X[0;0YCanonicalImage[133X
+    4.6 [33X[0;0Y[5XVole[105X functions emulating the [5XDigraphs[105X package[133X
+      4.6-1 [33X[0;0YAutomorphismGroup[133X
+      4.6-2 [33X[0;0YDigraphCanonicalLabelling[133X
+      4.6-3 [33X[0;0YCanonicalDigraph[133X
+  5 [33X[0;0YThe native [5XVole[105X interface[133X
+    5.1 [33X[0;0YThe [10XVoleFind[110X record[133X
+      5.1-1 VoleFind
+    5.2 [33X[0;0YSearching for groups, cosets, and representatives with the native
+    interface[133X
+      5.2-1 VoleFind.Representative
+      5.2-2 VoleFind.Group
+      5.2-3 VoleFind.Coset
+    5.3 [33X[0;0YCanonising with the native [5XVole[105X interface[133X
+      5.3-1 VoleFind.Canonical
+      5.3-2 VoleFind.CanonicalPerm
+  6 [33X[0;0YConstraints[133X
+    6.1 [33X[0;0YThe concept of constraints in [5XVole[105X[133X
+    6.2 [33X[0;0YThe [10XVoleCon[110X record[133X
+      6.2-1 VoleCon
+    6.3 [33X[0;0Y[5XVole[105X constraints via the [10XVoleCon[110X record[133X
+      6.3-1 VoleCon.InGroup
+      6.3-2 VoleCon.InCoset
+      6.3-3 VoleCon.InRightCoset
+      6.3-4 VoleCon.InLeftCoset
+      6.3-5 VoleCon.Stabilise
+      6.3-6 VoleCon.Transport
+      6.3-7 VoleCon.Normalise
+      6.3-8 VoleCon.Centralise
+      6.3-9 VoleCon.Conjugate
+      6.3-10 VoleCon.MovedPoints
+      6.3-11 VoleCon.LargestMovedPoint
+      6.3-12 VoleCon.None
+    6.4 [33X[0;0YBounds associated with a constraint or refiner[133X
+  7 [33X[0;0YRefiners in [5XVole[105X[133X
+    7.1 [33X[0;0YRefiners[133X
+    7.2 [33X[0;0YThe [10XVoleRefiner[110X record[133X
+      7.2-1 VoleRefiner
+  8 [33X[0;0YExpert use of [5XVole[105X[133X
+    8.1 [33X[0;0Y[10XInfoVole[110X – getting extra information about a [5XVole[105X search[133X
+      8.1-1 InfoVole
+    8.2 [33X[0;0YOptions with the native [5XVole[105X interface[133X
+      8.2-1 [33X[0;0YSupported options[133X
+  
+  
+  [32X

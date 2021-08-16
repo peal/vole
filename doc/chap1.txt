@@ -1,0 +1,227 @@
+  
+  [1X1 [33X[0;0YIntroduction to [5XVole[105X[101X[1X[133X[101X
+  
+  [33X[0;0Y[5XVole[105X is a [5XGAP[105X [GAP21] package. The purpose of this manual is to describe the
+  capabilities  of [5XVole[105X, and to give directions, hints, and explanations about
+  its use.[133X
+  
+  [33X[0;0YIn  this  manual,  a  [13Xpermutation[113X  is  defined  on  the  set of all positive
+  integers,  but  moves  only finitely many points; unless otherwise stated, a
+  [13Xgroup[113X  is  a  finite  permutation  group  (which,  by  the  definition  of a
+  permutation, necessarily has a finite set of moved points); and a [13Xcoset[113X is a
+  left  or  right  coset  of  such a group determined by some permutation (the
+  parent group is unspecified).[133X
+  
+  [33X[0;0YIn  full  generality, [5XVole[105X can be used to find permutations (groups given by
+  strong   generating  sets,  cosets  thereof,  or  individual  representative
+  elements)  that  satisfy  conjunctions of particular kinds of properties, or
+  [13Xconstraints[113X;  details of these properties are given later. Problems that can
+  be  formulated  in  this  way  include,  for  example,  the  computation  of
+  normalisers,    set   stabilisers,   subgroup   intersections,   and   graph
+  automorphisms, and testing subgroup conjugacy and graph isomorphism.[133X
+  
+  [33X[0;0Y[5XVole[105X  can  also  compute  canonical  labellings  and  images  (also known as
+  ‘canonical  forms’)  of  various  kinds  of  objects  under  an action of an
+  arbitrary permutation group. This includes, for example, the canonical image
+  of  a digraph under the natural action of an arbitrary permutation group, or
+  the  canonical image of a permutation group under conjugation by another. [12XAs
+  far  as  we  are  aware,  most  of this canonical image functionality is not
+  possible with existing tools[112X.[133X
+  
+  [33X[0;0YIn  order  to  offer  all  of  this functionality, [5XVole[105X implements the [13Xgraph
+  backtracking[113X   framework,  which  was  introduced  in  [JPWW21],  and  which
+  generalises  the  [13Xpartition  backtracking[113X framework of Jeffrey Leon [Leo91],
+  [Leo97].  The functionality for canonical labellings and canonical images is
+  underpinned,  in  addition,  by work that is in preparation for publication,
+  and which builds on [JJPW19b].[133X
+  
+  [33X[0;0YWhile  the  [5XGAP[105X  interface  of  this  package  is  written  in [5XGAP[105X, the main
+  algorithms are written in Rust, for reasons of fun and performance.[133X
+  
+  
+  [1X1.1 [33X[0;0YHigh level overview of [5XVole[105X[101X[1X and this manual[133X[101X
+  
+  [33X[0;0Y[5XVole[105X  aims  to  provide  a  high-performance  implementation  of  the  graph
+  backtracking framework of [JPWW21], [JPWW19].[133X
+  
+  [33X[0;0YGraph  backtracking  is  a  form of depth-first backtrack search that can be
+  performed  in  a finite symmetric group, and which uses labelled digraphs to
+  represent  various  aspects  of  the  problem  at hand in order to guide the
+  search and prune the search space. The specification of the problem is given
+  by  a  collection  of  [13Xconstraints[113X, and a collection of [13Xrefiners[113X are used to
+  prune the search according to those constraints.[133X
+  
+  [33X[0;0YThe  rest  of  this  introduction  discusses  the  place  of [5XVole[105X in the [5XGAP[105X
+  ‘ecosystem’,   and   gives   information   about  its  ongoing  development.
+  Installation  instructions  for  [5XVole[105X  are given in Chapter [14X2[114X, and Chapter [14X3[114X
+  gives  a  tutorial for the package. Chapter [14X4[114X describes an interface to [5XVole[105X
+  that  emulates  the  existing related functionality of [5XGAP[105X and its packages.
+  Chapter [14X5[114X  documents  the  main  interface  to [5XVole[105X. Chapter [14X6[114X describes the
+  constraints  that  can be used with [5XVole[105X, while Chapter [14X7[114X explains refiners,
+  and  gives  details of those that are available. Chapter [14X8[114X gives lower-level
+  details, and instructions for the expert use of [5XVole[105X.[133X
+  
+  [33X[0;0YIf  you encounter problems, or have any other feedback for the authors, then
+  please      create      an      issue      on      our     issue     tracker
+  ([7Xhttps://github.com/peal/vole/issues[107X),   or   contact   us   by   any  other
+  appropriate  means.  See  the  title  page  of  this  manual for our contact
+  details.  We  published  [5XVole[105X so that our ideas and algorithms could be used
+  by,  and be useful to, others in the community. But without feedback, it can
+  be  difficult  to  know  whether we are achieving this aim. Therefore we are
+  keen to hear your comments, remarks, and complaints.[133X
+  
+  
+  [1X1.2 [33X[0;0Y[5XVole[105X[101X[1X's relation to [5XGAP[105X[101X[1X and its other packages[133X[101X
+  
+  [33X[0;0YThe  functionality of [5XVole[105X overlaps with that of [5XGAP[105X itself, and some of its
+  packages.  However,  [5XVole[105X's functionality goes further than all of them, and
+  has  the  potential to offer better performance in many cases where there is
+  an overlap. The perfomance of [5XVole[105X is discussed in Section [14X1.4[114X.[133X
+  
+  [33X[0;0Y[5XGAP[105X [12Xitself[112X[133X
+  
+  [33X[0;0Y[5XGAP[105X [GAP21] contains an implementation of Jeffrey Leon's partition backtrack
+  framework  [Leo91],  [Leo97]  at  the  [5XGAP[105X  level, as improved upon by Heiko
+  Theißen [The97]. Therefore [5XGAP[105X already offers some of the functionality that
+  [5XVole[105X provides; the overlap is explored further in Section [14X4.4[114X.[133X
+  
+  [33X[0;0Y[5Xferret[105X[133X
+  
+  [33X[0;0YChristopher  Jefferson's  [5Xferret[105X  package  [Jef21]  for  [5XGAP[105X  provides a C++
+  reimplementation of partition backtracking, which contains the orbital graph
+  developments  of  [JPW19]. [5XVole[105X should be seen as the spiritual successor to
+  [5Xferret[105X.[133X
+  
+  [33X[0;0Y[5Ximages[105X[133X
+  
+  [33X[0;0YThe  [5Ximages[105X  package  [JJPW19a]  provides  a [5XGAP[105X-level implementation of the
+  custom  breadth-first search that was introduced in [JJPW19b] to compute the
+  [13Xcanonical  image[113X  of  any  set  of  points  under the action of an arbitrary
+  permutation group. This algorithm built upon the original algorithm of Steve
+  Linton  [Lin04]  for  computing  [13Xminimal  images[113X of sets of points, which is
+  available    in   the   [5XGRAPE[105X   package   [Soi21]   in   [11Xlib/smallestimage.g[111X
+  ([7Xhttps://github.com/gap-packages/grape/blob/master/lib/smallestimage.g[107X),  as
+  [10XSmallestImageSet[110X.  The  overlap  of  [5XVole[105X's  functionality  with  [5Ximages[105X  is
+  detailed in Section [14X4.5[114X.[133X
+  
+  [33X[0;0Y[5XDigraphs[105X [12Xand[112X [5XGRAPE[105X[133X
+  
+  [33X[0;0YThe  [5XDigraphs[105X  package  [BJM+21]  offers interfaces to [5Xnauty[105X [MP14] (via the
+  [5XNautyTracesInterface[105X) and [5Xbliss[105X [JK07] for computing automorphism groups and
+  canonical  images  of  graphs and digraphs, and their labelled variants. The
+  overlap  of  [5XVole[105X's  functionality with [5XDigraphs[105X is detailed in Section [14X4.6[114X.
+  [5XGRAPE[105X [Soi21] also provides an interface to [5Xnauty[105X for computing automorphism
+  groups  of graphs, and computing canonical images of graphs in the symmetric
+  group.[133X
+  
+  [33X[0;0Y[5XBacktrackKit[105X [12Xand[112X [5XGraphBacktracking[105X[133X
+  
+  [33X[0;0Y[5XBacktrackKit[105X   [JW21a]   and  [5XGraphBacktracking[105X  [JW21b]  contain  [5XGAP[105X-level
+  reference  implementations of partition backtracking and graph backtracking,
+  respectively.  They  are  intended to demonstrate readable code implementing
+  these  frameworks,  but  they are not intended to have high performance, and
+  they are deliberately not optimized.[133X
+  
+  
+  [1X1.3 [33X[0;0YWork in progress[133X[101X
+  
+  [33X[0;0Y[5XVole[105X is a work in progress – the code and its underlying mathematical theory
+  are being developed concurrently. Therefore, some aspects of [5XVole[105X are liable
+  to  change  in future versions, although we will aim to maintain the primary
+  interfaces  as  described  in  Chapters [14X4[114X,  [14X5[114X,  and [14X6[114X.  However, some of the
+  lower-level details described in Sections [14X7[114X and [14X8[114X are more likely change.[133X
+  
+  [33X[0;0YThe  main  focus  of  our  future  work  on  [5XVole[105X  will  be on improving the
+  performance of [5XVole[105X, through both technical and mathematical means. This may
+  involve  changes  to the design of the algorithm itself, and the improvement
+  or  addition of refiners, especially for subgroup normalisers and conjugacy.
+  See Section [14X1.4[114X for further comments on the performance of [5XVole[105X.[133X
+  
+  
+  [1X1.4 [33X[0;0YPerformance[133X[101X
+  
+  [33X[0;0YOur  aims  are  for  [5XVole[105X  to  have good performance in general, and to have
+  relatively high performance for some classes of problems that existing tools
+  tend  to  find  very  difficult.  As  mentioned in Section [14X1.3[114X, we are still
+  working towards these aims.[133X
+  
+  [33X[0;0Y[12XIf  you  encounter  disappointing  and/or  surprising  performance  for your
+  use-case,  please  let  us  know,[112X  by creating an issue on our issue tracker
+  ([7Xhttps://github.com/peal/vole/issues[107X),   or   contacting  us  by  any  other
+  appropriate  means.  See  the  title  page  of  this  manual for our contact
+  details. This will help us to improve [5XVole[105X.[133X
+  
+  [33X[0;0YThe  experiments in [JPWW21] showed that for some classes of problems, graph
+  backtracking  typically  performs  a  far smaller search than does partition
+  backtracking.  Although  this  experimental  data is very encouraging, it is
+  clearly  inherently  more  expensive  to  compute  with graphs than it is to
+  compute with ordered partitions. This means that the time gained by having a
+  smaller  number  of  nodes  in  a  search  does  not necessarily immediately
+  outweigh the time required to perform a larger amount of computation at each
+  node. Therefore, in rough terms, the focus of future work is on reducing the
+  number  of  search  nodes  further  (with  more sophisticated refiners), and
+  reducing  the amount of work required at each node of search (with technical
+  optimisations).[133X
+  
+  [33X[0;0YWhere  there  is  overlap between [5XVole[105X and existing functionality in the [5XGAP[105X
+  ecosystem,  as  described  in  Section [14X1.2[114X,  we  aim  for  [5XVole[105X  to  perform
+  reasonably competitively.[133X
+  
+  [33X[0;0YHowever,   roughly   speaking,  there  are  certain  problems  that  can  be
+  represented  by  ordered  partitions  just as well as they can by graphs. In
+  these  cases,  it  follows that there is nothing to be gained by using graph
+  backtracking,  while  the additional overhead required by graph backtracking
+  may  make  it  slower  overall.  [5XVole[105X  does not yet attempt to mitigate this
+  issue.  For  example,  we do not yet expect [5XVole[105X to match the performance of
+  [5Xnauty[105X  (available  through  the  [5XDigraphs[105X  and  [5XGRAPE[105X packages) at computing
+  automorphisms  of  graphs,  and  canonical  images  of graphs in a symmetric
+  group.[133X
+  
+  [33X[0;0YIn  addition,  we  do  not expect [5XVole[105X to beat [5Ximages[105X at computing canonical
+  images of sets in groups.[133X
+  
+  [33X[0;0YThere  are further reasons why existing implementations may beat the current
+  version of [5XVole[105X, in some situations.[133X
+  
+  [30X    [33X[0;6Y[12XVery  few  special  cases:[112X  [5XVole[105X  passes  almost every problem that it
+        receives  on  to  the  full  graph  backtracking  algorithm,  with its
+        corresponding  overheads  and poor worst-case complexity. On the other
+        hand,  other  implementations  (particularly those in the [5XGAP[105X library)
+        may  provide multiple competing methods for solving a problem. Some of
+        these  methods  might  only apply in special cases (such as for simple
+        groups, or abelian group, or primitive groups), and some of them might
+        not  even  involve  search  at  all. From these different methods, the
+        system can use heuristics to choose the most appropriate one to run in
+        each instance.[133X
+  
+  [30X    [33X[0;6Y[12XFirst-time compilation of Vole:[112X When the first [5XVole[105X search is executed
+        in  any  particular [5XGAP[105X session, [5XVole[105X tests whether its Rust component
+        is  compiled,  and  it  builds  the  component if necessary. The check
+        itself  can  take  a  noticeable amount of time, but compilation takes
+        much  longer.  To  minimise the effect, we recommend that you manually
+        recompile  [5XVole[105X  when  you  update your [5XVole[105X installation via the [10Xmake[110X
+        command, as described in Section [14X2.2[114X.[133X
+  
+  [30X    [33X[0;6Y[12XCommunication  between  the GAP layer and the Rust component:[112X There is
+        also  a  delay  that  is incurred when the [5XGAP[105X-level interface of [5XVole[105X
+        communicates  with  the Rust component of [5XVole[105X. This is exacerbated by
+        the   fact   that  [5XVole[105X  does  not  yet  include  its  own  Rust-level
+        implementation  of  stabiliser chains, and so it uses [5XGAP[105X's stabiliser
+        chains  instead.  This  means  that  [5XGAP[105X  and  the Rust component must
+        communicate  heavily  during  a  typical  search, and this can incur a
+        significant time penalty. Implementing Rust-level stabiliser chains is
+        a work in progress.[133X
+  
+  [30X    [33X[0;6Y[12XFortune:[112X  The  nature of backtrack search means that one algorithm may
+        beat  another  just  by  being ‘lucky’, and (by chance) stumbling upon
+        particularly   fruitful  branches  early  in  search.  Conversely,  an
+        algorithm  may  be  ‘unlucky’  and  fall  down a particular unfruitful
+        branch that a different algorithm accidentally avoids.[133X
+  
+  [33X[0;0YThese  factors  together  highlight  the  principle that, for users for whom
+  performance  is  very important, it makes sense to experiment with the range
+  of available tools when running computations.[133X
+  
+  [33X[0;0YPlease also make sure that you are running the newest version of [5XVole[105X, since
+  newer versions should have better performance.[133X
+  

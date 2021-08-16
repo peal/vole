@@ -1,0 +1,253 @@
+  
+  [1X2 [33X[0;0YSetting up Vole[133X[101X
+  
+  [33X[0;0YThis chapter contains instructions for getting [5XVole[105X up and running.[133X
+  
+  [33X[0;0YIf  you encounter problems, or have any other feedback for the authors, then
+  please      create      an      issue      on      our     issue     tracker
+  ([7Xhttps://github.com/peal/vole/issues[107X),   or   contact   us   by   any  other
+  appropriate  means.  See  the  title  page  of  this  manual for our contact
+  details.  We  published  [5XVole[105X so that our ideas and algorithms could be used
+  by,  and be useful to, others in the community. But without feedback, it can
+  be  difficult  to  know  whether we are achieving this aim. Therefore we are
+  keen to hear your comments, remarks, and complaints.[133X
+  
+  
+  [1X2.1 [33X[0;0YDependencies[133X[101X
+  
+  [33X[0;0Y[5XVole[105X requires [5XGAP[105X 4.11.0 or newer and various other [5XGAP[105X packages to run, and
+  Rust is required to compile [5XVole[105X.[133X
+  
+  [33X[0;0YPlease note that if you are using [5XVole[105X via a [5XGAP[105X Cygwin release (i.e. if you
+  installed  [5XGAP[105X  in  Windows  via an installer that included [5XVole[105X), then [5XVole[105X
+  came  ready-compiled,  and the included versions of [5XGAP[105X and its packages are
+  sufficient  to  run  [5XVole[105X out-of-the-box. Therefore you may skip straight to
+  Section [14X2.3[114X.[133X
+  
+  [33X[0;0YIn  order  to  compile  [5XVole[105X,  Rust must be installed and available with the
+  [10Xcargo[110X  command.  You  can  test  for  Rust by running [10Xcargo --version[110X in the
+  terminal. You should obtain a version number in response, such as:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[28X$ cargo --version[128X[104X
+    [4X[28Xcargo 1.54.0[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YIf Rust is not available, then running the command [10Xcargo --version[110X will give
+  an  error such as [10Xcargo: command not found[110X. If this is the case, then please
+  follow   the   instructions  at  [7Xhttps://www.rust-lang.org/tools/install[107X  or
+  [7Xhttps://rustup.rs[107X for installing Rust.[133X
+  
+  [33X[0;0YIn  addition,  the  following [5XGAP[105X packages must be available in order to use
+  [5XVole[105X.  This  means  that [5XVole[105X will not load if one or more of these packages
+  cannot be loaded in your [5XGAP[105X installation in a new enough version.[133X
+  
+  [30X    [33X[0;6Y[5XBacktrackKit[105X  ([7Xhttps://peal.github.io/BacktrackKit[107X)  version 0.5.0, or
+        newer [JW21a].[133X
+  
+  [30X    [33X[0;6Y[5XDigraphs[105X ([7Xhttps://digraphs.github.io/Digraphs[107X) version 1.1.1, or newer
+        [BJM+21].[133X
+  
+  [30X    [33X[0;6Y[5XGraphBacktracking[105X  ([7Xhttps://peal.github.io/GraphBacktracking[107X)  version
+        0.5.0, or newer [JW21b].[133X
+  
+  [30X    [33X[0;6Y[5XIO[105X   ([7Xhttps://gap-packages.github.io/io[107X)   version   4.7.0,  or  newer
+        [Neu21].[133X
+  
+  [30X    [33X[0;6Y[5Xdatastructures[105X ([7Xhttps://gap-packages.github.io/datastructures[107X) version
+        0.2.6, or newer [JHPL21].[133X
+  
+  [30X    [33X[0;6Y[5Xjson[105X  ([7Xhttps://gap-packages.github.io/json[107X)  version  2.0.1,  or newer
+        [Jef20].[133X
+  
+  [33X[0;0YThese  packages, and [5XGAP[105X itself, in turn have their own dependencies, and so
+  [5XVole[105X  inherits  these  additional dependencies. If one of the above packages
+  does   not   load   in  your  [5XGAP[105X  installation,  then  please  consult  the
+  documentation for that package in order to resolve the problem.[133X
+  
+  [33X[0;0YThe  following [5XGAP[105X packages are necessary to use a small, non-core subset of
+  [5XVole[105X's features, and are therefore optional.[133X
+  
+  [30X    [33X[0;6Y[5XOrbitalGraphs[105X  ([7Xhttps://github.com/gap-packages/OrbitalGraphs[107X) version
+        0.1, or newer (required for [2XVole.TwoClosure[102X ([14X4.4-7[114X)).[133X
+  
+  [33X[0;0YThe following [5XGAP[105X packages are needed to run [5XVole[105X's test suite, but they are
+  not required to use the rest of [5XVole[105X, and are therefore also optional.[133X
+  
+  [30X    [33X[0;6Y[5XQuickCheck[105X ([7Xhttps://github.com/ChrisJefferson/QuickCheck[107X) version 0.1,
+        or newer.[133X
+  
+  [30X    [33X[0;6Y[5Xferret[105X ([7Xhttps://gap-packages.github.io/ferret[107X) version 1.0.2, or newer
+        [Jef21].[133X
+  
+  [33X[0;0YSee  Section [14X2.4[114X  for  more  information about running the tests included in
+  [5XVole[105X.[133X
+  
+  [33X[0;0YIn     order     to     compile     the    [5XVole[105X    documentation,    [5XAutoDoc[105X
+  ([7Xhttps://gap-packages.github.io/AutoDoc[107X) version 2019.09.04 or newer must be
+  available. This step is usually unnecessary, and is not required in order to
+  use   [5XVole[105X.  See  Section [14X2.5[114X  for  more  information  about  compiling  the
+  documentation.[133X
+  
+  
+  [1X2.2 [33X[0;0YInstalling [5XVole[105X[101X[1X[133X[101X
+  
+  [33X[0;0YPlease note that if you are using [5XVole[105X via a [5XGAP[105X Cygwin release (i.e. if you
+  installed  [5XGAP[105X  in  Windows  via an installer that included [5XVole[105X), then [5XVole[105X
+  came  ready-compiled,  and the included versions of [5XGAP[105X and its packages are
+  sufficient  to  run  [5XVole[105X out-of-the-box. Therefore you may skip straight to
+  Section [14X2.3[114X.[133X
+  
+  [33X[0;0YOtherwise,  if  you  do not yet have a copy of [5XVole[105X, you should download the
+  latest version of [5XVole[105X.[133X
+  
+  [33X[0;0YIf             you             have            the            [5XPackageManager[105X
+  ([7Xhttps://gap-packages.github.io/PackageManager[107X)  package installed, then you
+  should  be  able  to use it to download and compile [5XVole[105X. Please consult the
+  [5XPackageManager[105X                                                 documentation
+  ([7Xhttps://gap-packages.github.io/PackageManager/doc/chap0_mj.html[107X)  for  full
+  instructions of how to do this, but the commands should look something like:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27X# Warning: this won't work until PackageManager has been taught about Vole![127X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("PackageManager");[127X[104X
+    [4X[25Xgap>[125X [27XInstallPackage("vole");[127X[104X
+    [4X[25Xgap>[125X [27XCompilePackage("vole");[127X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YIf this succeeds, you may skip to Section [14X2.3[114X.[133X
+  
+  [33X[0;0YAlternatively,  you  can  manually  download the latest [10X.tar.gz[110X [5XVole[105X archive
+  from  the [5XVole[105X website ([7Xhttps://peal.github.io/vole[107X) and extract the archive
+  into  your [5XGAP[105X installation's [11Xpkg[111X subdirectory. The commands to achieve this
+  may look something like:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[28X$ cd ~/gap/pkg[128X[104X
+    [4X[28X$ curl -O https://github.com/peal/vole/releases/download/vX.Y.Z/vole-X.Y.Z.tar.gz[128X[104X
+    [4X[28X$ tar xf vole-X.Y.Z.tar.gz[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YIn  order  to compile [5XVole[105X, change to your [5XVole[105X directory and run [10Xmake[110X. This
+  should look something like:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[28X$ cd ~/gap/pkg/vole-X.Y.Z[128X[104X
+    [4X[28X$ make[128X[104X
+    [4X[28Xcd rust && cargo build --bins && cargo build --release --bins[128X[104X
+    [4X[28X    [...[128X[104X
+    [4X[28X        potentially copious output omitted here[128X[104X
+    [4X[28X                                               ...][128X[104X
+    [4X[28X    Compiling rust-vole v0.1.1[128X[104X
+    [4X[28X    Finished dev [unoptimized + debuginfo] target(s) in 8.93s[128X[104X
+    [4X[28X    Compiling rust-vole v0.1.1[128X[104X
+    [4X[28X    Finished release [optimized + debuginfo] target(s) in 30.06s[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0Y[5XVole[105X should now be ready to load. See Section [14X2.3[114X.[133X
+  
+  
+  [1X2.3 [33X[0;0YLoading [5XVole[105X[101X[1X[133X[101X
+  
+  [33X[0;0YIf  [5XVole[105X is available to load, then it can be loaded by calling the function
+  [2XLoadPackage[102X  ([14XReference:  LoadPackage[114X) with the argument [10X"vole"[110X, from within
+  the relevant [5XGAP[105X installation. This should return [9Xtrue[109X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("vole", false);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YIf  [10XLoadPackage[110X  instead returns [9Xfail[109X, then [5XVole[105X has failed to load. This is
+  probably because [5XGAP[105X cannot find [5XVole[105X or [5XVole[105X is not compiled (Section [14X2.2[114X),
+  or  one  of the dependencies of [5XVole[105X is not available (Section [14X2.1[114X). If [5XVole[105X
+  fails  to  load,  then  please  see the [2XLoadPackage[102X ([14XReference: LoadPackage[114X)
+  documentation for ways to help diagnose the problem further.[133X
+  
+  [33X[0;0YIf  you encounter problems, or have any other feedback for the authors, then
+  please      create      an      issue      on      our     issue     tracker
+  ([7Xhttps://github.com/peal/vole/issues[107X),   or   contact   us   by   any  other
+  appropriate  means.  See  the  title  page  of  this  manual for our contact
+  details.  We  published  [5XVole[105X so that our ideas and algorithms could be used
+  by,  and be useful to, others in the community. But without feedback, it can
+  be  difficult  to  know  whether we are achieving this aim. Therefore we are
+  keen to hear your comments, remarks, and complaints.[133X
+  
+  [33X[0;0YOtherwise,  [5XVole[105X is ready to use. To reassure yourself, you can quickly test
+  that [5XVole[105X is behaving as intended by quickly running a search, such that the
+  following one:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XA4 := AlternatingGroup(4);[127X[104X
+    [4X[28XAlt( [ 1 .. 4 ] )[128X[104X
+    [4X[25Xgap>[125X [27XD8 := DihedralGroup(IsPermGroup, 8);[127X[104X
+    [4X[28XGroup([ (1,2,3,4), (2,4) ])[128X[104X
+    [4X[25Xgap>[125X [27XVole.Intersection(A4, D8) = Group([ (1,2)(3,4), (1,4)(2,3) ]);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YIf  you  wish  to  test  your  [5XVole[105X installation more thoroughly, please see
+  Section [14X2.4[114X.[133X
+  
+  
+  [1X2.4 [33X[0;0YRunning [5XVole[105X[101X[1X's test suite[133X[101X
+  
+  [33X[0;0YOptionally,  if you wish to thoroughly test your [5XVole[105X installation, then you
+  can  run  the  test suite. As well the dependencies of [5XVole[105X itself, the test
+  suite         requires         the         [5XGAP[105X        packages        [5Xferret[105X
+  ([7Xhttps://gap-packages.github.io/ferret[107X)   (version   1.0.2   or  newer)  and
+  [5XQuickCheck[105X  ([7Xhttps://github.com/ChrisJefferson/QuickCheck[107X)  (version  0.1 or
+  newer) to be available.[133X
+  
+  [33X[0;0YThere  are  two  files  that  can  be invoked to run extesive tests of [5XVole[105X:
+  [11Xrun-tests.sh[111X and [11Xtst/testall.g[111X.[133X
+  
+  [33X[0;0YThe  [11Xrun-tests.sh[111X  script,  which  is located in the root directory of [5XVole[105X,
+  begins  by  testing  the  Rust  component  directly,  and  then it tests the
+  [5XGAP[105X-level  interface  to  the  Rust component. This script requires that the
+  command [10Xgap[110X, in your terminal environment, is set up to load the appropriate
+  version of [5XGAP[105X for [5XVole[105X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[28X$ ./run-tests.sh[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YTo  run  only  the [5XGAP[105X-level tests, please read the file [11Xtestall.g[111X of [5XVole[105X's
+  [11Xtst[111X directory into [5XGAP[105X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XRead("tst/testall.g");[127X[104X
+  [4X[32X[104X
+  
+  
+  [1X2.5 [33X[0;0YCompiling the documentation for [5XVole[105X[101X[1X[133X[101X
+  
+  [33X[0;0YReleased versions of [5XVole[105X are distributed with precompiled documentation, so
+  compiling  the  documentation  should  be  an  unnecessary  for  most users.
+  However,   development   versions   of   [5XVole[105X  do  not  include  precompiled
+  documentation.[133X
+  
+  [33X[0;0YTo compile the manual, it suffices to read [5XVole[105X's [11Xmakedoc.g[111X file into [5XGAP[105X.[133X
+  
+  [33X[0;0YThis  can  be  done  directly  within  [5XGAP[105X via the function [2XRead[102X ([14XReference:
+  Read[114X):[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XRead("makedoc.g");[127X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YAlternatively, the [11Xmakedoc.g[111X file can be read into [5XGAP[105X by giving its path as
+  an argument to [5XGAP[105X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[28X$ gap makedoc.g[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YFinally,  running  [10Xmake  doc[110X  in  the  [5XVole[105X  directory  should  compile  the
+  documentation  of  [5XVole[105X  if [5XVole[105X is installed in the [11Xpkg[111X subdirectory of the
+  appropriate [5XGAP[105X installation.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[28X$ make doc[128X[104X
+  [4X[32X[104X
+  

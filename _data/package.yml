@@ -1,7 +1,7 @@
 name: Vole
-version: "0.5.0"
+version: "0.5.1"
 license: "MPL-2.0"
-date: 2021-08-09
+date: 2021-08-15
 description: |
     Backtrack search in permutation groups with graphs
 
@@ -61,7 +61,7 @@ packageinfo: https://peal.github.io/vole/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/peal/vole/releases/download/v0.5.0/vole-0.5.0.tar.gz
+      url: https://github.com/peal/vole/releases/download/v0.5.1/vole-0.5.1.tar.gz
 
 abstract: |
     
@@ -79,7 +79,7 @@ citeas: |
     <p class='BibEntry'>
     [<span class='BibKey'>CJW21</span>]   <b class='BibAuthor'>Chang, M. S., Jefferson, C. and Wilson, W. A.</b>,
      <i class='BibTitle'>Vole, Backtrack search in permutation groups with graphs,
-             Version 0.5.0</i>
+             Version 0.5.1</i>
      (<span class='BibYear'>2021</span>)<br />
     (<span class='BibNote'>GAP package</span>),
     <span class='BibHowpublished'><a href="https://peal.github.io/vole">https://peal.github.io/vole</a></span>.
@@ -87,19 +87,19 @@ citeas: |
     
 
 bibtex: |
-    @misc{ Vole0.5.0,
+    @misc{ Vole0.5.1,
       author =           {Chang, M. S. and Jefferson, C. and Wilson, W. A.},
-      title =            {{Vole},  Backtrack  search in permutation groups with
-                          graphs, {V}ersion 0.5.0},
+      title =            {{Vole},  Backtrack  search  in permutation groups with
+                          graphs, {V}ersion 0.5.1},
       month =            {Aug},
       year =             {2021},
       note =             {GAP package},
-      howpublished =     {\href                   {https://peal.github.io/vole}
+      howpublished =     {\href                    {https://peal.github.io/vole}
                           {\texttt{https://peal.github.io/}\discretionary
                           {}{}{}\texttt{vole}}},
-      keywords =         {permutation  group;  backtrack; search; backtracking;
-                          graph;  digraph;  normaliser; normalizer; stabiliser;
-                          stabilizer; group; subgroup; intersection; conjugacy;
+      keywords =         {permutation  group;  backtrack;  search; backtracking;
+                          graph;  digraph;  normaliser;  normalizer; stabiliser;
+                          stabilizer;  group; subgroup; intersection; conjugacy;
                           coset; transporter},
       printedkey =       {CJW21}
     }

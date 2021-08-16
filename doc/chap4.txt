@@ -1,0 +1,606 @@
+  
+  [1X4 [33X[0;0YEmulating traditional interfaces with [5XVole[105X[101X[1X[133X[101X
+  
+  
+  [1X4.1 [33X[0;0YThe concept[133X[101X
+  
+  [33X[0;0YThe  functionality of [5XVole[105X overlaps with that of [5XGAP[105X and its other packages,
+  such as [5Ximages[105X and [5XDigraphs[105X.[133X
+  
+  [33X[0;0Y[5XVole[105X  has  its  own  native  interface, which is described in Chapter [14X5[114X, and
+  which offers highly configurable access to the underlying graph backtracking
+  algorithm. This is the recommended interface to [5XVole[105X for most users.[133X
+  
+  [33X[0;0YHowever,  [5XVole[105X also provides wrappers around its native interface that allow
+  [5XVole[105X  to  emulate some existing interfaces. The purpose of these wrappers is
+  to  lower  the  ‘barrier  to  entry’  of [5XVole[105X, so that users who are already
+  familiar  with  the  existing  [5XGAP[105X/package functions can quickly get started
+  with [5XVole[105X.[133X
+  
+  [33X[0;0YWhere  we  identify that [5XGAP[105X, or a package, provides a function whose result
+  could  reasonably be computed with [5XVole[105X, we provide a wrapper function whose
+  interface closely matches that of the original function, but which uses [5XVole[105X
+  to  perform the computation. [12XWe do not claim that the[112X [5XVole[105X [12Xwrapper functions
+  are necesarily faster than the original functions[112X; see Section [14X4.1-1[114X.[133X
+  
+  [33X[0;0YFor example, the [5XGAP[105X function [2XNormaliser[102X ([14XReference: Normalizer[114X) can be used
+  to  compute  normalisers  of permutation groups. Since [5XVole[105X can also be used
+  for such computations, we provide the corresponding function [2XVole.Normaliser[102X
+  ([14X4.4-4[114X),  which  can  be  used  in  the  same  way. Thus [10XNormaliser([3XG[103X[10X,[3XU[103X[10X)[110X and
+  [10XVole.Normaliser([3XG[103X[10X,[3XU[103X[10X)[110X  will  (barring  bugs!)  return  equal  groups  for all
+  permutation groups [3XG[103X and [3XU[103X.[133X
+  
+  [33X[0;0YAll  such  functions  are  contained  in  the  [2XVole[102X ([14X4.2-1[114X) record, which is
+  documented   in  Section [14X4.2[114X.  The  functions  themselves  are  individually
+  documented in Sections [14X4.4[114X–[14X4.6[114X.[133X
+  
+  
+  [1X4.1-1 [33X[0;0YA warning[133X[101X
+  
+  [33X[0;0Y[5XVole[105X's  emulated interfaces do not necessarily exhibit the full flexibility,
+  power,  and  speed  of  [5XVole[105X.  This  is  especially  for those users who are
+  interesting  in  controlling  and specifying the refiners that are used in a
+  given search, for whom the native interface (Chapter [14X5[114X) is necessary.[133X
+  
+  [33X[0;0YIn addition, please note that the [5XVole[105X wrapper functions (almost) always use
+  the  graph  backtracking  algorithm, and so they may be significantly slower
+  than  the corresponding original functions when those functions can cleverly
+  simplify  the  problem  (and  perhaps  even  choose  a  completely different
+  algorithm),  based on the properties of the groups and permutations that are
+  involved.[133X
+  
+  [33X[0;0YSee  Section [14X1.4[114X for further comments about the relative performance of [5XVole[105X
+  in comparison to other tools.[133X
+  
+  
+  [1X4.2 [33X[0;0YThe [10XVole[110X[101X[1X record[133X[101X
+  
+  [1X4.2-1 Vole[101X
+  
+  [33X[1;0Y[29X[2XVole[102X [32X global variable[133X
+  
+  [33X[0;0Y[10XVole[110X  is  a  record that contains all of the [5XVole[105X wrapper functions that are
+  provided  to  emulate  aspects of [5XGAP[105X, and its packages [5Ximages[105X and [5XDigraphs[105X.
+  The  components of this record are functions that are named to coincide with
+  the corresponding [5XGAP[105X/[5Ximages[105X/[5XDigraphs[105X functions.[133X
+  
+  [33X[0;0YFor   example,   [2XVole.Normaliser[102X  ([14X4.4-4[114X)  emulates  [2XNormaliser[102X  ([14XReference:
+  Normalizer[114X).[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("vole", false);;[127X[104X
+    [4X[25Xgap>[125X [27XSet(RecNames(Vole));[127X[104X
+    [4X[28X[ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", [128X[104X
+    [4X[28X  "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", [128X[104X
+    [4X[28X  "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", [128X[104X
+    [4X[28X  "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer", [128X[104X
+    [4X[28X  "TwoClosure" ][128X[104X
+  [4X[32X[104X
+  
+  
+  [1X4.3 [33X[0;0YThe group actions built into [5XVole[105X[101X[1X[133X[101X
+  
+  [33X[0;0YThe  supported  combinations  of  objects  and  actions are the same for the
+  functions   in  this  chapter  that  require  one  or  two  objects,  and  a
+  corresponding  action.  This information is shown in the following table and
+  applies, in particular, to:[133X
+  
+  [30X    [33X[0;6Y[2XVole.Stabiliser[102X ([14X4.4-2[114X)[133X
+  
+  [30X    [33X[0;6Y[2XVole.RepresentativeAction[102X ([14X4.4-3[114X)[133X
+  
+  [30X    [33X[0;6Y[2XVole.CanonicalPerm[102X ([14X4.5-1[114X)[133X
+  
+  [30X    [33X[0;6Y[2XVole.CanonicalImage[102X ([14X4.5-2[114X)[133X
+  
+        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
+        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+  
+  
+  [1X4.4 [33X[0;0Y[5XVole[105X[101X[1X functions emulating built-in [5XGAP[105X[101X[1X functions[133X[101X
+  
+  [33X[0;0YThe  following  table  gives a summary of the [5XVole[105X wrapper functions and the
+  corresponding [5XGAP[105X functions.[133X
+  
+        [5XVole[105X function                       Built-in [5XGAP[105X function                                    
+        ─────────────────────────────────   ──────────────────────────────────────────────────────  
+        [2XVole.Intersection[102X ([14X4.4-1[114X)           [2XIntersection[102X ([14XReference: Intersection[114X)                   
+        [2XVole.Stabiliser[102X ([14X4.4-2[114X)             [2XStabiliser[102X ([14XReference: Stabilizer[114X)                       
+        [2XVole.RepresentativeAction[102X ([14X4.4-3[114X)   [2XRepresentativeAction[102X ([14XReference: RepresentativeAction[114X)   
+        [2XVole.Normaliser[102X ([14X4.4-4[114X)             [2XNormaliser[102X ([14XReference: Normalizer[114X)                       
+        [2XVole.Centraliser[102X ([14X4.4-5[114X)            [2XCentraliser[102X ([14XReference: centraliser[114X)                     
+        [2XVole.IsConjugate[102X ([14X4.4-6[114X)            [2XIsConjugate[102X ([14XReference: IsConjugate[114X)                     
+        [2XVole.TwoClosure[102X ([14X4.4-7[114X)             [2XTwoClosure[102X ([14XReference: TwoClosure[114X)                       
+  
+  
+  [1X4.4-1 [33X[0;0YIntersection[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.Intersection[102X( [3XU1[103X, [3XU2[103X, [3X...[103X, [3XUk[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA perm group, a right coset, or an empty list[133X
+  
+  [33X[0;0Y[2XVole.Intersection[102X   emulates   the   built-in   [5XGAP[105X  operation  [2XIntersection[102X
+  ([14XReference: Intersection[114X), and returns the intersection of the groups and/or
+  right coset arguments.[133X
+  
+  [33X[0;0YIf  all  of the arguments are groups, then [2XVole.Intersection[102X again returns a
+  group.  Otherwise, if the result is nonempty, then [2XVole.Intersection[102X returns
+  a  [5XGAP[105X  right coset object. Note that this non-group case differs from [5XGAP[105X's
+  [2XIntersection[102X ([14XReference: Intersection[114X), which always returns a list.[133X
+  
+  [33X[0;0YNote  that  [5XVole[105X  performs the whole intersection in one search, rather than
+  iteratively intersecting the arguments.[133X
+  
+  [33X[0;0YThere  are  many  reasons why [5XGAP[105X may be faster than [5XVole[105X for any particular
+  problem;  see Section [14X1.4[114X for some discussion about this. It may be possible
+  to  obtain  better  performance from [5XVole[105X by specifying custom refiners with
+  the native interface, see Chapter [14X5[114X and Chapter [14X7[114X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XA6 := AlternatingGroup(6);;[127X[104X
+    [4X[25Xgap>[125X [27XD12 := DihedralGroup(IsPermGroup, 12);;[127X[104X
+    [4X[25Xgap>[125X [27XVole.Intersection(A6, D12);[127X[104X
+    [4X[28XGroup([ (2,6)(3,5), (1,3,5)(2,4,6) ])[128X[104X
+    [4X[25Xgap>[125X [27XVole.Intersection(A6 * (1,2), D12 * (3,4));[127X[104X
+    [4X[28XRightCoset(Group([ (2,6)(3,5), (1,3,5)(2,4,6) ]),(1,5)(2,3,4))[128X[104X
+    [4X[25Xgap>[125X [27XVole.Intersection(A6 * (1,2), D12 * (3,4), PSL(2,5));[127X[104X
+    [4X[28X[  ][128X[104X
+  [4X[32X[104X
+  
+  
+  [1X4.4-2 [33X[0;0YStabiliser[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.Stabiliser[102X( [3XG[103X, [3Xobject[103X[, [3Xaction[103X] ) [32X function[133X
+  [33X[1;0Y[29X[2XVole.Stabilizer[102X( [3XG[103X, [3Xobject[103X[, [3Xaction[103X] ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YAn permutation group[133X
+  
+  [33X[0;0Y[2XVole.Stabiliser[102X  emulates  the built-in [5XGAP[105X operation [2XStabiliser[102X ([14XReference:
+  Stabilizer[114X).[133X
+  
+  [33X[0;0YThe  [13Xstabiliser[113X  of  an  [3Xobject[103X  in a group [3XG[103X under some group [3Xaction[103X is the
+  subgroup  of  [3XG[103X  of  those  elements  that fix [3Xobject[103X under [3Xaction[103X, i.e. all
+  permutations [10Xg[110X in [3XG[103X such that [10X[3Xaction[103X[10X([3Xobject[103X[10X,g)=[3Xobject[103X[10X[110X.[133X
+  
+  [33X[0;0YThe  permitted  combinations  of  objects and actions are given in the table
+  below.[133X
+  
+  [33X[0;0YThe  default [3Xaction[103X, in the case that the argument is not given, is [2XOnPoints[102X
+  ([14XReference:  OnPoints[114X). This is the name in [5XGAP[105X of the action given by the [10X^[110X
+  operator,  i.e. it corresponds to [10X[3Xobject[103X[10X^g[110X, where [10Xg[110X in [3XG[103X. See [2X\^[102X ([14XReference:
+  ^[114X).[133X
+  
+  [33X[0;0YThere  are  many  reasons why [5XGAP[105X may be faster than [5XVole[105X for any particular
+  problem;  see Section [14X1.4[114X for some discussion about this. It may be possible
+  to  obtain  better  performance from [5XVole[105X by specifying custom refiners with
+  the native interface, see [2XVoleFind.Group[102X ([14X5.2-2[114X) and Chapter [14X7[114X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVole.Stabiliser(PGL(2,5), [1,2,3], OnSets);[127X[104X
+    [4X[28XGroup([ (1,3)(5,6), (1,2,3)(4,5,6) ])[128X[104X
+    [4X[25Xgap>[125X [27XD := JohnsonDigraph(4,2);;[127X[104X
+    [4X[25Xgap>[125X [27XG := Stabiliser(PSL(2,5), D, OnDigraphs);;[127X[104X
+    [4X[25Xgap>[125X [27XG = Group([ (1,4,5)(2,6,3), (1,4)(3,6) ]);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27XElements(G)[127X[104X
+    [4X[25X>[125X [27X = SortedList(Filtered(PSL(2,5), g -> OnDigraphs(D, g) = D));[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
+        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+  
+  
+  [1X4.4-3 [33X[0;0YRepresentativeAction[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.RepresentativeAction[102X( [3XG[103X, [3Xobject1[103X, [3Xobject2[103X[, [3Xaction[103X] ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA permutation, or [9Xfail[109X[133X
+  
+  [33X[0;0Y[2XVole.RepresentativeAction[102X     emulates    the    built-in    [5XGAP[105X    function
+  [2XRepresentativeAction[102X ([14XReference: RepresentativeAction[114X).[133X
+  
+  [33X[0;0YThis  function  returns  an  element  of  the  permutation group [3XG[103X that maps
+  [3Xobject1[103X  to [3Xobject2[103X under the given group [3Xaction[103X, if such an element exists,
+  and it returns [9Xfail[109X otherwise.[133X
+  
+  [33X[0;0YThe  permitted  combinations  of  objects and actions are given in the table
+  below.[133X
+  
+  [33X[0;0YThe  default [3Xaction[103X, in the case that the argument is not given, is [2XOnPoints[102X
+  ([14XReference:  OnPoints[114X). This is the name in [5XGAP[105X of the action given by the [10X^[110X
+  operator,  i.e. it corresponds to [10X[3Xobject[103X[10X^g[110X, where [10Xg[110X in [3XG[103X. See [2X\^[102X ([14XReference:
+  ^[114X).[133X
+  
+  [33X[0;0YThere  are  many  reasons why [5XGAP[105X may be faster than [5XVole[105X for any particular
+  problem;  see Section [14X1.4[114X for some discussion about this. It may be possible
+  to  obtain  better  performance from [5XVole[105X by specifying custom refiners with
+  the native interface, see [2XVoleFind.Rep[102X ([14X5.2-1[114X) and Chapter [14X7[114X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVole.RepresentativeAction(SymmetricGroup(4), (1,2,3), (1,2,4));[127X[104X
+    [4X[28X(1,4,3,2)[128X[104X
+    [4X[25Xgap>[125X [27XRepresentativeAction(AlternatingGroup(4), (1,2,3), (1,2,4));[127X[104X
+    [4X[28Xfail[128X[104X
+    [4X[25Xgap>[125X [27XD := CycleDigraph(6);;[127X[104X
+    [4X[25Xgap>[125X [27XVole.RepresentativeAction(PGL(2,5), D, DigraphReverse(D), OnDigraphs);[127X[104X
+    [4X[28X(1,4)(2,3)(5,6)[128X[104X
+  [4X[32X[104X
+  
+        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
+        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+  
+  
+  [1X4.4-4 [33X[0;0YNormaliser[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.Normaliser[102X( [3XG[103X, [3XU[103X ) [32X function[133X
+  [33X[1;0Y[29X[2XVole.Normalizer[102X( [3XG[103X, [3XU[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YAn permutation group[133X
+  
+  [33X[0;0Y[2XVole.Normaliser[102X  emulates  the built-in [5XGAP[105X operation [2XNormaliser[102X ([14XReference:
+  Normalizer[114X).[133X
+  
+  [33X[0;0YIf [3XG[103X and [3XU[103X are permutation groups, then this function returns the [13Xnormaliser[113X
+  of [3XU[103X in [3XG[103X, [23XN_{G}(U)[123X, which is the stabiliser of [3XU[103X under conjugation by [3XG[103X. If
+  [3XU[103X  is instead a permutation, then [10XVole.Normalizer([3XG[103X[10X,[3XU[103X[10X)[110X returns [23XN_{G}(\langle
+  U \rangle)[123X.[133X
+  
+  [33X[0;0YThere  are  many  reasons why [5XGAP[105X may be faster than [5XVole[105X for any particular
+  problem;  see Section [14X1.4[114X for some discussion about this. It may be possible
+  to  obtain  better  performance from [5XVole[105X by specifying custom refiners with
+  the native interface, see [2XVoleFind.Group[102X ([14X5.2-2[114X) and Chapter [14X7[114X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVole.Normaliser(SymmetricGroup(6), PSL(2,5)) = PGL(2,5);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27XD12 := DihedralGroup(IsPermGroup, 12);;[127X[104X
+    [4X[25Xgap>[125X [27XVole.Normaliser(SymmetricGroup(6), (1,2,3,4,5,6)) = D12;[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  
+  [1X4.4-5 [33X[0;0YCentraliser[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.Centraliser[102X( [3XG[103X, [3Xx[103X ) [32X function[133X
+  [33X[1;0Y[29X[2XVole.Centralizer[102X( [3XG[103X, [3Xx[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YAn permutation group[133X
+  
+  [33X[0;0Y[2XVole.Centraliser[102X emulates the built-in [5XGAP[105X operation [2XCentraliser[102X ([14XReference:
+  centraliser[114X).[133X
+  
+  [33X[0;0YIf  [3XG[103X  is  a  group  and  [3Xx[103X is a permutation, then this function returns the
+  subgroup of [3XG[103X comprising its elements that commute with [3Xx[103X.[133X
+  
+  [33X[0;0YIf  instead  [3Xx[103X  is  group,  then  this  function  returns  the subgroup of [3XG[103X
+  comprising its elements that commute with all elements of [3Xx[103X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVole.Centraliser(MathieuGroup(12), (1,11,9,4,3,2)(5,7,8,6,12,10));[127X[104X
+    [4X[28XGroup([ (1,2,3,4,9,11)(5,10,12,6,8,7), (1,5,3,12,9,8)(2,10,4,6,11,7) ])[128X[104X
+    [4X[25Xgap>[125X [27XVole.Centraliser(Group((1,2,3,4,5,6)), DihedralGroup(IsPermGroup, 12));[127X[104X
+    [4X[28XGroup([ (1,4)(2,5)(3,6) ])[128X[104X
+  [4X[32X[104X
+  
+  
+  [1X4.4-6 [33X[0;0YIsConjugate[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.IsConjugate[102X( [3XG[103X, [3Xx[103X, [3Xy[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
+  
+  [33X[0;0Y[2XVole.IsConjugate[102X  emulates the built-in [5XGAP[105X function [2XIsConjugate[102X ([14XReference:
+  IsConjugate[114X).[133X
+  
+  [33X[0;0YThis  function  returns  [9Xtrue[109X  if there exists an element of the permutation
+  group  [3XG[103X  that  conjugates  [3Xx[103X  to  [3Xy[103X, and [9Xfalse[109X otherwise, where [3Xx[103X and [3Xy[103X are
+  either  both permutations, or both permutation groups. Note that [3Xx[103X and [3Xy[103X are
+  not required to be contained in [3XG[103X.[133X
+  
+  [33X[0;0YThis  function  immediately  delegates to [2XVole.RepresentativeAction[102X ([14X4.4-3[114X),
+  which  finds  a  representative  conjugating  element,  or  proves that none
+  exists.[133X
+  
+  [33X[0;0YThere  are  many  reasons why [5XGAP[105X may be faster than [5XVole[105X for any particular
+  problem;  see Section [14X1.4[114X for some discussion about this. It may be possible
+  to  obtain  better  performance from [5XVole[105X by specifying custom refiners with
+  the native interface, see [2XVoleFind.Rep[102X ([14X5.2-1[114X) and Chapter [14X7[114X.[133X
+  
+  [33X[0;0YConjugacy of permutations:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27X# Conjugacy of permutations[127X[104X
+    [4X[25Xgap>[125X [27Xx := (1,2,3,4,5);; y := (1,2,3,4,6);;[127X[104X
+    [4X[25Xgap>[125X [27XVole.IsConjugate(SymmetricGroup(6), x, y);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27XVole.IsConjugate(AlternatingGroup(6), x, y);[127X[104X
+    [4X[28Xfalse[128X[104X
+    [4X[25Xgap>[125X [27XVole.IsConjugate(Group([ (5,6) ]), x, y);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YConjugacy of groups:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xx := Group([ (1,2,3,4,5) ]);;[127X[104X
+    [4X[25Xgap>[125X [27Xy := Group([ (1,2,3,4,6) ]);;[127X[104X
+    [4X[25Xgap>[125X [27XVole.IsConjugate(SymmetricGroup(6), x, y);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27XVole.IsConjugate(Group([ (1,2)(3,4) ]), x, y);[127X[104X
+    [4X[28Xfalse[128X[104X
+    [4X[25Xgap>[125X [27XVole.IsConjugate(Group([ (5,6) ]), x, y);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  
+  [1X4.4-7 [33X[0;0YTwoClosure[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.TwoClosure[102X( [3XG[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA permutation group[133X
+  
+  [33X[0;0Y[2XVole.TwoClosure[102X  emulates  the  built-in [5XGAP[105X function [2XTwoClosure[102X ([14XReference:
+  TwoClosure[114X) for a permutation group.[133X
+  
+  [33X[0;0YThe  [13X2-closure[113X  of a permutation group [3XG[103X is the largest group whose orbitals
+  (orbits   on   pairs  of  positive  integers)  coincide  with  those  of  [3XG[103X;
+  equivalently,  it  is  the  intersection  of  the automorphism groups of the
+  orbital graphs of [3XG[103X.[133X
+  
+  [33X[0;0Y[12XWarning[112X:  this function currently requires the [5XOrbitalGraphs[105X package, and it
+  will give an error if [5XOrbitalGraphs[105X is not yet loaded.[133X
+  
+  [33X[0;0YThere  are  many  reasons why [5XGAP[105X may be faster than [5XVole[105X for any particular
+  problem;  see Section [14X1.4[114X for some discussion about this. It may be possible
+  to  obtain  better  performance from [5XVole[105X by specifying custom refiners with
+  the native interface, see [2XVoleFind.Group[102X ([14X5.2-2[114X) and Chapter [14X7[114X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("orbitalgraphs", false);;[127X[104X
+    [4X[25Xgap>[125X [27XG := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;  # A4 on six points[127X[104X
+    [4X[25Xgap>[125X [27X(3,6) in G;[127X[104X
+    [4X[28Xfalse[128X[104X
+    [4X[25Xgap>[125X [27XVole.TwoClosure(G) = ClosureGroup(G, (3,6));[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  
+  [1X4.5 [33X[0;0Y[5XVole[105X[101X[1X functions emulating the [5Ximages[105X[101X[1X package[133X[101X
+  
+  [33X[0;0YThe  following  table gives a summary of the correspondence between [5XVole[105X and
+  the [5Ximages[105X package.[133X
+  
+        [5XVole[105X function                 [5Ximages[105X package function                           
+        ───────────────────────────   ───────────────────────────────────────────────  
+        [2XVole.CanonicalPerm[102X ([14X4.5-1[114X)    [2XCanonicalImagePerm[102X ([14Ximages: CanonicalImagePerm[114X)   
+        [2XVole.CanonicalImage[102X ([14X4.5-2[114X)   [2XCanonicalImage[102X ([14Ximages: CanonicalImage[114X)           
+  
+  
+  [1X4.5-1 [33X[0;0YCanonicalPerm[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.CanonicalPerm[102X( [3XG[103X, [3Xobject[103X[, [3Xaction[103X] ) [32X function[133X
+  [33X[1;0Y[29X[2XVole.CanonicalImagePerm[102X( [3XG[103X, [3Xobject[103X[, [3Xaction[103X] ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA permutation[133X
+  
+  [33X[0;0YThese    functions,    which   are   synonyms   of   each   other,   emulate
+  [2XCanonicalImagePerm[102X  ([14Ximages:  CanonicalImagePerm[114X)  from  the [5Ximages[105X package,
+  although they supports a wider range of objects and actions.[133X
+  
+  [33X[0;0YSuppose  that  [3XG[103X  is a group, and that [3Xobject[103X and [10Xobject2[110X belong to a set on
+  which [3XG[103X has a group [3Xaction[103X. Then [10XVole.CanonicalPerm([3XG[103X[10X,[3Xobject[103X[10X,[3Xaction[103X[10X)[110X returns
+  an  element  [10Xg[110X  of  [3XG[103X,  and  [10XVole.CanonicalPerm([3XG[103X[10X,object2,[3Xaction[103X[10X)[110X returns an
+  element  [10Xh[110X  of  [3XG[103X,  such  that [3Xobject[103X and [10Xobject2[110X are in the same orbit of [3XG[103X
+  under [3Xaction[103X if and only if [10X[3Xobject[103X[10X^g = object2^h[110X.[133X
+  
+  [33X[0;0YThe  permitted  combinations  of  objects and actions are given in the table
+  below.[133X
+  
+  [33X[0;0YThe  default [3Xaction[103X, in the case that the argument is not given, is [2XOnPoints[102X
+  ([14XReference:  OnPoints[114X). This is the name in [5XGAP[105X of the action given by the [10X^[110X
+  operator,  i.e. it corresponds to [10X[3Xobject[103X[10X^g[110X, where [10Xg[110X in [3XG[103X. See [2X\^[102X ([14XReference:
+  ^[114X).[133X
+  
+  [33X[0;0YThe  native  [5XVole[105X  interface  for  this  kind  of computation is provided by
+  [2XVoleFind.CanonicalPerm[102X ([14X5.3-2[114X).[133X
+  
+  [33X[0;0Y[12XWarning[112X: The permutation given by a canonical search and the canonical image
+  that it defines are [12Xnot guaranteed to be the same across different sessions[112X.
+  In  particular,  canonical  permutations/labellings and images may differ in
+  different  versions  of [5XVole[105X, in different versions of [5XGAP[105X, and on different
+  hardware.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVole.CanonicalPerm(PSL(2,5), JohnsonDigraph(4,2), OnDigraphs);[127X[104X
+    [4X[28X(1,2,6)(3,4,5)[128X[104X
+  [4X[32X[104X
+  
+        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
+        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+  
+  
+  [1X4.5-2 [33X[0;0YCanonicalImage[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.CanonicalImage[102X( [3XG[103X, [3Xobject[103X[, [3Xaction[103X] ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YAn image of [3Xobject[103X[133X
+  
+  [33X[0;0YThis  function  emulates  [2XCanonicalImage[102X  ([14Ximages:  CanonicalImage[114X) from the
+  [5Ximages[105X package, although it supports a wider range of objects and actions.[133X
+  
+  [33X[0;0Y[2XVole.CanonicalImage[102X returns [10X[3Xobject[103X[10X^g[110X, where [10Xg[110X is the permutation returned by
+  Vole.CanonicalPerm([3XG[103X,[3Xobject[103X,[3Xaction[103X). See [2XVole.CanonicalPerm[102X ([14X4.5-1[114X) for more
+  information.[133X
+  
+  [33X[0;0YThe  permitted  combinations  of  objects and actions are given in the table
+  below.[133X
+  
+  [33X[0;0YThe  default [3Xaction[103X, in the case that the argument is not given, is [2XOnPoints[102X
+  ([14XReference:  OnPoints[114X). This is the name in [5XGAP[105X of the action given by the [10X^[110X
+  operator,  i.e. it corresponds to [10X[3Xobject[103X[10X^g[110X, where [10Xg[110X in [3XG[103X. See [2X\^[102X ([14XReference:
+  ^[114X).[133X
+  
+  [33X[0;0YThe  native  [5XVole[105X  interface  for  this  kind  of computation is provided by
+  [2XVoleFind.CanonicalPerm[102X ([14X5.3-2[114X).[133X
+  
+  [33X[0;0Y[12XWarning[112X: The permutation given by a canonical search and the canonical image
+  that it defines are [12Xnot guaranteed to be the same across different sessions[112X.
+  In  particular,  canonical  permutations/labellings and images may differ in
+  different  versions  of [5XVole[105X, in different versions of [5XGAP[105X, and on different
+  hardware.[133X
+  
+  [33X[0;0YIn the following example, we find that three different tuples of points have
+  two different canonical images in [23XA_5[123X:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xtuple1 := [1,2,3,4];; tuple2 := [1,2,3,5];; tuple3 := [1,5,2,3];;[127X[104X
+    [4X[25Xgap>[125X [27XA5 := AlternatingGroup(5);;[127X[104X
+    [4X[25Xgap>[125X [27XVole.CanonicalImage(A5, tuple1, OnTuples);[127X[104X
+    [4X[28X[ 5, 4, 3, 2 ][128X[104X
+    [4X[25Xgap>[125X [27XVole.CanonicalImage(A5, tuple2, OnTuples);[127X[104X
+    [4X[28X[ 4, 5, 3, 2 ][128X[104X
+    [4X[25Xgap>[125X [27XVole.CanonicalImage(A5, tuple3, OnTuples);[127X[104X
+    [4X[28X[ 4, 5, 3, 2 ][128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YTherefore, the tuples with the same canonical image are in the same orbit of
+  [23XA_5[123X, and those with different canonical images are in different orbits:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVole.RepresentativeAction(A5, tuple1, tuple2, OnTuples);[127X[104X
+    [4X[28Xfail[128X[104X
+    [4X[25Xgap>[125X [27XVole.RepresentativeAction(A5, tuple1, tuple3, OnTuples);[127X[104X
+    [4X[28Xfail[128X[104X
+    [4X[25Xgap>[125X [27XVole.RepresentativeAction(A5, tuple2, tuple3, OnTuples);[127X[104X
+    [4X[28X(2,5,3)[128X[104X
+  [4X[32X[104X
+  
+        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
+        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+  
+  
+  [1X4.6 [33X[0;0Y[5XVole[105X[101X[1X functions emulating the [5XDigraphs[105X[101X[1X package[133X[101X
+  
+  [33X[0;0YThe  following  table gives a summary of the correspondence between [5XVole[105X and
+  the [5XDigraphs[105X package.[133X
+  
+        [5XVole[105X function                            [5XDigraphs[105X package function                                                   
+        ──────────────────────────────────────   ─────────────────────────────────────────────────────────────────────────  
+        [2XVole.AutomorphismGroup[102X ([14X4.6-1[114X)           [2XAutomorphismGroup[102X ([14XDigraphs: AutomorphismGroup for a digraph[114X)               
+        [2XVole.CanonicalDigraph[102X ([14X4.6-3[114X)            [2XNautyCanonicalDigraph[102X ([14XDigraphs: NautyCanonicalDigraph[114X)                     
+        [2XVole.DigraphCanonicalLabelling[102X ([14X4.6-2[114X)   [2XNautyCanonicalLabelling[102X ([14XDigraphs: NautyCanonicalLabelling for a digraph[114X)   
+  
+  
+  [1X4.6-1 [33X[0;0YAutomorphismGroup[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.AutomorphismGroup[102X( [3XD[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA permutation group[133X
+  
+  [33X[0;0Y[2XVole.AutomorphismGroup[102X    emulates    the    [5XDigraphs[105X    package   functions
+  [2XAutomorphismGroup[102X    ([14XDigraphs:    AutomorphismGroup    for    a   digraph[114X),
+  [2XNautyAutomorphismGroup[102X      ([14XDigraphs:      NautyAutomorphismGroup[114X),     and
+  [2XBlissAutomorphismGroup[102X ([14XDigraphs: BlissAutomorphismGroup for a digraph[114X).[133X
+  
+  [33X[0;0YThis  function  returns  the  automorphism  group  of  the  digraph  [3XD[103X.  The
+  [13Xautomorphism    group[113X    of    [3XD[103X    is    the    stabiliser    of    [3XD[103X    in
+  [10XSymmetricGroup(DigraphVertices(D))[110X  under  its  natural  action on digraphs,
+  namely  [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X). The [5XVole[105X
+  function  [2XVole.Stabiliser[102X ([14X4.4-2[114X) can be used to compute the stabiliser of [3XD[103X
+  in an arbitrary permutation group.[133X
+  
+  [33X[0;0YSupport  for  specifying  vertex  and/or  edge  colours  has  not  yet  been
+  implemented, sorry. We are working on it![133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVole.AutomorphismGroup(JohnsonDigraph(4,2));[127X[104X
+    [4X[28XGroup([ (3,4), (2,3,5,4), (1,2,6,5)(3,4) ])[128X[104X
+  [4X[32X[104X
+  
+  
+  [1X4.6-2 [33X[0;0YDigraphCanonicalLabelling[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.DigraphCanonicalLabelling[102X( [3XD[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA permutation[133X
+  
+  [33X[0;0Y[2XVole.DigraphCanonicalLabelling[102X   emulates  the  [5XDigraphs[105X  package  functions
+  [2XBlissCanonicalLabelling[102X  ([14XDigraphs:  BlissCanonicalLabelling  for a digraph[114X)
+  and   [2XNautyCanonicalLabelling[102X   ([14XDigraphs:   NautyCanonicalLabelling  for  a
+  digraph[114X).[133X
+  
+  [33X[0;0YIf  [3XD[103X  is  a  digraph,  and  [10XG=SymmetricGroup(DigraphVertices([3XD[103X[10X))[110X, then this
+  function  is  a  shortcut  to [10XVole.CanonicalPerm(G,[3XD[103X[10X,OnDigraphs)[110X. It is also
+  possible  to  use  [2XVole.CanonicalPerm[102X  ([14X4.5-1[114X) to canonise [3XD[103X in an arbitrary
+  permutation group.[133X
+  
+  [33X[0;0YSupport  for  specifying  vertex  and/or  edge  colours  has  not  yet  been
+  implemented, sorry. We are working on it![133X
+  
+  [33X[0;0Y[12XWarning[112X: The permutation given by a canonical search and the canonical image
+  that it defines are [12Xnot guaranteed to be the same across different sessions[112X.
+  In  particular,  canonical  permutations/labellings and images may differ in
+  different  versions  of [5XVole[105X, in different versions of [5XGAP[105X, and on different
+  hardware.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVole.DigraphCanonicalLabelling(JohnsonDigraph(4,2));[127X[104X
+    [4X[28X(1,2,4,5,3,6)[128X[104X
+  [4X[32X[104X
+  
+  
+  [1X4.6-3 [33X[0;0YCanonicalDigraph[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.CanonicalDigraph[102X( [3XD[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA digraph[133X
+  
+  [33X[0;0Y[2XVole.CanonicalDigraph[102X    emulates    the    [5XDigraphs[105X    package    functions
+  [2XBlissCanonicalDigraph[102X       ([14XDigraphs:       BlissCanonicalDigraph[114X)      and
+  [2XNautyCanonicalDigraph[102X ([14XDigraphs: NautyCanonicalDigraph[114X).[133X
+  
+  [33X[0;0YIf  [3XD[103X  is  a  digraph,  and  [10XG=SymmetricGroup(DigraphVertices([3XD[103X[10X))[110X, then this
+  function  is  a  shortcut to [10XVole.CanonicalImage(G,[3XD[103X[10X,OnDigraphs)[110X. It is also
+  possible  to  use  [2XVole.CanonicalImage[102X ([14X4.5-2[114X) to canonise [3XD[103X in an arbitrary
+  permutation group.[133X
+  
+  [33X[0;0Y[12XWarning[112X: The permutation given by a canonical search and the canonical image
+  that it defines are [12Xnot guaranteed to be the same across different sessions[112X.
+  In  particular,  canonical  permutations/labellings and images may differ in
+  different  versions  of [5XVole[105X, in different versions of [5XGAP[105X, and on different
+  hardware.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVole.CanonicalDigraph(JohnsonDigraph(4,2));[127X[104X
+    [4X[28X<immutable digraph with 6 vertices, 24 edges>[128X[104X
+  [4X[32X[104X
+  

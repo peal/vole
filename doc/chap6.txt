@@ -1,0 +1,418 @@
+  
+  [1X6 [33X[0;0YConstraints[133X[101X
+  
+  
+  [1X6.1 [33X[0;0YThe concept of constraints in [5XVole[105X[101X[1X[133X[101X
+  
+  [33X[0;0YAt  its  core,  [5XVole[105X  searches for permutations that satisfy a collection of
+  constraints. A [13Xconstraint[113X is a property such that for any given permutation,
+  it  is  easy  to  check whether that permutation has the property or not. In
+  addition,  if  the  set of permutations that satisfy a property is nonempty,
+  then  that  set  must be a (possibly infinite) permutation group, or a coset
+  thereof.[133X
+  
+  [33X[0;0YFor example:[133X
+  
+  [30X    [33X[0;6Y“is even”,[133X
+  
+  [30X    [33X[0;6Y“commutes with the permutation [23Xx[123X”,[133X
+  
+  [30X    [33X[0;6Y“conjugates the group [23XG = \langle X \rangle[123X to the group [23XH = \langle Y
+        \rangle[123X”,[133X
+  
+  [30X    [33X[0;6Y“is an automorphism of the graph [23X\Gamma[123X”, and[133X
+  
+  [30X    [33X[0;6Y“is a member of the group [23XG = \langle X \rangle[123X”[133X
+  
+  [33X[0;0Yare all examples of constraints. On the other hand:[133X
+  
+  [30X    [33X[0;6Y“is a member of the socle of the group [23XG[123X”, and[133X
+  
+  [30X    [33X[0;6Y“is a member of a largest maximal subgroup of the group [23XG[123X”[133X
+  
+  [33X[0;0Ydo not qualify, unless generating sets for the socle and the largest maximal
+  subgroups  of  [23XG[123X  are  [13Xalready[113X  known,  and  there  is a unique such maximal
+  subgroup  (in which case these properties become instances of the constraint
+  “is a member of the group defined by the generating set...”).[133X
+  
+  [33X[0;0YThe  term  ‘constraint’  comes from the computer science field of constraint
+  satisfaction  problems, constraint programming, and constraint solvers, with
+  which backtrack search algorithms are very closely linked.[133X
+  
+  [33X[0;0YTo  use [5XVole[105X via its native interface (Chapter [14X5[114X), it is necessary to choose
+  a  selection  of constraints that, in conjunction, define the permutation(s)
+  that you wish to find. [5XVole[105X provides a number of built-in constraints. These
+  can  be  created with the functions contained in the [2XVoleCon[102X ([14X6.2-1[114X) record,
+  which  are  documented  individually  in  Section [14X6.3[114X.  While  the  included
+  constraints  are  not  exhaustive, they do cover a wide range of problems in
+  computational  group  theory,  and  we  welcome  suggestions  of  additional
+  constraints that we could implement.[133X
+  
+  [33X[0;0YInternally,  a  constraint is eventually converted into one or more refiners
+  by  that  the  time  that the search takes place. Refiners are introduced in
+  Chapter [14X7[114X,  and  can  be given in place of constraints. We do not explicitly
+  document  the  conversion  of [5XVole[105X constraints into refiners; the conversion
+  may  change  in future versions of [5XVole[105X as we introduce improve our refiners
+  and  introduce new ones. In addition, we do not explicitly document the kind
+  of  object  that  a  [5XVole[105X  constraint is. Currently, constraints may be [5XVole[105X
+  refiners, [5XGraphBacktracking[105X refiners, [5XBacktrackKit[105X refiners, records, lists,
+  or the value [9Xfail[109X.[133X
+  
+  
+  [1X6.2 [33X[0;0YThe [10XVoleCon[110X[101X[1X record[133X[101X
+  
+  [1X6.2-1 VoleCon[101X
+  
+  [33X[1;0Y[29X[2XVoleCon[102X [32X global variable[133X
+  
+  [33X[0;0Y[2XVoleCon[102X  is  a  record  that  contains  functions  for  producing all of the
+  constraints that [5XVole[105X provides.[133X
+  
+  [33X[0;0YThe members of [2XVoleCon[102X are documented individually in Section [14X6.3[114X.[133X
+  
+  [33X[0;0YThe  members  whose names differ only by their “-ise” and “-ize” endings are
+  synonyms, included to accommodate different spellings in English.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("vole", false);;[127X[104X
+    [4X[25Xgap>[125X [27XSet(RecNames(VoleCon));[127X[104X
+    [4X[28X[ "Centralise", "Centralize", "Conjugate", "InCoset", "InGroup", [128X[104X
+    [4X[28X  "InLeftCoset", "InRightCoset", "LargestMovedPoint", "MovedPoints", "None", [128X[104X
+    [4X[28X  "Normalise", "Normalize", "Stabilise", "Stabilize", "Transport" ][128X[104X
+  [4X[32X[104X
+  
+  
+  [1X6.3 [33X[0;0Y[5XVole[105X[101X[1X constraints via the [10XVoleCon[110X[101X[1X record[133X[101X
+  
+  [33X[0;0YIn  this  section,  we  individually  document  the functions of the [2XVoleCon[102X
+  ([14X6.2-1[114X)  record,  which  can  be  used  to  create  the built-in constraints
+  provided by [5XVole[105X[133X
+  
+  [33X[0;0YMany  of  these  constraints  come  in  pairs, with a “group” version, and a
+  corresponding   “coset”  version.  These  relationships  are  given  in  the
+  following table.[133X
+  
+        Group version                        Coset version               
+        ──────────────────────────────────   ─────────────────────────  
+        [2XVoleCon.InGroup[102X ([14X6.3-1[114X)              [2XVoleCon.InCoset[102X ([14X6.3-2[114X)     
+        [2XVoleCon.Stabilise[102X ([14X6.3-5[114X)            [2XVoleCon.Transport[102X ([14X6.3-6[114X)   
+        [2XVoleCon.Normalise[102X ([14X6.3-7[114X)            [2XVoleCon.Conjugate[102X ([14X6.3-9[114X)   
+        [2XVoleCon.Centralise[102X ([14X6.3-8[114X)           [2XVoleCon.Conjugate[102X ([14X6.3-9[114X)   
+        [2XVoleCon.MovedPoints[102X ([14X6.3-10[114X)         N/A                         
+        [2XVoleCon.LargestMovedPoint[102X ([14X6.3-11[114X)   N/A                         
+        N/A                                  [2XVoleCon.None[102X ([14X6.3-12[114X)       
+  
+  [1X6.3-1 VoleCon.InGroup[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.InGroup[102X( [3XG[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is  satisfied  by  precisely  those  permutations  in  the
+  permutation group [3XG[103X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcon1 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 8));;[127X[104X
+    [4X[25Xgap>[125X [27Xcon2 := VoleCon.InGroup(AlternatingGroup(4));;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Group(con1, con2) = Group([(1,3)(2,4), (1,4)(2,3)]);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-2 VoleCon.InCoset[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.InCoset[102X( [3XU[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is  satisfied  by  precisely those permutations in the [5XGAP[105X
+  right coset object [3XU[103X.[133X
+  
+  [33X[0;0YSee also [2XVoleCon.InLeftCoset[102X ([14X6.3-4[114X) and [2XVoleCon.InRightCoset[102X ([14X6.3-3[114X), which
+  allow a coset to be specifed by a subgroup and a representative element.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XU := PSL(2,5) * (3,4,6);[127X[104X
+    [4X[28XRightCoset(Group([ (3,5)(4,6), (1,2,5)(3,4,6) ]),(3,4,6))[128X[104X
+    [4X[25Xgap>[125X [27Xx := VoleFind.Coset(VoleCon.InCoset(U), AlternatingGroup(6));[127X[104X
+    [4X[28XRightCoset(Group([ (3,5)(4,6), (2,4)(5,6), (1,2,6,5,4) ]),(1,5)(2,3,4,6))[128X[104X
+    [4X[25Xgap>[125X [27Xx = Intersection(U, AlternatingGroup(6));[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-3 VoleCon.InRightCoset[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.InRightCoset[102X( [3XG[103X, [3Xx[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is  satisfied by precisely those permutations in the right
+  coset of the group [3XG[103X determined by the permutation [3Xx[103X.[133X
+  
+  [33X[0;0YSee   also  [2XVoleCon.InLeftCoset[102X  ([14X6.3-4[114X)  for  the  left-hand  version,  and
+  [2XVoleCon.InCoset[102X ([14X6.3-2[114X) for a [5XGAP[105X right coset object.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xx := VoleFind.Coset(VoleCon.InRightCoset(PSL(2,5), (3,4,6)),[127X[104X
+    [4X[25X>[125X [27X                       VoleCon.InGroup(AlternatingGroup(6)));[127X[104X
+    [4X[28XRightCoset(Group([ (3,5)(4,6), (2,4)(5,6), (1,2,6,5,4) ]),(1,5)(2,3,4,6))[128X[104X
+    [4X[25Xgap>[125X [27Xx = Intersection(PSL(2,5) * (3,4,6), AlternatingGroup(6));[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-4 VoleCon.InLeftCoset[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.InLeftCoset[102X( [3XG[103X, [3Xx[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is  satisfied  by precisely those permutations in the left
+  coset of the group [3XG[103X determined by the permutation [3Xx[103X.[133X
+  
+  [33X[0;0YSee  also  [2XVoleCon.InRightCoset[102X  ([14X6.3-3[114X)  for  the  right-hand  version, and
+  [2XVoleCon.InCoset[102X ([14X6.3-2[114X) for a [5XGAP[105X right coset object.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xx := VoleFind.Rep(VoleCon.InLeftCoset(PSL(2,5), (3,4,6)),[127X[104X
+    [4X[25X>[125X [27X                     VoleCon.InGroup(AlternatingGroup(6)));[127X[104X
+    [4X[28X(1,6,2,3,4)[128X[104X
+    [4X[25Xgap>[125X [27XSignPerm(x) = 1 and ForAny(PSL(2,5), g -> x = (3,4,6) * g);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-5 VoleCon.Stabilise[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.Stabilise[102X( [3Xobject[103X[, [3Xaction[103X] ) [32X function[133X
+  [33X[1;0Y[29X[2XVoleCon.Stabilize[102X( [3Xobject[103X[, [3Xaction[103X] ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis constraint is satisfied by precisely those permutations that fix [3Xobject[103X
+  under   the   given   group  [3Xaction[103X,  i.e.  all  permutations  [10Xg[110X  such  that
+  [10X[3Xaction[103X[10X([3Xobject[103X[10X,g)=[3Xobject[103X[10X[110X.  Note  that  the  set  of  such permutations may be
+  infinite.[133X
+  
+  [33X[0;0YThe   combinations   of   objects   and   actions   that  are  supported  by
+  [10XVoleCon.Stabilise[110X are given in the table below.[133X
+  
+  [33X[0;0YThe  default [3Xaction[103X, in the case that the argument is not given, is [2XOnPoints[102X
+  ([14XReference:  OnPoints[114X). This is the name in [5XGAP[105X of the action given by the [10X^[110X
+  operator,  i.e. it corresponds to [10X[3Xobject[103X[10X^g[110X, where [10Xg[110X in [3XG[103X. See [2X\^[102X ([14XReference:
+  ^[114X).[133X
+  
+        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
+        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcon1 := VoleCon.Stabilise(CycleDigraph(6), OnDigraphs);;[127X[104X
+    [4X[25Xgap>[125X [27Xcon2 := VoleCon.Stabilise([2,4,6], OnSets);;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Group(con1, 6);[127X[104X
+    [4X[28XGroup([ (1,2,3,4,5,6) ])[128X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Group(con2, 6);[127X[104X
+    [4X[28XGroup([ (4,6), (2,4,6), (3,5)(4,6), (1,3,5)(2,4,6) ])[128X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Group(con1, con2, 6);[127X[104X
+    [4X[28XGroup([ (1,3,5)(2,4,6) ])[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-6 VoleCon.Transport[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.Transport[102X( [3Xobject1[103X, [3Xobject2[103X[, [3Xaction[103X] ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is  satisfied  by  precisely  those  permutations that map
+  [3Xobject1[103X  to  [3Xobject2[103X  under  the given group [3Xaction[103X, i.e. all permutations [10Xg[110X
+  such  that [10X[3Xaction[103X[10X([3Xobject1[103X[10X,g)=[3Xobject2[103X[10X[110X. Note that the set of such permutations
+  may be infinite.[133X
+  
+  [33X[0;0YThe   combinations   of   objects   and   actions   that  are  supported  by
+  [10XVoleCon.Transport[110X are given in the table below.[133X
+  
+  [33X[0;0YThe  default [3Xaction[103X, in the case that the argument is not given, is [2XOnPoints[102X
+  ([14XReference:  OnPoints[114X). This is the name in [5XGAP[105X of the action given by the [10X^[110X
+  operator,  i.e. it corresponds to [10X[3Xobject[103X[10X^g[110X, where [10Xg[110X in [3XG[103X. See [2X\^[102X ([14XReference:
+  ^[114X).[133X
+  
+        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
+        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xsetofsets1 := [[1, 3, 6], [2, 3, 6], [2, 4, 7], [4, 5, 7]];;[127X[104X
+    [4X[25Xgap>[125X [27Xsetofsets2 := [[1, 2, 5], [1, 5, 7], [3, 4, 6], [4, 6, 7]];;[127X[104X
+    [4X[25Xgap>[125X [27Xcon := VoleCon.Transport(setofsets1, setofsets2, OnSetsSets);;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Rep(con);[127X[104X
+    [4X[28X(1,2,7,6)(3,5)[128X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Rep(con, AlternatingGroup(7) * (1,2));[127X[104X
+    [4X[28X(1,2,7,6,5,3)[128X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Rep(con, DihedralGroup(IsPermGroup, 14));[127X[104X
+    [4X[28Xfail[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-7 VoleCon.Normalise[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.Normalise[102X( [3XG[103X ) [32X function[133X
+  [33X[1;0Y[29X[2XVoleCon.Normalize[102X( [3XG[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint is satisfied by precisely those permutations that normalise
+  the permutation group [3XG[103X, i.e. that preserve [3XG[103X under conjugation.[133X
+  
+  [33X[0;0YNote that the set of such permutations is infinite.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcon := VoleCon.Normalise(PSL(2,5));;[127X[104X
+    [4X[25Xgap>[125X [27XN := VoleFind.Group(con, SymmetricGroup(6));[127X[104X
+    [4X[28XGroup([ (3,4,5,6), (2,3,5,6), (1,2,4,3,6) ])[128X[104X
+    [4X[25Xgap>[125X [27X(3,4,5,6) in N and not (3,4,5,6) in PSL(2,5);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27XIndex(N, PSL(2,5));[127X[104X
+    [4X[28X2[128X[104X
+    [4X[25Xgap>[125X [27XPSL(2,5) = VoleFind.Group(con, AlternatingGroup(6));[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-8 VoleCon.Centralise[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.Centralise[102X( [3XG[103X ) [32X function[133X
+  [33X[1;0Y[29X[2XVoleCon.Centralize[102X( [3XG[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is  satisfied by precisely those permutations that commute
+  with [3XG[103X, if [3XG[103X is a permutation, or that commute with every element of [3XG[103X, if [3XG[103X
+  is a permutation group.[133X
+  
+  [33X[0;0YNote that the set of such permutations is infinite.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XD12 := DihedralGroup(IsPermGroup, 12);;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Group(6, VoleCon.Centralise(D12));[127X[104X
+    [4X[28XGroup([ (1,4)(2,5)(3,6) ])[128X[104X
+    [4X[25Xgap>[125X [27Xx := (1,6)(2,5)(3,4);;[127X[104X
+    [4X[25Xgap>[125X [27XG := VoleFind.Group(AlternatingGroup(6), VoleCon.Centralise(x));[127X[104X
+    [4X[28XGroup([ (2,3)(4,5), (2,4)(3,5), (1,2,3)(4,6,5) ])[128X[104X
+    [4X[25Xgap>[125X [27XForAll(G, g -> SignPerm(g) = 1 and g * x = x * g);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-9 VoleCon.Conjugate[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.Conjugate[102X( [3Xx[103X, [3Xy[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint is satisfied by precisely those permutations that conjugate
+  [3Xx[103X  to  [3Xy[103X,  where  [3Xx[103X  and [3Xy[103X are either both permutations, or both permutation
+  groups.[133X
+  
+  [33X[0;0YNote that the set of such permutations may be infinite.[133X
+  
+  [33X[0;0YThis constraint is equivalent to [10XVoleCon.Transport([3Xx[103X[10X,[3Xy[103X[10X,OnPoints)[110X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcon := VoleCon.Conjugate((3,4)(2,5,1), (1,2,3)(4,5));;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Rep(con);[127X[104X
+    [4X[28X(1,2,3,5)[128X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Rep(con, PSL(2,5));[127X[104X
+    [4X[28X(1,3,4,5,2)[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-10 VoleCon.MovedPoints[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.MovedPoints[102X( [3Xpointlist[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis          constraint          is         a         shorthand         for
+  [10XVoleCon.InGroup(SymmetricGroup([3Xpointlist[103X[10X))[110X. See [2XVoleCon.InGroup[102X ([14X6.3-1[114X).[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcon1 := VoleCon.MovedPoints([1..5]);;[127X[104X
+    [4X[25Xgap>[125X [27Xcon2 := VoleCon.MovedPoints([2,6,4,5]);;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Group(con1, con2) = SymmetricGroup([2,4,5]);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-11 VoleCon.LargestMovedPoint[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.LargestMovedPoint[102X( [3Xpoint[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is a shorthand for [10XVoleCon.InGroup(SymmetricGroup([3Xpoint[103X[10X))[110X.
+  See [2XVoleCon.InGroup[102X ([14X6.3-1[114X).[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcon := VoleCon.LargestMovedPoint(5);;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Group(con) = SymmetricGroup(5);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-12 VoleCon.None[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.None[102X(  ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10Y[9Xfail[109X[133X
+  
+  [33X[0;0YThis constraint is satisfied by no permutations.[133X
+  
+  [33X[0;0YThis constraint will typically not be required by the user.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Rep(VoleCon.None());[127X[104X
+    [4X[28Xfail[128X[104X
+  [4X[32X[104X
+  
+  
+  [1X6.4 [33X[0;0YBounds associated with a constraint or refiner[133X[101X
+  
+  [33X[0;0YIn  [5XGAP[105X,  permutations  are  defined  on  the  set  of all positive integers
+  (although  each  permutation may move only a finite set of points, and there
+  is a system-dependent maximum point that is allowed to be moved).[133X
+  
+  [33X[0;0Y[5XVole[105X  can  only  search within a concrete finite symmetric group. Therefore,
+  when  giving  [5XVole[105X a collection of constraints that define a search problem,
+  the  search  space  must  be bounded. More specifically, [5XVole[105X must be easily
+  able  to  deduce  a  positive  integer [10Xk[110X such that the whole search can take
+  place  within  [10XSym([1..k])[110X.  This guarantees that [5XVole[105X will terminate (given
+  sufficient resources).[133X
+  
+  [33X[0;0YTo  help  [5XVole[105X  make  such  a  deduction,  each  constraint  and  refiner is
+  associated  with  the following values: a [13Xlargest moved point[113X, and a [13Xlargest
+  required point[113X.[133X
+  
+  [33X[0;0YAny  call  to  [2XVoleFind.Group[102X  ([14X5.2-2[114X) or [2XVoleFind.Coset[102X ([14X5.2-3[114X) requires at
+  least one constraint that defines a [13Xfinite[113X largest moved point, and any call
+  to  [2XVoleFind.Representative[102X  ([14X5.2-1[114X)  requires  at least one constraint that
+  defines a finite largest required point or a finite largest moved point.[133X
+  
+  [33X[0;0Y[12XLargest moved point[112X[133X
+  
+  [33X[0;0YThe  largest  [13Xmoved[113X  point of a constraint is either [9Xinfinity[109X, or a positive
+  integer [10Xk[110X for which it is known a priori that any permutation satisfying the
+  constraint fixes all points strictly greater than [10Xk[110X.[133X
+  
+  [33X[0;0YFor example, the largest moved point of the constraint [10XVoleCon.InGroup(G)[110X is
+  [10XLargestMovedPoint(G)[110X,  see  [2XLargestMovedPoint[102X  ([14XReference: LargestMovedPoint
+  for  a  list  or  collection  of  permutations[114X).  On  the  other  hand,  any
+  permutation stabilises the empty set, so there is not largest moved point of
+  the  constraint  [10XVoleCon.Stabilise([],OnSets)[110X;  therefore  the value in this
+  case must be [9Xinfinity[109X.[133X
+  
+  [33X[0;0Y[12XLargest required point[112X[133X
+  
+  [33X[0;0YThe largest [13Xrequired[113X point of a constraint is either [9Xinfinity[109X, or a positive
+  integer  [10Xk[110X such that there exists a permutation satisfying the constraint if
+  and  only  if  there  exists  a  permutation  in  [10XSym([1..k])[110X satisfying the
+  constraint.[133X
+  
+  [33X[0;0YFor example, if [10Xset[110X is a set of positive integers, then the largest required
+  point of the constraint [10XVoleCon.Stabilise(set,OnSets)[110X is [10XMaximum(set)[110X.[133X
+  
+  [33X[0;0YThe  largest moved point of a constraint can serve as an upper bound for the
+  largest required point of a constraint.[133X
+  

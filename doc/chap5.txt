@@ -1,0 +1,411 @@
+  
+  [1X5 [33X[0;0YThe native [5XVole[105X[101X[1X interface[133X[101X
+  
+  [33X[0;0YThe  native  interface  to  [5XVole[105X  is  similar  to  that  provided by [5Xferret[105X,
+  [5XBacktrackKit[105X, and [5XGraphBacktracking[105X.[133X
+  
+  [33X[0;0YAt  a  basic  level, a search can be executed by choosing a suitable list of
+  constraints  (and/or  refiners, for more expert users) to define the problem
+  to   be   solved,  and  then  calling  the  appropriate  function  on  these
+  constraints.[133X
+  
+  [30X    [33X[0;6YThe  name of the function determines the [13Xkind[113X of search to be executed
+        (whether  for a single permutation, or for a group, or for a canonical
+        image,  etc).  These  functions  are  described  in  the  rest of this
+        chapter.[133X
+  
+  [30X    [33X[0;6YBroadly  speaking,  constraints and/or refiners define properties that
+        together  specify  the  permutations  that  are valid solutions to the
+        search  problem.  Constraints and refiners are described in Chapters [14X6[114X
+        and [14X7[114X, respectively.[133X
+  
+  
+  [1X5.1 [33X[0;0YThe [10XVoleFind[110X[101X[1X record[133X[101X
+  
+  [1X5.1-1 VoleFind[101X
+  
+  [33X[1;0Y[29X[2XVoleFind[102X [32X global variable[133X
+  
+  [33X[0;0Y[2XVoleFind[102X  is  a  record  that  contains  the  functions providing the native
+  interface to [5XVole[105X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("vole", false);;[127X[104X
+    [4X[25Xgap>[125X [27XSet(RecNames(VoleFind));[127X[104X
+    [4X[28X[ "Canonical", "CanonicalPerm", "Coset", "Group", "Rep", "Representative" ][128X[104X
+  [4X[32X[104X
+  
+  
+  [1X5.2  [33X[0;0YSearching  for  groups,  cosets,  and  representatives  with the native[101X
+  [1Xinterface[133X[101X
+  
+  [1X5.2-1 VoleFind.Representative[101X
+  
+  [33X[1;0Y[29X[2XVoleFind.Representative[102X( [3Xarguments...[103X ) [32X function[133X
+  [33X[1;0Y[29X[2XVoleFind.Rep[102X( [3Xarguments...[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA permutation, or [9Xfail[109X[133X
+  
+  [33X[0;0Y[2XVoleFind.Representative[102X  returns  a single permutation that satisfies all of
+  the constraints defined by the [3Xarguments[103X, if one exists, and it returns [9Xfail[109X
+  otherwise. [2XVoleFind.Rep[102X is a synonym for [2XVoleFind.Representative[102X.[133X
+  
+  [33X[0;0YThe  [3Xarguments[103X  may  be given separately, or as a single list. Each argument
+  may  be  a  [5XVole[105X  constraint  (Chapter [14X6[114X), a refiner (Chapter [14X7[114X; note that a
+  refiner implies a constraint), or one of the following objects:[133X
+  
+  [30X    [33X[0;6YA  permutation  group  [3XG[103X,  which  is interpreted as an instance of the
+        constraint [2XVoleCon.InGroup[102X ([14X6.3-1[114X) with argument [3XG[103X.[133X
+  
+  [30X    [33X[0;6YA [5XGAP[105X right coset object [3XU[103X, which is interpreted as an instance of the
+        constraint [2XVoleCon.InCoset[102X ([14X6.3-2[114X) with argument [3XU[103X.[133X
+  
+  [30X    [33X[0;6YA  positive  integer  [3Xk[103X,  which  is  interpreted as an instance of the
+        constraint [2XVoleCon.LargestMovedPoint[102X ([14X6.3-11[114X) with argument [3Xk[103X.[133X
+  
+  [30X    [33X[0;6YThe  value [9Xfail[109X, which is interpreted as an instance of the constraint
+        [2XVoleCon.None[102X ([14X6.3-12[114X).[133X
+  
+  [33X[0;0YFor at least one of the [3Xarguments[103X, [5XVole[105X must be able to immediately deduce a
+  positive integer [10Xk[110X, such that for the corresponding constraint:[133X
+  
+  [30X    [33X[0;6Ythere  exists  a  permutation satisfying the constraint if and only if
+        there exists an element of [10XSym([1..k])[110X satisfying the constraint.[133X
+  
+  [33X[0;0YOtherwise,  an  error  is given. This guarantees that [5XVole[105X terminates (given
+  sufficient resources). See Section [14X6.4[114X for examples and further information.[133X
+  
+  [33X[0;0YThis function supports various options, which are documented in Section [14X8.2[114X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xtuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Rep(VoleCon.InGroup(SymmetricGroup(4)), tuple_transport);[127X[104X
+    [4X[28X(3,4)[128X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Rep(AlternatingGroup(4), tuple_transport);[127X[104X
+    [4X[28Xfail[128X[104X
+  [4X[32X[104X
+  
+  [1X5.2-2 VoleFind.Group[101X
+  
+  [33X[1;0Y[29X[2XVoleFind.Group[102X( [3Xarguments...[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA permutation group[133X
+  
+  [33X[0;0Y[2XVoleFind.Group[102X   returns   the   group  of  permutations  that  satisfy  the
+  constraints  defined by the [3Xarguments[103X. It is assumed, although not verified,
+  that for each such constraint, the set of permutations satisfying it forms a
+  group: this is the responsibility of the user.[133X
+  
+  [33X[0;0YThe  [3Xarguments[103X  may  be given separately, or as a single list. Each argument
+  may  be  a  [5XVole[105X  constraint  (Chapter [14X6[114X), a refiner (Chapter [14X7[114X; note that a
+  refiner implies a constraint), or one of the following objects:[133X
+  
+  [30X    [33X[0;6YA  permutation  group  [3XG[103X,  which  is interpreted as an instance of the
+        constraint [2XVoleCon.InGroup[102X ([14X6.3-1[114X) with argument [3XG[103X.[133X
+  
+  [30X    [33X[0;6YA  positive  integer  [3Xk[103X,  which  is  interpreted as an instance of the
+        constraint [2XVoleCon.LargestMovedPoint[102X ([14X6.3-11[114X) with argument [3Xk[103X.[133X
+  
+  [33X[0;0YFor at least one of the [3Xarguments[103X, [5XVole[105X must be able to immediately deduce a
+  (finite)  largest  moved  point  of  all  the  permutations that satisfy the
+  corresponding constraint. Otherwise, an error is given. This guarantees that
+  [5XVole[105X  terminates  (given sufficient resources). See Section [14X6.4[114X for examples
+  and further information.[133X
+  
+  [33X[0;0YThis function supports various options, which are documented in Section [14X8.2[114X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xgraph_auto := VoleCon.Stabilise(JohnsonDigraph(4,2), OnDigraphs);;[127X[104X
+    [4X[25Xgap>[125X [27Xset_stab := VoleCon.Stabilise([2,4,6], OnSets);;[127X[104X
+    [4X[25Xgap>[125X [27XG := VoleFind.Group(graph_auto, set_stab, 6);;[127X[104X
+    [4X[25Xgap>[125X [27XG = Group([ (2,4)(3,5), (1,3,5)(2,6,4) ]);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YNote that multiple groups-by-generators may be given as constraints:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xnorm_PSL25 := VoleCon.Normalise(PSL(2,5));;[127X[104X
+    [4X[25Xgap>[125X [27Xin_A6  := VoleCon.InGroup(AlternatingGroup(6));;[127X[104X
+    [4X[25Xgap>[125X [27Xin_D12 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 12));;[127X[104X
+    [4X[25Xgap>[125X [27XG := VoleFind.Group(in_A6, in_D12, norm_PSL25);;[127X[104X
+    [4X[25Xgap>[125X [27XG = Group([ (1,3,5)(2,4,6) ]);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X5.2-3 VoleFind.Coset[101X
+  
+  [33X[1;0Y[29X[2XVoleFind.Coset[102X( [3Xarguments...[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA [5XGAP[105X right coset of a permutation group, or [9Xfail[109X[133X
+  
+  [33X[0;0YFor  this  function,  it  is  assumed,  although not verified, that for each
+  constraint  defined  by the arguments, the set of permutations satisfying it
+  either  is  empty,  or  forms  a  right  coset  of  some  group.  It  is the
+  responsibility of the user to ensure that this is the case.[133X
+  
+  [33X[0;0YGiven  this, [2XVoleFind.Coset[102X returns the set of permutations that satisfy the
+  constraints  defined by the [3Xarguments[103X, in the case that the set is nonempty,
+  and  it returns [9Xfail[109X otherwise. The set of permutations is returned as a [5XGAP[105X
+  right coset object.[133X
+  
+  [33X[0;0YThe  [3Xarguments[103X  may  be given separately, or as a single list. Each argument
+  may  be  a  [5XVole[105X  constraint  (Chapter [14X6[114X), a refiner (Chapter [14X7[114X; note that a
+  refiner implies a constraint), or one of the following objects:[133X
+  
+  [30X    [33X[0;6YA  permutation  group  [3XG[103X,  which  is interpreted as an instance of the
+        constraint [2XVoleCon.InGroup[102X ([14X6.3-1[114X) with argument [3XG[103X.[133X
+  
+  [30X    [33X[0;6YA [5XGAP[105X right coset object [3XU[103X, which is interpreted as an instance of the
+        constraint [2XVoleCon.InCoset[102X ([14X6.3-2[114X) with argument [3XU[103X.[133X
+  
+  [30X    [33X[0;6YA  positive  integer  [3Xk[103X,  which  is  interpreted as an instance of the
+        constraint [2XVoleCon.LargestMovedPoint[102X ([14X6.3-11[114X) with argument [3Xk[103X.[133X
+  
+  [30X    [33X[0;6YThe  value [9Xfail[109X, which is interpreted as an instance of the constraint
+        [2XVoleCon.None[102X ([14X6.3-12[114X).[133X
+  
+  [33X[0;0YFor at least one of the [3Xarguments[103X, [5XVole[105X must be able to immediately deduce a
+  (finite)  largest  moved  point  of  all  the  permutations that satisfy the
+  corresponding constraint. Otherwise, an error is given. This guarantees that
+  [5XVole[105X  terminates  (given sufficient resources). See Section [14X6.4[114X for examples
+  and further information.[133X
+  
+  [33X[0;0YThis function supports various options, which are documented in Section [14X8.2[114X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xtuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Coset(VoleCon.InGroup(SymmetricGroup(6)), tuple_transport);[127X[104X
+    [4X[28XRightCoset(Group([ (5,6), (4,5,6) ]),(3,4,6))[128X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Coset(AlternatingGroup(4), tuple_transport);[127X[104X
+    [4X[28Xfail[128X[104X
+  [4X[32X[104X
+  
+  
+  [1X5.3 [33X[0;0YCanonising with the native [5XVole[105X[101X[1X interface[133X[101X
+  
+  [33X[0;0YGiven  a  group  [23XG[123X, a set [23XX[123X, and an action of [23XG[123X on [23XX[123X, then a [13Xcanoniser[113X for [23XX[123X
+  with respect to the action of [23XG[123X is a function [23Xf[123X from [23XX[123X to itself such that:[133X
+  
+  [30X    [33X[0;6Yfor all [23Xx \in X[123X, [23Xx[123X and [23Xf(x)[123X are in the same orbit of [23XG[123X on [23XX[123X; and[133X
+  
+  [30X    [33X[0;6Yfor all [23Xx, y \in X[123X, [23Xf(x) = f(y)[123X if and only if [23Xx[123X and [23Xy[123X are in the same
+        orbit of [23XG[123X on [23XX[123X.[133X
+  
+  [33X[0;0YIn  other  words, a canoniser maps a point [23Xx \in X[123X to a canonical element of
+  its orbit under the action of [23XG[123X.[133X
+  
+  [33X[0;0YThis  canonical element is known as the [13Xcanonical image[113X of [23Xx[123X with respect to
+  the action of [23XG[123X. It is sometimes called the [13Xcanonical form[113X of [23XX[123X.[133X
+  
+  [33X[0;0YIn this context, a [13Xcanonical permutation[113X for [23Xx[123X is any element of [23XG[123X that maps
+  [23Xx[123X  to  its  canonical  image  under  the action of [23XG[123X on [23Xx[123X. This is sometimes
+  called  a  [13Xcanonical  labelling[113X. Note that there is not necessarily a unique
+  canonical permutation for each element of [23XX[123X. Indeed, by the orbit-stabiliser
+  theorem,  the  number  of canonical permutations for [23Xx \in X[123X is equal to the
+  size of the stabiliser of [23Xx[123X in [23XG[123X.[133X
+  
+  [1X5.3-1 VoleFind.Canonical[101X
+  
+  [33X[1;0Y[29X[2XVoleFind.Canonical[102X( [3XG[103X, [3Xarguments...[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA record[133X
+  
+  [33X[0;0Y[2XVoleFind.Canonical[102X is the main function in [5XVole[105X for canonising various kinds
+  of  objects,  i.e.  finding  canonical  images  and  permutations.  See  the
+  beginning of Section [14X5.3[114X for a definition of these terms.[133X
+  
+  [33X[0;0YThe  forthcoming  details  are crucial for obtaining meaningful results from
+  [2XVoleFind.Canonical[102X.[133X
+  
+  [33X[0;0Y[13XFor users who wish to canonise an object under an action listed in the table
+  in  [2XVoleCon.Stabilise[102X  ([14X6.3-5[114X),  and  who  do not wish to specify particular
+  refiners,  it  may be easier to use the simpler functions [2XVole.CanonicalPerm[102X
+  ([14X4.5-1[114X) and [2XVole.CanonicalImage[102X ([14X4.5-2[114X).[113X[133X
+  
+  [33X[0;0YThe  first  argument  to  [2XVoleFind.Canonical[102X must be the group [3XG[103X in which to
+  canonise.  The  remaining  [3Xarguments[103X  specify  the  rest of the canonisation
+  problem; in particular, they define the relevant object and action.[133X
+  
+  [33X[0;0YThe  [3Xarguments[103X  that follow [3XG[103X may be given separately, or in a list. Each of
+  the [3Xarguments[103X must be an instance of a [2XVoleCon.Stabilise[102X ([14X6.3-5[114X) constraint,
+  either  directly,  or indirectly as an instance of [2XVoleCon.Normalise[102X ([14X6.3-7[114X)
+  or  [2XVoleCon.Centralise[102X  ([14X6.3-8[114X).  [12XNote  that  it is not permitted to include
+  constraints of the kind produced by[112X [2XVoleCon.InGroup[102X ([14X6.3-1[114X).[133X
+  
+  [33X[0;0YIt  is  also  permitted to include special kinds of refiners as arguments to
+  [2XVoleFind.Canonical[102X,  although  we  do  not yet document the details of this,
+  since  the  theory  and  implementation  is  still under active development.
+  (Refiners will be documented in Chapter [14X7[114X).[133X
+  
+  [33X[0;0YFor  the  following,  we  will  suppose  that  [3Xarguments...[103X  is  a list of [10Xk[110X
+  constraints  [10XVoleCon.Stabilise(object_i,action_i)[110X,  for  [10Xi=1..k[110X in sequence.
+  Then [2XVoleFind.Canonical[102X canonises the [10Xk[110X-tuple [10X[object_1,...,object_k][110X, where
+  the action on the [10Xi[110X-th coordinate is [10Xaction_i[110X.[133X
+  
+  [33X[0;0YIn  order  to  canonise  in  [3XG[103X  another  [10Xk[110X-tuple  of  the same kind, such as
+  [10X[nextobject_1,...,nextobject_k][110X  with  respect  to the same action, and in a
+  way  that  is  comparable to the first canonisation, it is necessary to call
+  [2XVoleFind.Canonical[102X  with  the  same  group  [3XG[103X  followed  by the [3Xarguments...[103X
+  [10XVoleCon.Stabilise(nextobject_i,action_i)[110X, [12Xin the same order[112X.[133X
+  
+  [33X[0;0YThe  result  of  [2XVoleFind.Canonical[102X is given as a record, with the following
+  components (see the beginning of Section [14X5.3[114X for a definition of some of the
+  following terms):[133X
+  
+  [30X    [33X[0;6Y[10Xcanonical[110X:  a  canonical permutation in [3XG[103X for the object, with respect
+        to the action.[133X
+  
+  [30X    [33X[0;6Y[10Xgroup[110X:  the  stabiliser  of the object in [3XG[103X, under the action. This is
+        computed as a by-product of canonisation.[133X
+  
+  [33X[0;0YThis function supports various options, which are documented in Section [14X8.2[114X.[133X
+  
+  [33X[0;0Y[12XWarning[112X: The permutation given by a canonical search and the canonical image
+  that it defines are [12Xnot guaranteed to be the same across different sessions[112X.
+  In  particular,  canonical  permutations/labellings and images may differ in
+  different  versions  of [5XVole[105X, in different versions of [5XGAP[105X, and on different
+  hardware.  In addition, please note that the result also depends on order in
+  which the [3Xarguments[103X are given, and on the specific arguments that are used.[133X
+  
+  [33X[0;0YIn  the following examples, we first show how to canonise two cycle digraphs
+  in  the  alternating  group of degree [23X6[123X, to find that they are indeed in the
+  same  orbit  of  [23XA_6[123X  under  the natural action. We canonise them again in a
+  different  group,  but  this time as [13Xvertex-coloured[113X digraphs, by canonising
+  them digraph simultaneously with a corresponding colouring of the vertices.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcycle := CycleDigraph(6);;[127X[104X
+    [4X[25Xgap>[125X [27Xreverse := DigraphReverse(cycle);;[127X[104X
+    [4X[25Xgap>[125X [27XA6 := AlternatingGroup(6);;[127X[104X
+    [4X[25Xgap>[125X [27Xcanon1 := VoleFind.Canonical(A6, VoleCon.Stabilise(cycle, OnDigraphs));[127X[104X
+    [4X[28Xrec( canonical := (1,3,4,6,5), group := Group([ (1,3,5)(2,4,6) ]) )[128X[104X
+    [4X[25Xgap>[125X [27Xcanon2 := VoleFind.Canonical(A6,[127X[104X
+    [4X[25X>[125X [27X                                VoleCon.Stabilise(reverse, OnDigraphs));[127X[104X
+    [4X[28Xrec( canonical := (1,4,5), group := Group([ (1,3,5)(2,4,6) ]) )[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YLet  us  verify  that the canonical permutations are indeed in [23XA_6[123X, and that
+  the [10Xgroup[110X record component is indeed the stabiliser in [23XA_6[123X:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XSignPerm(canon1.canonical) = 1 and SignPerm(canon2.canonical) = 1[127X[104X
+    [4X[25X>[125X [27Xand canon1.group = Vole.Stabiliser(A6, cycle, OnDigraphs)[127X[104X
+    [4X[25X>[125X [27Xand canon2.group = Vole.Stabiliser(A6, reverse, OnDigraphs);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YNext,  let's  compare  the canonical images of the digraphs, to test whether
+  they  are  in  the  same  orbit  of  [23XA_6[123X. et us also verify this result with
+  [2XVole.RepresentativeAction[102X ([14X4.4-3[114X):[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XOnDigraphs(cycle, canon1.canonical)[127X[104X
+    [4X[25X>[125X [27X= OnDigraphs(reverse, canon2.canonical);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27XVole.RepresentativeAction(A6, cycle, reverse, OnDigraphs);[127X[104X
+    [4X[28X(1,5)(2,4)[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YNext,  we  turn  to vertex-coloured digraphs. This time, we will canonise in
+  the  2-transitive  group  [10XG[110X  defined  below.  We first verify that [10Xcycle[110X and
+  [10Xreverse[110X are in the same orbit of [10XG[110X, as digraphs:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XG := Group([ (1,2,3,4,6), (1,4)(5,6) ]);;[127X[104X
+    [4X[25Xgap>[125X [27XVole.RepresentativeAction(G, cycle, reverse, OnDigraphs) <> fail;[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe  will  colour  the  vertices  [10X1[110X, [10X3[110X, and [10X5[110X of [10Xcycle[110X with colour [10X1[110X, and the
+  remainder  with  colour [10X2[110X; and we will colour the vertices of [10Xreverse[110X in the
+  opposite way.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcolours1 := [[1,3,5],[2,4,6]];;[127X[104X
+    [4X[25Xgap>[125X [27Xcolours2 := [[2,4,6],[1,3,5]];;[127X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe   may   therefore   consider   a   vertex-coloured   digraph  as  a  pair
+  [10X[digraph,colours][110X,  with  [10Xcolours[110X in the above form, and a permutation group
+  acts  on  vertex-coloured  digraphs  by  acting  via [10XOnDigraphs[110X on the first
+  component, and acting via [10XOnTuplesSets[110X on the second component.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcanon1 := VoleFind.Canonical(G,[127X[104X
+    [4X[25X>[125X [27X                                VoleCon.Stabilise(cycle, OnDigraphs),[127X[104X
+    [4X[25X>[125X [27X                                VoleCon.Stabilise(colours1, OnTuplesSets));[127X[104X
+    [4X[28Xrec( canonical := (1,5,2,3,6), group := Group(()) )[128X[104X
+    [4X[25Xgap>[125X [27Xcanon2 := VoleFind.Canonical(G,[127X[104X
+    [4X[25X>[125X [27X                                VoleCon.Stabilise(reverse, OnDigraphs),[127X[104X
+    [4X[25X>[125X [27X                                VoleCon.Stabilise(colours2, OnTuplesSets));[127X[104X
+    [4X[28Xrec( canonical := (1,6,5,4,3), group := Group(()) )[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe find that these vertex-coloured digraphs are not in the same orbit of [10XG[110X:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XOnDigraphs(cycle, canon1.canonical)[127X[104X
+    [4X[25X>[125X [27X= OnDigraphs(reverse, canon2.canonical);[127X[104X
+    [4X[28Xfalse[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YHowever, if we canonise them again in the whole symmetric group of degree 6,
+  we find that they [13Xare[113X in the same orbit of it as coloured digraphs:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcanon1 := VoleFind.Canonical(SymmetricGroup(6),[127X[104X
+    [4X[25X>[125X [27X                                VoleCon.Stabilise(cycle, OnDigraphs),[127X[104X
+    [4X[25X>[125X [27X                                VoleCon.Stabilise(colours1, OnTuplesSets));[127X[104X
+    [4X[28Xrec( canonical := (1,5,2,3,4,6), group := Group([ (1,3,5)(2,4,6) ]) )[128X[104X
+    [4X[25Xgap>[125X [27Xcanon2 := VoleFind.Canonical(SymmetricGroup(6),[127X[104X
+    [4X[25X>[125X [27X                                VoleCon.Stabilise(reverse, OnDigraphs),[127X[104X
+    [4X[25X>[125X [27X                                VoleCon.Stabilise(colours2, OnTuplesSets));[127X[104X
+    [4X[28Xrec( canonical := (1,3)(2,5,6,4), group := Group([ (1,3,5)(2,4,6) ]) )[128X[104X
+    [4X[25Xgap>[125X [27XOnDigraphs(cycle, canon1.canonical)[127X[104X
+    [4X[25X>[125X [27X= OnDigraphs(reverse, canon2.canonical);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X5.3-2 VoleFind.CanonicalPerm[101X
+  
+  [33X[1;0Y[29X[2XVoleFind.CanonicalPerm[102X( [3XG[103X, [3Xarguments...[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA permutation[133X
+  
+  [33X[0;0YThis  function returns [10XVoleFind.Canonical([3XG[103X[10X,[3Xarguments...[103X[10X).canonical[110X. This is
+  the  [10Xcanonical[110X  component  of  the  record  returned  by  [2XVoleFind.Canonical[102X
+  ([14X5.3-1[114X), under the same arguments.[133X
+  
+  [33X[0;0YPlease  see  the  documentation  of [2XVoleFind.Canonical[102X ([14X5.3-1[114X) for much more
+  information.[133X
+  
+  [33X[0;0Y[12XWarning[112X: The permutation given by a canonical search and the canonical image
+  that it defines are [12Xnot guaranteed to be the same across different sessions[112X.
+  In  particular,  canonical  permutations/labellings and images may differ in
+  different  versions  of [5XVole[105X, in different versions of [5XGAP[105X, and on different
+  hardware.  In addition, please note that the result also depends on order in
+  which the [3Xarguments[103X are given, and on the specific arguments that are used.[133X
+  
+  [33X[0;0YThe  following  example shows how to compute a canonical permutation for the
+  group [23X\langle (1\,2) \rangle[123X under conjugation by [23XA_{4}[123X:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVoleFind.CanonicalPerm(AlternatingGroup(4),[127X[104X
+    [4X[25X>[125X [27X VoleCon.Normalise(Group([ (1,2) ]))[127X[104X
+    [4X[25X>[125X [27X);[127X[104X
+    [4X[28X(1,4)(2,3)[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YThus  the  canonical  image  of  [23X\langle (1\,2) \rangle[123X under this action of
+  [23XA_{4}[123X  is  the  group  [23X{\langle (1\,2) \rangle}^{(1\,4)(2\,3)}[123X, i.e. [23X\langle
+  (3\,4) \rangle[123X.[133X
+  
+  [33X[0;0YThis  second  example  shows  how to compute a canonical permutation for the
+  pair  [23X[S,  D][123X  under the specified componentwise action of [23XS_{4}[123X, where [23XS[123X is
+  the set-of-sets [23X\{ \{1,2\}, \{1,4\}, \{2,3\}, \{3,4\} \}[123X, and [23XD[123X is the cycle
+  digraph on four vertices:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVoleFind.CanonicalPerm(SymmetricGroup(4),[127X[104X
+    [4X[25X>[125X [27X VoleCon.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),[127X[104X
+    [4X[25X>[125X [27X VoleCon.Stabilise(CycleDigraph(4), OnDigraphs)[127X[104X
+    [4X[25X>[125X [27X);[127X[104X
+    [4X[28X(1,2,3)[128X[104X
+  [4X[32X[104X
+  
