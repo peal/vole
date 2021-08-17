@@ -50,10 +50,10 @@ suggested-pkgs:
       url: "https://gap-packages.github.io/ferret/"
     - name: "QuickCheck"
       version: ">= 0.1"
-      url: "https://gap-packages.github.io/QuickCheck/"
+      url: "https://github.com/ChrisJefferson/QuickCheck"
     - name: "OrbitalGraphs"
       version: ">= 0.1"
-      url: "https://markuspf.github.io/OrbitalGraphs/"
+      url: "https://github.com/gap-packages/OrbitalGraphs"
 
 www: https://peal.github.io/vole
 readme: README.md
