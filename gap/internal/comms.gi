@@ -162,11 +162,15 @@ else
 fi;
 
 _Vole.ForkVole := function(extraargs...)
-    local rustpipe, gappipe, bind, args, ret, prog, firsttime, t, f, pipe;
+    local rustpipe, gappipe, bind, args, ret, prog, firsttime, t, f, pipe, dirs;
     firsttime := false;
     if VOLE_MODE = "opt-first" then
         firsttime := true;
         VOLE_MODE := "opt-nobuild";
+        dirs := DirectoriesPackageLibrary("vole", "rust/target/release");
+        if not (Length(dirs) >= 1 and ForAny(["vole", "vole.exe"], f -> f in DirectoryContents(dirs[1])) ) then
+            Info(InfoVole, 1, "Vole executable missing -- trying to building (please wait)");
+        fi;
     fi;
 
     pipe := _Vole.UsePipe;
@@ -202,10 +206,11 @@ _Vole.ForkVole := function(extraargs...)
         if VOLE_MODE = "opt" or firsttime then
             args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--quiet"];
         elif VOLE_MODE = "opt-nobuild" then
+            dirs := DirectoriesPackageLibrary("vole", "rust/target/release");
             # Check for windows-style executable
-            if "vole.exe" in DirectoryContents(DirectoriesPackageLibrary("vole", "rust/target/release")[1]) then
+            if Length(dirs) >= 1 and "vole.exe" in DirectoryContents(dirs[1]) then
                 prog := "target/release/vole.exe";
-            elif "vole" in DirectoryContents(DirectoriesPackageLibrary("vole", "rust/target/release")[1]) then
+            elif Length(dirs) >= 1 and  "vole" in DirectoryContents(dirs[1]) then
                 prog := "target/release/vole";
             else
                 ErrorNoReturn("'vole' external program not built");

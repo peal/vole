@@ -7,3 +7,4 @@
 
 # Documented in expert.autodoc
 DeclareInfoClass("InfoVole");
+SetInfoLevel(InfoVole, 1);
