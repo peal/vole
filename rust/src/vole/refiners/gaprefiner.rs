@@ -45,13 +45,13 @@ impl GapRefiner {
     fn extend_part(part: &[usize], max_val: usize, base_size: usize, extended_start: usize) -> Vec<usize> {
         // Points we have to move
         let extra_points = max_val - base_size;
-        let mut new_vertlabels = vec![usize::MAX; extended_start + extra_points];
+        let mut new_vertlabels = vec![usize::max_value(); extended_start + extra_points];
 
         for (i, label) in new_vertlabels[0..base_size].iter_mut().enumerate() {
-            *label = *part.get(i).unwrap_or(&usize::MAX);
+            *label = *part.get(i).unwrap_or(&usize::max_value());
         }
         for i in 0..extra_points {
-            new_vertlabels[i + extended_start] = *part.get(i + base_size).unwrap_or(&usize::MAX);
+            new_vertlabels[i + extended_start] = *part.get(i + base_size).unwrap_or(&usize::max_value());
         }
         new_vertlabels
     }
@@ -152,7 +152,7 @@ impl GapRefiner {
 
             if let Some(part) = vertlabels {
                 info!("Refining Partition by {:?}", part);
-                state.extended_refine_partition_by(|x| part.get(*x).unwrap_or(&usize::MAX))?;
+                state.extended_refine_partition_by(|x| part.get(*x).unwrap_or(&usize::max_value()))?;
             }
 
             if let Some(graphs) = digraph {

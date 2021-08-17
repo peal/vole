@@ -140,8 +140,8 @@ impl PartitionStack {
         self.marks.extend_marks(extra, new_cell);
         debug_assert!(self.sanity_check());
 
-        // usize::MAX denotes the extra cell was created by adding to the partition
-        self.splits.push(usize::MAX);
+        // usize::max_value() denotes the extra cell was created by adding to the partition
+        self.splits.push(usize::max_value());
         new_cell
     }
 
@@ -355,7 +355,7 @@ impl PartitionStack {
     fn unsplit_cell(&mut self) {
         let unsplit = self.splits.pop().unwrap();
 
-        if unsplit == usize::MAX {
+        if unsplit == usize::max_value() {
             // This was a newly created cell
             self.revert_extend();
             return;

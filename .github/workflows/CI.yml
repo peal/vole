@@ -12,7 +12,7 @@ on:
 jobs:
   # The CI test job
   test:
-    name: GAP ${{ matrix.gap-branch }}
+    name: GAP ${{ matrix.gap-branch }} - Rust ${{matrix.rust-version}}
     runs-on: ubuntu-latest
     # Don't run this twice on PRs for branches pushed to the same repository
     if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
@@ -22,15 +22,18 @@ jobs:
         gap-branch:
           - master
           - stable-4.11
-
+        rust-version:
+          - stable
+          - 1.48
     steps:
       - uses: actions/checkout@v2
       - name: "Set up rust"
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: ${{ matrix.rust-version }}
+          default: true
       - name: "Build the rust component of Vole"
-        run: cd rust && cargo build --release --all-features
+        run: cd rust && cargo --version && cargo build --release --all-features
       - name: "Run the rust tests for Vole"
         run: cd rust && cargo test --release -q
       - name: "Install GAP and the necessary packages"

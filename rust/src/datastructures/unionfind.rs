@@ -13,15 +13,15 @@ pub struct UnionFind {
 impl UnionFind {
     pub fn new(size: usize) -> Self {
         Self {
-            orbit_mins: vec![usize::MAX; size],
-            depth_explored: vec![usize::MAX; size],
+            orbit_mins: vec![usize::max_value(); size],
+            depth_explored: vec![usize::max_value(); size],
         }
     }
 
     pub fn expand_to(&mut self, size: usize) {
         while self.orbit_mins.len() < size {
-            self.orbit_mins.push(usize::MAX);
-            self.depth_explored.push(usize::MAX);
+            self.orbit_mins.push(usize::max_value());
+            self.depth_explored.push(usize::max_value());
         }
     }
 
@@ -34,7 +34,7 @@ impl UnionFind {
     }
 
     pub fn find(&self, mut p: usize) -> usize {
-        while self.orbit_mins[p] != usize::MAX {
+        while self.orbit_mins[p] != usize::max_value() {
             p = self.orbit_mins[p];
         }
         p
@@ -69,7 +69,7 @@ impl UnionFind {
         self.orbit_mins[bf] = base;
         self.orbit_mins[a] = base;
         self.orbit_mins[b] = base;
-        self.orbit_mins[base] = usize::MAX;
+        self.orbit_mins[base] = usize::max_value();
         self.depth_explored[base] = min_depth_explored;
         true
     }
@@ -84,7 +84,7 @@ impl UnionFind {
 
     /// Should we branch on this value at this depth
     pub fn orbit_needs_searching(&mut self, c: usize, depth: usize) -> bool {
-        if self.orbit_mins[c] != usize::MAX {
+        if self.orbit_mins[c] != usize::max_value() {
             return false;
         }
 
