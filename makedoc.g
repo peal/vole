@@ -56,6 +56,8 @@ _autodoc := rec(
             VoleIssues  := _voleinfo.IssueTrackerURL,
             VoleVersion := _strip(_voleinfo.Version),
             GAPVersion  := _strip(_voleinfo.Dependencies.GAP),
+            # Find a way of keeping this up to date - perhaps integrate with CI
+            RustVersion := "1.48",
             VoleYear    := _voleinfo.Date{[7..10]},
         ),
         bib := "vole.bib",

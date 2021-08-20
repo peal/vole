@@ -24,7 +24,8 @@ Therefore we are keen to hear your comments, remarks, and complaints.
 @SectionLabel deps 
 
 &Vole; requires &GAP; &GAPVersion; or newer and various other &GAP;
-packages to run, and Rust is required to compile &Vole;.
+packages to run, and Rust version &RustVersion; or newer is required to
+compile &Vole;.
 
 @BeginChunk CygwinSkip
 Please note that if you are using &Vole; via a &GAP; Cygwin release
@@ -36,7 +37,7 @@ Therefore you may skip straight to Section&nbsp;<Ref Sect="Section_loading"/>.
 @InsertChunk CygwinSkip
 
 In order to compile &Vole;, Rust must be installed and available with the
-`cargo` command.
+`cargo` command, in version at least &RustVersion;.
 You can test for Rust by running `cargo --version` in the terminal. You should
 obtain a version number in response, such as:
 @BeginLogSession
