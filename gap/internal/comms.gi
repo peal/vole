@@ -169,7 +169,7 @@ _Vole.ForkVole := function(extraargs...)
         VOLE_MODE := "opt-nobuild";
         dirs := DirectoriesPackageLibrary("vole", "rust/target/release");
         if not (Length(dirs) >= 1 and ForAny(["vole", "vole.exe"], f -> f in DirectoryContents(dirs[1])) ) then
-            Info(InfoVole, 1, "Vole executable missing -- trying to building (please wait)");
+            Info(InfoVole, 1, "Vole executable missing -- trying to build (please wait)");
         fi;
     fi;
 
