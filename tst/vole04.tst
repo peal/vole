@@ -15,9 +15,9 @@ gap> LoadPackage("vole", false);;
 gap> Set(RecNames(Vole));
 [ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
   "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", 
-  "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", 
-  "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer", 
-  "TwoClosure" ]
+  "DigraphCanonicalLabelling", "Intersection", "IsConjugate", 
+  "IsIsomorphicDigraph", "IsomorphismDigraphs", "Normaliser", "Normalizer", 
+  "RepresentativeAction", "Stabiliser", "Stabilizer", "TwoClosure" ]
 
 # doc/_Chapter_wrapper.xml:235-244
 gap> A6 := AlternatingGroup(6);;
@@ -90,11 +90,11 @@ false
 gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
 true
 
-# doc/_Chapter_wrapper.xml:558-561
+# doc/_Chapter_wrapper.xml:560-563
 gap> Vole.CanonicalPerm(PSL(2,5), JohnsonDigraph(4,2), OnDigraphs);
 (1,2,6)(3,4,5)
 
-# doc/_Chapter_wrapper.xml:600-609
+# doc/_Chapter_wrapper.xml:602-611
 gap> tuple1 := [1,2,3,4];; tuple2 := [1,2,3,5];; tuple3 := [1,5,2,3];;
 gap> A5 := AlternatingGroup(5);;
 gap> Vole.CanonicalImage(A5, tuple1, OnTuples);
@@ -104,7 +104,7 @@ gap> Vole.CanonicalImage(A5, tuple2, OnTuples);
 gap> Vole.CanonicalImage(A5, tuple3, OnTuples);
 [ 4, 5, 3, 2 ]
 
-# doc/_Chapter_wrapper.xml:614-621
+# doc/_Chapter_wrapper.xml:616-623
 gap> Vole.RepresentativeAction(A5, tuple1, tuple2, OnTuples);
 fail
 gap> Vole.RepresentativeAction(A5, tuple1, tuple3, OnTuples);
@@ -112,17 +112,31 @@ fail
 gap> Vole.RepresentativeAction(A5, tuple2, tuple3, OnTuples);
 (2,5,3)
 
-# doc/_Chapter_wrapper.xml:701-704
+# doc/_Chapter_wrapper.xml:719-722
 gap> Vole.AutomorphismGroup(JohnsonDigraph(4,2));
 Group([ (3,4), (2,3,5,4), (1,2,6,5)(3,4) ])
 
-# doc/_Chapter_wrapper.xml:734-737
+# doc/_Chapter_wrapper.xml:752-755
 gap> Vole.DigraphCanonicalLabelling(JohnsonDigraph(4,2));
 (1,2,4,5,3,6)
 
-# doc/_Chapter_wrapper.xml:764-767
+# doc/_Chapter_wrapper.xml:782-785
 gap> Vole.CanonicalDigraph(JohnsonDigraph(4,2));
 <immutable digraph with 6 vertices, 24 edges>
+
+# doc/_Chapter_wrapper.xml:809-815
+gap> D := CycleDigraph(6);;
+gap> Vole.IsIsomorphicDigraph(D, DigraphReverse(D));
+true
+gap> Vole.IsIsomorphicDigraph(D, DigraphDual(D));
+false
+
+# doc/_Chapter_wrapper.xml:843-849
+gap> D := CycleDigraph(6);;
+gap> Vole.IsomorphismDigraphs(D, DigraphReverse(D));
+(1,4)(2,3)(5,6)
+gap> Vole.IsomorphismDigraphs(D, DigraphDual(D));
+fail
 
 #
 gap> STOP_TEST("vole04.tst", 1);

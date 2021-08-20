@@ -222,9 +222,9 @@
 #! gap> Set(RecNames(Vole));
 #! [ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
 #!   "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", 
-#!   "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", 
-#!   "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer", 
-#!   "TwoClosure" ]
+#!   "DigraphCanonicalLabelling", "Intersection", "IsConjugate", 
+#!   "IsIsomorphicDigraph", "IsomorphismDigraphs", "Normaliser", "Normalizer", 
+#!   "RepresentativeAction", "Stabiliser", "Stabilizer", "TwoClosure" ]
 #! @EndExampleSession
 DeclareGlobalVariable("Vole");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
@@ -581,6 +581,8 @@ DeclareGlobalFunction("Vole.TwoClosure");
 #! <Row>
 #!   <Item>
 #!     <Ref Func="Vole.CanonicalPerm"/>
+#!
+#!     <Ref Func="Vole.CanonicalImagePerm"/>
 #!   </Item>
 #!   <Item>
 #!     <Ref Func="CanonicalImagePerm" BookName="images" Style="Number" />
@@ -734,6 +736,22 @@ DeclareGlobalFunction("Vole.CanonicalImage");
 #!     <Ref Attr="BlissCanonicalLabelling" BookName="Digraphs" Style="Number" />
 #!   </Item>
 #! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.IsomorphismDigraphs"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Oper="IsomorphismDigraphs" BookName="Digraphs" Style="Number" />
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Func="Vole.IsIsomorphicDigraph"/>
+#!   </Item>
+#!   <Item>
+#!     <Ref Oper="IsIsomorphicDigraph" BookName="Digraphs" Style="Number" />
+#!   </Item>
+#! </Row>
 #! </Table>
 
 
@@ -824,4 +842,62 @@ DeclareGlobalFunction("Vole.DigraphCanonicalLabelling");
 #! <immutable digraph with 6 vertices, 24 edges>
 #! @EndExampleSession
 DeclareGlobalFunction("Vole.CanonicalDigraph");
+#! @EndGroup
+
+
+#! @BeginGroup IsIsomorphicDigraph
+#! @GroupTitle IsIsomorphicDigraph
+#! @Arguments D1, D2
+#! @Returns <K>true</K> or <K>false</K>
+#! @Description
+#! <Ref Func="Vole.IsIsomorphicDigraph"/> emulates the &Digraphs; package
+#! function
+#! <Ref Oper="IsIsomorphicDigraph" BookName="Digraphs" Style="Number" />.
+#!
+#! If <A>D1</A> and <A>D2</A> are digraphs,
+#! then this function returns <K>true</K> if there exists any permutation that
+#! maps <A>D1</A> to <A>D2</A>
+#! under the <Ref Oper="OnDigraphs" BookName="Digraphs" Style="Number"/> action,
+#! and it returns <K>false</K> otherwise.
+#! See also <Ref Func="IsomorphismDigraphs"/>, which this function calls.
+#!
+#! @BeginExampleSession
+#! gap> D := CycleDigraph(6);;
+#! gap> Vole.IsIsomorphicDigraph(D, DigraphReverse(D));
+#! true
+#! gap> Vole.IsIsomorphicDigraph(D, DigraphDual(D));
+#! false
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.IsIsomorphicDigraph");
+#! @EndGroup
+
+
+#! @BeginGroup IsomorphismDigraphs
+#! @GroupTitle IsomorphismDigraphs
+#! @Arguments D1, D2
+#! @Returns A permutation, or <K>fail</K>
+#! @Description
+#! <Ref Func="Vole.IsomorphismDigraphs"/> emulates the &Digraphs; package
+#! function
+#! <Ref Oper="IsomorphismDigraphs" BookName="Digraphs" Style="Number" />.
+#!
+#! If <A>D1</A> and <A>D2</A> are digraphs,
+#! then this function returns some permutation that maps <A>D1</A> to <A>D2</A>
+#! under the <Ref Oper="OnDigraphs" BookName="Digraphs" Style="Number"/> action,
+#! if one exists, and it returns <K>fail</K> otherwise.
+#! In other words, this function call is equivalent to
+#! `VoleFind.Rep(VoleCon.Transport(<A>D1</A>,<A>D2</A>,OnDigraphs)`.
+#!
+#! &Vole; can also find such a permutation subject to additional properties,
+#! such as belonging to particular groups or cosets, or stabilising certain
+#! objects. See <Ref Func="VoleFind.Rep"/> for more information.
+#!
+#! @BeginExampleSession
+#! gap> D := CycleDigraph(6);;
+#! gap> Vole.IsomorphismDigraphs(D, DigraphReverse(D));
+#! (1,4)(2,3)(5,6)
+#! gap> Vole.IsomorphismDigraphs(D, DigraphDual(D));
+#! fail
+#! @EndExampleSession
+DeclareGlobalFunction("Vole.IsomorphismDigraphs");
 #! @EndGroup

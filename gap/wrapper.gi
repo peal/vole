@@ -201,3 +201,22 @@ Vole.DigraphCanonicalLabelling := function(D, colours...)
     fi;
     return Vole.CanonicalPerm(SymmetricGroup(DigraphVertices(D)), D, OnDigraphs);
 end;
+
+# Ignores raw := true
+Vole.IsIsomorphicDigraph := function(D1, D2)
+    if not IsDigraph(D1) or not IsDigraph(D2) then
+        ErrorNoReturn("Vole.IsIsomorphicDigraph: ",
+                      "The arguments must be digraphs");
+    fi;
+    return Vole.IsomorphismDigraphs(D1, D2) <> fail;
+end;
+
+# Ignores raw := true
+Vole.IsomorphismDigraphs := function(D1, D2)
+    local G;
+    if not (IsDigraph(D1) and IsDigraph(D2)) then
+        ErrorNoReturn("Vole.IsomorphismDigraphs: ",
+                      "The arguments must be digraphs");
+    fi;
+    return VoleFind.Rep(VoleCon.Transport(D1, D2, OnDigraphs));
+end;
