@@ -16,8 +16,8 @@ notice_it() {
 notice_it "Fixing the links in the documentation"
 for f in ./*/*.htm* ; do
   sed \
-    -e 's;href="../../../pkg/digraphs[^\/]*/doc/;href="https://digraphs.github.io/Digraphs/doc/;g' \
-    -e 's;href="../../../pkg/images[^\/]*/doc/;href="https://gap-packages.github.io/images/doc/;g' \
+    -e 's;href="../../../pkg/[dD]igraphs[^\/]*/doc/;href="https://digraphs.github.io/Digraphs/doc/;g' \
+    -e 's;href="../../../pkg/[iI]mages[^\/]*/doc/;href="https://gap-packages.github.io/images/doc/;g' \
     "$f" > "$f.bak"
   mv "$f.bak" "$f"
 done
