@@ -324,7 +324,7 @@ InstallValue(Vole, rec());
 #! @Description
 #! <Ref Func="Vole.Intersection"/> emulates the built-in &GAP; operation
 #! <Ref Oper="Intersection" BookName="Ref" Style="Number" />,
-#! and returns the intersection of the groups and/or right coset arguments.
+#! and returns the intersection of the group and/or right coset arguments.
 #!
 #! If all of the arguments are groups, then <Ref Func="Vole.Intersection"/>
 #! again returns a group.

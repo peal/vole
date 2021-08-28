@@ -12,7 +12,7 @@
     classes in &GAP;.
     <P/>
     The default info level is 0. Most info messages are given at
-    level 2, and additional messages are given at level 4.
+    level 2, but some messages are given at other levels, up to level 4.
   </Description>
 </ManSection>
 
@@ -27,11 +27,16 @@ the &GAP; reference manual; see
 In brief, options can be set for a function call by first giving the arguments,
 then writing a colon, and then assigning values to some or all of the permitted
 option names.
+Writing an option name without an explicitly assigned value is a shorthand for
+assigning the value <K>true</K> to that option.
 Note that <B>options are passed down to subsequent function calls</B> that are
 initiated by the original call.
 
 Here is an example of a &Vole; function call with the option `raw` set to
 <K>true</K>:
+@BeginExampleSession
+gap> LoadPackage("vole", false);;
+@EndExampleSession
 @BeginLogSession
 gap> ret := Vole.Intersection(AlternatingGroup(6), PGL(2,5) : raw := true);
 rec( cosetrep := (), group := Group([ (3,5)(4,6), (2,3,4,6,5), (1,2,6)(3,4,5)
@@ -51,9 +56,22 @@ rec( cosetrep := (), group := Group([ (3,5)(4,6), (2,3,4,6,5), (1,2,6)(3,4,5)
 gap> ret.group = PSL(2,5);
 true
 @EndLogSession
+Note that the option `raw` can also be set to <K>true</K> by simply giving the
+name `raw`. Therefore the following line can be used in place of the one above:
+@BeginLogSession
+gap> ret := Vole.Intersection(AlternatingGroup(6), PGL(2,5) : raw);;
+@EndLogSession
+
 
 @Subsection Supported options
 
+* `raw`: <K>true</K> or (default) <K>false</K>:
+    * If <K>true</K>, then rather than returning an object as documented,
+      the function returns a record that contains detailed information
+      about the execution and result of the graph backtracking algorithm
+      that was executed. The meaning of this information is not yet documented,
+      sorry.
+    * Not all &Vole; functions support this option, although most do.
 * `points`: a non-negative integer or (default) <K>infinity</K>:
     * This option can be used in place of the constraint
       `VoleCon.LargestMovedPoint(points)`;
@@ -62,10 +80,9 @@ true
       an integer argument is interpreted as an instance of a ‘largest moved
       point’ constraint, which achieves the same affect as this option more
       simply.
-* `raw`: <K>true</K> or (default) <K>false</K>:
-    * If <K>true</K>, then rather than returning an object as documented,
-      the function returns a record that contains detailed information
-      about the execution and result of the graph backtracking algorithm
-      that was executed. The meaning of this information is not yet documented,
-      sorry.
-    * Not all &Vole; functions support this option, although most do.
+@BeginExampleSession
+gap> constraint := VoleCon.Stabilise(PetersenGraph(), OnDigraphs);;
+gap> G := VoleFind.Group(constraint : points := 5);;
+gap> TransitiveIdentification(G);
+13
+@EndExampleSession
