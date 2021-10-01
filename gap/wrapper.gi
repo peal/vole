@@ -46,17 +46,21 @@ Vole.Stabiliser := Vole.Stabilizer;
 # Respects raw := true
 Vole.Normalizer := function(G, U)
     local ret;
+
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.Normalizer: ",
                       "The first argument must be a perm group");
-    elif IsPermGroup(U) then
-        ret := VoleFind.Group(G, VoleCon.Normalise(U));
-    elif IsPerm(U) then
-        ret := VoleFind.Group(G, VoleCon.Normalise(Group(U)));
-    else
+    elif not (IsPermGroup(U) or IsPerm(U)) then
         ErrorNoReturn("Vole.Normalizer: The second argument ",
                       "must a perm group or a permutation");
+    elif IsPerm(U) then
+        U := Group(U);
     fi;
+
+    if IsNormal(G, U) then
+        return G;
+    fi;
+    ret := VoleFind.Group(G, VoleCon.Normalise(U));
     _Vole.setParent(ret, G);
     return ret;
 end;

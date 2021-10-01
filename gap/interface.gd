@@ -444,7 +444,7 @@ DeclareGlobalFunction("VoleFind.Canonical");
 #! gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
 #! >  VoleCon.Normalise(Group([ (1,2) ]))
 #! > );
-#! (1,4)(2,3)
+#! (1,3,4)
 #! @EndExampleSession
 #! Thus the canonical image of $\langle (1\,2) \rangle$ under this action of
 #! $A_{4}$ is the group ${\langle (1\,2) \rangle}^{(1\,4)(2\,3)}$,

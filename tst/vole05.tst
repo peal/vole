@@ -111,7 +111,7 @@ true
 gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
 >  VoleCon.Normalise(Group([ (1,2) ]))
 > );
-(1,4)(2,3)
+(1,3,4)
 
 # doc/_Chapter_interface.xml:457-463
 gap> VoleFind.CanonicalPerm(SymmetricGroup(4),

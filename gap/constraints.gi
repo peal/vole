@@ -237,6 +237,8 @@ end;
 VoleCon.Normalise := function(G)
     if not IsPermGroup(G) then
         ErrorNoReturn("VoleCon.Normalise: The argument must be a perm group");
+    elif IsNormal(SymmetricGroup(MovedPoints(G)), G) then
+        return VoleCon.Stabilise(MovedPoints(G), OnSets);
     fi;
     return GB_Con.NormaliserSimple2(G);
 end;
