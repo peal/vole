@@ -52,18 +52,18 @@ VoleCon.Stabilize := function(object, action...)
         return VoleRefiner.SetTupleStab(object);
 
     # OnTuplesSets
-    elif action = OnTuplesSets and IsHomogeneousList(object)
+    elif action = OnTuplesSets and IsList(object)
       and ForAll(object, x -> IsSet(x) and ForAll(x, IsPosInt)) then
         return List(object, VoleRefiner.SetStab);
 
     # OnTuplesTuples
-    elif action = OnTuplesTuples and IsHomogeneousList(object)
-      and ForAll(object, x -> IsHomogeneousList(x) and ForAll(x, IsPosInt)) then
+    elif action = OnTuplesTuples and IsList(object)
+      and ForAll(object, x -> IsList(x) and ForAll(x, IsPosInt)) then
         return List(object, VoleRefiner.TupleStab);
 
     # OnDigraphs / list of adjacencies
     elif action = OnDigraphs and IsList(object)
-      and ForAll(object, x -> IsHomogeneousList(x)) then
+      and ForAll(object, x -> IsList(x) and ForAll(x, IsPosInt)) then
         return VoleRefiner.DigraphStab(object);
 
     # OnDigraphs / Digraphs package object
