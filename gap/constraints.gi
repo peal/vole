@@ -213,12 +213,21 @@ VoleCon.InCoset := function(U)
 end;
 
 VoleCon.InRightCoset := function(G, x)
+    local movedG, movedx, differ;
+
     if not IsPermGroup(G) then
         ErrorNoReturn("VoleCon.InRightCoset: ",
                       "The first argument must be a perm group");
     elif not IsPerm(x) then
         ErrorNoReturn("VoleCon.InRightCoset: ",
                       "The second argument must be a permutation");
+    elif IsNaturalSymmetricGroup(G) then
+        movedG := MovedPoints(G);  # is a GAP set
+        movedx := MovedPoints(x);
+        differ := Difference(movedx, movedG);
+        return [VoleCon.MovedPoints(Union(movedG, movedx)),
+                VoleCon.Transport(movedG, OnSets(movedG, x), OnSets),
+                VoleCon.Transport(differ, OnTuples(differ, x), OnTuples)];
     fi;
     return GB_Con.InCosetSimple(G, x);
 end;
