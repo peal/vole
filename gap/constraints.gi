@@ -70,6 +70,11 @@ VoleCon.Stabilize := function(object, action...)
     elif action = OnDigraphs and IsDigraph(object) then
         return VoleRefiner.DigraphStab(OutNeighbours(object));
 
+    # OnTuplesDigraphs
+    elif action = OnTuplesDigraphs and IsList(object)
+      and (ForAll(object, IsDigraph) or ForAll(object, IsHomogeneousList)) then
+        return List(object, x -> VoleCon.Stabilise(x, OnDigraphs));
+
     fi;
     ErrorNoReturn("VoleCon.Stabilize: Unrecognised combination of ",
                   "<object> and <action>:\n",
@@ -184,6 +189,18 @@ VoleCon.Transport := function(object1, object2, action...)
         else
             return VoleRefiner.DigraphTransporter(OutNeighbours(object1),
                                                   OutNeighbours(object2));
+        fi;
+
+    # OnTuplesDigraphs
+    elif action = OnTuplesDigraphs and ForAll([object1, object2], IsList)
+      and (ForAll([object1, object2], o -> ForAll(o, IsDigraph)) or
+           ForAll([object1, object2], o -> ForAll(o, IsHomogeneousList)))
+      then
+        if Length(object1) <> Length(object2) then
+            return VoleCon.None();
+        else
+            return List([1 .. Length(object1)], i ->
+                        VoleCon.Transport(object1[i], object2[i], OnDigraphs));
         fi;
 
     fi;

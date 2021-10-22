@@ -144,3 +144,10 @@ _Vole.setParent := function(ret, G)
     fi;
     SetParent(obj, G);
 end;
+
+# Temporary declarations that are made in newer versions of Digraphs package.
+# Remove these when we require Digraphs v1.6.0 or newer
+if not IsBound(OnTuplesDigraphs) then
+    BindGlobal("OnTuplesDigraphs",
+    {L, p} -> List(L, x -> OnDigraphs(DigraphMutableCopyIfMutable(x), p)));
+fi;

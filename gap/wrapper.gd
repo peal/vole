@@ -128,6 +128,14 @@
 #!     A digraph object, or a list of adjacencies
 #!   </Item>
 #! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Oper="OnTuplesDigraphs" BookName="Digraphs" Style="Number" Label="for a list of digraphs and a perm"/>
+#!   </Item>
+#!   <Item>
+#!     A list of digraphs/lists of adjacencies
+#!   </Item>
+#! </Row>
 #! </Table>
 #! @EndChunk
 

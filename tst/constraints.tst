@@ -1,4 +1,4 @@
-#@local n,Sn,pts,G,x,con
+#@local n,Sn,pts,G,x,y,con,D
 gap> START_TEST("constraints.tst");
 gap> LoadPackage("vole", false);
 true
@@ -28,6 +28,19 @@ gap> G = Centraliser(SymmetricGroup(MovedPoints(x)), x);
 true
 gap> VoleFind.Group(10, con) = Centraliser(SymmetricGroup(10), x);
 true
+
+# OnTuplesDigraphs
+gap> G := DihedralGroup(IsPermGroup, 12);;
+gap> VoleFind.Group(6,
+> VoleCon.Stabilise(OrbitalGraphs(G), OnTuplesDigraphs)) = G;
+true
+gap> D := DigraphFromGraph6String("Esa?");;
+gap> x := CycleDigraph(6);;
+gap> y := DigraphReverse(CycleDigraph(6));;
+gap> VoleFind.Rep(6, VoleCon.Transport([x, D], [y, D, x], OnTuplesDigraphs));
+fail
+gap> VoleFind.Coset(6, VoleCon.Transport([x, D], [y, D], OnTuplesDigraphs));
+RightCoset(Group(()),(2,6)(3,5))
 
 #
 gap> STOP_TEST("constraints.tst");
