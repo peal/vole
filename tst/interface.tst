@@ -18,6 +18,10 @@ gap> VoleFind.Coset();
 Error, VoleFind.Coset: At least one argument must be given
 gap> VoleFind.Coset(fail);
 fail
+gap> VoleFind.Coset(Group([(1,2)(3,4), (1,3)(2,4)]) * (1,2,3));
+RightCoset(Group([ (1,2)(3,4), (1,3)(2,4) ]),(1,2,3))
+gap> VoleFind.Coset(Group([(1,2)]) * (2,3));
+RightCoset(Group([ (1,2) ]),(2,3))
 
 # VoleFind.Canonical
 gap> VoleFind.Canonical();

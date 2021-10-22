@@ -125,7 +125,7 @@ _Vole.processConstraints := function(constraints)
             constraints[i] := VoleCon.LargestMovedPoint(constraints[i]);
         fi;
     od;
-    return constraints;
+    return Flat(constraints);
 end;
 
 # For some wrapper functions, we are explicitly asking for a subgroup of
