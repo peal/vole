@@ -96,7 +96,7 @@ pub fn simple_search_recurse(
     state.stats.search_nodes += 1;
     let part = state.domain.partition();
 
-    if part.base_cells().len() == part.base_domain_size() {
+    if part.base_domain_fixed() {
         return state.refiners.check_solution(&mut state.domain, sols, &mut state.stats);
     }
 
@@ -168,7 +168,7 @@ pub fn simple_coset_search_recurse(
     state.stats.search_nodes += 1;
     let part = state.domain.partition();
 
-    if part.base_cells().len() == part.base_domain_size() {
+    if part.base_domain_fixed() {
         return state.refiners.check_solution(&mut state.domain, sols, &mut state.stats);
     }
 

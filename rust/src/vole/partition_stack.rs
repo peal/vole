@@ -176,6 +176,16 @@ impl PartitionStack {
         self.extended_size
     }
 
+    /// All cells in the base partition are fixed (of size 1)
+    pub fn base_domain_fixed(&self) -> bool {
+        self.base_domain_size() == self.base_cells().len()
+    }
+
+    /// All cells in the extended partition are fixed (of size 1)
+    pub fn extended_domain_fixed(&self) -> bool {
+        self.extended_domain_size() == self.extended_cells().len()
+    }
+
     fn as_list_set(&self, cells: &[usize]) -> Vec<Vec<usize>> {
         let mut p = vec![];
         for &i in cells {
@@ -586,6 +596,8 @@ mod tests {
         assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.extended_as_indicator(), vec![0, 0, 0, 0, 0]);
         assert_eq!(p.base_domain_size(), 5);
+        assert!(!p.base_domain_fixed());
+        assert!(!p.extended_domain_fixed());
         assert_eq!(p.base_cells(), vec![0]);
         for i in 0..5 {
             assert_eq!(p.cell_of(i), 0);
@@ -622,6 +634,16 @@ mod tests {
         p.sanity_check();
         assert_eq!(p.base_as_list_set(), vec![vec![0], vec![3], vec![1, 2], vec![4]]);
         assert_eq!(p.extended_as_indicator(), vec![0, 2, 2, 1, 3]);
+        assert!(!p.base_domain_fixed());
+        assert!(!p.extended_domain_fixed());
+        p.split_cell(2, 1);
+        assert_eq!(p.base_as_list_set(), vec![vec![0], vec![3], vec![1], vec![4], vec![2]]);
+        assert_eq!(p.extended_as_indicator(), vec![0, 2, 4, 1, 3]);
+        assert!(p.base_domain_fixed());
+        assert!(p.extended_domain_fixed());
+        p.unsplit_cell();
+        assert!(!p.base_domain_fixed());
+        assert!(!p.extended_domain_fixed());
         p.unsplit_cell();
         assert_eq!(p.base_as_list_set(), vec![vec![0], vec![3, 4], vec![1, 2]]);
         assert_eq!(p.extended_as_indicator(), vec![0, 2, 2, 1, 1]);
@@ -779,7 +801,7 @@ mod tests {
     }
 
     #[test]
-    fn test_extend() {
+    fn test_extend() -> trace::Result<()> {
         let mut p = PartitionStack::new(5);
         assert!(p.sanity_check());
         assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
@@ -795,6 +817,33 @@ mod tests {
         assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.extended_as_list_set(), vec![vec![0, 1, 2, 3, 4], vec![5, 6], vec![7]]);
 
+        p.save_state();
+
+        let mut tracer = trace::Tracer::new();
+        p.base_refine_partition_by(&mut tracer, |x| (*x) * (*x))?;
+        assert_eq!(p.base_as_list_set(), vec![vec![0], vec![4], vec![3], vec![2], vec![1]]);
+        assert_eq!(
+            p.extended_as_list_set(),
+            vec![vec![0], vec![5, 6], vec![7], vec![4], vec![3], vec![2], vec![1]]
+        );
+        assert!(p.base_domain_fixed());
+        assert!(!p.extended_domain_fixed());
+
+        p.extended_refine_partition_by(&mut tracer, |x| (*x) * (*x))?;
+        assert_eq!(p.base_as_list_set(), vec![vec![0], vec![4], vec![3], vec![2], vec![1]]);
+        assert_eq!(
+            p.extended_as_list_set(),
+            vec![vec![0], vec![5], vec![7], vec![4], vec![3], vec![2], vec![1], vec![6]]
+        );
+        assert!(p.base_domain_fixed());
+        assert!(p.extended_domain_fixed());
+
+        p.restore_state();
+
+        assert!(p.sanity_check());
+        assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+        assert_eq!(p.extended_as_list_set(), vec![vec![0, 1, 2, 3, 4], vec![5, 6], vec![7]]);
+
         p.unsplit_cell();
         assert!(p.sanity_check());
         assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
@@ -804,6 +853,8 @@ mod tests {
         assert!(p.sanity_check());
         assert_eq!(p.base_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
         assert_eq!(p.extended_as_list_set(), vec![vec![0, 1, 2, 3, 4]]);
+
+        Ok(())
     }
 
     #[test]
