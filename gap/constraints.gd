@@ -417,9 +417,10 @@ DeclareGlobalFunction("VoleCon.LargestMovedPoint");
 #! @Arguments
 #! @Returns A constraint
 #! @Description
-#! This constraint ensures all permutations are 'even'.
-#! Which is equivalent to ensuring the answer is a
-#! subset of the alternating group.
+#! This constraint is satisfied by the even permutations,
+#! i.e. those permutations with sign `1`.
+#! In other words, this constraint restricts a search to some alternating
+#! group.
 #!
 #! @InsertChunk isinfinite
 #! @BeginExampleSession
@@ -432,9 +433,10 @@ DeclareGlobalFunction("VoleCon.IsEven");
 #! @Arguments
 #! @Returns A constraint
 #! @Description
-#! This constraint ensures all permutations are 'odd'.
-#! Which is equivalent to ensuring the answer is a
-#! subset of the single coset of the alternating group.
+#! This constraint is satisfied by the odd permutations,
+#! i.e. those permutations with sign `-1`.
+#! In other words, this constraint restricts a search to the unique coset of
+#! some alternating group.
 #!
 #! @InsertChunk isinfinite
 #! @BeginExampleSession

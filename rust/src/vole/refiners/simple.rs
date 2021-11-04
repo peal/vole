@@ -333,7 +333,7 @@ impl Refiner for SetTupleTransporter {
         let extended = state.partition().extended_domain_size();
 
         // We build graph first, then we count number of vertices we used
-        // We will start colouring just pass end of previous vertices
+        // We will start colouring just past end of previous vertices
         let extra_points = set.iter().map(|x| x.len()).sum();
         let total_new_size = extended + extra_points;
         let mut colouring = vec![0usize; total_new_size];
