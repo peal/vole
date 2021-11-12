@@ -36,6 +36,14 @@ true
 gap> VoleFind.Group(VoleRefiner.InSymmetricGroup([])) = Group(());
 true
 
+#
+gap> VoleFind.Group([VoleCon.IsEven(), SymmetricGroup(6)]) = AlternatingGroup(6);
+true
+gap> SignPerm(VoleFind.Rep([VoleCon.IsOdd(), SymmetricGroup(6)])) = -1;
+true
+gap> VoleFind.Rep([VoleCon.IsOdd(), AlternatingGroup(6)]);
+fail
+
 # https://github.com/peal/vole/issues/15
 gap> D := CycleDigraph(5);;
 gap> con_stab := VoleCon.Stabilize(D, OnDigraphs);;

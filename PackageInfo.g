@@ -83,7 +83,7 @@ PackageDoc := rec(
 Dependencies := rec(
   GAP := ">= 4.11.0",
   NeededOtherPackages := [
-    [ "BacktrackKit", ">= 0.5.0" ],
+    [ "BacktrackKit", ">= 0.5.1" ],
     [ "Digraphs", ">= 1.1.1" ],
     [ "GraphBacktracking", ">= 0.5.0" ],
     # to enable GAP and rust to talk to each other

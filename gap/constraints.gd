@@ -102,8 +102,9 @@
 #! gap> LoadPackage("vole", false);;
 #! gap> Set(RecNames(VoleCon));
 #! [ "Centralise", "Centralize", "Conjugate", "InCoset", "InGroup", 
-#!   "InLeftCoset", "InRightCoset", "LargestMovedPoint", "MovedPoints", "None", 
-#!   "Normalise", "Normalize", "Stabilise", "Stabilize", "Transport" ]
+#!   "InLeftCoset", "InRightCoset", "IsEven", "IsOdd", "LargestMovedPoint", 
+#!   "MovedPoints", "None", "Normalise", "Normalize", "Stabilise", "Stabilize", 
+#!   "Transport" ]
 #!  @EndExampleSession
 DeclareGlobalVariable("VoleCon");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
@@ -166,6 +167,10 @@ InstallValue(VoleCon, rec());
 #! <Row>
 #!   <Item><Ref Func="VoleCon.LargestMovedPoint"/></Item>
 #!   <Item>N/A</Item>
+#! </Row>
+#! <Row>
+#!   <Item><Ref Func="VoleCon.IsEven"/></Item>
+#!   <Item><Ref Func="VoleCon.IsOdd"/></Item>
 #! </Row>
 #! <Row>
 #!   <Item>N/A</Item>
@@ -409,6 +414,35 @@ DeclareGlobalFunction("VoleCon.MovedPoints");
 #! @EndExampleSession
 DeclareGlobalFunction("VoleCon.LargestMovedPoint");
 
+#! @Arguments
+#! @Returns A constraint
+#! @Description
+#! This constraint ensures all permutations are 'even'.
+#! Which is equivalent to ensuring the answer is a
+#! subset of the alternating group.
+#!
+#! @InsertChunk isinfinite
+#! @BeginExampleSession
+#! gap> con := VoleCon.IsEven();;
+#! gap> VoleFind.Group(con, SymmetricGroup(5)) = AlternatingGroup(5);
+#! true
+#! @EndExampleSession
+DeclareGlobalFunction("VoleCon.IsEven");
+
+#! @Arguments
+#! @Returns A constraint
+#! @Description
+#! This constraint ensures all permutations are 'odd'.
+#! Which is equivalent to ensuring the answer is a
+#! subset of the single coset of the alternating group.
+#!
+#! @InsertChunk isinfinite
+#! @BeginExampleSession
+#! gap> con := VoleCon.IsOdd();;
+#! gap> VoleFind.Rep(con, SymmetricGroup(5));
+#! (1,5,2,4)
+#! @EndExampleSession
+DeclareGlobalFunction("VoleCon.IsOdd");
 
 #! @Arguments
 #! @Returns <K>fail</K>
