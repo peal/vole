@@ -288,4 +288,7 @@ VoleCon.LargestMovedPoint := function(point)
     return VoleRefiner.InSymmetricGroup([1 .. point]);
 end;
 
+VoleCon.IsEven := BTKit_Con.IsEven;
+VoleCon.IsOdd := BTKit_Con.IsOdd;
+
 VoleCon.None := ReturnFail;
