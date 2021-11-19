@@ -37,12 +37,14 @@ gap> VoleFind.Group(VoleRefiner.InSymmetricGroup([])) = Group(());
 true
 
 #
-gap> VoleFind.Group([VoleCon.IsEven(), SymmetricGroup(6)]) = AlternatingGroup(6);
+gap> VoleFind.Group(VoleCon.IsEven(), 6) = AlternatingGroup(6);
 true
-gap> SignPerm(VoleFind.Rep([VoleCon.IsOdd(), SymmetricGroup(6)])) = -1;
+gap> SignPerm(VoleFind.Rep(VoleCon.IsOdd(), 6)) = -1;
 true
-gap> VoleFind.Rep([VoleCon.IsOdd(), AlternatingGroup(6)]);
+gap> VoleFind.Rep(VoleCon.IsOdd(), AlternatingGroup(6));
 fail
+gap> VoleFind.Group(AlternatingGroup(20)) = AlternatingGroup(20);
+true
 
 # https://github.com/peal/vole/issues/15
 gap> D := CycleDigraph(5);;
