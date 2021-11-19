@@ -1,4 +1,4 @@
-#@local n,Sn,pts,G,x
+#@local n,Sn,pts,G,x,con
 gap> START_TEST("constraints.tst");
 gap> LoadPackage("vole", false);
 true
@@ -18,6 +18,15 @@ gap> pts := OnSets([1 .. n], Random(SymmetricGroup(200)));;
 gap> G := SymmetricGroup(pts);;
 gap> x := Random(SymmetricGroup(200));;
 gap> VoleFind.Coset(G * x) = G * x;
+true
+
+# Permutation under conjugation
+gap> x := (3,5,8,4)(1,7);;
+gap> con := VoleCon.Stabilise(x);;
+gap> G := VoleFind.Group(VoleCon.MovedPoints(MovedPoints(x)), con);;
+gap> G = Centraliser(SymmetricGroup(MovedPoints(x)), x);
+true
+gap> VoleFind.Group(10, con) = Centraliser(SymmetricGroup(10), x);
 true
 
 #
