@@ -200,6 +200,8 @@ VoleCon.InGroup := function(G)
 
     if IsNaturalSymmetricGroup(G) then
         return VoleRefiner.InSymmetricGroup(MovedPoints(G));
+    elif IsNaturalAlternatingGroup(G) then
+        return [VoleCon.IsEven(), VoleCon.MovedPoints(MovedPoints(G))];
     fi;
     return GB_Con.InGroup(G);
 end;
