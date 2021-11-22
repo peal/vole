@@ -5,7 +5,7 @@ use crate::{
     perm::Permutation,
 };
 use crate::{
-    datastructures::{hash::QHash, small_int_set::SmallIntSet},
+    datastructures::{small_int_set::SmallIntSet},
     vole::trace,
 };
 
@@ -529,7 +529,7 @@ impl PartitionStack {
         while cells_done < self.extended_cells().len() {
             let mut seen_cells = SmallIntSet::new(self.extended_domain_size());
 
-            let mut points = vec![Wrapping(0 as QHash); self.extended_domain_size()];
+            let mut points = vec![Wrapping(0_u64); self.extended_domain_size()];
 
             while cells_done < self.extended_cells().len() {
                 let c = self.extended_cells()[cells_done];

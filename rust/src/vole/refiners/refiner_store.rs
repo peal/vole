@@ -2,21 +2,19 @@ use std::cmp::Ordering;
 
 use tracing::{info, trace_span};
 
-use crate::vole::solutions::SolutionFound;
-use crate::vole::trace::TracingType;
+
+
 use crate::vole::{
-    backtracking::{Backtrack, Backtracking},
-    partition_stack, trace,
+    backtracking::{Backtrack, Backtracking}, trace,
 };
 use crate::vole::{
     refiners::{Refiner, Side},
     stats::Stats,
 };
 use crate::vole::{
-    solutions::{Canonical, Solutions},
     trace::TraceEvent,
 };
-use crate::{gap_chat::GapChatType, perm::Permutation, vole::domain_state::DomainState};
+use crate::{perm::Permutation, vole::domain_state::DomainState};
 
 use std::any::Any;
 
@@ -146,131 +144,15 @@ impl RefinerStore {
         None
     }
 
-    /// Check if current DomainState produces a smaller canonical image
-    pub fn check_canonical(&mut self, state: &mut DomainState, sols: &mut Solutions, stats: &mut Stats) {
-        let part = state.partition();
-        let pnts = part.base_domain_size();
+    pub fn check_all(&self, p: &Permutation) -> bool {
+        // This line checks that the 'check' function, cand the canonical image code, agree
+        debug_assert!(self.refiners.iter().all(|x| x.check(p)
+            == (x.any_compare(
+                &x.any_image(p, Side::Left),
+                &x.any_image(&Permutation::id(), Side::Right)
+            ) == Ordering::Equal)));
 
-        // Get canonical permutation
-        let preimage: Vec<usize> = part.base_cells().iter().map(|&x| part.cell(x)[0]).collect();
-        // GAP needs 1 indexed
-        let preimagegap: Vec<usize> = preimage.iter().map(|&x| x + 1).collect();
-        let postimagegap: Vec<usize> = GapChatType::send_request(&("canonicalmin", &preimagegap)).unwrap();
-        let postimage: Vec<usize> = postimagegap.into_iter().map(|x| x - 1).collect();
-        let mut image: Vec<usize> = vec![0; pnts];
-        for i in 0..pnts {
-            image[preimage[i]] = postimage[i];
-        }
-        let perm = Permutation::from_vec(image);
-
-        info!("Considering new canonical image: {:?}", perm);
-
-        // If we have found a better trace, then clear the old canonical solution
-        if let Some(canonical) = sols.get_canonical() {
-            if canonical.trace_version < state.tracer().canonical_trace_version() {
-                info!("New canonical trace found, clearing old canonical image");
-                sols.set_canonical(None);
-            }
-        }
-
-        match sols.get_canonical() {
-            None => {
-                info!("First canonical candidate: {:?}", perm);
-                let images = self.get_canonical_images(&perm);
-                sols.set_canonical(Some(Canonical {
-                    perm,
-                    images,
-                    trace_version: state.tracer().canonical_trace_version(),
-                }))
-            }
-            Some(canonical) => {
-                let o = self.get_smaller_canonical_image(&perm, &canonical.images, stats);
-                if let Some(images) = o {
-                    info!("Found new canonical image: {:?}", perm);
-                    sols.set_canonical(Some(Canonical {
-                        perm,
-                        images,
-                        trace_version: state.tracer().canonical_trace_version(),
-                    }));
-                }
-            }
-        }
-    }
-
-    pub fn check_solution(
-        &mut self,
-        state: &mut DomainState,
-        sols: &mut Solutions,
-        stats: &mut Stats,
-    ) -> SolutionFound {
-        // Make one final 'finish' event on the trace. This avoids problems where one trace
-        // is a prefix of another.
-        if state.add_trace_event(trace::TraceEvent::EndTrace()).is_err() {
-            return SolutionFound::None;
-        }
-        if !state.has_rbase() {
-            info!("Taking rbase snapshot");
-            state.snapshot_rbase(self);
-        }
-
-        let part = state.partition();
-        let pnts = part.base_domain_size();
-        assert!(part.base_cells().len() == pnts);
-
-        let tracing_type = state.tracer().tracing_type();
-
-        let mut sol_found = SolutionFound::None;
-        if tracing_type.contains(TracingType::SYMMETRY) {
-            let sol = partition_stack::perm_between(state.rbase_partition().as_ref().unwrap(), part);
-            /*
-            for r in self.refiners.iter() {
-                let x = r.check(&sol);
-                let y = r.any_image(&sol, Side::Left);
-                let z = r.any_image(&Permutation::id(), Side::Right);
-                if x != (r.any_compare(&y, &z) == Ordering::Equal) {
-                    eprintln!(
-                        "\n\n!!!! {:?} {:?} {:?} {:?} {:?} {:?} !!!!\n\n",
-                        x,
-                        &sol,
-                        r.name(),
-                        r.any_to_string(&y),
-                        r.any_to_string(&z),
-                        r.any_compare(&y, &z)
-                    );
-                }
-
-                assert!(
-                    r.check(&sol)
-                        == (r.any_compare(
-                            &r.any_image(&sol, Side::Left),
-                            &r.any_image(&Permutation::id(), Side::Right)
-                        ) == Ordering::Equal)
-                );
-            }
-            */
-            // This line checks that the 'check' function, cand the canonical image code, agree
-            debug_assert!(self.refiners.iter().all(|x| x.check(&sol)
-                == (x.any_compare(
-                    &x.any_image(&sol, Side::Left),
-                    &x.any_image(&Permutation::id(), Side::Right)
-                ) == Ordering::Equal)));
-
-            let is_sol = self.refiners.iter().all(|x| x.check(&sol));
-            if is_sol {
-                info!("Found solution: {:?}", sol);
-                stats.good_iso += 1;
-                sol_found = sols.add_solution(&sol);
-            } else {
-                stats.bad_iso += 1;
-                info!("Not solution: {:?}", sol);
-            }
-        }
-
-        if tracing_type.contains(TracingType::CANONICAL) {
-            self.check_canonical(state, sols, stats);
-        }
-
-        sol_found
+        self.refiners.iter().all(|x| x.check(p))
     }
 }
 
