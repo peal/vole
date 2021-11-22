@@ -1,12 +1,9 @@
 #![allow(dead_code)]
 
+use crate::{datastructures::small_int_set::SmallIntSet, vole::trace};
 use crate::{
     datastructures::{digraph::Digraph, hash::QuickHashable},
     perm::Permutation,
-};
-use crate::{
-    datastructures::{small_int_set::SmallIntSet},
-    vole::trace,
 };
 
 use std::fmt::Debug;
@@ -445,7 +442,7 @@ impl PartitionStack {
             return Ok(());
         }
         {
-            if cell_slice.iter().map(|x| f(x)).all_equal() {
+            if cell_slice.iter().map(f).all_equal() {
                 let hash = f(&cell_slice[0]).quick_hash();
                 // Reduce info size
                 if cell_slice.len() > 1 {
@@ -460,7 +457,7 @@ impl PartitionStack {
             }
             cell_slice.sort_by_key(f);
         }
-        info!(target: "tracer", "Traces: {:?}", (self.cell(i).iter().map(|x| f(x)).collect::<Vec<_>>()));
+        info!(target: "tracer", "Traces: {:?}", (self.cell(i).iter().map(f).collect::<Vec<_>>()));
         self.mut_fix_cell_inverses(i);
         {
             let cell_start = self.cells.starts[i];

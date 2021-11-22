@@ -70,7 +70,7 @@ pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> (So
 
     let mut refiners: Vec<Box<dyn Refiner>> = vec![Box::new(DigraphTransporter::new_stabilizer(right_graph.clone()))];
 
-    for right in right_part.into_iter() {
+    for right in right_part {
         refiners.push(Box::new(SetTransporter::new_stabilizer(right)));
     }
 

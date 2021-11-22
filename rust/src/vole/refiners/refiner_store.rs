@@ -2,17 +2,14 @@ use std::cmp::Ordering;
 
 use tracing::{info, trace_span};
 
-
-
+use crate::vole::trace::TraceEvent;
 use crate::vole::{
-    backtracking::{Backtrack, Backtracking}, trace,
+    backtracking::{Backtrack, Backtracking},
+    trace,
 };
 use crate::vole::{
     refiners::{Refiner, Side},
     stats::Stats,
-};
-use crate::vole::{
-    trace::TraceEvent,
 };
 use crate::{perm::Permutation, vole::domain_state::DomainState};
 
