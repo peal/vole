@@ -6,10 +6,7 @@ use crate::vole::solutions::Canonical;
 use crate::vole::subsearch::sub_full_refine;
 use crate::vole::{partition_stack, trace};
 
-use super::domain_state::DomainState;
-use super::refiners::refiner_store::RefinerStore;
 use super::solutions::SolutionFound;
-use super::stats::Stats;
 use super::{backtracking::Backtrack, state::State};
 use super::{refiners::Side, selector::select_branching_cell};
 use super::{solutions::Solutions, subsearch::sub_simple_search};
@@ -104,7 +101,7 @@ pub fn simple_search_recurse(
     let part = state.domain.partition();
 
     if part.base_domain_fixed() {
-        return check_solution(&mut state.refiners, &mut state.domain, sols, &mut state.stats);
+        return check_solution(state, sols);
     }
 
     let _span = trace_span!("B").entered();
@@ -176,7 +173,7 @@ pub fn simple_coset_search_recurse(
     let part = state.domain.partition();
 
     if part.base_domain_fixed() {
-        return check_solution(&mut state.refiners, &mut state.domain, sols, &mut state.stats);
+        return check_solution(state, sols);
     }
 
     let _span = trace_span!("B").entered();
@@ -311,7 +308,11 @@ pub fn root_search(state: &mut State, sols: &mut Solutions, search_config: &Sear
 /// Check when we reach a candidate solution
 
 /// Check if current DomainState produces a smaller canonical image
-pub fn check_canonical(refiners: &mut RefinerStore, state: &mut DomainState, sols: &mut Solutions, stats: &mut Stats) {
+pub fn check_canonical(in_state: &mut State, sols: &mut Solutions) {
+    let refiners = &mut in_state.refiners;
+    let state = &mut in_state.domain;
+    let stats = &mut in_state.stats;
+
     let part = state.partition();
     let pnts = part.base_domain_size();
 
@@ -361,12 +362,11 @@ pub fn check_canonical(refiners: &mut RefinerStore, state: &mut DomainState, sol
     }
 }
 
-pub fn check_solution(
-    refiners: &mut RefinerStore,
-    state: &mut DomainState,
-    sols: &mut Solutions,
-    stats: &mut Stats,
-) -> SolutionFound {
+pub fn check_solution(in_state: &mut State, sols: &mut Solutions) -> SolutionFound {
+    let refiners = &mut in_state.refiners;
+    let state = &mut in_state.domain;
+    let stats = &mut in_state.stats;
+
     // Make one final 'finish' event on the trace. This avoids problems where one trace
     // is a prefix of another.
     if state.add_trace_event(trace::TraceEvent::EndTrace()).is_err() {
@@ -425,7 +425,7 @@ pub fn check_solution(
     }
 
     if tracing_type.contains(trace::TracingType::CANONICAL) {
-        check_canonical(refiners, state, sols, stats);
+        check_canonical(in_state, sols);
     }
 
     sol_found
