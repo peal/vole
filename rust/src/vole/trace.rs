@@ -23,6 +23,8 @@ pub enum TraceEvent {
     End(),
     EndRefine(),
     EndTrace(),
+    // This allows any value to be pushed onto the trace.
+    Fact { reason: QHash },
     NoSplit { cell: usize, reason: QHash },
 }
 

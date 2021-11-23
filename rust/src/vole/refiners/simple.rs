@@ -67,6 +67,8 @@ impl Refiner for SetTransporter {
             Side::Right => &self.set_right,
         };
 
+        state.refine_by_fact(set.len())?;
+
         state.base_refine_partition_by(|x| set.contains(x))?;
         Ok(())
     }
@@ -159,6 +161,12 @@ impl Refiner for TupleTransporter {
             Side::Left => &self.tuplemap_left,
             Side::Right => &self.tuplemap_right,
         };
+
+        state.refine_by_fact(match side {
+            Side::Left => self.tuple_left.len(),
+            Side::Right => self.tuple_right.len(),
+        })?;
+
         state.base_refine_partition_by(|x| tuplemap.get(x).unwrap_or(&0))?;
         Ok(())
     }
@@ -237,6 +245,8 @@ impl Refiner for SetSetTransporter {
             Side::Left => &self.set_left,
             Side::Right => &self.set_right,
         };
+
+        state.refine_by_fact(set.len())?;
 
         let base = state.partition().base_domain_size();
         let extended = state.partition().extended_domain_size();
@@ -328,6 +338,8 @@ impl Refiner for SetTupleTransporter {
             Side::Left => &self.set_left,
             Side::Right => &self.set_right,
         };
+
+        state.refine_by_fact(set.len())?;
 
         let base = state.partition().base_domain_size();
         let extended = state.partition().extended_domain_size();
