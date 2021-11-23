@@ -324,6 +324,10 @@ impl Refiner for SetTupleTransporter {
     }
 
     fn check(&self, p: &Permutation) -> bool {
+        if self.set_left.len() != self.set_right.len() {
+            return false;
+        }
+
         for set in &*self.set_left {
             let image: Vec<usize> = set.iter().map(|&x| p.apply(x)).collect();
             if !self.set_right.contains(&image) {
@@ -339,7 +343,9 @@ impl Refiner for SetTupleTransporter {
             Side::Right => &self.set_right,
         };
 
+        // Record: number of tuples in set, whether set contains empty tuple
         state.add_invariant_fact(set.len())?;
+        state.add_invariant_fact(set.iter().any(|x| x.len() == 0))?;
 
         let base = state.partition().base_domain_size();
         let extended = state.partition().extended_domain_size();
@@ -347,6 +353,9 @@ impl Refiner for SetTupleTransporter {
         // We build graph first, then we count number of vertices we used
         // We will start colouring just past end of previous vertices
         let extra_points = set.iter().map(|x| x.len()).sum();
+        if extra_points == 0 {
+            return Ok(());
+        }
         let total_new_size = extended + extra_points;
         let mut colouring = vec![0usize; total_new_size];
         let mut graph: Vec<Vec<usize>> = vec![vec![]; total_new_size];
