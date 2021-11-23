@@ -108,7 +108,7 @@ end;
 
 # Sometimes respects raw := true (depending on whether it does a search)
 Vole.TwoClosure := function(G)
-    local points, func, digraphs, digraph_cons;
+    local points, func, digraphs, digraph_con;
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.TwoClosure: ",
                       "The argument must be a perm group");
@@ -130,8 +130,8 @@ Vole.TwoClosure := function(G)
         # 1 OrbitalGraph -> complete digraph -> two-closure is symmetric group
         return SymmetricGroup(points);
     else
-        digraph_cons := List(digraphs, D -> VoleCon.Stabilise(D, OnDigraphs));
-        return VoleFind.Group(VoleCon.MovedPoints(points), digraph_cons);
+        digraph_con := VoleCon.Stabilise(digraphs, OnTuplesDigraphs);
+        return VoleFind.Group(VoleCon.MovedPoints(points), digraph_con);
     fi;
 end;
 
