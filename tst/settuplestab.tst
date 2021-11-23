@@ -4,7 +4,7 @@ gap> ReadPackage("vole", "tst/test_functions.g");
 true
 
 #
-gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)) ], {s} -> QuickChecker(Maximum(Flat(s)), [VoleCon.Stabilize(s, OnSetsTuples)]));
+gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)) ], {s} -> QuickChecker(Maximum(Flat([1,s])), [VoleCon.Stabilize(s, OnSetsTuples)]));
 true
 
 #
