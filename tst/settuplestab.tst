@@ -8,4 +8,10 @@ gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)) ], {s} -> QuickChecker(Maximum(Fla
 true
 
 #
+gap> Vole.Stabiliser(SymmetricGroup(3), [], OnSetsTuples) = SymmetricGroup(3);
+true
+gap> Vole.Stabiliser(SymmetricGroup(3), [[]], OnSetsTuples) = SymmetricGroup(3);
+true
+
+#
 gap> STOP_TEST("settuplestab.tst");
