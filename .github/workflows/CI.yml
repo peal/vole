@@ -1,16 +1,18 @@
-name: CI
+name: Ubuntu
 
-# Trigger the workflow on push or pull request
 on:
   workflow_dispatch:
   pull_request:
   push:
   schedule:
-    # Every day at 1:30 AM UTC
-    - cron: '30 1 * * *'
+    # Every weekday at 1:30 AM UTC
+    - cron: '30 1 * * 1-5'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
-  # The CI test job
   test:
     name: GAP ${{ matrix.gap-branch }} - Rust ${{matrix.rust-version}}
     runs-on: ubuntu-latest
@@ -50,120 +52,3 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
         timeout-minutes: 15
-
-  # The Cygwin job
-  cygwin:
-    name: Cygwin / GAP master
-    runs-on: windows-latest
-    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
-    strategy:
-      fail-fast: false
-
-    defaults:
-      run:
-        shell: C:\cygwin64\bin\bash.exe --login -o igncr '{0}'
-
-    env:
-      CHERE_INVOKING: 1
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: "Set git to use UNIX-style line endings"
-        shell: bash
-        run: |
-           git config --global core.autocrlf false
-           git config --global core.eol lf
-      - name: "Install Cygwin"
-        uses: gap-actions/setup-cygwin@master
-      - name: "Set up rust"
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - name: "Build the rust component of Vole"
-        run: cd rust && cargo build --release --all-features
-      - name: "Run the rust tests for Vole"
-        run: cd rust && cargo test --release -q
-      - name: "Clone GAP"
-        uses: actions/checkout@v2
-        with:
-          repository: gap-system/gap
-          ref: master
-          path: gapdev
-      - name: "Build GAP and make bootstrap-pkg-full"
-        run: |
-          cd gapdev
-          ./autogen.sh
-          ./configure
-          make -j4
-          make bootstrap-pkg-full WGET="wget -N --no-check-certificate --tries=5 --waitretry=5 --retry-connrefused"
-      - name: "Clone OrbitalGraphs"
-        uses: actions/checkout@v2
-        with:
-          repository: gap-packages/OrbitalGraphs
-          path: gapdev/pkg/OrbitalGraphs
-      - name: "Clone QuickCheck"
-        uses: actions/checkout@v2
-        with:
-          repository: ChrisJefferson/QuickCheck
-          path: gapdev/pkg/QuickCheck
-      - name: "Clone BacktrackKit"
-        uses: actions/checkout@v2
-        with:
-          repository: peal/BacktrackKit
-          path: gapdev/pkg/BacktrackKit
-      - name: "Clone GraphBacktracking"
-        uses: actions/checkout@v2
-        with:
-          repository: peal/GraphBacktracking
-          path: gapdev/pkg/GraphBacktracking
-      - name: "Compile various GAP packages"
-        run: |
-          cd gapdev/pkg
-          for pkg in "datastructures" "digraphs" "ferret" "io" "json" "orb" "profiling"; do
-              ../bin/BuildPackages.sh --strict $pkg*
-          done
-      - name: "Run GAP tests for Vole"
-        run: |
-          mkdir -p gaproot/pkg/
-          ln -f -s $PWD gaproot/pkg/
-          GAP="$PWD/gapdev/bin/gap.sh -l $PWD/gaproot; --quitonbreak"
-          $GAP tst/testall.g
-      - name: "Setup tmate session"
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
-        timeout-minutes: 15
-
-  # The documentation job
-  manual:
-    name: Build manuals
-    runs-on: ubuntu-latest
-    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: gap-actions/setup-gap@v2
-        with:
-          GAP_PKGS_TO_BUILD: ''
-      - name: 'Add a necessary symlink'
-        shell: bash
-        run: |
-          mkdir -p gaproot/pkg/
-          ln -f -s $PWD gaproot/pkg/
-      - uses: gap-actions/build-pkg-docs@v1
-        with:
-          use-latex: 'true'
-      - name: 'Upload PDF manual'
-        uses: actions/upload-artifact@v2
-        with:
-          name: Vole manual (PDF)
-          path: ./doc/manual.pdf
-          retention-days: 3
-      - name: 'Upload HTML manual'
-        uses: actions/upload-artifact@v2
-        with:
-          name: Vole manual (HTML)
-          path: |
-            doc/*.html
-            doc/*.css
-            doc/*.js
-          retention-days: 3
