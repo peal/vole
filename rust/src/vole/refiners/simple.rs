@@ -231,6 +231,10 @@ impl Refiner for SetSetTransporter {
     }
 
     fn check(&self, p: &Permutation) -> bool {
+        if self.set_left.len() != self.set_right.len() {
+            return false;
+        }
+
         for set in &*self.set_left {
             let image: SortedVec<usize> = set.iter().map(|&x| p.apply(x)).collect();
             if !self.set_right.contains(&image) {
@@ -246,7 +250,13 @@ impl Refiner for SetSetTransporter {
             Side::Right => &self.set_right,
         };
 
+        // Record: number of sets in the set, whether set contains the empty set
         state.add_invariant_fact(set.len())?;
+        state.add_invariant_fact(set.iter().any(|x| x.len() == 0))?;        
+
+        if set.len() == 0 {
+            return Ok(());
+        }
 
         let base = state.partition().base_domain_size();
         let extended = state.partition().extended_domain_size();

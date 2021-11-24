@@ -8,4 +8,16 @@ gap> QC_Check([ QC_SetOf(QC_SetOf(IsPosInt)) ], {s} -> QuickChecker(Maximum(Flat
 true
 
 #
+gap> Vole.Stabiliser(SymmetricGroup(3), [], OnSetsSets) = SymmetricGroup(3);
+true
+gap> Vole.Stabiliser(SymmetricGroup(3), [[]], OnSetsSets) = SymmetricGroup(3);
+true
+
+#
+gap> VoleFind.Rep(4, VoleRefiner.SetSetTransporter([[]], []));
+fail
+gap> VoleFind.Rep(4, VoleRefiner.SetSetTransporter([], [[]]));
+fail
+
+#
 gap> STOP_TEST("setsetstab.tst");
