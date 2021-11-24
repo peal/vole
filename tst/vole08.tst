@@ -13,11 +13,12 @@ gap> START_TEST("vole08.tst");
 # doc/_Chapter_expert.xml:46-48
 gap> LoadPackage("vole", false);;
 
-# doc/_Chapter_expert.xml:117-122
-gap> constraint := VoleCon.Stabilise(PetersenGraph(), OnDigraphs);;
-gap> G := VoleFind.Group(constraint : points := 5);;
-gap> TransitiveIdentification(G);
-13
+# doc/_Chapter_expert.xml:117-123
+gap> D := PetersenGraph();;
+gap> constraint := VoleCon.Stabilise(D, OnDigraphs);;
+gap> G := VoleFind.Group(constraint : points := DigraphNrVertices(D));;
+gap> [NrMovedPoints(G), TransitiveIdentification(G)];
+[ 10, 13 ]
 
 #
 gap> STOP_TEST("vole08.tst", 1);

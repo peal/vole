@@ -81,8 +81,9 @@ gap> ret := Vole.Intersection(AlternatingGroup(6), PGL(2,5) : raw);;
       point’ constraint, which achieves the same affect as this option more
       simply.
 @BeginExampleSession
-gap> constraint := VoleCon.Stabilise(PetersenGraph(), OnDigraphs);;
-gap> G := VoleFind.Group(constraint : points := 5);;
-gap> TransitiveIdentification(G);
-13
+gap> D := PetersenGraph();;
+gap> constraint := VoleCon.Stabilise(D, OnDigraphs);;
+gap> G := VoleFind.Group(constraint : points := DigraphNrVertices(D));;
+gap> [NrMovedPoints(G), TransitiveIdentification(G)];
+[ 10, 13 ]
 @EndExampleSession
