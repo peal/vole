@@ -383,6 +383,7 @@ function(points, find_single, find_coset, find_canonical, constraints, canonical
     points := Maximum(2, points);
 
     if canonical_group <> false then
+        # TODO: Allow the refiner for the canonical group to be user-specified
         constraints := Concatenation([GB_Con.InGroupSimple(canonical_group)], constraints);
     fi;
 
