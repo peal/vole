@@ -130,6 +130,18 @@ _Vole.setParent := function(ret, G)
     SetParent(obj, G);
 end;
 
+# Function in use by VoleRefiner.InSymmetricGroup to let it accept either a
+# point k (interpreted as [1..4]) or a set of positive integers
+_Vole.points := function(s)
+    if s = 0 or IsPosInt(s) then
+        return [1 .. s];
+    elif IsDuplicateFreeList(s) and ForAll(s, IsPosInt) then
+        return Set(s);
+    else
+        ErrorNoReturn("Unclear how <s> defines a set of positive integers");
+    fi;
+end;
+
 # Temporary declarations that are made in newer versions of Digraphs package.
 # Remove these when we require Digraphs v1.6.0 or newer
 if not IsBound(OnTuplesDigraphs) then
