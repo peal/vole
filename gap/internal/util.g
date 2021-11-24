@@ -98,7 +98,7 @@ end;
 # * Replace any group G by VoleCon.InGroup(G)
 # * Replace any right coset object U by VoleCon.InCoset(U)
 # * Replace any positive integer k by VoleCon.LargestMovedPoint(k)
-_Vole.processConstraints := function(constraints)
+_Vole.processConstraints := function(constraints, conf)
     local i;
     constraints := Flat(constraints);
     for i in [1 .. Length(constraints)] do

@@ -11,12 +11,12 @@ VoleFind.Representative := function(arguments...)
     if IsEmpty(arguments) then
         ErrorNoReturn("VoleFind.Rep: At least one argument must be given");
     fi;
-    constraints := _Vole.processConstraints(arguments);
+    conf := _Vole.getConfig(rec(raw := false, points := infinity));
+    constraints := _Vole.processConstraints(arguments, conf);
     if ForAny(constraints, x -> x = fail) then
         return fail;
     fi;
 
-    conf   := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(constraints, conf.points, true);
     ret    := _Vole.CosetSolve(Minimum(bounds.min, bounds.max), constraints);
 
@@ -37,8 +37,8 @@ VoleFind.Group := function(arguments...)
         ErrorNoReturn("VoleFind.Group: At least one argument must be given");
     fi;
 
-    constraints := _Vole.processConstraints(arguments);
     conf        := _Vole.getConfig(rec(raw := false, points := infinity));
+    constraints := _Vole.processConstraints(arguments, conf);
     bounds      := _Vole.getBounds(constraints, conf.points, false);
     ret         := _Vole.GroupSolve(bounds.max, constraints);
 
@@ -55,12 +55,12 @@ VoleFind.Coset := function(arguments...)
     if IsEmpty(arguments) then
         ErrorNoReturn("VoleFind.Coset: At least one argument must be given");
     fi;
-    constraints := _Vole.processConstraints(arguments);
+    conf := _Vole.getConfig(rec(raw := false, points := infinity));
+    constraints := _Vole.processConstraints(arguments, conf);
     if ForAny(constraints, x -> x = fail) then
         return fail;
     fi;
 
-    conf   := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(constraints, conf.points, false);
     ret    := _Vole.CosetSolve(bounds.max, constraints);
 
