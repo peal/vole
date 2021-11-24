@@ -101,6 +101,9 @@ end;
 _Vole.processConstraints := function(constraints, conf)
     local i;
     constraints := Flat(constraints);
+    if IsBound(conf.points) and IsInt(conf.points) then
+        Add(constraints, conf.points);
+    fi;
     for i in [1 .. Length(constraints)] do
         if IsPermGroup(constraints[i]) then
             constraints[i] := VoleCon.InGroup(constraints[i]);
