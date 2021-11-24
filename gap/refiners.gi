@@ -6,7 +6,13 @@
 # Implementations: Vole refiners
 
 # In-group refiners
-VoleRefiner.InSymmetricGroup := {s} -> rec(bounds := rec(largest_required_point := _Vole.lmp(s), largest_moved_point := _Vole.lmp(s)), con := rec(InSymmetricGroup := rec(points := s)));
+VoleRefiner.InSymmetricGroup := {s} -> rec(
+    bounds := rec(
+        largest_required_point := _Vole.lmp(s),
+        largest_moved_point := _Vole.lmp(s),
+    ),
+    con := rec(InSymmetricGroup := rec(points := _Vole.points(s))),
+);
 
 # Stabilisers
 VoleRefiner.PointStab     := {s} -> rec( bounds := rec(largest_required_point :=_Vole.lmp(s)), con := rec(PointStab := rec(points := [s])));
