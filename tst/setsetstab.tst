@@ -19,5 +19,9 @@ fail
 gap> VoleFind.Rep(4, VoleRefiner.SetSetTransporter([], [[]]));
 fail
 
+# Issue #49
+gap> IsTrivial(VoleFind.Group(VoleCon.Stabilise([[]], OnSetsSets) : points := 1));
+true
+
 #
 gap> STOP_TEST("setsetstab.tst");
