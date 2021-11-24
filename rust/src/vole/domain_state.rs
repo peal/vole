@@ -86,7 +86,7 @@ impl DomainState {
         &self.digraph_stack
     }
 
-    pub fn refine_by_fact<T: Ord + Hash + Debug + QuickHashable>(&mut self, reason: T) -> trace::Result<()> {
+    pub fn add_invariant_fact<T: Ord + Hash + Debug + QuickHashable>(&mut self, reason: T) -> trace::Result<()> {
         self.tracer.add(trace::TraceEvent::Fact {
             reason: reason.quick_hash().0,
         })
