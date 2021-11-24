@@ -18,4 +18,4 @@ gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 true
 
 #
-gap> STOP_TEST("settupletrans.tst");
+gap> STOP_TEST("settupletrans-coset.tst");

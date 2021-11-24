@@ -5,11 +5,8 @@ true
 
 #
 gap> QC_Check([IsPermGroup, IsPermGroup],
-> function(g,s)
->   local lmp;
->   lmp := Maximum([LargestMovedPoint(g), LargestMovedPoint(s),2]);
->   return VoleTestCanonical(lmp, g, s, x -> GB_Con.NormaliserSimple(x), OnPoints);
-> end, rec(limit := 7));
+> {g, s} -> VoleTestCanonical(g, s, GB_Con.NormaliserSimple, OnPoints),
+> rec(limit := 7));
 true
 
 # This examples used to give a wrong result, caused by a problem where one

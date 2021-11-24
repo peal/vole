@@ -2,15 +2,15 @@ LoadPackage("vole", false);
 LoadPackage("quickcheck", false);
 LoadPackage("ferret", false);
 
-VoleTestCanonical := function(maxpnt, grp, obj, VoleFunc, action)
+VoleTestCanonical := function(grp, obj, VoleFunc, action)
     local p, newobj, ret, newret, image, newimage;
     p := Random(grp);
     newobj := action(obj, p);
-    ret := VoleFind.CanonicalPerm(grp, Flat([VoleFunc(obj)]) : points := maxpnt);
+    ret := VoleFind.CanonicalPerm(grp, Flat([VoleFunc(obj)]));
     if not(ret in grp) then
         return StringFormatted("A -Not in group! {} {} {}", grp, obj, ret);
     fi;
-    newret := VoleFind.CanonicalPerm(grp, Flat([VoleFunc(newobj)]) : points := maxpnt);
+    newret := VoleFind.CanonicalPerm(grp, Flat([VoleFunc(newobj)]));
     if not(newret in grp) then
         return StringFormatted("B - Not in group! {} {} {}", grp, obj, ret);
     fi;
@@ -97,15 +97,15 @@ function(p, l)
     return g;
 end;
 
-# Check (and simply benchmark) that VoleSolve(p,false,c) and GAPSolve(p,c) agree
+# Check (and simply benchmark) that VoleFind.Group(p,c) and GAPSolve(p,c) agree
 VoleBenchmark :=
 function(p, c)
     local ret1, ret2, time1, time2;
     time1 := NanosecondsSinceEpoch();
-    ret1 := VoleFind.Group(c : points := p);
+    ret1  := VoleFind.Group(p, c);
     time1 := NanosecondsSinceEpoch() - time1;
     time2 := NanosecondsSinceEpoch();
-    ret2 := GAPSolve(p, c);
+    ret2  := GAPSolve(p, c);
     time2 := NanosecondsSinceEpoch() - time2;
     if ret2 <> ret1 then
         Error(StringFormatted(Concatenation(

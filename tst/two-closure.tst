@@ -1,10 +1,18 @@
+#@local g, gap, vole1, vole2, n
 gap> START_TEST("two-closure.tst");
 gap> LoadPackage("vole", false);
 true
-gap> pnts := 9;;
-gap> for g in AllTransitiveGroups(NrMovedPoints, pnts, Transitivity, 1) do
-> tc := TwoClosure(g);
-> orbs := OrbitalGraphs(g, pnts);
-> voletc := VoleFind.Group(pnts, VoleCon.Stabilize(orbs, OnTuplesDigraphs));
-> if tc <> voletc then Print(g, ":", tc, voletc); fi;
+
+#
+gap> n := 9;;
+gap> for g in AllTransitiveGroups(NrMovedPoints, n, Transitivity, 1) do
+>   gap := TwoClosure(g);
+>   vole1 := Vole.TwoClosure(g);
+>   vole2 := VoleFind.Group(n, VoleCon.Stabilize(OrbitalGraphs(g, n),
+>                                                OnTuplesDigraphs));
+>   if gap <> vole1 then Print(g, ":", gap, vole1); fi;
+>   if gap <> vole2 then Print(g, ":", gap, vole2); fi;
 > od;
+
+#
+gap> STOP_TEST("two-closure.tst");

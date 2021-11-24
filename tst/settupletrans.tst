@@ -16,7 +16,7 @@ gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 >  end);
 true
 
-#
+# Issue #40
 gap> VoleFind.Rep(4, VoleRefiner.SetTupleTransporter([[]], []));
 fail
 gap> VoleFind.Rep(4, VoleRefiner.SetTupleTransporter([], [[]]));

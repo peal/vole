@@ -1,4 +1,4 @@
-#@local n,Sn,pts,G,x,y,con,D
+#@local n, Sn, pts, G, x, y, con, D
 gap> START_TEST("constraints.tst");
 gap> LoadPackage("vole", false);
 true

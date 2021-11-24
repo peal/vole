@@ -4,8 +4,10 @@ gap> ReadPackage("vole", "tst/test_functions.g");
 true
 
 #
-gap> QC_Check([ QC_SetOf(QC_SetOf(IsPosInt)),QC_SetOf(QC_SetOf(IsPosInt)),QC_SetOf(QC_SetOf(IsPosInt)) ],
->  {a,b,c} -> QuickChecker(Maximum(Flat([a,b,c,2])), [VoleCon.Stabilize(a, OnSetsSets),VoleCon.Stabilize(b, OnSetsSets), VoleCon.Stabilize(c, OnSetsSets)]));
+gap> QC_Check(List([1 .. 3], i -> QC_SetOf(QC_SetOf(IsPosInt))),
+> {a,b,c} -> QuickChecker(Maximum(Flat([a, b, c, 0])),
+>                         List([a, b, c], x -> VoleCon.Stabilize(x, OnSetsSets))
+> ));
 true
 
 #
