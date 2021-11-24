@@ -160,3 +160,7 @@ if not IsBound(OnTuplesDigraphs) then
     BindGlobal("OnTuplesDigraphs",
     {L, p} -> List(L, x -> OnDigraphs(DigraphMutableCopyIfMutable(x), p)));
 fi;
+if not IsBound(OnSetsDigraphs) then
+    BindGlobal("OnSetsDigraphs",
+    {L, p} -> Set(L, x -> OnDigraphs(DigraphMutableCopyIfMutable(x), p)));
+fi;

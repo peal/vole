@@ -75,6 +75,11 @@ VoleCon.Stabilize := function(object, action...)
       and (ForAll(object, IsDigraph) or ForAll(object, IsHomogeneousList)) then
         return List(object, x -> VoleCon.Stabilise(x, OnDigraphs));
 
+    # OnSetsDigraphs
+    elif action = OnSetsDigraphs and (ForAll(object, IsDigraph)
+      or ForAll(object, x -> IsList(x)
+                and ForAll(x, y -> IsList(y) and ForAll(y, IsPosInt)))) then
+        return VoleRefiner.SetDigraphStab(object);
     fi;
     ErrorNoReturn("VoleCon.Stabilize: Unrecognised combination of ",
                   "<object> and <action>:\n",
@@ -203,6 +208,14 @@ VoleCon.Transport := function(object1, object2, action...)
                         VoleCon.Transport(object1[i], object2[i], OnDigraphs));
         fi;
 
+    # OnSetsDigraphs
+    elif action = OnSetsDigraphs and ForAll([object1, object2], IsSet)
+      and (ForAll([object1, object2], o -> ForAll(o, IsDigraph)) or
+           ForAll([object1, object2], o -> ForAll(o, x -> IsList(x) and
+                                           ForAll(x, y -> IsList(y) and
+                                           ForAll(y, IsPosInt)))))
+      then
+        return VoleRefiner.SetDigraphTransport(object1, object2);
     fi;
     ErrorNoReturn("VoleCon.Stabilize: Unrecognised combination of ",
                   "<object1>, <object2>, and <action>:\n",

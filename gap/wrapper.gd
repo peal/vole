@@ -133,7 +133,15 @@
 #!     <Ref Oper="OnTuplesDigraphs" BookName="Digraphs" Style="Number" Label="for a list of digraphs and a perm"/>
 #!   </Item>
 #!   <Item>
-#!     A list of digraphs/lists of adjacencies
+#!     A list of digraphs/adjacency lists
+#!   </Item>
+#! </Row>
+#! <Row>
+#!   <Item>
+#!     <Ref Oper="OnSetsDigraphs" BookName="Digraphs" Style="Number" Label="for a set of digraphs and a perm"/>
+#!   </Item>
+#!   <Item>
+#!     A set of digraphs/adjacency lists
 #!   </Item>
 #! </Row>
 #! </Table>

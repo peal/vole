@@ -32,9 +32,9 @@
 #! gap> LoadPackage("vole", false);;
 #! gap> Set(RecNames(VoleRefiner));
 #! [ "DigraphStab", "DigraphTransporter", "InSymmetricGroup", "PointStab", 
-#!   "PointTransporter", "SetSetStab", "SetSetTransporter", "SetStab", 
-#!   "SetTransporter", "SetTupleStab", "SetTupleTransporter", "TupleStab", 
-#!   "TupleTransporter" ]
+#!   "PointTransporter", "SetDigraphStab", "SetDigraphTransporter", 
+#!   "SetSetStab", "SetSetTransporter", "SetStab", "SetTransporter", 
+#!   "SetTupleStab", "SetTupleTransporter", "TupleStab", "TupleTransporter" ]
 #! @EndExampleSession
 DeclareGlobalVariable("VoleRefiner");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable

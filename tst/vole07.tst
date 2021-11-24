@@ -14,9 +14,9 @@ gap> START_TEST("vole07.tst");
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(VoleRefiner));
 [ "DigraphStab", "DigraphTransporter", "InSymmetricGroup", "PointStab", 
-  "PointTransporter", "SetSetStab", "SetSetTransporter", "SetStab", 
-  "SetTransporter", "SetTupleStab", "SetTupleTransporter", "TupleStab", 
-  "TupleTransporter" ]
+  "PointTransporter", "SetDigraphStab", "SetDigraphTransporter", 
+  "SetSetStab", "SetSetTransporter", "SetStab", "SetTransporter", 
+  "SetTupleStab", "SetTupleTransporter", "TupleStab", "TupleTransporter" ]
 
 #
 gap> STOP_TEST("vole07.tst", 1);
