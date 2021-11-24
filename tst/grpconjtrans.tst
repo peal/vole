@@ -10,7 +10,7 @@ gap> QC_Check([IsPermGroup, IsPermGroup], function(g, h)
 >      h2 := h^p;
 >      res := VoleFind.Rep(VoleCon.Transport(h,h2), BTKit_Con.InGroupSimple(g));
 >      if res = fail or h^res <> h2 then
->          return StringFormatted("Failure: {} {} {} {}", g,h,p,h2);
+>          return StringFormatted("Failure: {} {} {} {} {}", g,h,p,h2,res);
 >      fi;
 >      return true;
 >  end);
