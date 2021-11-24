@@ -58,4 +58,10 @@ gap> OnDigraphs(D, p) = D;
 true
 
 #
+gap> IsTrivial(VoleFind.Group(VoleCon.LargestMovedPoint(0)));
+true
+gap> IsTrivial(VoleFind.Group(VoleCon.LargestMovedPoint(1)));
+true
+
+#
 gap> STOP_TEST("basic.tst");

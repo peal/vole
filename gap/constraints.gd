@@ -405,7 +405,8 @@ DeclareGlobalFunction("VoleCon.MovedPoints");
 #! @Returns A constraint
 #! @Description
 #! This constraint is a shorthand for
-#! `VoleCon.InGroup(SymmetricGroup(<A>point</A>))`.
+#! `VoleCon.InGroup(SymmetricGroup(<A>point</A>))`,
+#! where <A>point</A> is a nonnegative integer.
 #! See <Ref Func="VoleCon.InGroup"/>.
 #! @BeginExampleSession
 #! gap> con := VoleCon.LargestMovedPoint(5);;

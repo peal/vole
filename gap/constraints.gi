@@ -300,9 +300,9 @@ VoleCon.MovedPoints := function(pointlist)
 end;
 
 VoleCon.LargestMovedPoint := function(point)
-    if not IsPosInt(point) then
+    if point <> 0 and not IsPosInt(point) then
         ErrorNoReturn("VoleCon.LargestMovedPoint: ",
-                      "The argument must be a positive integer");
+                      "The argument must be a nonnegative integer");
     fi;
     return VoleRefiner.InSymmetricGroup([1 .. point]);
 end;

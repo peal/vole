@@ -106,7 +106,7 @@ _Vole.processConstraints := function(constraints)
             constraints[i] := VoleCon.InGroup(constraints[i]);
         elif IsRightCoset(constraints[i]) then
             constraints[i] := VoleCon.InCoset(constraints[i]);
-        elif IsPosInt(constraints[i]) then
+        elif IsInt(constraints[i]) then
             constraints[i] := VoleCon.LargestMovedPoint(constraints[i]);
         fi;
     od;

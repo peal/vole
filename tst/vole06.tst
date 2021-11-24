@@ -101,22 +101,22 @@ gap> con2 := VoleCon.MovedPoints([2,6,4,5]);;
 gap> VoleFind.Group(con1, con2) = SymmetricGroup([2,4,5]);
 true
 
-# doc/_Chapter_Constraints.xml:462-466
+# doc/_Chapter_Constraints.xml:463-467
 gap> con := VoleCon.LargestMovedPoint(5);;
 gap> VoleFind.Group(con) = SymmetricGroup(5);
 true
 
-# doc/_Chapter_Constraints.xml:484-488
+# doc/_Chapter_Constraints.xml:486-490
 gap> con := VoleCon.IsEven();;
 gap> VoleFind.Group(con, SymmetricGroup(5)) = AlternatingGroup(5);
 true
 
-# doc/_Chapter_Constraints.xml:506-510
+# doc/_Chapter_Constraints.xml:509-513
 gap> con := VoleCon.IsOdd();;
 gap> VoleFind.Rep(con, SymmetricGroup(5));
 (1,5,2,4)
 
-# doc/_Chapter_Constraints.xml:525-528
+# doc/_Chapter_Constraints.xml:528-531
 gap> VoleFind.Rep(VoleCon.None());
 fail
 
