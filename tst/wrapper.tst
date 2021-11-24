@@ -12,20 +12,18 @@ Error, Vole.Intersection: The arguments must be (a list containing) perm group\
 s and/or right cosets of perm groups
 gap> Vole.Intersection(SymmetricGroup(5)) = SymmetricGroup(5);
 true
-gap> Vole.Intersection(SymmetricGroup(5) : raw := true).group
-> = SymmetricGroup(5);
+gap> Vole.Intersection(SymmetricGroup(5) : raw).group = SymmetricGroup(5);
 true
 gap> Vole.Intersection(SymmetricGroup(5), AlternatingGroup(5))
 > = AlternatingGroup(5);
 true
-gap> Vole.Intersection([SymmetricGroup(5), AlternatingGroup(5)]
-> : raw := true).group
+gap> Vole.Intersection([SymmetricGroup(5), AlternatingGroup(5)] : raw).group
 > = AlternatingGroup(5);
 true
 gap> Vole.Intersection(AlternatingGroup(4), AlternatingGroup(4) * (1,2));
 [  ]
 gap> Vole.Intersection(AlternatingGroup(4), AlternatingGroup(4) * (1,2)
-> : raw := true).cosetrep;
+> : raw).cosetrep;
 fail
 
 # Vole.Stabiliser
@@ -41,7 +39,7 @@ Group([ (1,2,3,4,5) ])
 gap> Parent(last) = AlternatingGroup(5);
 true
 gap> Vole.Stabiliser(AlternatingGroup(5), CycleDigraph(5), OnDigraphs
-> : raw := true).group;
+> : raw).group;
 Group([ (1,2,3,4,5) ])
 gap> Parent(last) = AlternatingGroup(5);
 true

@@ -8,7 +8,7 @@ VoleTestCanonical := function(grp, obj, VoleFunc, action)
     newobj := action(obj, p);
     ret := VoleFind.CanonicalPerm(grp, Flat([VoleFunc(obj)]));
     if not(ret in grp) then
-        return StringFormatted("A -Not in group! {} {} {}", grp, obj, ret);
+        return StringFormatted("A - Not in group! {} {} {}", grp, obj, ret);
     fi;
     newret := VoleFind.CanonicalPerm(grp, Flat([VoleFunc(newobj)]));
     if not(newret in grp) then
