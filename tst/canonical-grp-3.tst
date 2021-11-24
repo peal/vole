@@ -5,13 +5,7 @@ true
 
 #
 gap> QC_Check([IsPermGroup, IsPermGroup],
-> function(g,s)
->   local lmp;
->   lmp := Maximum(LargestMovedPoint(g), LargestMovedPoint(s), 2);
->   return VoleTestCanonical(lmp, g, s,
->     {x} -> [VoleCon.Stabilize(x)],
->     {x,p} -> x^p);
-> end);
+>     {g, s} -> VoleTestCanonical(g, s, VoleCon.Stabilize, OnPoints));
 true
 
 #

@@ -4,7 +4,7 @@ gap> ReadPackage("vole", "tst/test_functions.g");
 true
 
 #
-gap> QC_Check([ IsPermGroup, IsPermGroup ], function(g,h)
+gap> QC_Check([IsPermGroup, IsPermGroup], function(g, h)
 >      local h2, res, p;
 >      p := Random(g);
 >      h2 := h^p;
