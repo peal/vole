@@ -142,6 +142,18 @@ _Vole.points := function(s)
     fi;
 end;
 
+# Turn a digraph into a list of neighbours, to allow us to accept both
+# Digraphs package objects, and lists of neighbours
+_Vole.Digraph := function(g)
+    if IsDigraph(g) then
+        return OutNeighbours(g);
+    elif IsList(g) then
+        return g;
+    else
+        Error("Unrecognised digraph format");
+    fi;
+end;
+
 # Temporary declarations that are made in newer versions of Digraphs package.
 # Remove these when we require Digraphs v1.6.0 or newer
 if not IsBound(OnTuplesDigraphs) then
