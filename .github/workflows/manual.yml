@@ -1,0 +1,44 @@
+name: Documentation
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+jobs:
+  manual:
+    name: Build manual
+    runs-on: ubuntu-latest
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: gap-actions/setup-gap@v2
+        with:
+          GAP_PKGS_TO_BUILD: ''
+      - name: 'Add a necessary symlink'
+        shell: bash
+        run: |
+          mkdir -p gaproot/pkg/
+          ln -f -s $PWD gaproot/pkg/
+      - uses: gap-actions/build-pkg-docs@v1
+        with:
+          use-latex: 'true'
+      - name: 'Upload PDF manual'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Vole manual (PDF)
+          path: ./doc/manual.pdf
+          retention-days: 3
+      - name: 'Upload HTML manual'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Vole manual (HTML)
+          path: |
+            doc/*.html
+            doc/*.css
+            doc/*.js
+          retention-days: 3
