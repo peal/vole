@@ -62,10 +62,10 @@ function(savedvals, state, type, args)
         Info(InfoVole, 2, "Generating image", args[1]);
         Assert(2, args[1] in ["Left", "Right"]);
         if args[1] = "Left" then
-            val := state!.conlist[1]!.image(PermList(List(args[2].values, x -> x+1)));
+            val := ImageFunc(state!.conlist[1]!.constraint)(PermList(List(args[2].values, x -> x+1)));
         else
             Assert(2, args[2].values = []);
-            val := state!.conlist[1]!.result();
+            val := ResultObject(state!.conlist[1]!.constraint);
         fi;
         savedvals.map[savedvals.count] := val;
         Info(InfoVole, 2, "Saving: ", val , " as ", savedvals.count);

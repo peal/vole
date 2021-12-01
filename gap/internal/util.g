@@ -49,8 +49,8 @@ _Vole.getBounds := function(constraints, initial_max, allow_max_inf)
             fi;
         elif IsRefiner(c) then
             this_min := c!.largest_required_point;
-            if IsBound(c!.largest_moved_point) then
-                this_max := c!.largest_moved_point;
+            if HasLargestMovedPoint(c!.constraint) then
+                this_max := LargestMovedPoint(c!.constraint);
             fi;
         fi;
         min := Maximum(min, this_min);
