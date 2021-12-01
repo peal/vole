@@ -122,10 +122,8 @@ VoleFind.Canonical := function(G, arguments...)
                       "To restrict the moved points, canonise in a different ",
                       "group;");
 
-    elif ForAny(constraints, c -> IsRefiner(c) and StartsWith(c!.name, "InCoset"))
+    elif ForAny(constraints, c -> IsRefiner(c) and not IsGroupConstraint(c!.constraint))
       or ForAny(constraints, c -> IsRecord(c) and EndsWith(RecNames(c.con)[1], "Transport"))
-      or ForAny(constraints, c -> IsRefiner(c) and IsBound(c!.check) and not c!.check(()))
-      or ForAny(constraints, c -> IsRefiner(c) and not IsBound(c!.check) and c!.image(()) <> c!.result)
       then
         # Try to check for "coset" refiners/constraints
         ErrorNoReturn("VoleFind.Canonical: ",
