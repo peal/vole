@@ -142,7 +142,7 @@ impl RefinerStore {
     }
 
     pub fn check_all(&self, p: &Permutation) -> bool {
-        // This line checks that the 'check' function, cand the canonical image code, agree
+        // This line checks that the 'check' function, and the canonical image code, agree
         debug_assert!(self.refiners.iter().all(|x| x.check(p)
             == (x.any_compare(
                 &x.any_image(p, Side::Left),
