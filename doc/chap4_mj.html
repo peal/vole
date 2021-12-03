@@ -74,6 +74,10 @@
 </span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X860ADFA77D2FC5A4">4.6-3 <span class="Heading">CanonicalDigraph</span></a>
 </span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X8732C0A7786CBE39">4.6-4 <span class="Heading">IsIsomorphicDigraph</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X7AEF42B27838C446">4.6-5 <span class="Heading">IsomorphismDigraphs</span></a>
+</span>
 </div></div>
 </div>
 
@@ -124,9 +128,9 @@
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Set(RecNames(Vole));</span>
 [ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
   "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", 
-  "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", 
-  "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer", 
-  "TwoClosure" ]
+  "DigraphCanonicalLabelling", "Intersection", "IsConjugate", 
+  "IsIsomorphicDigraph", "IsomorphismDigraphs", "Normaliser", "Normalizer", 
+  "RepresentativeAction", "Stabiliser", "Stabilizer", "TwoClosure" ]
 </pre></div>
 
 <p><a id="X793F8D777FEB7D60" name="X793F8D777FEB7D60"></a></p>
@@ -187,6 +191,10 @@
 <td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
 <td class="tdleft">A digraph object, or a list of adjacencies</td>
 </tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
+<td class="tdleft">A list of digraphs/lists of adjacencies</td>
+</tr>
 </table><br /><p>&nbsp;</p><br />
 </div>
 
@@ -239,7 +247,7 @@
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Intersection</code>( <var class="Arg">U1</var>, <var class="Arg">U2</var>, <var class="Arg">...</var>, <var class="Arg">Uk</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A perm group, a right coset, or an empty list</p>
 
-<p><code class="func">Vole.Intersection</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Intersection</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap30_mj.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>), and returns the intersection of the groups and/or right coset arguments.</p>
+<p><code class="func">Vole.Intersection</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Intersection</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap30_mj.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>), and returns the intersection of the group and/or right coset arguments.</p>
 
 <p>If all of the arguments are groups, then <code class="func">Vole.Intersection</code> again returns a group. Otherwise, if the result is nonempty, then <code class="func">Vole.Intersection</code> returns a <strong class="pkg">GAP</strong> right coset object. Note that this non-group case differs from <strong class="pkg">GAP</strong>'s <code class="func">Intersection</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap30_mj.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>), which always returns a list.</p>
 
@@ -327,6 +335,10 @@ true
 <td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
 <td class="tdleft">A digraph object, or a list of adjacencies</td>
 </tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
+<td class="tdleft">A list of digraphs/lists of adjacencies</td>
+</tr>
 </table><br /><p>&nbsp;</p><br />
 </div>
 
@@ -394,6 +406,10 @@ fail
 <tr>
 <td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
 <td class="tdleft">A digraph object, or a list of adjacencies</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
+<td class="tdleft">A list of digraphs/lists of adjacencies</td>
 </tr>
 </table><br /><p>&nbsp;</p><br />
 </div>
@@ -523,7 +539,9 @@ true
 <td class="tdleft"><strong class="pkg">images</strong> package function</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">Vole.CanonicalPerm</code> (<a href="chap4_mj.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>)</td>
+<td class="tdleft"><code class="func">Vole.CanonicalPerm</code> (<a href="chap4_mj.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>)</p>
+
+<p><code class="func">Vole.CanonicalImagePerm</code> (<a href="chap4_mj.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>)</td>
 <td class="tdleft"><code class="func">CanonicalImagePerm</code> (<a href="https://gap-packages.github.io/images/doc/chap2_mj.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>)</td>
 </tr>
 <tr>
@@ -595,6 +613,10 @@ true
 <tr>
 <td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
 <td class="tdleft">A digraph object, or a list of adjacencies</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
+<td class="tdleft">A list of digraphs/lists of adjacencies</td>
 </tr>
 </table><br /><p>&nbsp;</p><br />
 </div>
@@ -681,6 +703,10 @@ fail
 <td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
 <td class="tdleft">A digraph object, or a list of adjacencies</td>
 </tr>
+<tr>
+<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
+<td class="tdleft">A list of digraphs/lists of adjacencies</td>
+</tr>
 </table><br /><p>&nbsp;</p><br />
 </div>
 
@@ -714,6 +740,14 @@ fail
 <td class="tdleft"><code class="func">NautyCanonicalLabelling</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>)</p>
 
 <p><code class="func">BlissCanonicalLabelling</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.IsomorphismDigraphs</code> (<a href="chap4_mj.html#X7AEF42B27838C446"><span class="RefLink">4.6-5</span></a>)</td>
+<td class="tdleft"><code class="func">IsomorphismDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X8219FE6C839D9457"><span class="RefLink">Digraphs 7.2-17</span></a>)</td>
+</tr>
+<tr>
+<td class="tdleft"><code class="func">Vole.IsIsomorphicDigraph</code> (<a href="chap4_mj.html#X8732C0A7786CBE39"><span class="RefLink">4.6-4</span></a>)</td>
+<td class="tdleft"><code class="func">IsIsomorphicDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7B4F24B283C9EE28"><span class="RefLink">Digraphs 7.2-15</span></a>)</td>
 </tr>
 </table><br /><p>&nbsp;</p><br />
 </div>
@@ -775,6 +809,48 @@ Group([ (3,4), (2,3,5,4), (1,2,6,5)(3,4) ])
 <div class="example"><pre>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.CanonicalDigraph(JohnsonDigraph(4,2));</span>
 &lt;immutable digraph with 6 vertices, 24 edges&gt;
+</pre></div>
+
+<p><a id="X8732C0A7786CBE39" name="X8732C0A7786CBE39"></a></p>
+
+<h5>4.6-4 <span class="Heading">IsIsomorphicDigraph</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.IsIsomorphicDigraph</code>( <var class="Arg">D1</var>, <var class="Arg">D2</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
+
+<p><code class="func">Vole.IsIsomorphicDigraph</code> emulates the <strong class="pkg">Digraphs</strong> package function <code class="func">IsIsomorphicDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7B4F24B283C9EE28"><span class="RefLink">Digraphs 7.2-15</span></a>).</p>
+
+<p>If <var class="Arg">D1</var> and <var class="Arg">D2</var> are digraphs, then this function returns <code class="keyw">true</code> if there exists any permutation that maps <var class="Arg">D1</var> to <var class="Arg">D2</var> under the <code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>) action, and it returns <code class="keyw">false</code> otherwise. See also <code class="func">IsomorphismDigraphs</code> (<a href="chap4_mj.html#X7AEF42B27838C446"><span class="RefLink">4.6-5</span></a>), which this function calls.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">D := CycleDigraph(6);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.IsIsomorphicDigraph(D, DigraphReverse(D));</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.IsIsomorphicDigraph(D, DigraphDual(D));</span>
+false
+</pre></div>
+
+<p><a id="X7AEF42B27838C446" name="X7AEF42B27838C446"></a></p>
+
+<h5>4.6-5 <span class="Heading">IsomorphismDigraphs</span></h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.IsomorphismDigraphs</code>( <var class="Arg">D1</var>, <var class="Arg">D2</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A permutation, or <code class="keyw">fail</code></p>
+
+<p><code class="func">Vole.IsomorphismDigraphs</code> emulates the <strong class="pkg">Digraphs</strong> package function <code class="func">IsomorphismDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X8219FE6C839D9457"><span class="RefLink">Digraphs 7.2-17</span></a>).</p>
+
+<p>If <var class="Arg">D1</var> and <var class="Arg">D2</var> are digraphs, then this function returns some permutation that maps <var class="Arg">D1</var> to <var class="Arg">D2</var> under the <code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>) action, if one exists, and it returns <code class="keyw">fail</code> otherwise. In other words, this function call is equivalent to <code class="code">VoleFind.Rep(VoleCon.Transport(<var class="Arg">D1</var>,<var class="Arg">D2</var>,OnDigraphs)</code>.</p>
+
+<p><strong class="pkg">Vole</strong> can also find such a permutation subject to additional properties, such as belonging to particular groups or cosets, or stabilising certain objects. See <code class="func">VoleFind.Rep</code> (<a href="chap5_mj.html#X8712249F879D9FA9"><span class="RefLink">5.2-1</span></a>) for more information.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">D := CycleDigraph(6);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.IsomorphismDigraphs(D, DigraphReverse(D));</span>
+(1,4)(2,3)(5,6)
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.IsomorphismDigraphs(D, DigraphDual(D));</span>
+fail
 </pre></div>
 
 

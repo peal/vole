@@ -63,7 +63,7 @@
         constraint [2XVoleCon.LargestMovedPoint[102X ([14X6.3-11[114X) with argument [3Xk[103X.[133X
   
   [30X    [33X[0;6YThe  value [9Xfail[109X, which is interpreted as an instance of the constraint
-        [2XVoleCon.None[102X ([14X6.3-12[114X).[133X
+        [2XVoleCon.None[102X ([14X6.3-14[114X).[133X
   
   [33X[0;0YFor at least one of the [3Xarguments[103X, [5XVole[105X must be able to immediately deduce a
   positive integer [10Xk[110X, such that for the corresponding constraint:[133X
@@ -160,7 +160,7 @@
         constraint [2XVoleCon.LargestMovedPoint[102X ([14X6.3-11[114X) with argument [3Xk[103X.[133X
   
   [30X    [33X[0;6YThe  value [9Xfail[109X, which is interpreted as an instance of the constraint
-        [2XVoleCon.None[102X ([14X6.3-12[114X).[133X
+        [2XVoleCon.None[102X ([14X6.3-14[114X).[133X
   
   [33X[0;0YFor at least one of the [3Xarguments[103X, [5XVole[105X must be able to immediately deduce a
   (finite)  largest  moved  point  of  all  the  permutations that satisfy the
@@ -176,6 +176,9 @@
     [4X[28XRightCoset(Group([ (5,6), (4,5,6) ]),(3,4,6))[128X[104X
     [4X[25Xgap>[125X [27XVoleFind.Coset(AlternatingGroup(4), tuple_transport);[127X[104X
     [4X[28Xfail[128X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Coset(AlternatingGroup(5), VoleCon.Transport([127X[104X
+    [4X[25X>[125X [27XCycleDigraph(5), DigraphReverse(CycleDigraph(5)), OnDigraphs));[127X[104X
+    [4X[28XRightCoset(Group([ (1,2,3,4,5) ]),(1,4)(2,3))[128X[104X
   [4X[32X[104X
   
   

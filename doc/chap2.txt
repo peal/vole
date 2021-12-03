@@ -16,7 +16,7 @@
   [1X2.1 [33X[0;0YDependencies[133X[101X
   
   [33X[0;0Y[5XVole[105X requires [5XGAP[105X 4.11.0 or newer and various other [5XGAP[105X packages to run, and
-  Rust is required to compile [5XVole[105X.[133X
+  Rust version 1.48 or newer is required to compile [5XVole[105X.[133X
   
   [33X[0;0YPlease note that if you are using [5XVole[105X via a [5XGAP[105X Cygwin release (i.e. if you
   installed  [5XGAP[105X  in  Windows  via an installer that included [5XVole[105X), then [5XVole[105X
@@ -25,8 +25,9 @@
   Section [14X2.3[114X.[133X
   
   [33X[0;0YIn  order  to  compile  [5XVole[105X,  Rust must be installed and available with the
-  [10Xcargo[110X  command.  You  can  test  for  Rust by running [10Xcargo --version[110X in the
-  terminal. You should obtain a version number in response, such as:[133X
+  [10Xcargo[110X  command,  in  version at least 1.48. You can test for Rust by running
+  [10Xcargo  --version[110X  in  the  terminal.  You  should obtain a version number in
+  response, such as:[133X
   
   [4X[32X  Example  [32X[104X
     [4X[28X$ cargo --version[128X[104X
@@ -42,14 +43,14 @@
   [5XVole[105X.  This  means  that [5XVole[105X will not load if one or more of these packages
   cannot be loaded in your [5XGAP[105X installation in a new enough version.[133X
   
-  [30X    [33X[0;6Y[5XBacktrackKit[105X  ([7Xhttps://peal.github.io/BacktrackKit[107X)  version 0.5.0, or
+  [30X    [33X[0;6Y[5XBacktrackKit[105X  ([7Xhttps://peal.github.io/BacktrackKit[107X)  version 0.6.0, or
         newer [JW21a].[133X
   
   [30X    [33X[0;6Y[5XDigraphs[105X ([7Xhttps://digraphs.github.io/Digraphs[107X) version 1.1.1, or newer
         [BJM+21].[133X
   
   [30X    [33X[0;6Y[5XGraphBacktracking[105X  ([7Xhttps://peal.github.io/GraphBacktracking[107X)  version
-        0.5.0, or newer [JW21b].[133X
+        0.5.1, or newer [JW21b].[133X
   
   [30X    [33X[0;6Y[5XIO[105X   ([7Xhttps://gap-packages.github.io/io[107X)   version   4.7.0,  or  newer
         [Neu21].[133X

@@ -3,13 +3,14 @@
                                      [1X Vole [101X
   
   
-              [1X Backtrack search in permutation groups with graphs [101X
+  [1X Vole organises lengthy explorations: Backtrack search in permutation groups
+                                  with graphs [101X
   
   
-                                     0.5.1
+                                     0.5.2
   
   
-                                 15 August 2021
+                                3 December 2021
   
   
                                  Mun See Chang
@@ -104,6 +105,8 @@
       4.6-1 [33X[0;0YAutomorphismGroup[133X
       4.6-2 [33X[0;0YDigraphCanonicalLabelling[133X
       4.6-3 [33X[0;0YCanonicalDigraph[133X
+      4.6-4 [33X[0;0YIsIsomorphicDigraph[133X
+      4.6-5 [33X[0;0YIsomorphismDigraphs[133X
   5 [33X[0;0YThe native [5XVole[105X interface[133X
     5.1 [33X[0;0YThe [10XVoleFind[110X record[133X
       5.1-1 VoleFind
@@ -131,7 +134,9 @@
       6.3-9 VoleCon.Conjugate
       6.3-10 VoleCon.MovedPoints
       6.3-11 VoleCon.LargestMovedPoint
-      6.3-12 VoleCon.None
+      6.3-12 VoleCon.IsEven
+      6.3-13 VoleCon.IsOdd
+      6.3-14 VoleCon.None
     6.4 [33X[0;0YBounds associated with a constraint or refiner[133X
   7 [33X[0;0YRefiners in [5XVole[105X[133X
     7.1 [33X[0;0YRefiners[133X

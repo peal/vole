@@ -11,8 +11,8 @@
   [33X[0;0Y[10XInfoVole[110X is the primary info class for [5XVole[105X. See [14X'Reference: Info Functions'[114X
   for a description of info classes in [5XGAP[105X.[133X
   
-  [33X[0;0YThe  default  info  level is 0. Most info messages are given at level 2, and
-  additional messages are given at level 4.[133X
+  [33X[0;0YThe  default  info  level is 0. Most info messages are given at level 2, but
+  some messages are given at other levels, up to level 4.[133X
   
   
   [1X8.2 [33X[0;0YOptions with the native [5XVole[105X[101X[1X interface[133X[101X
@@ -23,10 +23,16 @@
   
   [33X[0;0YIn  brief,  options  can  be  set  for  a  function call by first giving the
   arguments, then writing a colon, and then assigning values to some or all of
-  the  permitted option names. Note that [12Xoptions are passed down to subsequent
-  function calls[112X that are initiated by the original call.[133X
+  the  permitted  option  names.  Writing an option name without an explicitly
+  assigned  value  is a shorthand for assigning the value [9Xtrue[109X to that option.
+  Note  that  [12Xoptions  are  passed  down to subsequent function calls[112X that are
+  initiated by the original call.[133X
   
   [33X[0;0YHere is an example of a [5XVole[105X function call with the option [10Xraw[110X set to [9Xtrue[109X:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("vole", false);;[127X[104X
+  [4X[32X[104X
   
   [4X[32X  Example  [32X[104X
     [4X[25Xgap>[125X [27Xret := Vole.Intersection(AlternatingGroup(6), PGL(2,5) : raw := true);[127X[104X
@@ -48,8 +54,25 @@
     [4X[28Xtrue[128X[104X
   [4X[32X[104X
   
+  [33X[0;0YNote  that  the option [10Xraw[110X can also be set to [9Xtrue[109X by simply giving the name
+  [10Xraw[110X. Therefore the following line can be used in place of the one above:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xret := Vole.Intersection(AlternatingGroup(6), PGL(2,5) : raw);;[127X[104X
+  [4X[32X[104X
+  
   
   [1X8.2-1 [33X[0;0YSupported options[133X[101X
+  
+  [30X    [33X[0;6Y[10Xraw[110X: [9Xtrue[109X or (default) [9Xfalse[109X:[133X
+  
+        [30X    [33X[0;12YIf [9Xtrue[109X, then rather than returning an object as documented, the
+              function  returns  a  record  that contains detailed information
+              about  the  execution  and  result  of  the  graph  backtracking
+              algorithm  that was executed. The meaning of this information is
+              not yet documented, sorry.[133X
+  
+        [30X    [33X[0;12YNot all [5XVole[105X functions support this option, although most do.[133X
   
   [30X    [33X[0;6Y[10Xpoints[110X: a non-negative integer or (default) [9Xinfinity[109X:[133X
   
@@ -62,13 +85,11 @@
               moved  point’ constraint, which achieves the same affect as this
               option more simply.[133X
   
-  [30X    [33X[0;6Y[10Xraw[110X: [9Xtrue[109X or (default) [9Xfalse[109X:[133X
-  
-        [30X    [33X[0;12YIf [9Xtrue[109X, then rather than returning an object as documented, the
-              function  returns  a  record  that contains detailed information
-              about  the  execution  and  result  of  the  graph  backtracking
-              algorithm  that was executed. The meaning of this information is
-              not yet documented, sorry.[133X
-  
-        [30X    [33X[0;12YNot all [5XVole[105X functions support this option, although most do.[133X
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XD := PetersenGraph();;[127X[104X
+    [4X[25Xgap>[125X [27Xconstraint := VoleCon.Stabilise(D, OnDigraphs);;[127X[104X
+    [4X[25Xgap>[125X [27XG := VoleFind.Group(constraint : points := DigraphNrVertices(D));;[127X[104X
+    [4X[25Xgap>[125X [27X[NrMovedPoints(G), TransitiveIdentification(G)];[127X[104X
+    [4X[28X[ 10, 13 ][128X[104X
+  [4X[32X[104X
   

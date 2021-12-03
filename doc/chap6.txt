@@ -77,8 +77,9 @@
     [4X[25Xgap>[125X [27XLoadPackage("vole", false);;[127X[104X
     [4X[25Xgap>[125X [27XSet(RecNames(VoleCon));[127X[104X
     [4X[28X[ "Centralise", "Centralize", "Conjugate", "InCoset", "InGroup", [128X[104X
-    [4X[28X  "InLeftCoset", "InRightCoset", "LargestMovedPoint", "MovedPoints", "None", [128X[104X
-    [4X[28X  "Normalise", "Normalize", "Stabilise", "Stabilize", "Transport" ][128X[104X
+    [4X[28X  "InLeftCoset", "InRightCoset", "IsEven", "IsOdd", "LargestMovedPoint", [128X[104X
+    [4X[28X  "MovedPoints", "None", "Normalise", "Normalize", "Stabilise", "Stabilize", [128X[104X
+    [4X[28X  "Transport" ][128X[104X
   [4X[32X[104X
   
   
@@ -100,7 +101,8 @@
         [2XVoleCon.Centralise[102X ([14X6.3-8[114X)           [2XVoleCon.Conjugate[102X ([14X6.3-9[114X)   
         [2XVoleCon.MovedPoints[102X ([14X6.3-10[114X)         N/A                         
         [2XVoleCon.LargestMovedPoint[102X ([14X6.3-11[114X)   N/A                         
-        N/A                                  [2XVoleCon.None[102X ([14X6.3-12[114X)       
+        [2XVoleCon.IsEven[102X ([14X6.3-12[114X)              [2XVoleCon.IsOdd[102X ([14X6.3-13[114X)      
+        N/A                                  [2XVoleCon.None[102X ([14X6.3-14[114X)       
   
   [1X6.3-1 VoleCon.InGroup[101X
   
@@ -194,16 +196,17 @@
   operator,  i.e. it corresponds to [10X[3Xobject[103X[10X^g[110X, where [10Xg[110X in [3XG[103X. See [2X\^[102X ([14XReference:
   ^[114X).[133X
   
-        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
-        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
-        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
-        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
-        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
-        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
-        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
-        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
-        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
-        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+        [12XPermitted action[112X                                                                [12XCorresponding object/pair of objects[112X           
+        ───────────────────────────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                                          A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                                                    A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                                        A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                                                A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                                            A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/lists of adjacencies          
   
   [4X[32X  Example  [32X[104X
     [4X[25Xgap>[125X [27Xcon1 := VoleCon.Stabilise(CycleDigraph(6), OnDigraphs);;[127X[104X
@@ -234,16 +237,17 @@
   operator,  i.e. it corresponds to [10X[3Xobject[103X[10X^g[110X, where [10Xg[110X in [3XG[103X. See [2X\^[102X ([14XReference:
   ^[114X).[133X
   
-        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
-        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
-        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
-        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
-        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
-        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
-        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
-        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
-        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
-        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+        [12XPermitted action[112X                                                                [12XCorresponding object/pair of objects[112X           
+        ───────────────────────────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                                          A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                                                    A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                                        A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                                                A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                                            A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/lists of adjacencies          
   
   [4X[32X  Example  [32X[104X
     [4X[25Xgap>[125X [27Xsetofsets1 := [[1, 3, 6], [2, 3, 6], [2, 4, 7], [4, 5, 7]];;[127X[104X
@@ -344,8 +348,8 @@
   [33X[1;0Y[29X[2XVoleCon.LargestMovedPoint[102X( [3Xpoint[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10YA constraint[133X
   
-  [33X[0;0YThis  constraint  is a shorthand for [10XVoleCon.InGroup(SymmetricGroup([3Xpoint[103X[10X))[110X.
-  See [2XVoleCon.InGroup[102X ([14X6.3-1[114X).[133X
+  [33X[0;0YThis  constraint  is a shorthand for [10XVoleCon.InGroup(SymmetricGroup([3Xpoint[103X[10X))[110X,
+  where [3Xpoint[103X is a nonnegative integer. See [2XVoleCon.InGroup[102X ([14X6.3-1[114X).[133X
   
   [4X[32X  Example  [32X[104X
     [4X[25Xgap>[125X [27Xcon := VoleCon.LargestMovedPoint(5);;[127X[104X
@@ -353,7 +357,41 @@
     [4X[28Xtrue[128X[104X
   [4X[32X[104X
   
-  [1X6.3-12 VoleCon.None[101X
+  [1X6.3-12 VoleCon.IsEven[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.IsEven[102X(  ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis   constraint   is  satisfied  by  the  even  permutations,  i.e.  those
+  permutations with sign [10X1[110X. In other words, this constraint restricts a search
+  to some alternating group.[133X
+  
+  [33X[0;0YNote that the set of such permutations is infinite.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcon := VoleCon.IsEven();;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Group(con, SymmetricGroup(5)) = AlternatingGroup(5);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-13 VoleCon.IsOdd[101X
+  
+  [33X[1;0Y[29X[2XVoleCon.IsOdd[102X(  ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis   constraint   is   satisfied  by  the  odd  permutations,  i.e.  those
+  permutations  with  sign  [10X-1[110X.  In  other  words, this constraint restricts a
+  search to the unique coset of some alternating group.[133X
+  
+  [33X[0;0YNote that the set of such permutations is infinite.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcon := VoleCon.IsOdd();;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Rep(con, SymmetricGroup(5));[127X[104X
+    [4X[28X(1,5,2,4)[128X[104X
+  [4X[32X[104X
+  
+  [1X6.3-14 VoleCon.None[101X
   
   [33X[1;0Y[29X[2XVoleCon.None[102X(  ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Y[9Xfail[109X[133X

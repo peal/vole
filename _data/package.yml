@@ -1,9 +1,9 @@
 name: Vole
-version: "0.5.1"
+version: "0.5.2"
 license: "MPL-2.0"
-date: 2021-08-15
+date: 2021-12-03
 description: |
-    Backtrack search in permutation groups with graphs
+    Vole organises lengthy explorations: Backtrack search in permutation groups with graphs
 
 authors:
     - name: Mun See Chang
@@ -23,13 +23,13 @@ GAP: ">= 4.11.0"
 
 needed-pkgs:
     - name: "BacktrackKit"
-      version: ">= 0.5.0"
+      version: ">= 0.6.0"
       url: "https://peal.github.io/BacktrackKit/"
     - name: "Digraphs"
       version: ">= 1.1.1"
       url: "https://digraphs.github.io/Digraphs"
     - name: "GraphBacktracking"
-      version: ">= 0.5.0"
+      version: ">= 0.5.1"
       url: "https://peal.github.io/GraphBacktracking/"
     - name: "IO"
       version: ">= 4.7.0"
@@ -50,7 +50,7 @@ suggested-pkgs:
       url: "https://gap-packages.github.io/ferret/"
     - name: "QuickCheck"
       version: ">= 0.1"
-      url: "https://github.com/ChrisJefferson/QuickCheck"
+      url: "https://gap-packages.github.io/QuickCheck/"
     - name: "OrbitalGraphs"
       version: ">= 0.1"
       url: "https://gap-packages.github.io/OrbitalGraphs"
@@ -61,7 +61,7 @@ packageinfo: https://peal.github.io/vole/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/peal/vole/releases/download/v0.5.1/vole-0.5.1.tar.gz
+      url: https://github.com/peal/vole/releases/download/v0.5.2/vole-0.5.2.tar.gz
 
 abstract: |
     
@@ -78,8 +78,8 @@ keywords: |
 citeas: |
     <p class='BibEntry'>
     [<span class='BibKey'>CJW21</span>]   <b class='BibAuthor'>Chang, M. S., Jefferson, C. and Wilson, W. A.</b>,
-     <i class='BibTitle'>Vole, Backtrack search in permutation groups with graphs,
-             Version 0.5.1</i>
+     <i class='BibTitle'>Vole, Vole organises lengthy explorations: Backtrack search in permutation groups with graphs,
+             Version 0.5.2</i>
      (<span class='BibYear'>2021</span>)<br />
     (<span class='BibNote'>GAP package</span>),
     <span class='BibHowpublished'><a href="https://peal.github.io/vole">https://peal.github.io/vole</a></span>.
@@ -87,15 +87,21 @@ citeas: |
     
 
 bibtex: |
-    @misc{ Vole0.5.1,
+    @misc{ Vole0.5.2,
       author =           {Chang, M. S. and Jefferson, C. and Wilson, W. A.},
-      title =            {{Vole}, Backtrack search in permutation groups with graphs, {V}ersion 0.5.1},
-      month =            {Aug},
+      title =            {{Vole}, Vole organises lengthy explorations: Backtrack
+                          search  in  permutation  groups with graphs, {V}ersion
+                          0.5.2},
+      month =            {Dec},
       year =             {2021},
       note =             {GAP package},
-      howpublished =     {\href {https://peal.github.io/vole} {\texttt{https://peal.github.io/}\discretionary {}{}{}\texttt{vole}}},
-      keywords =         {permutation  group;  backtrack;  search;  backtracking;  graph; digraph; normaliser; normalizer; stabiliser;
-                          stabilizer; group; subgroup; intersection; conjugacy; coset; transporter},
+      howpublished =     {\href                    {https://peal.github.io/vole}
+                          {\texttt{https://peal.github.io/}\discretionary
+                          {}{}{}\texttt{vole}}},
+      keywords =         {permutation  group;  backtrack;  search; backtracking;
+                          graph;  digraph;  normaliser;  normalizer; stabiliser;
+                          stabilizer;  group; subgroup; intersection; conjugacy;
+                          coset; transporter},
       printedkey =       {CJW21}
     }
 

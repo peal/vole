@@ -14,6 +14,8 @@
   [2XVole.DigraphCanonicalLabelling[102X 4.6-2 
   [2XVole.Intersection[102X 4.4-1 
   [2XVole.IsConjugate[102X 4.4-6 
+  [2XVole.IsIsomorphicDigraph[102X 4.6-4 
+  [2XVole.IsomorphismDigraphs[102X 4.6-5 
   [2XVole.Normaliser[102X 4.4-4 
   [2XVole.Normalizer[102X 4.4-4 
   [2XVole.RepresentativeAction[102X 4.4-3 
@@ -28,9 +30,11 @@
   [2XVoleCon.InGroup[102X 6.3-1 
   [2XVoleCon.InLeftCoset[102X 6.3-4 
   [2XVoleCon.InRightCoset[102X 6.3-3 
+  [2XVoleCon.IsEven[102X 6.3-12 
+  [2XVoleCon.IsOdd[102X 6.3-13 
   [2XVoleCon.LargestMovedPoint[102X 6.3-11 
   [2XVoleCon.MovedPoints[102X 6.3-10 
-  [2XVoleCon.None[102X 6.3-12 
+  [2XVoleCon.None[102X 6.3-14 
   [2XVoleCon.Normalise[102X 6.3-7 
   [2XVoleCon.Normalize[102X 6.3-7 
   [2XVoleCon.Stabilise[102X 6.3-5 

@@ -72,9 +72,9 @@
     [4X[25Xgap>[125X [27XSet(RecNames(Vole));[127X[104X
     [4X[28X[ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", [128X[104X
     [4X[28X  "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", [128X[104X
-    [4X[28X  "DigraphCanonicalLabelling", "Intersection", "IsConjugate", "Normaliser", [128X[104X
-    [4X[28X  "Normalizer", "RepresentativeAction", "Stabiliser", "Stabilizer", [128X[104X
-    [4X[28X  "TwoClosure" ][128X[104X
+    [4X[28X  "DigraphCanonicalLabelling", "Intersection", "IsConjugate", [128X[104X
+    [4X[28X  "IsIsomorphicDigraph", "IsomorphismDigraphs", "Normaliser", "Normalizer", [128X[104X
+    [4X[28X  "RepresentativeAction", "Stabiliser", "Stabilizer", "TwoClosure" ][128X[104X
   [4X[32X[104X
   
   
@@ -93,16 +93,17 @@
   
   [30X    [33X[0;6Y[2XVole.CanonicalImage[102X ([14X4.5-2[114X)[133X
   
-        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
-        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
-        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
-        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
-        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
-        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
-        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
-        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
-        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
-        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+        [12XPermitted action[112X                                                                [12XCorresponding object/pair of objects[112X           
+        ───────────────────────────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                                          A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                                                    A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                                        A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                                                A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                                            A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/lists of adjacencies          
   
   
   [1X4.4 [33X[0;0Y[5XVole[105X[101X[1X functions emulating built-in [5XGAP[105X[101X[1X functions[133X[101X
@@ -127,7 +128,7 @@
   [6XReturns:[106X  [33X[0;10YA perm group, a right coset, or an empty list[133X
   
   [33X[0;0Y[2XVole.Intersection[102X   emulates   the   built-in   [5XGAP[105X  operation  [2XIntersection[102X
-  ([14XReference: Intersection[114X), and returns the intersection of the groups and/or
+  ([14XReference:  Intersection[114X), and returns the intersection of the group and/or
   right coset arguments.[133X
   
   [33X[0;0YIf  all  of the arguments are groups, then [2XVole.Intersection[102X again returns a
@@ -193,16 +194,17 @@
     [4X[28Xtrue[128X[104X
   [4X[32X[104X
   
-        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
-        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
-        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
-        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
-        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
-        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
-        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
-        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
-        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
-        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+        [12XPermitted action[112X                                                                [12XCorresponding object/pair of objects[112X           
+        ───────────────────────────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                                          A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                                                    A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                                        A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                                                A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                                            A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/lists of adjacencies          
   
   
   [1X4.4-3 [33X[0;0YRepresentativeAction[133X[101X
@@ -240,16 +242,17 @@
     [4X[28X(1,4)(2,3)(5,6)[128X[104X
   [4X[32X[104X
   
-        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
-        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
-        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
-        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
-        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
-        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
-        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
-        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
-        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
-        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+        [12XPermitted action[112X                                                                [12XCorresponding object/pair of objects[112X           
+        ───────────────────────────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                                          A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                                                    A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                                        A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                                                A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                                            A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/lists of adjacencies          
   
   
   [1X4.4-4 [33X[0;0YNormaliser[133X[101X
@@ -432,16 +435,17 @@
     [4X[28X(1,2,6)(3,4,5)[128X[104X
   [4X[32X[104X
   
-        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
-        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
-        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
-        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
-        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
-        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
-        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
-        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
-        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
-        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+        [12XPermitted action[112X                                                                [12XCorresponding object/pair of objects[112X           
+        ───────────────────────────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                                          A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                                                    A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                                        A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                                                A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                                            A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/lists of adjacencies          
   
   
   [1X4.5-2 [33X[0;0YCanonicalImage[133X[101X
@@ -499,16 +503,17 @@
     [4X[28X(2,5,3)[128X[104X
   [4X[32X[104X
   
-        [12XPermitted action[112X                                           [12XCorresponding object/pair of objects[112X           
-        ──────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
-        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                     A positive integer, permutation, or perm group   
-        [2XOnTuples[102X ([14XReference: OnTuples[114X)                               A list of positive integers                      
-        [2XOnSets[102X ([14XReference: OnSets[114X)                                   A set of positive integers                       
-        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                           A set of sets of positive integers               
-        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                       A set of lists of positive integers              
-        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                       A list of sets of positive integers              
-        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                   A list of lists of positive integers             
-        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)   A digraph object, or a list of adjacencies       
+        [12XPermitted action[112X                                                                [12XCorresponding object/pair of objects[112X           
+        ───────────────────────────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                                          A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                                                    A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                                        A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                                                A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                                            A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/lists of adjacencies          
   
   
   [1X4.6 [33X[0;0Y[5XVole[105X[101X[1X functions emulating the [5XDigraphs[105X[101X[1X package[133X[101X
@@ -521,6 +526,8 @@
         [2XVole.AutomorphismGroup[102X ([14X4.6-1[114X)           [2XAutomorphismGroup[102X ([14XDigraphs: AutomorphismGroup for a digraph[114X)               
         [2XVole.CanonicalDigraph[102X ([14X4.6-3[114X)            [2XNautyCanonicalDigraph[102X ([14XDigraphs: NautyCanonicalDigraph[114X)                     
         [2XVole.DigraphCanonicalLabelling[102X ([14X4.6-2[114X)   [2XNautyCanonicalLabelling[102X ([14XDigraphs: NautyCanonicalLabelling for a digraph[114X)   
+        [2XVole.IsomorphismDigraphs[102X ([14X4.6-5[114X)         [2XIsomorphismDigraphs[102X ([14XDigraphs: IsomorphismDigraphs for digraphs[114X)            
+        [2XVole.IsIsomorphicDigraph[102X ([14X4.6-4[114X)         [2XIsIsomorphicDigraph[102X ([14XDigraphs: IsIsomorphicDigraph for digraphs[114X)            
   
   
   [1X4.6-1 [33X[0;0YAutomorphismGroup[133X[101X
@@ -602,5 +609,54 @@
   [4X[32X  Example  [32X[104X
     [4X[25Xgap>[125X [27XVole.CanonicalDigraph(JohnsonDigraph(4,2));[127X[104X
     [4X[28X<immutable digraph with 6 vertices, 24 edges>[128X[104X
+  [4X[32X[104X
+  
+  
+  [1X4.6-4 [33X[0;0YIsIsomorphicDigraph[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.IsIsomorphicDigraph[102X( [3XD1[103X, [3XD2[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
+  
+  [33X[0;0Y[2XVole.IsIsomorphicDigraph[102X    emulates    the    [5XDigraphs[105X   package   function
+  [2XIsIsomorphicDigraph[102X ([14XDigraphs: IsIsomorphicDigraph for digraphs[114X).[133X
+  
+  [33X[0;0YIf  [3XD1[103X  and [3XD2[103X are digraphs, then this function returns [9Xtrue[109X if there exists
+  any  permutation  that  maps  [3XD1[103X  to  [3XD2[103X  under  the  [2XOnDigraphs[102X  ([14XDigraphs:
+  OnDigraphs for a digraph and a perm[114X) action, and it returns [9Xfalse[109X otherwise.
+  See also [2XIsomorphismDigraphs[102X ([14X4.6-5[114X), which this function calls.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XD := CycleDigraph(6);;[127X[104X
+    [4X[25Xgap>[125X [27XVole.IsIsomorphicDigraph(D, DigraphReverse(D));[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27XVole.IsIsomorphicDigraph(D, DigraphDual(D));[127X[104X
+    [4X[28Xfalse[128X[104X
+  [4X[32X[104X
+  
+  
+  [1X4.6-5 [33X[0;0YIsomorphismDigraphs[133X[101X
+  
+  [33X[1;0Y[29X[2XVole.IsomorphismDigraphs[102X( [3XD1[103X, [3XD2[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA permutation, or [9Xfail[109X[133X
+  
+  [33X[0;0Y[2XVole.IsomorphismDigraphs[102X    emulates    the    [5XDigraphs[105X   package   function
+  [2XIsomorphismDigraphs[102X ([14XDigraphs: IsomorphismDigraphs for digraphs[114X).[133X
+  
+  [33X[0;0YIf  [3XD1[103X and [3XD2[103X are digraphs, then this function returns some permutation that
+  maps [3XD1[103X to [3XD2[103X under the [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a
+  perm[114X)  action, if one exists, and it returns [9Xfail[109X otherwise. In other words,
+  this          function         call         is         equivalent         to
+  [10XVoleFind.Rep(VoleCon.Transport([3XD1[103X[10X,[3XD2[103X[10X,OnDigraphs)[110X.[133X
+  
+  [33X[0;0Y[5XVole[105X can also find such a permutation subject to additional properties, such
+  as belonging to particular groups or cosets, or stabilising certain objects.
+  See [2XVoleFind.Rep[102X ([14X5.2-1[114X) for more information.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XD := CycleDigraph(6);;[127X[104X
+    [4X[25Xgap>[125X [27XVole.IsomorphismDigraphs(D, DigraphReverse(D));[127X[104X
+    [4X[28X(1,4)(2,3)(5,6)[128X[104X
+    [4X[25Xgap>[125X [27XVole.IsomorphismDigraphs(D, DigraphDual(D));[127X[104X
+    [4X[28Xfail[128X[104X
   [4X[32X[104X
   

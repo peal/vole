@@ -111,7 +111,7 @@
 </ul>
 
 <ul>
-<li><p>The value <code class="keyw">fail</code>, which is interpreted as an instance of the constraint <code class="func">VoleCon.None</code> (<a href="chap6.html#X7B55675E8510E6AE"><span class="RefLink">6.3-12</span></a>).</p>
+<li><p>The value <code class="keyw">fail</code>, which is interpreted as an instance of the constraint <code class="func">VoleCon.None</code> (<a href="chap6.html#X7B55675E8510E6AE"><span class="RefLink">6.3-14</span></a>).</p>
 
 </li>
 </ul>
@@ -217,7 +217,7 @@ true
 </ul>
 
 <ul>
-<li><p>The value <code class="keyw">fail</code>, which is interpreted as an instance of the constraint <code class="func">VoleCon.None</code> (<a href="chap6.html#X7B55675E8510E6AE"><span class="RefLink">6.3-12</span></a>).</p>
+<li><p>The value <code class="keyw">fail</code>, which is interpreted as an instance of the constraint <code class="func">VoleCon.None</code> (<a href="chap6.html#X7B55675E8510E6AE"><span class="RefLink">6.3-14</span></a>).</p>
 
 </li>
 </ul>
@@ -232,6 +232,9 @@ true
 RightCoset(Group([ (5,6), (4,5,6) ]),(3,4,6))
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Coset(AlternatingGroup(4), tuple_transport);</span>
 fail
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Coset(AlternatingGroup(5), VoleCon.Transport(</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">CycleDigraph(5), DigraphReverse(CycleDigraph(5)), OnDigraphs));</span>
+RightCoset(Group([ (1,2,3,4,5) ]),(1,4)(2,3))
 </pre></div>
 
 <p><a id="X83018A5A7C687170" name="X83018A5A7C687170"></a></p>
