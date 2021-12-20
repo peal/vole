@@ -248,6 +248,7 @@ VoleCon.InRightCoset := function(G, x)
                 VoleCon.Transport(movedG, OnSets(movedG, x), OnSets),
                 VoleCon.Transport(differ, OnTuples(differ, x), OnTuples)];
     fi;
+    # FIXME Should this be InCoset or InCosetSimple?
     return GB_Con.InCosetSimple(G, x);
 end;
 
