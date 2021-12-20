@@ -8,24 +8,6 @@
 DeclareGlobalVariable("_Vole");
 InstallValue(_Vole, rec());
 
-# Simple function to recursively find the largest value (or largest moved point)
-# in lists, sets, permutations and permutation groups
-_Vole.lmp := function(s...)
-    if Length(s) = 1 then
-        s := s[1];
-    fi;
-
-    if IsList(s) then
-        return MaximumList(List(s, _Vole.lmp), 0);
-    elif IsInt(s) then
-        return s;
-    elif IsPerm(s) or IsPermGroup(s) or IsRightCoset(s) then
-        return LargestMovedPoint(s);
-    elif IsDigraph(s) then
-        return Maximum(DigraphVertices(s));
-    fi;
-    ErrorNoReturn("Vole: Do not recognise...");
-end;
 
 # Get the upper and lower bounds for a list of constraints
 # The list of constraints may contain permutation groups (in the event
