@@ -9,7 +9,7 @@ gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 >      p := Random(g);
 >      s2 := OnSetsTuples(s,p);
 >      grp := Stabilizer(g, s, OnSetsTuples);
->      res := VoleFind.Coset(VoleCon.Transport(s,s2,OnSetsTuples), BTKit_Con.InGroupSimple(g));
+>      res := VoleFind.Coset(VoleCon.Transport(s,s2,OnSetsTuples), BTKit_Refiner.InGroupSimple(g));
 >      if res <> RightCoset(grp, p) then
 >          return StringFormatted("Failure: {} {} {}", s2, p, res);
 >      fi;
