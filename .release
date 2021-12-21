@@ -18,6 +18,8 @@ for f in ./*/*.htm* ; do
   sed \
     -e 's;href="../../../pkg/[dD]igraphs[^\/]*/doc/;href="https://digraphs.github.io/Digraphs/doc/;g' \
     -e 's;href="../../../pkg/[iI]mages[^\/]*/doc/;href="https://gap-packages.github.io/images/doc/;g' \
+    -e 's;href="../../../pkg/[bB]acktrack[kK]it[^\/]*/doc/;href="https://peal.github.io/BacktrackKit/doc/;g' \
+    -e 's;href="../../../pkg/[gG]raph[bB]acktracking[^\/]*/doc/;href="https://peal.github.io/GraphBacktracking/doc/;g' \
     "$f" > "$f.bak"
   mv "$f.bak" "$f"
 done
