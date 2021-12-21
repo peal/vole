@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "Vole",
 Subtitle := "Vole organises lengthy explorations: Backtrack search in permutation groups with graphs",
-Version := "0.5.2",
-Date := "03/12/2021", # dd/mm/yyyy format
+Version := "0.5.3",
+Date := "21/12/2021", # dd/mm/yyyy format
 License := "MPL-2.0",
 
 Persons := [
@@ -83,9 +83,9 @@ PackageDoc := rec(
 Dependencies := rec(
   GAP := ">= 4.11.0",
   NeededOtherPackages := [
-    [ "BacktrackKit", ">= 0.6.0" ],
+    [ "BacktrackKit", ">= 0.6.1" ],
     [ "Digraphs", ">= 1.1.1" ],
-    [ "GraphBacktracking", ">= 0.5.1" ],
+    [ "GraphBacktracking", ">= 0.5.2" ],
     # to enable GAP and rust to talk to each other
     [ "IO", ">= 4.7.0" ],
     [ "json", ">= 2.0.1" ],
