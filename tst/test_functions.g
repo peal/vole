@@ -28,6 +28,11 @@ FerretSolve := function(p, l)
     p := Maximum(p, 1);
     g := SymmetricGroup(p);
     for c in l do
+        if IsConstraint(c) then
+            c := VoleRefiner.FromConstraint(c);
+        fi;
+
+        # Unwrap a vole refiner first
         if IsRecord(c) and IsBound(c.con) then
             c := c.con;
         fi;
@@ -69,6 +74,10 @@ function(p, l)
     p := Maximum(p, 1);
     g := SymmetricGroup(p);
     for c in l do
+        if IsConstraint(c) then
+            c := VoleRefiner.FromConstraint(c);
+        fi;
+
         # Unwrap a vole refiner first
         if IsRecord(c) and IsBound(c.con) then
             c := c.con;

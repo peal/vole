@@ -44,8 +44,8 @@ _Vole.getBounds := function(constraints, initial_max, allow_max_inf)
                       "of points on which the search is defined. ",
                       "Please include an additional argument that is ",
                       "a containing group, or a constraint of the form ",
-                      "VoleCon.LargestMovedPoint(point) or ",
-                      "VoleCon.MovedPoints(pointlist), ",
+                      "Constraint.LargestMovedPoint(point) or ",
+                      "Constraint.MovedPoints(pointlist), ",
                       "in order to give a bound explicitly, ",
                       "type '?Bounds associated' for more information, ",
                       "or look at the manual...");
@@ -77,9 +77,9 @@ _Vole.getConfig := function(default)
 end;
 
 # Take a list of constraints and process as follows:
-# * Replace any group G by VoleCon.InGroup(G)
-# * Replace any right coset object U by VoleCon.InCoset(U)
-# * Replace any positive integer k by VoleCon.LargestMovedPoint(k)
+# * Replace any group G by Constraint.InGroup(G)
+# * Replace any right coset object U by Constraint.InCoset(U)
+# * Replace any positive integer k by Constraint.LargestMovedPoint(k)
 _Vole.processConstraints := function(constraints, conf)
     local i;
     constraints := Flat(constraints);
@@ -88,11 +88,11 @@ _Vole.processConstraints := function(constraints, conf)
     fi;
     for i in [1 .. Length(constraints)] do
         if IsPermGroup(constraints[i]) then
-            constraints[i] := VoleCon.InGroup(constraints[i]);
+            constraints[i] := Constraint.InGroup(constraints[i]);
         elif IsRightCoset(constraints[i]) then
-            constraints[i] := VoleCon.InCoset(constraints[i]);
+            constraints[i] := Constraint.InCoset(constraints[i]);
         elif IsInt(constraints[i]) then
-            constraints[i] := VoleCon.LargestMovedPoint(constraints[i]);
+            constraints[i] := Constraint.LargestMovedPoint(constraints[i]);
         fi;
     od;
     return Flat(constraints);

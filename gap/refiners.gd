@@ -16,7 +16,8 @@
 # There can be multiple refiners implemented for the same mathematical property
 # with different tradeoffs, and also refiners implemented for special cases
 # (such as symmetric and alternating groups). In general most users will want to
-# use <Ref Var="VoleCon"/>, which provides a higher-level interface.
+# use provide constraints rather than refiners, and let &Vole; choose
+#! appropriate refiners for the given constraints.
 
 
 #! @Section The <C>VoleRefiner</C> record

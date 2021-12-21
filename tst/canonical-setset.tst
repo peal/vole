@@ -5,7 +5,7 @@ true
 
 #
 gap> QC_Check([IsPermGroup, QC_SetOf(QC_SetOf(IsPosInt))],
-> {g, s} -> VoleTestCanonical(g, s, x -> VoleCon.Stabilize(x, OnSetsSets), OnSetsSets));
+> {g, s} -> VoleTestCanonical(g, s, x -> Constraint.Stabilize(x, OnSetsSets), OnSetsSets));
 true
 
 #

@@ -29,13 +29,13 @@ gap> Vole.Intersection(AlternatingGroup(4), AlternatingGroup(4) * (1,2)
 fail
 
 # Vole.Stabiliser
+#gap> Vole.Stabiliser(AlternatingGroup(5), CycleDigraph(5));
+#Error, Vole.Stabilize: Unrecognised combination of <object> and <action>:
+#<immutable cycle digraph with 5 vertices> and OnPoints
 gap> Vole.Stabiliser();
 Error, Function: number of arguments must be at least 2 (not 0)
 gap> Vole.Stabiliser(AlternatingGroup(5));
 Error, Function: number of arguments must be at least 2 (not 1)
-gap> Vole.Stabiliser(AlternatingGroup(5), CycleDigraph(5));
-Error, VoleCon.Stabilize: Unrecognised combination of <object> and <action>:
-<immutable cycle digraph with 5 vertices> and OnPoints
 gap> Vole.Stabiliser(AlternatingGroup(5), CycleDigraph(5), OnDigraphs);
 Group([ (1,2,3,4,5) ])
 gap> Parent(last) = AlternatingGroup(5);
@@ -98,9 +98,9 @@ Error, Function: number of arguments must be at least 3 (not 0)
 gap> Vole.RepresentativeAction(fail, fail, fail, fail, fail);
 Error, Vole.RepresentativeAction: The first argument must be a perm group
 gap> Vole.RepresentativeAction(Group(()), fail, fail, fail, fail);
-Error, VoleCon.RepresentativeAction args: G, object1, object2[, action]
+Error, Vole.RepresentativeAction args: G, object1, object2[, action]
 gap> Vole.RepresentativeAction(Group(()), fail, fail, fail);
-Error, VoleCon.Transport args: object1, object2[, action]
+Error, Constraint.Transport: args: x, y[, action]
 
 # Vole.TwoClosure
 gap> Vole.TwoClosure();
@@ -116,9 +116,9 @@ Error, Function: number of arguments must be at least 2 (not 0)
 gap> Vole.CanonicalPerm(fail, fail);
 Error, Vole.CanonicalPerm: The first argument must be a perm group
 gap> Vole.CanonicalPerm(Group(()), fail, fail, fail);
-Error, VoleCon.CanonicalPerm args: G, object[, action]
+Error, Vole.CanonicalPerm args: G, object[, action]
 gap> Vole.CanonicalPerm(Group(()), fail, fail);
-Error, VoleCon.Stabilize args: object[, action]
+Error, Constraint.Transport: args: x, y[, action]
 gap> Vole.CanonicalPerm(Group(()), 1 : raw).canonical;
 ()
 

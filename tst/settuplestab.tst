@@ -5,7 +5,7 @@ true
 
 #
 gap> QC_Check([QC_SetOf(QC_ListOf(IsPosInt))],
-> {s} -> QuickChecker(Maximum(Flat([0, s])), [VoleCon.Stabilize(s, OnSetsTuples)])
+> {s} -> QuickChecker(Maximum(Flat([0, s])), [Constraint.Stabilize(s, OnSetsTuples)])
 > );
 true
 

@@ -74,15 +74,15 @@ gap> ret := Vole.Intersection(AlternatingGroup(6), PGL(2,5) : raw);;
     * Not all &Vole; functions support this option, although most do.
 * `points`: a non-negative integer or (default) <K>infinity</K>:
     * This option can be used in place of the constraint
-      `VoleCon.LargestMovedPoint(points)`;
-      see <Ref Func="VoleCon.LargestMovedPoint"/>.
+      `Constraint.LargestMovedPoint(points)`;
+      see <Ref BookName="BacktrackKit" Func="Constraint.LargestMovedPoint"/>.
     * Note that for relevant functions that accept constraints,
       an integer argument is interpreted as an instance of a ‘largest moved
       point’ constraint, which achieves the same affect as this option more
       simply.
 @BeginExampleSession
 gap> D := PetersenGraph();;
-gap> constraint := VoleCon.Stabilise(D, OnDigraphs);;
+gap> constraint := Constraint.Stabilise(D, OnDigraphs);;
 gap> G := VoleFind.Group(constraint : points := DigraphNrVertices(D));;
 gap> [NrMovedPoints(G), TransitiveIdentification(G)];
 [ 10, 13 ]

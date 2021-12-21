@@ -8,7 +8,7 @@ gap> n := 9;;
 gap> for g in AllTransitiveGroups(NrMovedPoints, n, Transitivity, 1) do
 >   gap := TwoClosure(g);
 >   vole1 := Vole.TwoClosure(g);
->   vole2 := VoleFind.Group(n, VoleCon.Stabilize(OrbitalGraphs(g, n),
+>   vole2 := VoleFind.Group(n, Constraint.Stabilize(OrbitalGraphs(g, n),
 >                                                OnTuplesDigraphs));
 >   if gap <> vole1 then Print(g, ":", gap, vole1); fi;
 >   if gap <> vole2 then Print(g, ":", gap, vole2); fi;

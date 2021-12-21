@@ -353,7 +353,7 @@ InstallValue(Vole, rec());
 #! gap> Vole.Intersection(A6, D12);
 #! Group([ (2,6)(3,5), (1,3,5)(2,4,6) ])
 #! gap> Vole.Intersection(A6 * (1,2), D12 * (3,4));
-#! RightCoset(Group([ (2,6)(3,5), (1,3,5)(2,4,6) ]),(1,5)(2,3,4))
+#! RightCoset(Group([ (2,6)(3,5), (1,3)(4,6) ]),(1,5,4,2,6,3))
 #! gap> Vole.Intersection(A6 * (1,2), D12 * (3,4), PSL(2,5));
 #! [  ]
 #! @EndExampleSession
@@ -894,7 +894,7 @@ DeclareGlobalFunction("Vole.IsIsomorphicDigraph");
 #! under the <Ref Oper="OnDigraphs" BookName="Digraphs" Style="Number"/> action,
 #! if one exists, and it returns <K>fail</K> otherwise.
 #! In other words, this function call is equivalent to
-#! `VoleFind.Rep(VoleCon.Transport(<A>D1</A>,<A>D2</A>,OnDigraphs)`.
+#! `VoleFind.Rep(Constraint.Transport(<A>D1</A>,<A>D2</A>,OnDigraphs)`.
 #!
 #! &Vole; can also find such a permutation subject to additional properties,
 #! such as belonging to particular groups or cosets, or stabilising certain

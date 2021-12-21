@@ -6,7 +6,7 @@ true
 #
 gap> QC_Check(List([1 .. 3], i -> QC_SetOf(QC_SetOf(IsPosInt))),
 > {a,b,c} -> QuickChecker(Maximum(Flat([a, b, c, 0])),
->                         List([a, b, c], x -> VoleCon.Stabilize(x, OnSetsSets))
+>                         List([a, b, c], x -> Constraint.Stabilize(x, OnSetsSets))
 > ));
 true
 

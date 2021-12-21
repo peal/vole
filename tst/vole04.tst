@@ -25,7 +25,7 @@ gap> D12 := DihedralGroup(IsPermGroup, 12);;
 gap> Vole.Intersection(A6, D12);
 Group([ (2,6)(3,5), (1,3,5)(2,4,6) ])
 gap> Vole.Intersection(A6 * (1,2), D12 * (3,4));
-RightCoset(Group([ (2,6)(3,5), (1,3,5)(2,4,6) ]),(1,5)(2,3,4))
+RightCoset(Group([ (2,6)(3,5), (1,3)(4,6) ]),(1,5,4,2,6,3))
 gap> Vole.Intersection(A6 * (1,2), D12 * (3,4), PSL(2,5));
 [  ]
 
