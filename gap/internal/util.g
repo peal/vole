@@ -95,8 +95,6 @@ _Vole.processConstraints := function(constraints, conf)
             constraints[i] := VoleCon.LargestMovedPoint(constraints[i]);
         fi;
     od;
-    # TODO if VoleCon.IsEven and VoleCon.IsOdd are specified, then return fail!
-    # TODO remove duplicates?
     return Flat(constraints);
 end;
 
