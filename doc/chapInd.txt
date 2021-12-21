@@ -22,24 +22,6 @@
   [2XVole.Stabiliser[102X 4.4-2 
   [2XVole.Stabilizer[102X 4.4-2 
   [2XVole.TwoClosure[102X 4.4-7 
-  [2XVoleCon[102X 6.2-1 
-  [2XVoleCon.Centralise[102X 6.3-8 
-  [2XVoleCon.Centralize[102X 6.3-8 
-  [2XVoleCon.Conjugate[102X 6.3-9 
-  [2XVoleCon.InCoset[102X 6.3-2 
-  [2XVoleCon.InGroup[102X 6.3-1 
-  [2XVoleCon.InLeftCoset[102X 6.3-4 
-  [2XVoleCon.InRightCoset[102X 6.3-3 
-  [2XVoleCon.IsEven[102X 6.3-12 
-  [2XVoleCon.IsOdd[102X 6.3-13 
-  [2XVoleCon.LargestMovedPoint[102X 6.3-11 
-  [2XVoleCon.MovedPoints[102X 6.3-10 
-  [2XVoleCon.None[102X 6.3-14 
-  [2XVoleCon.Normalise[102X 6.3-7 
-  [2XVoleCon.Normalize[102X 6.3-7 
-  [2XVoleCon.Stabilise[102X 6.3-5 
-  [2XVoleCon.Stabilize[102X 6.3-5 
-  [2XVoleCon.Transport[102X 6.3-6 
   [2XVoleFind[102X 5.1-1 
   [2XVoleFind.Canonical[102X 5.3-1 
   [2XVoleFind.CanonicalPerm[102X 5.3-2 
@@ -48,6 +30,18 @@
   [2XVoleFind.Rep[102X 5.2-1 
   [2XVoleFind.Representative[102X 5.2-1 
   [2XVoleRefiner[102X 7.2-1 
+  [2XVoleRefiner.DigraphStab[102X 7.3-6 
+  [2XVoleRefiner.DigraphTransporter[102X 7.3-6 
+  [2XVoleRefiner.FromConstraint[102X 7.4-1 
+  [2XVoleRefiner.InSymmetricGroup[102X 7.3-1 
+  [2XVoleRefiner.SetSetStab[102X 7.3-4 
+  [2XVoleRefiner.SetSetTransporter[102X 7.3-4 
+  [2XVoleRefiner.SetStab[102X 7.3-2 
+  [2XVoleRefiner.SetTransporter[102X 7.3-2 
+  [2XVoleRefiner.SetTupleStab[102X 7.3-5 
+  [2XVoleRefiner.SetTupleTransporter[102X 7.3-5 
+  [2XVoleRefiner.TupleStab[102X 7.3-3 
+  [2XVoleRefiner.TupleTransporter[102X 7.3-3 
   
   
   -------------------------------------------------------

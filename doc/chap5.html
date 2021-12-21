@@ -93,25 +93,25 @@
 
 
 <ul>
-<li><p>A permutation group <var class="Arg">G</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.InGroup</code> (<a href="chap6.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>) with argument <var class="Arg">G</var>.</p>
+<li><p>A permutation group <var class="Arg">G</var>, which is interpreted as an instance of the constraint <code class="func">Constraint.InGroup</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X7F4B593980803A70"><span class="RefLink">BacktrackKit: Constraint.InGroup</span></a>) with argument <var class="Arg">G</var>.</p>
 
 </li>
 </ul>
 
 <ul>
-<li><p>A <strong class="pkg">GAP</strong> right coset object <var class="Arg">U</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.InCoset</code> (<a href="chap6.html#X7F27DDB6818F24DB"><span class="RefLink">6.3-2</span></a>) with argument <var class="Arg">U</var>.</p>
+<li><p>A <strong class="pkg">GAP</strong> right coset object <var class="Arg">U</var>, which is interpreted as an instance of the constraint <code class="func">Constraint.InCoset</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X7FBD53647F43F667"><span class="RefLink">BacktrackKit: Constraint.InCoset</span></a>) with argument <var class="Arg">U</var>.</p>
 
 </li>
 </ul>
 
 <ul>
-<li><p>A positive integer <var class="Arg">k</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.LargestMovedPoint</code> (<a href="chap6.html#X821F077482DE97E6"><span class="RefLink">6.3-11</span></a>) with argument <var class="Arg">k</var>.</p>
+<li><p>A positive integer <var class="Arg">k</var>, which is interpreted as an instance of the constraint <code class="func">Constraint.LargestMovedPoint</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X85EC63B08043C2BC"><span class="RefLink">BacktrackKit: Constraint.LargestMovedPoint</span></a>) with argument <var class="Arg">k</var>.</p>
 
 </li>
 </ul>
 
 <ul>
-<li><p>The value <code class="keyw">fail</code>, which is interpreted as an instance of the constraint <code class="func">VoleCon.None</code> (<a href="chap6.html#X7B55675E8510E6AE"><span class="RefLink">6.3-14</span></a>).</p>
+<li><p>The value <code class="keyw">fail</code>, which is interpreted as an instance of the constraint <code class="func">Constraint.None</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X84CD09F07F5C990B"><span class="RefLink">BacktrackKit: Constraint.None</span></a>).</p>
 
 </li>
 </ul>
@@ -123,14 +123,14 @@
 
 </li>
 </ul>
-<p>Otherwise, an error is given. This guarantees that <strong class="pkg">Vole</strong> terminates (given sufficient resources). See Section <a href="chap6.html#X83C3802E816A5013"><span class="RefLink">6.4</span></a> for examples and further information.</p>
+<p>Otherwise, an error is given. This guarantees that <strong class="pkg">Vole</strong> terminates (given sufficient resources). See Section <a href="chap6.html#X83C3802E816A5013"><span class="RefLink">6.1</span></a> for examples and further information.</p>
 
 <p>This function supports various options, which are documented in Section <a href="chap8.html#X793CB7997868D411"><span class="RefLink">8.2</span></a>.</p>
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">tuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Rep(VoleCon.InGroup(SymmetricGroup(4)), tuple_transport);</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">tuple_transport := Constraint.Transport([1,2,3], [1,2,4], OnTuples);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Rep(Constraint.InGroup(SymmetricGroup(4)), tuple_transport);</span>
 (3,4)
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Rep(AlternatingGroup(4), tuple_transport);</span>
 fail
@@ -149,24 +149,24 @@ fail
 
 
 <ul>
-<li><p>A permutation group <var class="Arg">G</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.InGroup</code> (<a href="chap6.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>) with argument <var class="Arg">G</var>.</p>
+<li><p>A permutation group <var class="Arg">G</var>, which is interpreted as an instance of the constraint <code class="func">Constraint.InGroup</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X7F4B593980803A70"><span class="RefLink">BacktrackKit: Constraint.InGroup</span></a>) with argument <var class="Arg">G</var>.</p>
 
 </li>
 </ul>
 
 <ul>
-<li><p>A positive integer <var class="Arg">k</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.LargestMovedPoint</code> (<a href="chap6.html#X821F077482DE97E6"><span class="RefLink">6.3-11</span></a>) with argument <var class="Arg">k</var>.</p>
+<li><p>A positive integer <var class="Arg">k</var>, which is interpreted as an instance of the constraint <code class="func">Constraint.LargestMovedPoint</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X85EC63B08043C2BC"><span class="RefLink">BacktrackKit: Constraint.LargestMovedPoint</span></a>) with argument <var class="Arg">k</var>.</p>
 
 </li>
 </ul>
-<p>For at least one of the <var class="Arg">arguments</var>, <strong class="pkg">Vole</strong> must be able to immediately deduce a (finite) largest moved point of all the permutations that satisfy the corresponding constraint. Otherwise, an error is given. This guarantees that <strong class="pkg">Vole</strong> terminates (given sufficient resources). See Section <a href="chap6.html#X83C3802E816A5013"><span class="RefLink">6.4</span></a> for examples and further information.</p>
+<p>For at least one of the <var class="Arg">arguments</var>, <strong class="pkg">Vole</strong> must be able to immediately deduce a (finite) largest moved point of all the permutations that satisfy the corresponding constraint. Otherwise, an error is given. This guarantees that <strong class="pkg">Vole</strong> terminates (given sufficient resources). See Section <a href="chap6.html#X83C3802E816A5013"><span class="RefLink">6.1</span></a> for examples and further information.</p>
 
 <p>This function supports various options, which are documented in Section <a href="chap8.html#X793CB7997868D411"><span class="RefLink">8.2</span></a>.</p>
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">graph_auto := VoleCon.Stabilise(JohnsonDigraph(4,2), OnDigraphs);;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">set_stab := VoleCon.Stabilise([2,4,6], OnSets);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">graph_auto := Constraint.Stabilise(JohnsonDigraph(4,2), OnDigraphs);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">set_stab := Constraint.Stabilise([2,4,6], OnSets);;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G := VoleFind.Group(graph_auto, set_stab, 6);;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G = Group([ (2,4)(3,5), (1,3,5)(2,6,4) ]);</span>
 true
@@ -176,9 +176,9 @@ true
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">norm_PSL25 := VoleCon.Normalise(PSL(2,5));;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">in_A6  := VoleCon.InGroup(AlternatingGroup(6));;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">in_D12 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 12));;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">norm_PSL25 := Constraint.Normalise(PSL(2,5));;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">in_A6  := Constraint.InGroup(AlternatingGroup(6));;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">in_D12 := Constraint.InGroup(DihedralGroup(IsPermGroup, 12));;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G := VoleFind.Group(in_A6, in_D12, norm_PSL25);;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G = Group([ (1,3,5)(2,4,6) ]);</span>
 true
@@ -199,40 +199,40 @@ true
 
 
 <ul>
-<li><p>A permutation group <var class="Arg">G</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.InGroup</code> (<a href="chap6.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>) with argument <var class="Arg">G</var>.</p>
+<li><p>A permutation group <var class="Arg">G</var>, which is interpreted as an instance of the constraint <code class="func">Constraint.InGroup</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X7F4B593980803A70"><span class="RefLink">BacktrackKit: Constraint.InGroup</span></a>) with argument <var class="Arg">G</var>.</p>
 
 </li>
 </ul>
 
 <ul>
-<li><p>A <strong class="pkg">GAP</strong> right coset object <var class="Arg">U</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.InCoset</code> (<a href="chap6.html#X7F27DDB6818F24DB"><span class="RefLink">6.3-2</span></a>) with argument <var class="Arg">U</var>.</p>
+<li><p>A <strong class="pkg">GAP</strong> right coset object <var class="Arg">U</var>, which is interpreted as an instance of the constraint <code class="func">Constraint.InCoset</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X7FBD53647F43F667"><span class="RefLink">BacktrackKit: Constraint.InCoset</span></a>) with argument <var class="Arg">U</var>.</p>
 
 </li>
 </ul>
 
 <ul>
-<li><p>A positive integer <var class="Arg">k</var>, which is interpreted as an instance of the constraint <code class="func">VoleCon.LargestMovedPoint</code> (<a href="chap6.html#X821F077482DE97E6"><span class="RefLink">6.3-11</span></a>) with argument <var class="Arg">k</var>.</p>
+<li><p>A positive integer <var class="Arg">k</var>, which is interpreted as an instance of the constraint <code class="func">Constraint.LargestMovedPoint</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X85EC63B08043C2BC"><span class="RefLink">BacktrackKit: Constraint.LargestMovedPoint</span></a>) with argument <var class="Arg">k</var>.</p>
 
 </li>
 </ul>
 
 <ul>
-<li><p>The value <code class="keyw">fail</code>, which is interpreted as an instance of the constraint <code class="func">VoleCon.None</code> (<a href="chap6.html#X7B55675E8510E6AE"><span class="RefLink">6.3-14</span></a>).</p>
+<li><p>The value <code class="keyw">fail</code>, which is interpreted as an instance of the constraint <code class="func">Constraint.None</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X84CD09F07F5C990B"><span class="RefLink">BacktrackKit: Constraint.None</span></a>).</p>
 
 </li>
 </ul>
-<p>For at least one of the <var class="Arg">arguments</var>, <strong class="pkg">Vole</strong> must be able to immediately deduce a (finite) largest moved point of all the permutations that satisfy the corresponding constraint. Otherwise, an error is given. This guarantees that <strong class="pkg">Vole</strong> terminates (given sufficient resources). See Section <a href="chap6.html#X83C3802E816A5013"><span class="RefLink">6.4</span></a> for examples and further information.</p>
+<p>For at least one of the <var class="Arg">arguments</var>, <strong class="pkg">Vole</strong> must be able to immediately deduce a (finite) largest moved point of all the permutations that satisfy the corresponding constraint. Otherwise, an error is given. This guarantees that <strong class="pkg">Vole</strong> terminates (given sufficient resources). See Section <a href="chap6.html#X83C3802E816A5013"><span class="RefLink">6.1</span></a> for examples and further information.</p>
 
 <p>This function supports various options, which are documented in Section <a href="chap8.html#X793CB7997868D411"><span class="RefLink">8.2</span></a>.</p>
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">tuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Coset(VoleCon.InGroup(SymmetricGroup(6)), tuple_transport);</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">tuple_transport := Constraint.Transport([1,2,3], [1,2,4], OnTuples);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Coset(Constraint.InGroup(SymmetricGroup(6)), tuple_transport);</span>
 RightCoset(Group([ (5,6), (4,5,6) ]),(3,4,6))
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Coset(AlternatingGroup(4), tuple_transport);</span>
 fail
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Coset(AlternatingGroup(5), VoleCon.Transport(</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Coset(AlternatingGroup(5), Constraint.Transport(</span>
 <span class="GAPprompt">&gt;</span> <span class="GAPinput">CycleDigraph(5), DigraphReverse(CycleDigraph(5)), OnDigraphs));</span>
 RightCoset(Group([ (1,2,3,4,5) ]),(1,4)(2,3))
 </pre></div>
@@ -269,17 +269,17 @@ RightCoset(Group([ (1,2,3,4,5) ]),(1,4)(2,3))
 
 <p>The forthcoming details are crucial for obtaining meaningful results from <code class="func">VoleFind.Canonical</code>.</p>
 
-<p><em>For users who wish to canonise an object under an action listed in the table in <code class="func">VoleCon.Stabilise</code> (<a href="chap6.html#X80BEBD297D7403C0"><span class="RefLink">6.3-5</span></a>), and who do not wish to specify particular refiners, it may be easier to use the simpler functions <code class="func">Vole.CanonicalPerm</code> (<a href="chap4.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>) and <code class="func">Vole.CanonicalImage</code> (<a href="chap4.html#X780189E3873B7A42"><span class="RefLink">4.5-2</span></a>).</em></p>
+<p><em>For users who wish to canonise an object under an action listed in the table in <code class="func">Constraint.Stabilise</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X7BA3B89D8206CBCE"><span class="RefLink">BacktrackKit: Constraint.Stabilise</span></a>), and who do not wish to specify particular refiners, it may be easier to use the simpler functions <code class="func">Vole.CanonicalPerm</code> (<a href="chap4.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>) and <code class="func">Vole.CanonicalImage</code> (<a href="chap4.html#X780189E3873B7A42"><span class="RefLink">4.5-2</span></a>).</em></p>
 
 <p>The first argument to <code class="func">VoleFind.Canonical</code> must be the group <var class="Arg">G</var> in which to canonise. The remaining <var class="Arg">arguments</var> specify the rest of the canonisation problem; in particular, they define the relevant object and action.</p>
 
-<p>The <var class="Arg">arguments</var> that follow <var class="Arg">G</var> may be given separately, or in a list. Each of the <var class="Arg">arguments</var> must be an instance of a <code class="func">VoleCon.Stabilise</code> (<a href="chap6.html#X80BEBD297D7403C0"><span class="RefLink">6.3-5</span></a>) constraint, either directly, or indirectly as an instance of <code class="func">VoleCon.Normalise</code> (<a href="chap6.html#X7E0A525884A020DE"><span class="RefLink">6.3-7</span></a>) or <code class="func">VoleCon.Centralise</code> (<a href="chap6.html#X7B72EC9F797FEB6C"><span class="RefLink">6.3-8</span></a>). <strong class="button">Note that it is not permitted to include constraints of the kind produced by</strong> <code class="func">VoleCon.InGroup</code> (<a href="chap6.html#X7FD1D7EB7F8EF940"><span class="RefLink">6.3-1</span></a>).</p>
+<p>The <var class="Arg">arguments</var> that follow <var class="Arg">G</var> may be given separately, or in a list. Each of the <var class="Arg">arguments</var> must be an instance of a <code class="func">Constraint.Stabilise</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X7BA3B89D8206CBCE"><span class="RefLink">BacktrackKit: Constraint.Stabilise</span></a>) constraint, either directly, or indirectly as an instance of <code class="func">Constraint.Normalise</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X851757EC7DC5D0CE"><span class="RefLink">BacktrackKit: Constraint.Normalise</span></a>) or <code class="func">Constraint.Centralise</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X7B129ACB85ABD064"><span class="RefLink">BacktrackKit: Constraint.Centralise</span></a>). <strong class="button">Note that it is not permitted to include constraints of the kind produced by</strong> <code class="func">Constraint.InGroup</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X7F4B593980803A70"><span class="RefLink">BacktrackKit: Constraint.InGroup</span></a>).</p>
 
 <p>It is also permitted to include special kinds of refiners as arguments to <code class="func">VoleFind.Canonical</code>, although we do not yet document the details of this, since the theory and implementation is still under active development. (Refiners will be documented in Chapter <a href="chap7.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a>).</p>
 
-<p>For the following, we will suppose that <var class="Arg">arguments...</var> is a list of <code class="code">k</code> constraints <code class="code">VoleCon.Stabilise(object_i,action_i)</code>, for <code class="code">i=1..k</code> in sequence. Then <code class="func">VoleFind.Canonical</code> canonises the <code class="code">k</code>-tuple <code class="code">[object_1,...,object_k]</code>, where the action on the <code class="code">i</code>-th coordinate is <code class="code">action_i</code>.</p>
+<p>For the following, we will suppose that <var class="Arg">arguments...</var> is a list of <code class="code">k</code> constraints <code class="code">Constraint.Stabilise(object_i,action_i)</code>, for <code class="code">i=1..k</code> in sequence. Then <code class="func">VoleFind.Canonical</code> canonises the <code class="code">k</code>-tuple <code class="code">[object_1,...,object_k]</code>, where the action on the <code class="code">i</code>-th coordinate is <code class="code">action_i</code>.</p>
 
-<p>In order to canonise in <var class="Arg">G</var> another <code class="code">k</code>-tuple of the same kind, such as <code class="code">[nextobject_1,...,nextobject_k]</code> with respect to the same action, and in a way that is comparable to the first canonisation, it is necessary to call <code class="func">VoleFind.Canonical</code> with the same group <var class="Arg">G</var> followed by the <var class="Arg">arguments...</var> <code class="code">VoleCon.Stabilise(nextobject_i,action_i)</code>, <strong class="button">in the same order</strong>.</p>
+<p>In order to canonise in <var class="Arg">G</var> another <code class="code">k</code>-tuple of the same kind, such as <code class="code">[nextobject_1,...,nextobject_k]</code> with respect to the same action, and in a way that is comparable to the first canonisation, it is necessary to call <code class="func">VoleFind.Canonical</code> with the same group <var class="Arg">G</var> followed by the <var class="Arg">arguments...</var> <code class="code">Constraint.Stabilise(nextobject_i,action_i)</code>, <strong class="button">in the same order</strong>.</p>
 
 <p>The result of <code class="func">VoleFind.Canonical</code> is given as a record, with the following components (see the beginning of Section <a href="chap5.html#X83018A5A7C687170"><span class="RefLink">5.3</span></a> for a definition of some of the following terms):</p>
 
@@ -303,10 +303,10 @@ RightCoset(Group([ (1,2,3,4,5) ]),(1,4)(2,3))
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">cycle := CycleDigraph(6);;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">reverse := DigraphReverse(cycle);;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">A6 := AlternatingGroup(6);;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">canon1 := VoleFind.Canonical(A6, VoleCon.Stabilise(cycle, OnDigraphs));</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">canon1 := VoleFind.Canonical(A6, Constraint.Stabilise(cycle, OnDigraphs));</span>
 rec( canonical := (1,3,4,6,5), group := Group([ (1,3,5)(2,4,6) ]) )
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">canon2 := VoleFind.Canonical(A6,</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                VoleCon.Stabilise(reverse, OnDigraphs));</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                Constraint.Stabilise(reverse, OnDigraphs));</span>
 rec( canonical := (1,4,5), group := Group([ (1,3,5)(2,4,6) ]) )
 </pre></div>
 
@@ -353,12 +353,12 @@ true
 
 <div class="example"><pre>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">canon1 := VoleFind.Canonical(G,</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                VoleCon.Stabilise(cycle, OnDigraphs),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                VoleCon.Stabilise(colours1, OnTuplesSets));</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                Constraint.Stabilise(cycle, OnDigraphs),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                Constraint.Stabilise(colours1, OnTuplesSets));</span>
 rec( canonical := (1,5,2,3,6), group := Group(()) )
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">canon2 := VoleFind.Canonical(G,</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                VoleCon.Stabilise(reverse, OnDigraphs),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                VoleCon.Stabilise(colours2, OnTuplesSets));</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                Constraint.Stabilise(reverse, OnDigraphs),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                Constraint.Stabilise(colours2, OnTuplesSets));</span>
 rec( canonical := (1,6,5,4,3), group := Group(()) )
 </pre></div>
 
@@ -376,12 +376,12 @@ false
 
 <div class="example"><pre>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">canon1 := VoleFind.Canonical(SymmetricGroup(6),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                VoleCon.Stabilise(cycle, OnDigraphs),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                VoleCon.Stabilise(colours1, OnTuplesSets));</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                Constraint.Stabilise(cycle, OnDigraphs),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                Constraint.Stabilise(colours1, OnTuplesSets));</span>
 rec( canonical := (1,5,2,3,4,6), group := Group([ (1,3,5)(2,4,6) ]) )
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">canon2 := VoleFind.Canonical(SymmetricGroup(6),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                VoleCon.Stabilise(reverse, OnDigraphs),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                VoleCon.Stabilise(colours2, OnTuplesSets));</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                Constraint.Stabilise(reverse, OnDigraphs),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                                Constraint.Stabilise(colours2, OnTuplesSets));</span>
 rec( canonical := (1,3)(2,5,6,4), group := Group([ (1,3,5)(2,4,6) ]) )
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">OnDigraphs(cycle, canon1.canonical)</span>
 <span class="GAPprompt">&gt;</span> <span class="GAPinput">= OnDigraphs(reverse, canon2.canonical);</span>
@@ -406,7 +406,7 @@ true
 
 <div class="example"><pre>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.CanonicalPerm(AlternatingGroup(4),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput"> VoleCon.Normalise(Group([ (1,2) ]))</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"> Constraint.Normalise(Group([ (1,2) ]))</span>
 <span class="GAPprompt">&gt;</span> <span class="GAPinput">);</span>
 (1,4)(2,3)
 </pre></div>
@@ -418,8 +418,8 @@ true
 
 <div class="example"><pre>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.CanonicalPerm(SymmetricGroup(4),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput"> VoleCon.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput"> VoleCon.Stabilise(CycleDigraph(4), OnDigraphs)</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"> Constraint.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"> Constraint.Stabilise(CycleDigraph(4), OnDigraphs)</span>
 <span class="GAPprompt">&gt;</span> <span class="GAPinput">);</span>
 (1,2,3)
 </pre></div>

@@ -190,7 +190,7 @@
 </tr>
 <tr>
 <td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
-<td class="tdleft">A list of digraphs/lists of adjacencies</td>
+<td class="tdleft">A list of digraphs/adjacency lists</td>
 </tr>
 </table><br /><p>&nbsp;</p><br />
 </div>
@@ -259,7 +259,7 @@
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.Intersection(A6, D12);</span>
 Group([ (2,6)(3,5), (1,3,5)(2,4,6) ])
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.Intersection(A6 * (1,2), D12 * (3,4));</span>
-RightCoset(Group([ (2,6)(3,5), (1,3,5)(2,4,6) ]),(1,5)(2,3,4))
+RightCoset(Group([ (2,6)(3,5), (1,3)(4,6) ]),(1,5,4,2,6,3))
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.Intersection(A6 * (1,2), D12 * (3,4), PSL(2,5));</span>
 [  ]
 </pre></div>
@@ -334,7 +334,7 @@ true
 </tr>
 <tr>
 <td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
-<td class="tdleft">A list of digraphs/lists of adjacencies</td>
+<td class="tdleft">A list of digraphs/adjacency lists</td>
 </tr>
 </table><br /><p>&nbsp;</p><br />
 </div>
@@ -406,7 +406,7 @@ fail
 </tr>
 <tr>
 <td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
-<td class="tdleft">A list of digraphs/lists of adjacencies</td>
+<td class="tdleft">A list of digraphs/adjacency lists</td>
 </tr>
 </table><br /><p>&nbsp;</p><br />
 </div>
@@ -613,7 +613,7 @@ true
 </tr>
 <tr>
 <td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
-<td class="tdleft">A list of digraphs/lists of adjacencies</td>
+<td class="tdleft">A list of digraphs/adjacency lists</td>
 </tr>
 </table><br /><p>&nbsp;</p><br />
 </div>
@@ -702,7 +702,7 @@ fail
 </tr>
 <tr>
 <td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
-<td class="tdleft">A list of digraphs/lists of adjacencies</td>
+<td class="tdleft">A list of digraphs/adjacency lists</td>
 </tr>
 </table><br /><p>&nbsp;</p><br />
 </div>
@@ -837,7 +837,7 @@ false
 
 <p><code class="func">Vole.IsomorphismDigraphs</code> emulates the <strong class="pkg">Digraphs</strong> package function <code class="func">IsomorphismDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X8219FE6C839D9457"><span class="RefLink">Digraphs 7.2-17</span></a>).</p>
 
-<p>If <var class="Arg">D1</var> and <var class="Arg">D2</var> are digraphs, then this function returns some permutation that maps <var class="Arg">D1</var> to <var class="Arg">D2</var> under the <code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>) action, if one exists, and it returns <code class="keyw">fail</code> otherwise. In other words, this function call is equivalent to <code class="code">VoleFind.Rep(VoleCon.Transport(<var class="Arg">D1</var>,<var class="Arg">D2</var>,OnDigraphs)</code>.</p>
+<p>If <var class="Arg">D1</var> and <var class="Arg">D2</var> are digraphs, then this function returns some permutation that maps <var class="Arg">D1</var> to <var class="Arg">D2</var> under the <code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>) action, if one exists, and it returns <code class="keyw">fail</code> otherwise. In other words, this function call is equivalent to <code class="code">VoleFind.Rep(Constraint.Transport(<var class="Arg">D1</var>,<var class="Arg">D2</var>,OnDigraphs)</code>.</p>
 
 <p><strong class="pkg">Vole</strong> can also find such a permutation subject to additional properties, such as belonging to particular groups or cosets, or stabilising certain objects. See <code class="func">VoleFind.Rep</code> (<a href="chap5.html#X8712249F879D9FA9"><span class="RefLink">5.2-1</span></a>) for more information.</p>
 

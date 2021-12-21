@@ -30,6 +30,21 @@
 <div class="ContSSBlock">
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X83ED5F5485256E51">7.2-1 VoleRefiner</a></span>
 </div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap7.html#X81833F77797A67BE">7.3 <span class="Heading"><strong class="pkg">Vole</strong> refiners via the <code class="code">VoleRefiner</code> record</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X7A92234681CBC716">7.3-1 VoleRefiner.InSymmetricGroup</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X8574CA547AB6DF6D">7.3-2 VoleRefiner.SetStab</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X7D25ECB67C1362E5">7.3-3 VoleRefiner.TupleStab</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X7D59A2E782C0210F">7.3-4 VoleRefiner.SetSetStab</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X8131EE0E877BEF7F">7.3-5 VoleRefiner.SetTupleStab</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X8043B43F83AAEEAB">7.3-6 VoleRefiner.DigraphStab</a></span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap7.html#X78C890C487F46A91">7.4 <span class="Heading">Choosing a refiner for a given constraint</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X834A88DC864E92BA">7.4-1 VoleRefiner.FromConstraint</a></span>
+</div></div>
 </div>
 
 <h3>7 <span class="Heading">Refiners in <strong class="pkg">Vole</strong></span></h3>
@@ -38,7 +53,7 @@
 
 <h4>7.1 <span class="Heading">Refiners</span></h4>
 
-<p>Refiners in <strong class="pkg">Vole</strong> are still a work in progress, and are not yet documented. Please check back in the next version.</p>
+<p>Refiners in <strong class="pkg">Vole</strong> are still a work in progress, and are not yet properly documented. Please check back in the next version. appropriate refiners for the given constraints.</p>
 
 <p><a id="X7A04C02B7DC3D43B" name="X7A04C02B7DC3D43B"></a></p>
 
@@ -57,10 +72,127 @@
 <div class="example"><pre>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">LoadPackage("vole", false);;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Set(RecNames(VoleRefiner));</span>
-[ "DigraphStab", "DigraphTransporter", "InSymmetricGroup", "PointStab", 
-  "PointTransporter", "SetSetStab", "SetSetTransporter", "SetStab", 
-  "SetTransporter", "SetTupleStab", "SetTupleTransporter", "TupleStab", 
-  "TupleTransporter" ]
+[ "DigraphStab", "DigraphTransporter", "FromConstraint", "InSymmetricGroup", 
+  "SetSetStab", "SetSetTransporter", "SetStab", "SetTransporter", 
+  "SetTupleStab", "SetTupleTransporter", "TupleStab", "TupleTransporter" ]
+</pre></div>
+
+<p><a id="X81833F77797A67BE" name="X81833F77797A67BE"></a></p>
+
+<h4>7.3 <span class="Heading"><strong class="pkg">Vole</strong> refiners via the <code class="code">VoleRefiner</code> record</span></h4>
+
+<p><a id="X7A92234681CBC716" name="X7A92234681CBC716"></a></p>
+
+<h5>7.3-1 VoleRefiner.InSymmetricGroup</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner.InSymmetricGroup</code>( <var class="Arg">x</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A <strong class="pkg">Vole</strong> refiner</p>
+
+<p>Something</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X8574CA547AB6DF6D" name="X8574CA547AB6DF6D"></a></p>
+
+<h5>7.3-2 VoleRefiner.SetStab</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner.SetStab</code>( <var class="Arg">s</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner.SetTransporter</code>( <var class="Arg">s</var>, <var class="Arg">t</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A <strong class="pkg">Vole</strong> refiner</p>
+
+<p>Something</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X7D25ECB67C1362E5" name="X7D25ECB67C1362E5"></a></p>
+
+<h5>7.3-3 VoleRefiner.TupleStab</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner.TupleStab</code>( <var class="Arg">s</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner.TupleTransporter</code>( <var class="Arg">s</var>, <var class="Arg">t</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A <strong class="pkg">Vole</strong> refiner</p>
+
+<p>Something</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X7D59A2E782C0210F" name="X7D59A2E782C0210F"></a></p>
+
+<h5>7.3-4 VoleRefiner.SetSetStab</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner.SetSetStab</code>( <var class="Arg">s</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner.SetSetTransporter</code>( <var class="Arg">s</var>, <var class="Arg">t</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A <strong class="pkg">Vole</strong> refiner</p>
+
+<p>Something</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X8131EE0E877BEF7F" name="X8131EE0E877BEF7F"></a></p>
+
+<h5>7.3-5 VoleRefiner.SetTupleStab</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner.SetTupleStab</code>( <var class="Arg">s</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner.SetTupleTransporter</code>( <var class="Arg">s</var>, <var class="Arg">t</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A <strong class="pkg">Vole</strong> refiner</p>
+
+<p>Something</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X8043B43F83AAEEAB" name="X8043B43F83AAEEAB"></a></p>
+
+<h5>7.3-6 VoleRefiner.DigraphStab</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner.DigraphStab</code>( <var class="Arg">s</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner.DigraphTransporter</code>( <var class="Arg">s</var>, <var class="Arg">t</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A <strong class="pkg">Vole</strong> refiner</p>
+
+<p>Something</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
+</pre></div>
+
+<p><a id="X78C890C487F46A91" name="X78C890C487F46A91"></a></p>
+
+<h4>7.4 <span class="Heading">Choosing a refiner for a given constraint</span></h4>
+
+<p><a id="X834A88DC864E92BA" name="X834A88DC864E92BA"></a></p>
+
+<h5>7.4-1 VoleRefiner.FromConstraint</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VoleRefiner.FromConstraint</code>( <var class="Arg">constraint</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A <strong class="pkg">Vole</strong>, <strong class="pkg">GraphBacktracking</strong>, or <strong class="pkg">BacktrackKit</strong> refiner</p>
+
+<p>Something.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">true;</span>
+true
 </pre></div>
 
 

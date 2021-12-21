@@ -54,16 +54,19 @@
   refiner implies a constraint), or one of the following objects:[133X
   
   [30X    [33X[0;6YA  permutation  group  [3XG[103X,  which  is interpreted as an instance of the
-        constraint [2XVoleCon.InGroup[102X ([14X6.3-1[114X) with argument [3XG[103X.[133X
+        constraint  [2XConstraint.InGroup[102X ([14XBacktrackKit: Constraint.InGroup[114X) with
+        argument [3XG[103X.[133X
   
   [30X    [33X[0;6YA [5XGAP[105X right coset object [3XU[103X, which is interpreted as an instance of the
-        constraint [2XVoleCon.InCoset[102X ([14X6.3-2[114X) with argument [3XU[103X.[133X
+        constraint  [2XConstraint.InCoset[102X ([14XBacktrackKit: Constraint.InCoset[114X) with
+        argument [3XU[103X.[133X
   
   [30X    [33X[0;6YA  positive  integer  [3Xk[103X,  which  is  interpreted as an instance of the
-        constraint [2XVoleCon.LargestMovedPoint[102X ([14X6.3-11[114X) with argument [3Xk[103X.[133X
+        constraint         [2XConstraint.LargestMovedPoint[102X         ([14XBacktrackKit:
+        Constraint.LargestMovedPoint[114X) with argument [3Xk[103X.[133X
   
   [30X    [33X[0;6YThe  value [9Xfail[109X, which is interpreted as an instance of the constraint
-        [2XVoleCon.None[102X ([14X6.3-14[114X).[133X
+        [2XConstraint.None[102X ([14XBacktrackKit: Constraint.None[114X).[133X
   
   [33X[0;0YFor at least one of the [3Xarguments[103X, [5XVole[105X must be able to immediately deduce a
   positive integer [10Xk[110X, such that for the corresponding constraint:[133X
@@ -72,13 +75,13 @@
         there exists an element of [10XSym([1..k])[110X satisfying the constraint.[133X
   
   [33X[0;0YOtherwise,  an  error  is given. This guarantees that [5XVole[105X terminates (given
-  sufficient resources). See Section [14X6.4[114X for examples and further information.[133X
+  sufficient resources). See Section [14X6.1[114X for examples and further information.[133X
   
   [33X[0;0YThis function supports various options, which are documented in Section [14X8.2[114X.[133X
   
   [4X[32X  Example  [32X[104X
-    [4X[25Xgap>[125X [27Xtuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;[127X[104X
-    [4X[25Xgap>[125X [27XVoleFind.Rep(VoleCon.InGroup(SymmetricGroup(4)), tuple_transport);[127X[104X
+    [4X[25Xgap>[125X [27Xtuple_transport := Constraint.Transport([1,2,3], [1,2,4], OnTuples);;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Rep(Constraint.InGroup(SymmetricGroup(4)), tuple_transport);[127X[104X
     [4X[28X(3,4)[128X[104X
     [4X[25Xgap>[125X [27XVoleFind.Rep(AlternatingGroup(4), tuple_transport);[127X[104X
     [4X[28Xfail[128X[104X
@@ -99,22 +102,24 @@
   refiner implies a constraint), or one of the following objects:[133X
   
   [30X    [33X[0;6YA  permutation  group  [3XG[103X,  which  is interpreted as an instance of the
-        constraint [2XVoleCon.InGroup[102X ([14X6.3-1[114X) with argument [3XG[103X.[133X
+        constraint  [2XConstraint.InGroup[102X ([14XBacktrackKit: Constraint.InGroup[114X) with
+        argument [3XG[103X.[133X
   
   [30X    [33X[0;6YA  positive  integer  [3Xk[103X,  which  is  interpreted as an instance of the
-        constraint [2XVoleCon.LargestMovedPoint[102X ([14X6.3-11[114X) with argument [3Xk[103X.[133X
+        constraint         [2XConstraint.LargestMovedPoint[102X         ([14XBacktrackKit:
+        Constraint.LargestMovedPoint[114X) with argument [3Xk[103X.[133X
   
   [33X[0;0YFor at least one of the [3Xarguments[103X, [5XVole[105X must be able to immediately deduce a
   (finite)  largest  moved  point  of  all  the  permutations that satisfy the
   corresponding constraint. Otherwise, an error is given. This guarantees that
-  [5XVole[105X  terminates  (given sufficient resources). See Section [14X6.4[114X for examples
+  [5XVole[105X  terminates  (given sufficient resources). See Section [14X6.1[114X for examples
   and further information.[133X
   
   [33X[0;0YThis function supports various options, which are documented in Section [14X8.2[114X.[133X
   
   [4X[32X  Example  [32X[104X
-    [4X[25Xgap>[125X [27Xgraph_auto := VoleCon.Stabilise(JohnsonDigraph(4,2), OnDigraphs);;[127X[104X
-    [4X[25Xgap>[125X [27Xset_stab := VoleCon.Stabilise([2,4,6], OnSets);;[127X[104X
+    [4X[25Xgap>[125X [27Xgraph_auto := Constraint.Stabilise(JohnsonDigraph(4,2), OnDigraphs);;[127X[104X
+    [4X[25Xgap>[125X [27Xset_stab := Constraint.Stabilise([2,4,6], OnSets);;[127X[104X
     [4X[25Xgap>[125X [27XG := VoleFind.Group(graph_auto, set_stab, 6);;[127X[104X
     [4X[25Xgap>[125X [27XG = Group([ (2,4)(3,5), (1,3,5)(2,6,4) ]);[127X[104X
     [4X[28Xtrue[128X[104X
@@ -123,9 +128,9 @@
   [33X[0;0YNote that multiple groups-by-generators may be given as constraints:[133X
   
   [4X[32X  Example  [32X[104X
-    [4X[25Xgap>[125X [27Xnorm_PSL25 := VoleCon.Normalise(PSL(2,5));;[127X[104X
-    [4X[25Xgap>[125X [27Xin_A6  := VoleCon.InGroup(AlternatingGroup(6));;[127X[104X
-    [4X[25Xgap>[125X [27Xin_D12 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 12));;[127X[104X
+    [4X[25Xgap>[125X [27Xnorm_PSL25 := Constraint.Normalise(PSL(2,5));;[127X[104X
+    [4X[25Xgap>[125X [27Xin_A6  := Constraint.InGroup(AlternatingGroup(6));;[127X[104X
+    [4X[25Xgap>[125X [27Xin_D12 := Constraint.InGroup(DihedralGroup(IsPermGroup, 12));;[127X[104X
     [4X[25Xgap>[125X [27XG := VoleFind.Group(in_A6, in_D12, norm_PSL25);;[127X[104X
     [4X[25Xgap>[125X [27XG = Group([ (1,3,5)(2,4,6) ]);[127X[104X
     [4X[28Xtrue[128X[104X
@@ -151,32 +156,35 @@
   refiner implies a constraint), or one of the following objects:[133X
   
   [30X    [33X[0;6YA  permutation  group  [3XG[103X,  which  is interpreted as an instance of the
-        constraint [2XVoleCon.InGroup[102X ([14X6.3-1[114X) with argument [3XG[103X.[133X
+        constraint  [2XConstraint.InGroup[102X ([14XBacktrackKit: Constraint.InGroup[114X) with
+        argument [3XG[103X.[133X
   
   [30X    [33X[0;6YA [5XGAP[105X right coset object [3XU[103X, which is interpreted as an instance of the
-        constraint [2XVoleCon.InCoset[102X ([14X6.3-2[114X) with argument [3XU[103X.[133X
+        constraint  [2XConstraint.InCoset[102X ([14XBacktrackKit: Constraint.InCoset[114X) with
+        argument [3XU[103X.[133X
   
   [30X    [33X[0;6YA  positive  integer  [3Xk[103X,  which  is  interpreted as an instance of the
-        constraint [2XVoleCon.LargestMovedPoint[102X ([14X6.3-11[114X) with argument [3Xk[103X.[133X
+        constraint         [2XConstraint.LargestMovedPoint[102X         ([14XBacktrackKit:
+        Constraint.LargestMovedPoint[114X) with argument [3Xk[103X.[133X
   
   [30X    [33X[0;6YThe  value [9Xfail[109X, which is interpreted as an instance of the constraint
-        [2XVoleCon.None[102X ([14X6.3-14[114X).[133X
+        [2XConstraint.None[102X ([14XBacktrackKit: Constraint.None[114X).[133X
   
   [33X[0;0YFor at least one of the [3Xarguments[103X, [5XVole[105X must be able to immediately deduce a
   (finite)  largest  moved  point  of  all  the  permutations that satisfy the
   corresponding constraint. Otherwise, an error is given. This guarantees that
-  [5XVole[105X  terminates  (given sufficient resources). See Section [14X6.4[114X for examples
+  [5XVole[105X  terminates  (given sufficient resources). See Section [14X6.1[114X for examples
   and further information.[133X
   
   [33X[0;0YThis function supports various options, which are documented in Section [14X8.2[114X.[133X
   
   [4X[32X  Example  [32X[104X
-    [4X[25Xgap>[125X [27Xtuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;[127X[104X
-    [4X[25Xgap>[125X [27XVoleFind.Coset(VoleCon.InGroup(SymmetricGroup(6)), tuple_transport);[127X[104X
+    [4X[25Xgap>[125X [27Xtuple_transport := Constraint.Transport([1,2,3], [1,2,4], OnTuples);;[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Coset(Constraint.InGroup(SymmetricGroup(6)), tuple_transport);[127X[104X
     [4X[28XRightCoset(Group([ (5,6), (4,5,6) ]),(3,4,6))[128X[104X
     [4X[25Xgap>[125X [27XVoleFind.Coset(AlternatingGroup(4), tuple_transport);[127X[104X
     [4X[28Xfail[128X[104X
-    [4X[25Xgap>[125X [27XVoleFind.Coset(AlternatingGroup(5), VoleCon.Transport([127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Coset(AlternatingGroup(5), Constraint.Transport([127X[104X
     [4X[25X>[125X [27XCycleDigraph(5), DigraphReverse(CycleDigraph(5)), OnDigraphs));[127X[104X
     [4X[28XRightCoset(Group([ (1,2,3,4,5) ]),(1,4)(2,3))[128X[104X
   [4X[32X[104X
@@ -218,19 +226,21 @@
   [2XVoleFind.Canonical[102X.[133X
   
   [33X[0;0Y[13XFor users who wish to canonise an object under an action listed in the table
-  in  [2XVoleCon.Stabilise[102X  ([14X6.3-5[114X),  and  who  do not wish to specify particular
-  refiners,  it  may be easier to use the simpler functions [2XVole.CanonicalPerm[102X
-  ([14X4.5-1[114X) and [2XVole.CanonicalImage[102X ([14X4.5-2[114X).[113X[133X
+  in [2XConstraint.Stabilise[102X ([14XBacktrackKit: Constraint.Stabilise[114X), and who do not
+  wish  to  specify  particular  refiners, it may be easier to use the simpler
+  functions [2XVole.CanonicalPerm[102X ([14X4.5-1[114X) and [2XVole.CanonicalImage[102X ([14X4.5-2[114X).[113X[133X
   
   [33X[0;0YThe  first  argument  to  [2XVoleFind.Canonical[102X must be the group [3XG[103X in which to
   canonise.  The  remaining  [3Xarguments[103X  specify  the  rest of the canonisation
   problem; in particular, they define the relevant object and action.[133X
   
   [33X[0;0YThe  [3Xarguments[103X  that follow [3XG[103X may be given separately, or in a list. Each of
-  the [3Xarguments[103X must be an instance of a [2XVoleCon.Stabilise[102X ([14X6.3-5[114X) constraint,
-  either  directly,  or indirectly as an instance of [2XVoleCon.Normalise[102X ([14X6.3-7[114X)
-  or  [2XVoleCon.Centralise[102X  ([14X6.3-8[114X).  [12XNote  that  it is not permitted to include
-  constraints of the kind produced by[112X [2XVoleCon.InGroup[102X ([14X6.3-1[114X).[133X
+  the  [3Xarguments[103X  must be an instance of a [2XConstraint.Stabilise[102X ([14XBacktrackKit:
+  Constraint.Stabilise[114X)  constraint,  either  directly,  or  indirectly  as an
+  instance  of  [2XConstraint.Normalise[102X  ([14XBacktrackKit:  Constraint.Normalise[114X) or
+  [2XConstraint.Centralise[102X ([14XBacktrackKit: Constraint.Centralise[114X). [12XNote that it is
+  not   permitted   to   include   constraints   of   the   kind  produced  by[112X
+  [2XConstraint.InGroup[102X ([14XBacktrackKit: Constraint.InGroup[114X).[133X
   
   [33X[0;0YIt  is  also  permitted to include special kinds of refiners as arguments to
   [2XVoleFind.Canonical[102X,  although  we  do  not yet document the details of this,
@@ -238,7 +248,7 @@
   (Refiners will be documented in Chapter [14X7[114X).[133X
   
   [33X[0;0YFor  the  following,  we  will  suppose  that  [3Xarguments...[103X  is  a list of [10Xk[110X
-  constraints  [10XVoleCon.Stabilise(object_i,action_i)[110X,  for  [10Xi=1..k[110X in sequence.
+  constraints [10XConstraint.Stabilise(object_i,action_i)[110X, for [10Xi=1..k[110X in sequence.
   Then [2XVoleFind.Canonical[102X canonises the [10Xk[110X-tuple [10X[object_1,...,object_k][110X, where
   the action on the [10Xi[110X-th coordinate is [10Xaction_i[110X.[133X
   
@@ -246,7 +256,7 @@
   [10X[nextobject_1,...,nextobject_k][110X  with  respect  to the same action, and in a
   way  that  is  comparable to the first canonisation, it is necessary to call
   [2XVoleFind.Canonical[102X  with  the  same  group  [3XG[103X  followed  by the [3Xarguments...[103X
-  [10XVoleCon.Stabilise(nextobject_i,action_i)[110X, [12Xin the same order[112X.[133X
+  [10XConstraint.Stabilise(nextobject_i,action_i)[110X, [12Xin the same order[112X.[133X
   
   [33X[0;0YThe  result  of  [2XVoleFind.Canonical[102X is given as a record, with the following
   components (see the beginning of Section [14X5.3[114X for a definition of some of the
@@ -277,10 +287,10 @@
     [4X[25Xgap>[125X [27Xcycle := CycleDigraph(6);;[127X[104X
     [4X[25Xgap>[125X [27Xreverse := DigraphReverse(cycle);;[127X[104X
     [4X[25Xgap>[125X [27XA6 := AlternatingGroup(6);;[127X[104X
-    [4X[25Xgap>[125X [27Xcanon1 := VoleFind.Canonical(A6, VoleCon.Stabilise(cycle, OnDigraphs));[127X[104X
+    [4X[25Xgap>[125X [27Xcanon1 := VoleFind.Canonical(A6, Constraint.Stabilise(cycle, OnDigraphs));[127X[104X
     [4X[28Xrec( canonical := (1,3,4,6,5), group := Group([ (1,3,5)(2,4,6) ]) )[128X[104X
     [4X[25Xgap>[125X [27Xcanon2 := VoleFind.Canonical(A6,[127X[104X
-    [4X[25X>[125X [27X                                VoleCon.Stabilise(reverse, OnDigraphs));[127X[104X
+    [4X[25X>[125X [27X                                Constraint.Stabilise(reverse, OnDigraphs));[127X[104X
     [4X[28Xrec( canonical := (1,4,5), group := Group([ (1,3,5)(2,4,6) ]) )[128X[104X
   [4X[32X[104X
   
@@ -332,12 +342,12 @@
   
   [4X[32X  Example  [32X[104X
     [4X[25Xgap>[125X [27Xcanon1 := VoleFind.Canonical(G,[127X[104X
-    [4X[25X>[125X [27X                                VoleCon.Stabilise(cycle, OnDigraphs),[127X[104X
-    [4X[25X>[125X [27X                                VoleCon.Stabilise(colours1, OnTuplesSets));[127X[104X
+    [4X[25X>[125X [27X                                Constraint.Stabilise(cycle, OnDigraphs),[127X[104X
+    [4X[25X>[125X [27X                                Constraint.Stabilise(colours1, OnTuplesSets));[127X[104X
     [4X[28Xrec( canonical := (1,5,2,3,6), group := Group(()) )[128X[104X
     [4X[25Xgap>[125X [27Xcanon2 := VoleFind.Canonical(G,[127X[104X
-    [4X[25X>[125X [27X                                VoleCon.Stabilise(reverse, OnDigraphs),[127X[104X
-    [4X[25X>[125X [27X                                VoleCon.Stabilise(colours2, OnTuplesSets));[127X[104X
+    [4X[25X>[125X [27X                                Constraint.Stabilise(reverse, OnDigraphs),[127X[104X
+    [4X[25X>[125X [27X                                Constraint.Stabilise(colours2, OnTuplesSets));[127X[104X
     [4X[28Xrec( canonical := (1,6,5,4,3), group := Group(()) )[128X[104X
   [4X[32X[104X
   
@@ -354,12 +364,12 @@
   
   [4X[32X  Example  [32X[104X
     [4X[25Xgap>[125X [27Xcanon1 := VoleFind.Canonical(SymmetricGroup(6),[127X[104X
-    [4X[25X>[125X [27X                                VoleCon.Stabilise(cycle, OnDigraphs),[127X[104X
-    [4X[25X>[125X [27X                                VoleCon.Stabilise(colours1, OnTuplesSets));[127X[104X
+    [4X[25X>[125X [27X                                Constraint.Stabilise(cycle, OnDigraphs),[127X[104X
+    [4X[25X>[125X [27X                                Constraint.Stabilise(colours1, OnTuplesSets));[127X[104X
     [4X[28Xrec( canonical := (1,5,2,3,4,6), group := Group([ (1,3,5)(2,4,6) ]) )[128X[104X
     [4X[25Xgap>[125X [27Xcanon2 := VoleFind.Canonical(SymmetricGroup(6),[127X[104X
-    [4X[25X>[125X [27X                                VoleCon.Stabilise(reverse, OnDigraphs),[127X[104X
-    [4X[25X>[125X [27X                                VoleCon.Stabilise(colours2, OnTuplesSets));[127X[104X
+    [4X[25X>[125X [27X                                Constraint.Stabilise(reverse, OnDigraphs),[127X[104X
+    [4X[25X>[125X [27X                                Constraint.Stabilise(colours2, OnTuplesSets));[127X[104X
     [4X[28Xrec( canonical := (1,3)(2,5,6,4), group := Group([ (1,3,5)(2,4,6) ]) )[128X[104X
     [4X[25Xgap>[125X [27XOnDigraphs(cycle, canon1.canonical)[127X[104X
     [4X[25X>[125X [27X= OnDigraphs(reverse, canon2.canonical);[127X[104X
@@ -390,7 +400,7 @@
   
   [4X[32X  Example  [32X[104X
     [4X[25Xgap>[125X [27XVoleFind.CanonicalPerm(AlternatingGroup(4),[127X[104X
-    [4X[25X>[125X [27X VoleCon.Normalise(Group([ (1,2) ]))[127X[104X
+    [4X[25X>[125X [27X Constraint.Normalise(Group([ (1,2) ]))[127X[104X
     [4X[25X>[125X [27X);[127X[104X
     [4X[28X(1,4)(2,3)[128X[104X
   [4X[32X[104X
@@ -406,8 +416,8 @@
   
   [4X[32X  Example  [32X[104X
     [4X[25Xgap>[125X [27XVoleFind.CanonicalPerm(SymmetricGroup(4),[127X[104X
-    [4X[25X>[125X [27X VoleCon.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),[127X[104X
-    [4X[25X>[125X [27X VoleCon.Stabilise(CycleDigraph(4), OnDigraphs)[127X[104X
+    [4X[25X>[125X [27X Constraint.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),[127X[104X
+    [4X[25X>[125X [27X Constraint.Stabilise(CycleDigraph(4), OnDigraphs)[127X[104X
     [4X[25X>[125X [27X);[127X[104X
     [4X[28X(1,2,3)[128X[104X
   [4X[32X[104X

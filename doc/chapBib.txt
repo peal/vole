@@ -3,23 +3,23 @@
   [1XReferences[101X
   
   [[20XBJM+21[120X]  [16XBeule,  J. D., Jonušas, J., Mitchell, J. D., Torpey, M., Tsalakou,
-  M. and Wilson, W. A.[116X, [17XDigraphs -- GAP package, Version 1.4.0[117X (2021).
+  M. and Wilson, W. A.[116X, [17XDigraphs -- GAP package, Version 1.5.0[117X (2021).
   
   [[20XGAP21[120X]  [17XGAP -- Groups, Algorithms, and Programming, Version 4.11.1[117X, The GAP
   Group (2021).
   
   [[20XJef20[120X] [16XJefferson, C.[116X, [17Xjson -- GAP package, Version 2.0.2[117X (2020).
   
-  [[20XJef21[120X] [16XJefferson, C.[116X, [17Xferret -- GAP package, Version 1.0.5[117X (2021).
+  [[20XJef21[120X] [16XJefferson, C.[116X, [17Xferret -- GAP package, Version 1.0.6[117X (2021).
   
   [[20XJHPL21[120X]   [16XJefferson,   C.,   Horn,   M.,   Pfeiffer,  M.  and  Linton,  S.[116X,
   [17Xdatastructures -- GAP package, Version 0.2.6[117X (2021).
   
-  [[20XJJPW19a[120X]  [16XJefferson,  C.,  Jonauskyte,  E., Pfeiffer, M. and Waldecker, R.[116X,
-  [17Ximages -- GAP package, Version 1.3.0[117X (2019).
-  
-  [[20XJJPW19b[120X]  [16XJefferson,  C.,  Jonauskyte,  E., Pfeiffer, M. and Waldecker, R.[116X,
+  [[20XJJPW19[120X]  [16XJefferson,  C.,  Jonauskyte,  E.,  Pfeiffer, M. and Waldecker, R.[116X,
   [17XMinimal and canonical images[117X, [18XJ. Algebra[118X, [19X521[119X (2019), 481--506.
+  
+  [[20XJJPW21[120X]  [16XJefferson,  C.,  Jonauskyte,  E.,  Pfeiffer, M. and Waldecker, R.[116X,
+  [17Ximages -- GAP package, Version 1.3.1[117X (2021).
   
   [[20XJK07[120X]  [16XJunttila,  T.  and  Kaski,  P.[116X,  [17XEngineering  an Efficient Canonical
   Labeling  Tool  for  Large  and Sparse Graphs[117X, [18X2007 Proceedings of the Ninth
@@ -38,10 +38,10 @@
   (2021), 723--758.
   
   [[20XJW21a[120X]  [16XJefferson,  C.  and  Wilson,  W.  A.[116X,  [17XBacktrackKit -- GAP package,
-  Version 0.4.1[117X (2021).
+  Version 0.6.0[117X (2021).
   
   [[20XJW21b[120X]  [16XJefferson,  C. and Wilson, W. A.[116X, [17XGraphBacktracking -- GAP package,
-  Version 0.4.0[117X (2021).
+  Version 0.5.1[117X (2021).
   
   [[20XLeo91[120X]  [16XLeon,  J.  S.[116X, [17XPermutation group algorithms based on partitions. I.
   Theory and algorithms[117X, [18XJ. Symbolic Comput.[118X, [19X12[119X, 4-5 (1991), 533--583.
@@ -58,7 +58,7 @@
   [[20XMP14[120X]  [16XMcKay,  B.  D.  and Piperno, A.[116X, [17XPractical graph isomorphism, II[117X, [18XJ.
   Symbolic Comput.[118X, [19X60[119X (2014), 94--112.
   
-  [[20XNeu21[120X] [16XNeunhöffer, M.[116X, [17XIO -- GAP package, Version 4.7.1[117X (2021).
+  [[20XNeu21[120X] [16XNeunhöffer, M.[116X, [17XIO -- GAP package, Version 4.7.2[117X (2021).
   
   [[20XSoi21[120X] [16XSoicher, L. H.[116X, [17XGRAPE -- GAP package, Version 4.8.5[117X (2021).
   

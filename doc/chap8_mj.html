@@ -118,7 +118,7 @@ true
 
 
 <ul>
-<li><p>This option can be used in place of the constraint <code class="code">VoleCon.LargestMovedPoint(points)</code>; see <code class="func">VoleCon.LargestMovedPoint</code> (<a href="chap6_mj.html#X821F077482DE97E6"><span class="RefLink">6.3-11</span></a>).</p>
+<li><p>This option can be used in place of the constraint <code class="code">Constraint.LargestMovedPoint(points)</code>; see <code class="func">Constraint.LargestMovedPoint</code> (<a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X85EC63B08043C2BC"><span class="RefLink">BacktrackKit: Constraint.LargestMovedPoint</span></a>).</p>
 
 </li>
 <li><p>Note that for relevant functions that accept constraints, an integer argument is interpreted as an instance of a ‘largest moved point’ constraint, which achieves the same affect as this option more simply.</p>
@@ -130,7 +130,7 @@ true
 
 <div class="example"><pre>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">D := PetersenGraph();;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">constraint := VoleCon.Stabilise(D, OnDigraphs);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">constraint := Constraint.Stabilise(D, OnDigraphs);;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G := VoleFind.Group(constraint : points := DigraphNrVertices(D));;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">[NrMovedPoints(G), TransitiveIdentification(G)];</span>
 [ 10, 13 ]

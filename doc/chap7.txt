@@ -4,8 +4,9 @@
   
   [1X7.1 [33X[0;0YRefiners[133X[101X
   
-  [33X[0;0YRefiners  in  [5XVole[105X are still a work in progress, and are not yet documented.
-  Please check back in the next version.[133X
+  [33X[0;0YRefiners  in  [5XVole[105X  are  still  a work in progress, and are not yet properly
+  documented.  Please check back in the next version. appropriate refiners for
+  the given constraints.[133X
   
   
   [1X7.2 [33X[0;0YThe [10XVoleRefiner[110X[101X[1X record[133X[101X
@@ -22,9 +23,103 @@
   [4X[32X  Example  [32X[104X
     [4X[25Xgap>[125X [27XLoadPackage("vole", false);;[127X[104X
     [4X[25Xgap>[125X [27XSet(RecNames(VoleRefiner));[127X[104X
-    [4X[28X[ "DigraphStab", "DigraphTransporter", "InSymmetricGroup", "PointStab", [128X[104X
-    [4X[28X  "PointTransporter", "SetSetStab", "SetSetTransporter", "SetStab", [128X[104X
-    [4X[28X  "SetTransporter", "SetTupleStab", "SetTupleTransporter", "TupleStab", [128X[104X
-    [4X[28X  "TupleTransporter" ][128X[104X
+    [4X[28X[ "DigraphStab", "DigraphTransporter", "FromConstraint", "InSymmetricGroup", [128X[104X
+    [4X[28X  "SetSetStab", "SetSetTransporter", "SetStab", "SetTransporter", [128X[104X
+    [4X[28X  "SetTupleStab", "SetTupleTransporter", "TupleStab", "TupleTransporter" ][128X[104X
+  [4X[32X[104X
+  
+  
+  [1X7.3 [33X[0;0Y[5XVole[105X[101X[1X refiners via the [10XVoleRefiner[110X[101X[1X record[133X[101X
+  
+  [1X7.3-1 VoleRefiner.InSymmetricGroup[101X
+  
+  [33X[1;0Y[29X[2XVoleRefiner.InSymmetricGroup[102X( [3Xx[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA [5XVole[105X refiner[133X
+  
+  [33X[0;0YSomething[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xtrue;[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X7.3-2 VoleRefiner.SetStab[101X
+  
+  [33X[1;0Y[29X[2XVoleRefiner.SetStab[102X( [3Xs[103X ) [32X function[133X
+  [33X[1;0Y[29X[2XVoleRefiner.SetTransporter[102X( [3Xs[103X, [3Xt[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA [5XVole[105X refiner[133X
+  
+  [33X[0;0YSomething[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xtrue;[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X7.3-3 VoleRefiner.TupleStab[101X
+  
+  [33X[1;0Y[29X[2XVoleRefiner.TupleStab[102X( [3Xs[103X ) [32X function[133X
+  [33X[1;0Y[29X[2XVoleRefiner.TupleTransporter[102X( [3Xs[103X, [3Xt[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA [5XVole[105X refiner[133X
+  
+  [33X[0;0YSomething[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xtrue;[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X7.3-4 VoleRefiner.SetSetStab[101X
+  
+  [33X[1;0Y[29X[2XVoleRefiner.SetSetStab[102X( [3Xs[103X ) [32X function[133X
+  [33X[1;0Y[29X[2XVoleRefiner.SetSetTransporter[102X( [3Xs[103X, [3Xt[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA [5XVole[105X refiner[133X
+  
+  [33X[0;0YSomething[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xtrue;[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X7.3-5 VoleRefiner.SetTupleStab[101X
+  
+  [33X[1;0Y[29X[2XVoleRefiner.SetTupleStab[102X( [3Xs[103X ) [32X function[133X
+  [33X[1;0Y[29X[2XVoleRefiner.SetTupleTransporter[102X( [3Xs[103X, [3Xt[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA [5XVole[105X refiner[133X
+  
+  [33X[0;0YSomething[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xtrue;[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [1X7.3-6 VoleRefiner.DigraphStab[101X
+  
+  [33X[1;0Y[29X[2XVoleRefiner.DigraphStab[102X( [3Xs[103X ) [32X function[133X
+  [33X[1;0Y[29X[2XVoleRefiner.DigraphTransporter[102X( [3Xs[103X, [3Xt[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA [5XVole[105X refiner[133X
+  
+  [33X[0;0YSomething[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xtrue;[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  
+  [1X7.4 [33X[0;0YChoosing a refiner for a given constraint[133X[101X
+  
+  [1X7.4-1 VoleRefiner.FromConstraint[101X
+  
+  [33X[1;0Y[29X[2XVoleRefiner.FromConstraint[102X( [3Xconstraint[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA [5XVole[105X, [5XGraphBacktracking[105X, or [5XBacktrackKit[105X refiner[133X
+  
+  [33X[0;0YSomething.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xtrue;[127X[104X
+    [4X[28Xtrue[128X[104X
   [4X[32X[104X
   

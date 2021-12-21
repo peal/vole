@@ -43,14 +43,14 @@
   [5XVole[105X.  This  means  that [5XVole[105X will not load if one or more of these packages
   cannot be loaded in your [5XGAP[105X installation in a new enough version.[133X
   
-  [30X    [33X[0;6Y[5XBacktrackKit[105X  ([7Xhttps://peal.github.io/BacktrackKit[107X)  version 0.6.0, or
+  [30X    [33X[0;6Y[5XBacktrackKit[105X  ([7Xhttps://peal.github.io/BacktrackKit[107X)  version 0.6.1, or
         newer [JW21a].[133X
   
   [30X    [33X[0;6Y[5XDigraphs[105X ([7Xhttps://digraphs.github.io/Digraphs[107X) version 1.1.1, or newer
         [BJM+21].[133X
   
   [30X    [33X[0;6Y[5XGraphBacktracking[105X  ([7Xhttps://peal.github.io/GraphBacktracking[107X)  version
-        0.5.1, or newer [JW21b].[133X
+        0.5.2, or newer [JW21b].[133X
   
   [30X    [33X[0;6Y[5XIO[105X   ([7Xhttps://gap-packages.github.io/io[107X)   version   4.7.0,  or  newer
         [Neu21].[133X

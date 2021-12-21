@@ -77,8 +77,9 @@
   [30X    [33X[0;6Y[10Xpoints[110X: a non-negative integer or (default) [9Xinfinity[109X:[133X
   
         [30X    [33X[0;12YThis   option   can   be   used   in  place  of  the  constraint
-              [10XVoleCon.LargestMovedPoint(points)[110X; see [2XVoleCon.LargestMovedPoint[102X
-              ([14X6.3-11[114X).[133X
+              [10XConstraint.LargestMovedPoint(points)[110X;                        see
+              [2XConstraint.LargestMovedPoint[102X                      ([14XBacktrackKit:
+              Constraint.LargestMovedPoint[114X).[133X
   
         [30X    [33X[0;12YNote  that  for  relevant  functions that accept constraints, an
               integer  argument  is  interpreted  as an instance of a ‘largest
@@ -87,7 +88,7 @@
   
   [4X[32X  Example  [32X[104X
     [4X[25Xgap>[125X [27XD := PetersenGraph();;[127X[104X
-    [4X[25Xgap>[125X [27Xconstraint := VoleCon.Stabilise(D, OnDigraphs);;[127X[104X
+    [4X[25Xgap>[125X [27Xconstraint := Constraint.Stabilise(D, OnDigraphs);;[127X[104X
     [4X[25Xgap>[125X [27XG := VoleFind.Group(constraint : points := DigraphNrVertices(D));;[127X[104X
     [4X[25Xgap>[125X [27X[NrMovedPoints(G), TransitiveIdentification(G)];[127X[104X
     [4X[28X[ 10, 13 ][128X[104X

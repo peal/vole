@@ -105,9 +105,8 @@
   
   [33X[0;0YFor  most  users,  the  easiest way to solve the problem with [2XVoleFind.Group[102X
   ([14X5.2-2[114X)  is  to  find  a collection of [13Xconstraints[113X that together specify the
-  problem.  Constraints  are  discussed in Chapter [14X6[114X. The constraints directly
-  offered  by  [5XVole[105X  are  contained  in  the  record  [2XVoleCon[102X ([14X6.2-1[114X), and are
-  sufficient to solve the problem at hand.[133X
+  problem. Constraints are discussed in Chapter [14X'BacktrackKit: Constraints'[114X of
+  the [5XBacktrackKit[105X manual.[133X
   
   [33X[0;0YSpecifically,  we  are  looking  for  all permutations that are contained in
   [23XM_{12}[123X,  that  stabilise  the set [23X\{1,2,3,5\}[123X, that are also contained in [23XG[123X,
@@ -115,10 +114,10 @@
   constraints:[133X
   
   [4X[32X  Example  [32X[104X
-    [4X[25Xgap>[125X [27XVoleFind.Group(VoleCon.InGroup(M12),[127X[104X
-    [4X[25X>[125X [27X                  VoleCon.Stabilize(S, OnSets),[127X[104X
-    [4X[25X>[125X [27X                  VoleCon.InGroup(G),[127X[104X
-    [4X[25X>[125X [27X                  VoleCon.Normalize(H))[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Group(Constraint.InGroup(M12),[127X[104X
+    [4X[25X>[125X [27X                  Constraint.Stabilize(S, OnSets),[127X[104X
+    [4X[25X>[125X [27X                  Constraint.InGroup(G),[127X[104X
+    [4X[25X>[125X [27X                  Constraint.Normalize(H))[127X[104X
     [4X[25X>[125X [27X= answer;[127X[104X
     [4X[28Xtrue[128X[104X
   [4X[32X[104X
@@ -134,21 +133,21 @@
   to   the   technique  that  the  refiner  [10XGB_Con.NormaliserSimple[110X  from  the
   [5XGraphBacktracking[105X  package  uses  to refine for the normaliser. This refiner
   may   be   included   instead   of,   or   as   well   as,   the  constraint
-  [10XVoleCon.Normalize(H)[110X,  since  the refiner implies that constraint, but it is
-  perfectly  acceptable  (and  sometimes a good idea) to use multiple refiners
+  [10XConstraint.Normalize(H)[110X,  since  the refiner implies that constraint, but it
+  is perfectly acceptable (and sometimes a good idea) to use multiple refiners
   for the same constraint.[133X
   
   [4X[32X  Example  [32X[104X
-    [4X[25Xgap>[125X [27XVoleFind.Group(VoleCon.InGroup(M12),[127X[104X
-    [4X[25X>[125X [27X                  VoleCon.Stabilize(S, OnSets),[127X[104X
-    [4X[25X>[125X [27X                  VoleCon.InGroup(G),[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Group(Constraint.InGroup(M12),[127X[104X
+    [4X[25X>[125X [27X                  Constraint.Stabilize(S, OnSets),[127X[104X
+    [4X[25X>[125X [27X                  Constraint.InGroup(G),[127X[104X
     [4X[25X>[125X [27X                  GB_Con.NormaliserSimple(H))[127X[104X
     [4X[25X>[125X [27X= answer;[127X[104X
     [4X[28Xtrue[128X[104X
-    [4X[25Xgap>[125X [27XVoleFind.Group(VoleCon.InGroup(M12),[127X[104X
-    [4X[25X>[125X [27X                  VoleCon.Stabilize(S, OnSets),[127X[104X
-    [4X[25X>[125X [27X                  VoleCon.InGroup(G),[127X[104X
-    [4X[25X>[125X [27X                  VoleCon.Normalise(H),[127X[104X
+    [4X[25Xgap>[125X [27XVoleFind.Group(Constraint.InGroup(M12),[127X[104X
+    [4X[25X>[125X [27X                  Constraint.Stabilize(S, OnSets),[127X[104X
+    [4X[25X>[125X [27X                  Constraint.InGroup(G),[127X[104X
+    [4X[25X>[125X [27X                  Constraint.Normalise(H),[127X[104X
     [4X[25X>[125X [27X                  GB_Con.NormaliserSimple(H))[127X[104X
     [4X[25X>[125X [27X= answer;[127X[104X
     [4X[28Xtrue[128X[104X

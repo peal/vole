@@ -33,7 +33,7 @@
   generalises  the  [13Xpartition  backtracking[113X framework of Jeffrey Leon [Leo91],
   [Leo97].  The functionality for canonical labellings and canonical images is
   underpinned,  in  addition,  by work that is in preparation for publication,
-  and which builds on [JJPW19b].[133X
+  and which builds on [JJPW19].[133X
   
   [33X[0;0YWhile  the  [5XGAP[105X  interface  of  this  package  is  written  in [5XGAP[105X, the main
   algorithms are written in Rust, for reasons of fun and performance.[133X
@@ -94,8 +94,8 @@
   
   [33X[0;0Y[5Ximages[105X[133X
   
-  [33X[0;0YThe  [5Ximages[105X  package  [JJPW19a]  provides  a [5XGAP[105X-level implementation of the
-  custom  breadth-first search that was introduced in [JJPW19b] to compute the
+  [33X[0;0YThe  [5Ximages[105X  package  [JJPW21]  provides  a  [5XGAP[105X-level implementation of the
+  custom  breadth-first  search that was introduced in [JJPW19] to compute the
   [13Xcanonical  image[113X  of  any  set  of  points  under the action of an arbitrary
   permutation group. This algorithm built upon the original algorithm of Steve
   Linton  [Lin04]  for  computing  [13Xminimal  images[113X of sets of points, which is

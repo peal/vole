@@ -7,10 +7,10 @@
                                   with graphs [101X
   
   
-                                     0.5.2
+                                     0.5.3
   
   
-                                3 December 2021
+                                21 December 2021
   
   
                                  Mun See Chang
@@ -119,29 +119,20 @@
       5.3-1 VoleFind.Canonical
       5.3-2 VoleFind.CanonicalPerm
   6 [33X[0;0YConstraints[133X
-    6.1 [33X[0;0YThe concept of constraints in [5XVole[105X[133X
-    6.2 [33X[0;0YThe [10XVoleCon[110X record[133X
-      6.2-1 VoleCon
-    6.3 [33X[0;0Y[5XVole[105X constraints via the [10XVoleCon[110X record[133X
-      6.3-1 VoleCon.InGroup
-      6.3-2 VoleCon.InCoset
-      6.3-3 VoleCon.InRightCoset
-      6.3-4 VoleCon.InLeftCoset
-      6.3-5 VoleCon.Stabilise
-      6.3-6 VoleCon.Transport
-      6.3-7 VoleCon.Normalise
-      6.3-8 VoleCon.Centralise
-      6.3-9 VoleCon.Conjugate
-      6.3-10 VoleCon.MovedPoints
-      6.3-11 VoleCon.LargestMovedPoint
-      6.3-12 VoleCon.IsEven
-      6.3-13 VoleCon.IsOdd
-      6.3-14 VoleCon.None
-    6.4 [33X[0;0YBounds associated with a constraint or refiner[133X
+    6.1 [33X[0;0YBounds associated with a constraint or refiner[133X
   7 [33X[0;0YRefiners in [5XVole[105X[133X
     7.1 [33X[0;0YRefiners[133X
     7.2 [33X[0;0YThe [10XVoleRefiner[110X record[133X
       7.2-1 VoleRefiner
+    7.3 [33X[0;0Y[5XVole[105X refiners via the [10XVoleRefiner[110X record[133X
+      7.3-1 VoleRefiner.InSymmetricGroup
+      7.3-2 VoleRefiner.SetStab
+      7.3-3 VoleRefiner.TupleStab
+      7.3-4 VoleRefiner.SetSetStab
+      7.3-5 VoleRefiner.SetTupleStab
+      7.3-6 VoleRefiner.DigraphStab
+    7.4 [33X[0;0YChoosing a refiner for a given constraint[133X
+      7.4-1 VoleRefiner.FromConstraint
   8 [33X[0;0YExpert use of [5XVole[105X[133X
     8.1 [33X[0;0Y[10XInfoVole[110X – getting extra information about a [5XVole[105X search[133X
       8.1-1 InfoVole

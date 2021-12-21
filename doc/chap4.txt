@@ -103,7 +103,7 @@
         [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
         [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
         [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
-        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/lists of adjacencies          
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/adjacency lists               
   
   
   [1X4.4 [33X[0;0Y[5XVole[105X[101X[1X functions emulating built-in [5XGAP[105X[101X[1X functions[133X[101X
@@ -150,7 +150,7 @@
     [4X[25Xgap>[125X [27XVole.Intersection(A6, D12);[127X[104X
     [4X[28XGroup([ (2,6)(3,5), (1,3,5)(2,4,6) ])[128X[104X
     [4X[25Xgap>[125X [27XVole.Intersection(A6 * (1,2), D12 * (3,4));[127X[104X
-    [4X[28XRightCoset(Group([ (2,6)(3,5), (1,3,5)(2,4,6) ]),(1,5)(2,3,4))[128X[104X
+    [4X[28XRightCoset(Group([ (2,6)(3,5), (1,3)(4,6) ]),(1,5,4,2,6,3))[128X[104X
     [4X[25Xgap>[125X [27XVole.Intersection(A6 * (1,2), D12 * (3,4), PSL(2,5));[127X[104X
     [4X[28X[  ][128X[104X
   [4X[32X[104X
@@ -204,7 +204,7 @@
         [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
         [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
         [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
-        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/lists of adjacencies          
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/adjacency lists               
   
   
   [1X4.4-3 [33X[0;0YRepresentativeAction[133X[101X
@@ -252,7 +252,7 @@
         [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
         [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
         [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
-        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/lists of adjacencies          
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/adjacency lists               
   
   
   [1X4.4-4 [33X[0;0YNormaliser[133X[101X
@@ -445,7 +445,7 @@
         [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
         [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
         [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
-        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/lists of adjacencies          
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/adjacency lists               
   
   
   [1X4.5-2 [33X[0;0YCanonicalImage[133X[101X
@@ -513,7 +513,7 @@
         [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
         [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
         [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
-        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/lists of adjacencies          
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/adjacency lists               
   
   
   [1X4.6 [33X[0;0Y[5XVole[105X[101X[1X functions emulating the [5XDigraphs[105X[101X[1X package[133X[101X
@@ -646,7 +646,7 @@
   maps [3XD1[103X to [3XD2[103X under the [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a
   perm[114X)  action, if one exists, and it returns [9Xfail[109X otherwise. In other words,
   this          function         call         is         equivalent         to
-  [10XVoleFind.Rep(VoleCon.Transport([3XD1[103X[10X,[3XD2[103X[10X,OnDigraphs)[110X.[133X
+  [10XVoleFind.Rep(Constraint.Transport([3XD1[103X[10X,[3XD2[103X[10X,OnDigraphs)[110X.[133X
   
   [33X[0;0Y[5XVole[105X can also find such a permutation subject to additional properties, such
   as belonging to particular groups or cosets, or stabilising certain objects.

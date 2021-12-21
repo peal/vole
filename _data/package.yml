@@ -1,7 +1,7 @@
 name: Vole
-version: "0.5.2"
+version: "0.5.3"
 license: "MPL-2.0"
-date: 2021-12-03
+date: 2021-12-21
 description: |
     Vole organises lengthy explorations: Backtrack search in permutation groups with graphs
 
@@ -23,13 +23,13 @@ GAP: ">= 4.11.0"
 
 needed-pkgs:
     - name: "BacktrackKit"
-      version: ">= 0.6.0"
-      url: "https://peal.github.io/BacktrackKit/"
+      version: ">= 0.6.1"
+      url: "https://peal.github.io/BacktrackKit"
     - name: "Digraphs"
       version: ">= 1.1.1"
       url: "https://digraphs.github.io/Digraphs"
     - name: "GraphBacktracking"
-      version: ">= 0.5.1"
+      version: ">= 0.5.2"
       url: "https://peal.github.io/GraphBacktracking/"
     - name: "IO"
       version: ">= 4.7.0"
@@ -50,7 +50,7 @@ suggested-pkgs:
       url: "https://gap-packages.github.io/ferret/"
     - name: "QuickCheck"
       version: ">= 0.1"
-      url: "https://gap-packages.github.io/QuickCheck/"
+      url: "https://github.com/ChrisJefferson/QuickCheck"
     - name: "OrbitalGraphs"
       version: ">= 0.1"
       url: "https://gap-packages.github.io/OrbitalGraphs"
@@ -61,7 +61,7 @@ packageinfo: https://peal.github.io/vole/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/peal/vole/releases/download/v0.5.2/vole-0.5.2.tar.gz
+      url: https://github.com/peal/vole/releases/download/v0.5.3/vole-0.5.3.tar.gz
 
 abstract: |
     
@@ -79,7 +79,7 @@ citeas: |
     <p class='BibEntry'>
     [<span class='BibKey'>CJW21</span>]   <b class='BibAuthor'>Chang, M. S., Jefferson, C. and Wilson, W. A.</b>,
      <i class='BibTitle'>Vole, Vole organises lengthy explorations: Backtrack search in permutation groups with graphs,
-             Version 0.5.2</i>
+             Version 0.5.3</i>
      (<span class='BibYear'>2021</span>)<br />
     (<span class='BibNote'>GAP package</span>),
     <span class='BibHowpublished'><a href="https://peal.github.io/vole">https://peal.github.io/vole</a></span>.
@@ -87,11 +87,11 @@ citeas: |
     
 
 bibtex: |
-    @misc{ Vole0.5.2,
+    @misc{ Vole0.5.3,
       author =           {Chang, M. S. and Jefferson, C. and Wilson, W. A.},
       title =            {{Vole}, Vole organises lengthy explorations: Backtrack
                           search  in  permutation  groups with graphs, {V}ersion
-                          0.5.2},
+                          0.5.3},
       month =            {Dec},
       year =             {2021},
       note =             {GAP package},

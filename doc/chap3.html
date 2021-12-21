@@ -135,16 +135,16 @@ true
 
 <p>The ‘<strong class="pkg">Vole</strong>’ way of solving this is problem is to do it in one step with the function <code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>).</p>
 
-<p>For most users, the easiest way to solve the problem with <code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>) is to find a collection of <em>constraints</em> that together specify the problem. Constraints are discussed in Chapter <a href="chap6.html#X79EAB456814AB11C"><span class="RefLink">6</span></a>. The constraints directly offered by <strong class="pkg">Vole</strong> are contained in the record <code class="func">VoleCon</code> (<a href="chap6.html#X78F3F7F58416EE54"><span class="RefLink">6.2-1</span></a>), and are sufficient to solve the problem at hand.</p>
+<p>For most users, the easiest way to solve the problem with <code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>) is to find a collection of <em>constraints</em> that together specify the problem. Constraints are discussed in Chapter <a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X79EAB456814AB11C"><span class="RefLink">BacktrackKit: Constraints</span></a> of the <strong class="pkg">BacktrackKit</strong> manual.</p>
 
 <p>Specifically, we are looking for all permutations that are contained in <span class="Math">M_{12}</span>, that stabilise the set <span class="Math">\{1,2,3,5\}</span>, that are also contained in <span class="Math">G</span>, and that normalise <span class="Math">H</span>. Therefore, we can solve the problem with the following constraints:</p>
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(VoleCon.InGroup(M12),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.Stabilize(S, OnSets),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.InGroup(G),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.Normalize(H))</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(Constraint.InGroup(M12),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  Constraint.Stabilize(S, OnSets),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  Constraint.InGroup(G),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  Constraint.Normalize(H))</span>
 <span class="GAPprompt">&gt;</span> <span class="GAPinput">= answer;</span>
 true
 </pre></div>
@@ -153,20 +153,20 @@ true
 
 <p>In order to solve the problem as specified, <strong class="pkg">Vole</strong> chooses appropriate refiners for the given collection of constraints. Refiners are documented in Chapter <a href="chap7.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a>. The more confident user may wish to directly specify one or more refiners instead of, and/or in addition to, some of the constraints.</p>
 
-<p>For example, a user may know (or just hope) that the group <span class="Math">H</span> is well-suited to the technique that the refiner <code class="code">GB_Con.NormaliserSimple</code> from the <strong class="pkg">GraphBacktracking</strong> package uses to refine for the normaliser. This refiner may be included instead of, or as well as, the constraint <code class="code">VoleCon.Normalize(H)</code>, since the refiner implies that constraint, but it is perfectly acceptable (and sometimes a good idea) to use multiple refiners for the same constraint.</p>
+<p>For example, a user may know (or just hope) that the group <span class="Math">H</span> is well-suited to the technique that the refiner <code class="code">GB_Con.NormaliserSimple</code> from the <strong class="pkg">GraphBacktracking</strong> package uses to refine for the normaliser. This refiner may be included instead of, or as well as, the constraint <code class="code">Constraint.Normalize(H)</code>, since the refiner implies that constraint, but it is perfectly acceptable (and sometimes a good idea) to use multiple refiners for the same constraint.</p>
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(VoleCon.InGroup(M12),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.Stabilize(S, OnSets),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.InGroup(G),</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(Constraint.InGroup(M12),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  Constraint.Stabilize(S, OnSets),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  Constraint.InGroup(G),</span>
 <span class="GAPprompt">&gt;</span> <span class="GAPinput">                  GB_Con.NormaliserSimple(H))</span>
 <span class="GAPprompt">&gt;</span> <span class="GAPinput">= answer;</span>
 true
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(VoleCon.InGroup(M12),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.Stabilize(S, OnSets),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.InGroup(G),</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  VoleCon.Normalise(H),</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">VoleFind.Group(Constraint.InGroup(M12),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  Constraint.Stabilize(S, OnSets),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  Constraint.InGroup(G),</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">                  Constraint.Normalise(H),</span>
 <span class="GAPprompt">&gt;</span> <span class="GAPinput">                  GB_Con.NormaliserSimple(H))</span>
 <span class="GAPprompt">&gt;</span> <span class="GAPinput">= answer;</span>
 true
