@@ -39,3 +39,4 @@
 DeclareGlobalVariable("VoleRefiner");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
 InstallValue(VoleRefiner, rec());
+DeclareGlobalFunction("VoleRefiner.FromConstraint");
