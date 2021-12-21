@@ -124,3 +124,15 @@ if not IsBound(OnTuplesDigraphs) then
     BindGlobal("OnTuplesDigraphs",
     {L, p} -> List(L, x -> OnDigraphs(DigraphMutableCopyIfMutable(x), p)));
 fi;
+
+# Turn a digraph into a list of neighbours, to allow us to accept
+# either a Digraph, or a list of neighbours
+_Vole.Digraph := function(g)
+    if IsDigraph(g) then
+        return OutNeighbours(g);
+    elif IsList(g) then
+        return g;
+    else
+        Error("Invalid graph");
+    fi;
+end; 
