@@ -352,18 +352,6 @@ _Vole.ExecuteVole := function(obj, refiners, canonicalgroup)
     od;
 end;
 
-# Turn a digraph into a list of neighbours, to allow us to accept
-# either a Digraph, or a list of neighbours
-_Vole.Digraph := function(g)
-    if IsDigraph(g) then
-        return OutNeighbours(g);
-    elif IsList(g) then
-        return g;
-    else
-        Error("Invalid graph");
-    fi;
-end; 
-
 
 # Solve a problem using Vole
 # 'points': Search will be done in the set [1..points]
