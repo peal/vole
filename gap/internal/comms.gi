@@ -390,13 +390,13 @@ function(points, find_single, find_coset, find_canonical, constraints, canonical
     gapcons := [];
     constraints := ShallowCopy(constraints);
     for i in [1 .. Length(constraints)] do
-        if IsRefiner(constraints[i]) then
+        if IsVoleRefiner(constraints[i]) then
+            constraints[i] := constraints[i]!.con;
+        elif IsRefiner(constraints[i]) then
             gapcons[i] := _GB.BuildProblem(PartitionStack(points), [constraints[i]], []);
             # We need somewhere to store the saved states for Vole
             gapcons[i]!.saved_stack := [];
             constraints[i] := rec(GapRefiner := rec(gap_id := i));
-        elif IsRecord(constraints[i]) and IsBound(constraints[i].con) then
-            constraints[i] := constraints[i].con;
         fi;
     od;
 

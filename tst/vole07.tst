@@ -10,13 +10,40 @@
 #
 gap> START_TEST("vole07.tst");
 
-# doc/_Chapter_Refiners.xml:27-34
+# doc/_Chapter_Refiners.xml:29-35
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(VoleRefiner));
-[ "DigraphStab", "DigraphTransporter", "InSymmetricGroup", "PointStab", 
-  "PointTransporter", "SetSetStab", "SetSetTransporter", "SetStab", 
-  "SetTransporter", "SetTupleStab", "SetTupleTransporter", "TupleStab", 
-  "TupleTransporter" ]
+[ "DigraphStab", "DigraphTransporter", "FromConstraint", "InSymmetricGroup", 
+  "SetSetStab", "SetSetTransporter", "SetStab", "SetTransporter", 
+  "SetTupleStab", "SetTupleTransporter", "TupleStab", "TupleTransporter" ]
+
+# doc/_Chapter_Refiners.xml:54-57
+gap> true;
+true
+
+# doc/_Chapter_Refiners.xml:71-74
+gap> true;
+true
+
+# doc/_Chapter_Refiners.xml:88-91
+gap> true;
+true
+
+# doc/_Chapter_Refiners.xml:105-108
+gap> true;
+true
+
+# doc/_Chapter_Refiners.xml:122-125
+gap> true;
+true
+
+# doc/_Chapter_Refiners.xml:139-142
+gap> true;
+true
+
+# doc/_Chapter_Refiners.xml:161-164
+gap> true;
+true
 
 #
 gap> STOP_TEST("vole07.tst", 1);

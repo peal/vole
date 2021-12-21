@@ -22,13 +22,6 @@ _Vole.getBounds := function(constraints, initial_max, allow_max_inf)
         if IsPermGroup(c) then
             this_min := LargestMovedPoint(c);
             this_max := LargestMovedPoint(c);
-        elif IsRecord(c) then
-            if IsBound(c.bounds) then
-                this_min := c.bounds.largest_required_point;
-                if IsBound(c.bounds.largest_moved_point) then
-                    this_max := c.bounds.largest_moved_point;
-                fi;
-            fi;
         elif IsRefiner(c) then
             this_min := c!.largest_required_point;
             if HasLargestMovedPoint(c!.constraint) then

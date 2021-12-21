@@ -33,10 +33,10 @@ FerretSolve := function(p, l)
         fi;
 
         # Unwrap a vole refiner first
-        if IsRecord(c) and IsBound(c.con) then
-            c := c.con;
+        if IsVoleRefiner(c) and IsBound(c!.con) then
+            c := c!.con;
         fi;
-        if IsRefiner(c) then
+        if IsBTKitRefiner(c) or IsGBRefiner(c) then
             g := GB_SimpleSearch(PartitionStack(p), [GB_Con.InGroup(g), c]);
         elif IsBound(c.SetStab) then
             g := Solve([ConInGroup(g), ConStabilize(c.SetStab.points, OnSets)]);
@@ -79,11 +79,11 @@ function(p, l)
         fi;
 
         # Unwrap a vole refiner first
-        if IsRecord(c) and IsBound(c.con) then
-            c := c.con;
+        if IsVoleRefiner(c) and IsBound(c!.con) then
+            c := c!.con;
         fi;
         
-        if IsRefiner(c) then
+        if IsBTKitRefiner(c) or IsGBRefiner(c) then
             g := GB_SimpleSearch(PartitionStack(p), [GB_Con.InGroup(g), c]);
         elif IsBound(c.SetStab) then
             g := Stabilizer(g, c.SetStab.points, OnSets);

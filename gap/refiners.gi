@@ -6,29 +6,81 @@
 # Implementations: Vole refiners
 
 # In-group refiners
-VoleRefiner.InSymmetricGroup := {s} -> rec(
-    bounds := rec(
-        largest_required_point := _BTKit.LargestRelevantPoint(s),
-        largest_moved_point := _BTKit.LargestRelevantPoint(s),
-    ),
+VoleRefiner.InSymmetricGroup := {s} -> Objectify(VoleRefinerType,
+rec(
+    constraint := Constraint.MovedPoints(_Vole.points(s)),
     con := rec(InSymmetricGroup := rec(points := _Vole.points(s))),
-);
+    largest_required_point := _BTKit.LargestRelevantPoint(s),
+));
 
 # Stabilisers
-VoleRefiner.PointStab     := {s} -> rec( bounds := rec(largest_required_point :=_BTKit.LargestRelevantPoint(s)), con := rec(PointStab := rec(points := [s])));
-VoleRefiner.SetStab       := {s} -> rec( bounds := rec(largest_required_point :=_BTKit.LargestRelevantPoint(s)), con := rec(SetStab := rec(points := s)));
-VoleRefiner.TupleStab     := {s} -> rec( bounds := rec(largest_required_point :=_BTKit.LargestRelevantPoint(s)), con := rec(TupleStab := rec(points := s)));
-VoleRefiner.SetSetStab    := {s} -> rec( bounds := rec(largest_required_point :=_BTKit.LargestRelevantPoint(s)), con := rec(SetSetStab := rec(points := s)));
-VoleRefiner.SetTupleStab  := {s} -> rec( bounds := rec(largest_required_point :=_BTKit.LargestRelevantPoint(s)), con := rec(SetTupleStab := rec(points := s)));
-VoleRefiner.DigraphStab   := {s} -> rec( bounds := rec(largest_required_point :=_BTKit.LargestRelevantPoint(s)), con := rec(DigraphStab := rec(edges := _Vole.Digraph(s))));
+VoleRefiner.SetStab := {s} -> Objectify(VoleRefinerType,
+rec(
+    constraint := Constraint.Stabilise(s, OnSets),
+    con := rec(SetStab := rec(points := s)),
+    largest_required_point := _BTKit.LargestRelevantPoint(s),
+));
+VoleRefiner.TupleStab := {s} -> Objectify(VoleRefinerType,
+rec(
+    constraint := Constraint.Stabilise(s, OnTuples),
+    con := rec(TupleStab := rec(points := s)),
+    largest_required_point := _BTKit.LargestRelevantPoint(s),
+));
+VoleRefiner.SetSetStab := {s} -> Objectify(VoleRefinerType,
+rec(
+    constraint := Constraint.Stabilise(s, OnSetsSets),
+    con := rec(SetSetStab := rec(points := s)),
+    largest_required_point := _BTKit.LargestRelevantPoint(s),
+));
+VoleRefiner.SetTupleStab := {s} -> Objectify(VoleRefinerType,
+rec(
+    constraint := Constraint.Stabilise(s, OnSetsTuples),
+    con := rec(SetTupleStab := rec(points := s)),
+    largest_required_point := _BTKit.LargestRelevantPoint(s),
+));
+VoleRefiner.DigraphStab := {s} -> Objectify(VoleRefinerType,
+rec(
+    constraint := Constraint.Stabilise(s, OnDigraphs),
+    con := rec(DigraphStab := rec(edges := _Vole.Digraph(s))),
+    largest_required_point := _BTKit.LargestRelevantPoint(s),
+));
 
 # Transporters
-VoleRefiner.PointTransporter    := {s,t} -> rec( bounds := rec(largest_required_point :=_BTKit.LargestRelevantPoint(s,t)), con := rec(PointTransport    := rec(left_points := [s], right_points := [t])));
-VoleRefiner.SetTransporter      := {s,t} -> rec( bounds := rec(largest_required_point :=_BTKit.LargestRelevantPoint(s,t)), con := rec(SetTransport      := rec(left_points := s, right_points := t)));
-VoleRefiner.TupleTransporter    := {s,t} -> rec( bounds := rec(largest_required_point :=_BTKit.LargestRelevantPoint(s,t)), con := rec(TupleTransport    := rec(left_points := s, right_points := t)));
-VoleRefiner.SetSetTransporter   := {s,t} -> rec( bounds := rec(largest_required_point :=_BTKit.LargestRelevantPoint(s,t)), con := rec(SetSetTransport   := rec(left_points := s, right_points := t)));
-VoleRefiner.SetTupleTransporter := {s,t} -> rec( bounds := rec(largest_required_point :=_BTKit.LargestRelevantPoint(s,t)), con := rec(SetTupleTransport := rec(left_points := s, right_points := t)));
-VoleRefiner.DigraphTransporter  := {s,t} -> rec( bounds := rec(largest_required_point :=_BTKit.LargestRelevantPoint(s,t)), con := rec(DigraphTransport  := rec(left_edges := _Vole.Digraph(s), right_edges := _Vole.Digraph(t))));
+VoleRefiner.SetTransporter := {s, t} -> Objectify(VoleRefinerType,
+rec(
+    constraint := Constraint.Transport(s, t, OnSets),
+    con := rec(SetTransport := rec(left_points := s, right_points := t)),
+    largest_required_point := _BTKit.LargestRelevantPoint(s, t),
+));
+VoleRefiner.TupleTransporter := {s, t} -> Objectify(VoleRefinerType,
+rec(
+    constraint := Constraint.Transport(s, t, OnTuples),
+    con := rec(TupleTransport := rec(left_points := s, right_points := t)),
+    largest_required_point := _BTKit.LargestRelevantPoint(s, t),
+));
+VoleRefiner.SetSetTransporter := {s, t} -> Objectify(VoleRefinerType,
+rec(
+    constraint := Constraint.Transport(s, t, OnSetsSets),
+    con := rec(SetSetTransport := rec(left_points := s, right_points := t)),
+    largest_required_point := _BTKit.LargestRelevantPoint(s, t),
+));
+VoleRefiner.SetTupleTransporter := {s, t} -> Objectify(VoleRefinerType,
+rec(
+    constraint := Constraint.Transport(s, t, OnSetsTuples),
+    con := rec(SetTupleTransport := rec(left_points := s, right_points := t)),
+    largest_required_point := _BTKit.LargestRelevantPoint(s, t),
+));
+VoleRefiner.DigraphTransporter := {s, t} -> Objectify(VoleRefinerType,
+rec(
+    constraint := Constraint.Transport(s, t, OnDigraphs),
+    con := rec(
+        DigraphTransport := rec(
+            left_edges  := _Vole.Digraph(s),
+            right_edges := _Vole.Digraph(t),
+        ),
+    ),
+    largest_required_point := _BTKit.LargestRelevantPoint(s, t),
+));
 
 VoleRefiner.FromConstraint := function(con)
     local action, source, result;
@@ -129,3 +181,26 @@ VoleRefiner.FromConstraint := function(con)
 
     return GB_RefinerFromConstraint(con);
 end;
+
+InstallMethod(ViewString, "for a Vole refiner", [IsVoleRefiner],
+function(r)
+    local str, con, nam;
+    con := r!.constraint;
+    nam := RecNames(r!.con)[1];
+    str := "<Vole refiner: ";
+    Append(str, nam);
+    if nam = "InSymmetricGroup" then
+        Append(str, " on ");
+        Append(str, PrintString(r!.con.InSymmetricGroup.points));
+    elif IsStabiliserConstraint(con) then
+        Append(str, " of ");
+        Append(str, ViewString(SourceObject(con)));
+    else
+        Append(str, " from ");
+        Append(str, ViewString(SourceObject(con)));
+        Append(str, " to ");
+        Append(str, ViewString(ResultObject(con)));
+    fi;
+    Append(str, ">");
+    return str;
+end);
