@@ -49,24 +49,24 @@ gap> answer = Vole.Intersection(stab, norm);
 true
 
 # doc/_Chapter_tut.xml:154-161
-gap> VoleFind.Group(VoleCon.InGroup(M12),
->                   VoleCon.Stabilize(S, OnSets),
->                   VoleCon.InGroup(G),
->                   VoleCon.Normalize(H))
+gap> VoleFind.Group(Constraint.InGroup(M12),
+>                   Constraint.Stabilize(S, OnSets),
+>                   Constraint.InGroup(G),
+>                   Constraint.Normalize(H))
 > = answer;
 true
 
 # doc/_Chapter_tut.xml:181-195
-gap> VoleFind.Group(VoleCon.InGroup(M12),
->                   VoleCon.Stabilize(S, OnSets),
->                   VoleCon.InGroup(G),
+gap> VoleFind.Group(Constraint.InGroup(M12),
+>                   Constraint.Stabilize(S, OnSets),
+>                   Constraint.InGroup(G),
 >                   GB_Con.NormaliserSimple(H))
 > = answer;
 true
-gap> VoleFind.Group(VoleCon.InGroup(M12),
->                   VoleCon.Stabilize(S, OnSets),
->                   VoleCon.InGroup(G),
->                   VoleCon.Normalise(H),
+gap> VoleFind.Group(Constraint.InGroup(M12),
+>                   Constraint.Stabilize(S, OnSets),
+>                   Constraint.InGroup(G),
+>                   Constraint.Normalise(H),
 >                   GB_Con.NormaliserSimple(H))
 > = answer;
 true

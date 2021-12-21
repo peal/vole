@@ -36,7 +36,7 @@ end;
 # Respects raw := true
 Vole.Stabilizer := function(G, object, action...)
     local con, ret;
-    con := CallFuncList(VoleCon.Stabilize, Concatenation([object], action));
+    con := CallFuncList(Constraint.Stabilize, Concatenation([object], action));
     ret := VoleFind.Group(G, con);
     _Vole.setParent(ret, G);
     return ret;
@@ -50,9 +50,9 @@ Vole.Normalizer := function(G, U)
         ErrorNoReturn("Vole.Normalizer: ",
                       "The first argument must be a perm group");
     elif IsPermGroup(U) then
-        ret := VoleFind.Group(G, VoleCon.Normalise(U));
+        ret := VoleFind.Group(G, Constraint.Normalise(U));
     elif IsPerm(U) then
-        ret := VoleFind.Group(G, VoleCon.Normalise(Group(U)));
+        ret := VoleFind.Group(G, Constraint.Normalise(Group(U)));
     else
         ErrorNoReturn("Vole.Normalizer: The second argument ",
                       "must a perm group or a permutation");
@@ -72,7 +72,7 @@ Vole.Centralizer := function(G, x)
         ErrorNoReturn("Vole.Centralizer: The second argument ",
                       "must be a perm group or a permutation");
     fi;
-    ret := VoleFind.Group(G, VoleCon.Centralize(x));
+    ret := VoleFind.Group(G, Constraint.Centralize(x));
     _Vole.setParent(ret, G);
     return ret;
 end;
@@ -96,14 +96,14 @@ Vole.RepresentativeAction := function(G, object1, object2, action...)
         ErrorNoReturn("Vole.RepresentativeAction: ",
                       "The first argument must be a perm group");
     elif Length(action) > 1 then
-        ErrorNoReturn("VoleCon.RepresentativeAction args: ",
+        ErrorNoReturn("Vole.RepresentativeAction args: ",
                       "G, object1, object2[, action]");
     elif Length(action) = 1 then
         action := action[1];
     else
         action := OnPoints;
     fi;
-    return VoleFind.Representative(G, VoleCon.Transport(object1, object2, action));
+    return VoleFind.Representative(G, Constraint.Transport(object1, object2, action));
 end;
 
 # Sometimes respects raw := true (depending on whether it does a search)
@@ -130,8 +130,8 @@ Vole.TwoClosure := function(G)
         # 1 OrbitalGraph -> complete digraph -> two-closure is symmetric group
         return SymmetricGroup(points);
     else
-        digraph_con := VoleCon.Stabilise(digraphs, OnTuplesDigraphs);
-        return VoleFind.Group(VoleCon.MovedPoints(points), digraph_con);
+        digraph_con := Constraint.Stabilise(digraphs, OnTuplesDigraphs);
+        return VoleFind.Group(Constraint.MovedPoints(points), digraph_con);
     fi;
 end;
 
@@ -145,13 +145,13 @@ Vole.CanonicalPerm := function(G, object, action...)
         ErrorNoReturn("Vole.CanonicalPerm: ",
                       "The first argument must be a perm group");
     elif Length(action) > 1 then
-        ErrorNoReturn("VoleCon.CanonicalPerm args: G, object[, action]");
+        ErrorNoReturn("Vole.CanonicalPerm args: G, object[, action]");
     elif Length(action) = 1 then
         action := action[1];
     else
         action := OnPoints;
     fi;
-    ret := VoleFind.Canonical(G, VoleCon.Stabilize(object, action));
+    ret := VoleFind.Canonical(G, Constraint.Stabilize(object, action));
     if IsBound(ret.raw) then
         return ret;
     else
@@ -218,5 +218,5 @@ Vole.IsomorphismDigraphs := function(D1, D2)
         ErrorNoReturn("Vole.IsomorphismDigraphs: ",
                       "The arguments must be digraphs");
     fi;
-    return VoleFind.Rep(VoleCon.Transport(D1, D2, OnDigraphs));
+    return VoleFind.Rep(Constraint.Transport(D1, D2, OnDigraphs));
 end;

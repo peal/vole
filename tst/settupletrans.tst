@@ -8,7 +8,7 @@ gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 >      local s2, res, p;
 >      p := Random(g);
 >      s2 := OnSetsTuples(s,p);
->      res := VoleFind.Rep(VoleCon.Transport(s,s2,OnSetsTuples), BTKit_Refiner.InGroupSimple(g));
+>      res := VoleFind.Rep(Constraint.Transport(s,s2,OnSetsTuples), BTKit_Refiner.InGroupSimple(g));
 >      if res = fail or OnSetsTuples(s,res) <> s2 then
 >          return StringFormatted("Failure: {} {} {}", s2, p, OnSetsTuples(s,res));
 >      fi;

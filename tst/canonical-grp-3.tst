@@ -5,7 +5,7 @@ true
 
 #
 gap> QC_Check([IsPermGroup, IsPermGroup],
->     {g, s} -> VoleTestCanonical(g, s, VoleCon.Stabilize, OnPoints));
+>     {g, s} -> VoleTestCanonical(g, s, Constraint.Stabilize, OnPoints));
 true
 
 #

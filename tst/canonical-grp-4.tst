@@ -6,7 +6,7 @@ true
 #
 gap> QC_Check([IsPermGroup], {s} ->
 >     VoleTestCanonical(
->       SymmetricGroup(LargestMovedPoint(s)), s, VoleCon.Stabilize, OnPoints));
+>       SymmetricGroup(LargestMovedPoint(s)), s, Constraint.Stabilize, OnPoints));
 true
 
 #

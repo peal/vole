@@ -15,7 +15,7 @@ gap> LoadPackage("vole", false);;
 
 # doc/_Chapter_expert.xml:117-123
 gap> D := PetersenGraph();;
-gap> constraint := VoleCon.Stabilise(D, OnDigraphs);;
+gap> constraint := Constraint.Stabilise(D, OnDigraphs);;
 gap> G := VoleFind.Group(constraint : points := DigraphNrVertices(D));;
 gap> [NrMovedPoints(G), TransitiveIdentification(G)];
 [ 10, 13 ]

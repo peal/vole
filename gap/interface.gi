@@ -6,17 +6,22 @@
 # Implementations: The native interface to Vole
 
 VoleFind.Representative := function(arguments...)
-    local conf, constraints, bounds, ret;
+    local conf, constraints, bounds, ret, temp;
 
     if IsEmpty(arguments) then
         ErrorNoReturn("VoleFind.Rep: At least one argument must be given");
     fi;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
-    constraints := _Vole.processConstraints(arguments, conf);
-    if ForAny(constraints, x -> x = fail) then
+    #constraints := _Vole.processConstraints(arguments, conf);
+    if IsInt(conf.points) then
+        Add(arguments, conf.points);
+    fi;
+    temp := ProcessConstraints(arguments);
+    if temp.is_known_empty then
         return fail;
     fi;
 
+    constraints := Concatenation(temp.refiners, Flat(List(temp.constraints_without_refiners, VoleRefiner.FromConstraint)));
     bounds := _Vole.getBounds(constraints, conf.points, true);
     ret    := _Vole.CosetSolve(Minimum(bounds.min, bounds.max), constraints);
 
@@ -31,14 +36,22 @@ end;
 VoleFind.Rep := VoleFind.Representative;
 
 VoleFind.Group := function(arguments...)
-    local conf, constraints, bounds, ret;
+    local conf, constraints, bounds, ret, temp;
 
     if IsEmpty(arguments) then
         ErrorNoReturn("VoleFind.Group: At least one argument must be given");
     fi;
 
     conf        := _Vole.getConfig(rec(raw := false, points := infinity));
-    constraints := _Vole.processConstraints(arguments, conf);
+    #constraints := _Vole.processConstraints(arguments, conf);
+    if IsInt(conf.points) then
+        Add(arguments, conf.points);
+    fi;
+    temp := ProcessConstraints(arguments);
+    if not temp.is_group then
+        ErrorNoReturn("constraints are not all groups");
+    fi;
+    constraints := Concatenation(temp.refiners, Flat(List(temp.constraints_without_refiners, VoleRefiner.FromConstraint)));
     bounds      := _Vole.getBounds(constraints, conf.points, false);
     ret         := _Vole.GroupSolve(bounds.max, constraints);
 
@@ -50,17 +63,22 @@ VoleFind.Group := function(arguments...)
 end;
 
 VoleFind.Coset := function(arguments...)
-    local conf, constraints, bounds, ret;
+    local conf, constraints, bounds, ret, temp;
 
     if IsEmpty(arguments) then
         ErrorNoReturn("VoleFind.Coset: At least one argument must be given");
     fi;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
-    constraints := _Vole.processConstraints(arguments, conf);
-    if ForAny(constraints, x -> x = fail) then
+    #constraints := _Vole.processConstraints(arguments, conf);
+    if IsInt(conf.points) then
+        Add(arguments, conf.points);
+    fi;
+    temp := ProcessConstraints(arguments);
+    if temp.is_known_empty then
         return fail;
     fi;
 
+    constraints := Concatenation(temp.refiners, Flat(List(temp.constraints_without_refiners, VoleRefiner.FromConstraint)));
     bounds := _Vole.getBounds(constraints, conf.points, false);
     ret    := _Vole.CosetSolve(bounds.max, constraints);
 
@@ -89,16 +107,16 @@ VoleFind.Canonical := function(G, arguments...)
     if ForAny(constraints, IsPermGroup) then
         # We don't do any interpretation of 'GAP object' arguments into
         # constraints, i.e. we don't assume that a group 'G' corresponds to
-        # VoleCon.Normalise(G). Maybe we should do this eventually, but for now
+        # Constraint.Normalise(G). Maybe we should do this eventually, but for now
         # I am worried that this will lead to confusion, since for
-        # VoleFind.Group, an argument 'G' is interpreted as VoleCon.InGroup(G).
+        # VoleFind.Group, an argument 'G' is interpreted as Constraint.InGroup(G).
         ErrorNoReturn("VoleFind.Canonical: ",
                       "A perm group is not valid additional argument; ",
                       "to canonise a group under conjugation, ",
-                      "use the constraint VoleCon.Normalise, ",
+                      "use the constraint Constraint.Normalise, ",
                       "or give a specific normaliser refiner;");
 
-    elif ForAny(constraints, c -> not IsRefiner(c) and not (IsRecord(c) and IsBound(c.con))) then
+    elif ForAny(constraints, c -> not IsRefiner(c) and not IsConstraint(c) and not (IsRecord(c) and IsBound(c.con))) then
         # Check that the args are refiners/records
         ErrorNoReturn("VoleFind.Canonical: ",
                       "The additional arguments must be Vole constraints, or ",
@@ -106,6 +124,7 @@ VoleFind.Canonical := function(G, arguments...)
                       "BacktrackKit refiners;");
 
     elif ForAny(constraints, c -> IsRefiner(c) and StartsWith(c!.name, "InGroup"))
+      or ForAny(constraints, c -> IsConstraint(c) and IsInGroupByGensConstraint(c))
       or ForAny(constraints, c -> IsRecord(c) and IsBound(c.con.InSymmetricGroup))
       then
         # Try to check that no "in-group-by-generators" refiner was been given.
@@ -114,15 +133,16 @@ VoleFind.Canonical := function(G, arguments...)
                       "constraints/refiners that are ",
                       "(directly or indirectly) of the kind ",
                       "'in-group-given-by-generators'; ",
-                      "i.e. VoleCon.InGroup(H) and ",
-                      "VoleCon.LargestMovedPoint(k) are not allowed. ",
+                      "i.e. Constraint.InGroup(H) and ",
+                      "Constraint.LargestMovedPoint(k) are not allowed. ",
                       "To canonise a group under conjugation, ",
-                      "use the constraint VoleCon.Normalise, ",
+                      "use the constraint Constraint.Normalise, ",
                       "or give a specific normaliser refiner. ",
                       "To restrict the moved points, canonise in a different ",
                       "group;");
 
     elif ForAny(constraints, c -> IsRefiner(c) and not IsGroupConstraint(c!.constraint))
+      or ForAny(constraints, c -> IsConstraint(c) and not IsGroupConstraint(c))
       or ForAny(constraints, c -> IsRecord(c) and EndsWith(RecNames(c.con)[1], "Transport"))
       then
         # Try to check for "coset" refiners/constraints
@@ -134,6 +154,7 @@ VoleFind.Canonical := function(G, arguments...)
                       "constraints/refiners are not allowed either;");
     fi;
 
+    constraints := Flat(List(constraints, VoleRefiner.FromConstraint));
     conf   := _Vole.getConfig(rec(raw := false, points := infinity));
     bounds := _Vole.getBounds(Concatenation(constraints, [G]), conf.points, false);
     ret    := _Vole.CanonicalSolve(bounds.max, G, constraints);

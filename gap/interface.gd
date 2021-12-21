@@ -28,22 +28,22 @@
 
 #! @BeginChunk group-ingroup
 #! * A permutation group <A>G</A>, which is interpreted as an instance of the
-#!   constraint <Ref Func="VoleCon.InGroup"/> with argument <A>G</A>.
+#!   constraint <Ref BookName="BacktrackKit" Func="Constraint.InGroup"/> with argument <A>G</A>.
 #! @EndChunk
 
 #! @BeginChunk coset-incoset
 #! * A &GAP; right coset object <A>U</A>, which is interpreted as an instance
-#!   of the constraint <Ref Func="VoleCon.InCoset"/> with argument <A>U</A>.
+#!   of the constraint <Ref BookName="BacktrackKit" Func="Constraint.InCoset"/> with argument <A>U</A>.
 #! @EndChunk
 
 #! @BeginChunk posint-lmp
 #! * A positive integer <A>k</A>, which is interpreted as an instance of the
-#!   constraint <Ref Func="VoleCon.LargestMovedPoint"/> with argument <A>k</A>.
+#!   constraint <Ref BookName="BacktrackKit" Func="Constraint.LargestMovedPoint"/> with argument <A>k</A>.
 #! @EndChunk
 
 #! @BeginChunk fail-none
 #! * The value <K>fail</K>, which is interpreted as an instance of the
-#!   constraint <Ref Func="VoleCon.None"/>.
+#!   constraint <Ref BookName="BacktrackKit" Func="Constraint.None"/>.
 #! @EndChunk
 
 #! @BeginChunk canonical-warning-session
@@ -158,8 +158,8 @@ DeclareGlobalFunction("VoleFind.Representative");
 #! @Arguments arguments...
 #! @Group Rep
 #! @BeginExampleSession
-#! gap> tuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;
-#! gap> VoleFind.Rep(VoleCon.InGroup(SymmetricGroup(4)), tuple_transport);
+#! gap> tuple_transport := Constraint.Transport([1,2,3], [1,2,4], OnTuples);;
+#! gap> VoleFind.Rep(Constraint.InGroup(SymmetricGroup(4)), tuple_transport);
 #! (3,4)
 #! gap> VoleFind.Rep(AlternatingGroup(4), tuple_transport);
 #! fail
@@ -186,17 +186,17 @@ DeclareGlobalFunction("VoleFind.Rep");
 #!
 #! @InsertChunk valueoption
 #! @BeginExampleSession
-#! gap> graph_auto := VoleCon.Stabilise(JohnsonDigraph(4,2), OnDigraphs);;
-#! gap> set_stab := VoleCon.Stabilise([2,4,6], OnSets);;
+#! gap> graph_auto := Constraint.Stabilise(JohnsonDigraph(4,2), OnDigraphs);;
+#! gap> set_stab := Constraint.Stabilise([2,4,6], OnSets);;
 #! gap> G := VoleFind.Group(graph_auto, set_stab, 6);;
 #! gap> G = Group([ (2,4)(3,5), (1,3,5)(2,6,4) ]);
 #! true
 #! @EndExampleSession
 #! Note that multiple groups-by-generators may be given as constraints:
 #! @BeginExampleSession
-#! gap> norm_PSL25 := VoleCon.Normalise(PSL(2,5));;
-#! gap> in_A6  := VoleCon.InGroup(AlternatingGroup(6));;
-#! gap> in_D12 := VoleCon.InGroup(DihedralGroup(IsPermGroup, 12));;
+#! gap> norm_PSL25 := Constraint.Normalise(PSL(2,5));;
+#! gap> in_A6  := Constraint.InGroup(AlternatingGroup(6));;
+#! gap> in_D12 := Constraint.InGroup(DihedralGroup(IsPermGroup, 12));;
 #! gap> G := VoleFind.Group(in_A6, in_D12, norm_PSL25);;
 #! gap> G = Group([ (1,3,5)(2,4,6) ]);
 #! true
@@ -230,12 +230,12 @@ DeclareGlobalFunction("VoleFind.Group");
 #!
 #! @InsertChunk valueoption
 #! @BeginExampleSession
-#! gap> tuple_transport := VoleCon.Transport([1,2,3], [1,2,4], OnTuples);;
-#! gap> VoleFind.Coset(VoleCon.InGroup(SymmetricGroup(6)), tuple_transport);
+#! gap> tuple_transport := Constraint.Transport([1,2,3], [1,2,4], OnTuples);;
+#! gap> VoleFind.Coset(Constraint.InGroup(SymmetricGroup(6)), tuple_transport);
 #! RightCoset(Group([ (5,6), (4,5,6) ]),(3,4,6))
 #! gap> VoleFind.Coset(AlternatingGroup(4), tuple_transport);
 #! fail
-#! gap> VoleFind.Coset(AlternatingGroup(5), VoleCon.Transport(
+#! gap> VoleFind.Coset(AlternatingGroup(5), Constraint.Transport(
 #! > CycleDigraph(5), DigraphReverse(CycleDigraph(5)), OnDigraphs));
 #! RightCoset(Group([ (1,2,3,4,5) ]),(1,4)(2,3))
 #! @EndExampleSession
@@ -282,7 +282,7 @@ DeclareGlobalFunction("VoleFind.Coset");
 #!
 #! **For users who
 #! wish to canonise an object under an action listed in the table in
-#! <Ref Func="VoleCon.Stabilise"/>, and who
+#! <Ref BookName="BacktrackKit" Func="Constraint.Stabilise"/>, and who
 #! do not wish to specify particular refiners,
 #! it may be easier to use the simpler functions
 #! <Ref Func="Vole.CanonicalPerm"/> and
@@ -296,13 +296,13 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! The <A>arguments</A> that follow <A>G</A> may be given separately,
 #! or in a list.
 #! Each of the <A>arguments</A> must be an instance of a
-#! <Ref Func="VoleCon.Stabilise"/> constraint,
+#! <Ref BookName="BacktrackKit" Func="Constraint.Stabilise"/> constraint,
 #! either directly, or indirectly as an instance of
-#! <Ref Func="VoleCon.Normalise"/> or
-#! <Ref Func="VoleCon.Centralise"/>.
+#! <Ref BookName="BacktrackKit" Func="Constraint.Normalise"/> or
+#! <Ref BookName="BacktrackKit" Func="Constraint.Centralise"/>.
 #! <B>Note that it is not permitted to include constraints of the kind
 #! produced by</B>
-#! <Ref Func="VoleCon.InGroup"/>.
+#! <Ref BookName="BacktrackKit" Func="Constraint.InGroup"/>.
 #!
 #! It is also permitted to include special kinds of refiners as arguments
 #! to <Ref Func="VoleFind.Canonical"/>, although we do not yet document the
@@ -311,7 +311,7 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! (Refiners will be documented in Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>).
 #!
 #! For the following, we will suppose that <A>arguments...</A> is a list of
-#! `k` constraints `VoleCon.Stabilise(object_i,action_i)`,
+#! `k` constraints `Constraint.Stabilise(object_i,action_i)`,
 #! for `i=1..k` in sequence.
 #! Then <Ref Func="VoleFind.Canonical"/> canonises the `k`-tuple
 #! `[object_1,...,object_k]`, where the action on the `i`-th coordinate is
@@ -322,7 +322,7 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! and in a way that is comparable to the first canonisation,
 #! it is necessary to call <Ref Func="VoleFind.Canonical"/> with the same group
 #! <A>G</A> followed by the <A>arguments...</A>
-#! `VoleCon.Stabilise(nextobject_i,action_i)`, <B>in the same order</B>.
+#! `Constraint.Stabilise(nextobject_i,action_i)`, <B>in the same order</B>.
 #!
 #! The result of <Ref Func="VoleFind.Canonical"/> is given as a record,
 #! with the following components
@@ -348,10 +348,10 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! gap> cycle := CycleDigraph(6);;
 #! gap> reverse := DigraphReverse(cycle);;
 #! gap> A6 := AlternatingGroup(6);;
-#! gap> canon1 := VoleFind.Canonical(A6, VoleCon.Stabilise(cycle, OnDigraphs));
+#! gap> canon1 := VoleFind.Canonical(A6, Constraint.Stabilise(cycle, OnDigraphs));
 #! rec( canonical := (1,3,4,6,5), group := Group([ (1,3,5)(2,4,6) ]) )
 #! gap> canon2 := VoleFind.Canonical(A6,
-#! >                                 VoleCon.Stabilise(reverse, OnDigraphs));
+#! >                                 Constraint.Stabilise(reverse, OnDigraphs));
 #! rec( canonical := (1,4,5), group := Group([ (1,3,5)(2,4,6) ]) )
 #! @EndExampleSession
 #! Let us verify that the canonical permutations are indeed in $A_6$, and
@@ -393,12 +393,12 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! first component, and acting via `OnTuplesSets` on the second component.
 #! @BeginExampleSession
 #! gap> canon1 := VoleFind.Canonical(G,
-#! >                                 VoleCon.Stabilise(cycle, OnDigraphs),
-#! >                                 VoleCon.Stabilise(colours1, OnTuplesSets));
+#! >                                 Constraint.Stabilise(cycle, OnDigraphs),
+#! >                                 Constraint.Stabilise(colours1, OnTuplesSets));
 #! rec( canonical := (1,5,2,3,6), group := Group(()) )
 #! gap> canon2 := VoleFind.Canonical(G,
-#! >                                 VoleCon.Stabilise(reverse, OnDigraphs),
-#! >                                 VoleCon.Stabilise(colours2, OnTuplesSets));
+#! >                                 Constraint.Stabilise(reverse, OnDigraphs),
+#! >                                 Constraint.Stabilise(colours2, OnTuplesSets));
 #! rec( canonical := (1,6,5,4,3), group := Group(()) )
 #! @EndExampleSession
 #! We find that these vertex-coloured digraphs are not in the same orbit of `G`:
@@ -411,12 +411,12 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! we find that they **are** in the same orbit of it as coloured digraphs:
 #! @BeginExampleSession
 #! gap> canon1 := VoleFind.Canonical(SymmetricGroup(6),
-#! >                                 VoleCon.Stabilise(cycle, OnDigraphs),
-#! >                                 VoleCon.Stabilise(colours1, OnTuplesSets));
+#! >                                 Constraint.Stabilise(cycle, OnDigraphs),
+#! >                                 Constraint.Stabilise(colours1, OnTuplesSets));
 #! rec( canonical := (1,5,2,3,4,6), group := Group([ (1,3,5)(2,4,6) ]) )
 #! gap> canon2 := VoleFind.Canonical(SymmetricGroup(6),
-#! >                                 VoleCon.Stabilise(reverse, OnDigraphs),
-#! >                                 VoleCon.Stabilise(colours2, OnTuplesSets));
+#! >                                 Constraint.Stabilise(reverse, OnDigraphs),
+#! >                                 Constraint.Stabilise(colours2, OnTuplesSets));
 #! rec( canonical := (1,3)(2,5,6,4), group := Group([ (1,3,5)(2,4,6) ]) )
 #! gap> OnDigraphs(cycle, canon1.canonical)
 #! > = OnDigraphs(reverse, canon2.canonical);
@@ -442,7 +442,7 @@ DeclareGlobalFunction("VoleFind.Canonical");
 #! for the group $\langle (1\,2) \rangle$ under conjugation by $A_{4}$:
 #! @BeginExampleSession
 #! gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
-#! >  VoleCon.Normalise(Group([ (1,2) ]))
+#! >  Constraint.Normalise(Group([ (1,2) ]))
 #! > );
 #! (1,4)(2,3)
 #! @EndExampleSession
@@ -456,8 +456,8 @@ DeclareGlobalFunction("VoleFind.Canonical");
 #! and $D$ is the cycle digraph on four vertices:
 #! @BeginExampleSession
 #! gap> VoleFind.CanonicalPerm(SymmetricGroup(4),
-#! >  VoleCon.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),
-#! >  VoleCon.Stabilise(CycleDigraph(4), OnDigraphs)
+#! >  Constraint.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),
+#! >  Constraint.Stabilise(CycleDigraph(4), OnDigraphs)
 #! > );
 #! (1,2,3)
 #! @EndExampleSession

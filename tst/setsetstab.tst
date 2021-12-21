@@ -5,7 +5,7 @@ true
 
 #
 gap> QC_Check([QC_SetOf(QC_SetOf(IsPosInt))],
-> {s} -> QuickChecker(Maximum(Flat([0, s])), [VoleCon.Stabilize(s, OnSetsSets)])
+> {s} -> QuickChecker(Maximum(Flat([0, s])), [Constraint.Stabilize(s, OnSetsSets)])
 > );
 true
 
@@ -20,7 +20,7 @@ gap> VoleFind.Rep(4, VoleRefiner.SetSetTransporter([], [[]]));
 fail
 
 # Issue #49
-gap> IsTrivial(VoleFind.Group(VoleCon.Stabilise([[]], OnSetsSets) : points := 1));
+gap> IsTrivial(VoleFind.Group(Constraint.Stabilise([[]], OnSetsSets) : points := 1));
 true
 
 #
