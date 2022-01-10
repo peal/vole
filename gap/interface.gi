@@ -12,7 +12,6 @@ VoleFind.Representative := function(arguments...)
         ErrorNoReturn("VoleFind.Rep: At least one argument must be given");
     fi;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
-    #constraints := _Vole.processConstraints(arguments, conf);
     if IsInt(conf.points) then
         Add(arguments, conf.points);
     fi;
@@ -43,7 +42,6 @@ VoleFind.Group := function(arguments...)
     fi;
 
     conf        := _Vole.getConfig(rec(raw := false, points := infinity));
-    #constraints := _Vole.processConstraints(arguments, conf);
     if IsInt(conf.points) then
         Add(arguments, conf.points);
     fi;
@@ -69,7 +67,6 @@ VoleFind.Coset := function(arguments...)
         ErrorNoReturn("VoleFind.Coset: At least one argument must be given");
     fi;
     conf := _Vole.getConfig(rec(raw := false, points := infinity));
-    #constraints := _Vole.processConstraints(arguments, conf);
     if IsInt(conf.points) then
         Add(arguments, conf.points);
     fi;

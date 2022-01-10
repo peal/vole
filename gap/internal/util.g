@@ -69,28 +69,6 @@ _Vole.getConfig := function(default)
     return conf;
 end;
 
-# Take a list of constraints and process as follows:
-# * Replace any group G by Constraint.InGroup(G)
-# * Replace any right coset object U by Constraint.InCoset(U)
-# * Replace any positive integer k by Constraint.LargestMovedPoint(k)
-_Vole.processConstraints := function(constraints, conf)
-    local i;
-    constraints := Flat(constraints);
-    if IsBound(conf.points) and IsInt(conf.points) then
-        Add(constraints, conf.points);
-    fi;
-    for i in [1 .. Length(constraints)] do
-        if IsPermGroup(constraints[i]) then
-            constraints[i] := Constraint.InGroup(constraints[i]);
-        elif IsRightCoset(constraints[i]) then
-            constraints[i] := Constraint.InCoset(constraints[i]);
-        elif IsInt(constraints[i]) then
-            constraints[i] := Constraint.LargestMovedPoint(constraints[i]);
-        fi;
-    od;
-    return Flat(constraints);
-end;
-
 # For some wrapper functions, we are explicitly asking for a subgroup of
 # the first argument G. GAP sets the parent of the result to be G, so we
 # should do this too. However, the result is sometimes a group, or sometimes
