@@ -187,20 +187,13 @@ function(r)
     local str, con, nam;
     con := r!.constraint;
     nam := RecNames(r!.con)[1];
-    str := "<Vole refiner: ";
-    Append(str, nam);
+    str := StringFormatted("<Vole refiner: {}", nam);
     if nam = "InSymmetricGroup" then
-        Append(str, " on ");
-        Append(str, PrintString(r!.con.InSymmetricGroup.points));
+        Append(str, StringFormatted(" on {}>", r!.con.InSymmetricGroup.points));
     elif IsStabiliserConstraint(con) then
-        Append(str, " of ");
-        Append(str, ViewString(SourceObject(con)));
+        Append(str, StringFormatted(" of {}>", SourceObject(con)));
     else
-        Append(str, " from ");
-        Append(str, ViewString(SourceObject(con)));
-        Append(str, " to ");
-        Append(str, ViewString(ResultObject(con)));
+        Append(str, StringFormatted(" from {} to {}", SourceObject(con), ResultObject(con)));
     fi;
-    Append(str, ">");
     return str;
 end);
