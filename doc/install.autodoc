@@ -42,7 +42,7 @@ You can test for Rust by running `cargo --version` in the terminal. You should
 obtain a version number in response, such as:
 @BeginLogSession
 $ cargo --version
-cargo 1.54.0
+cargo 1.57.0
 @EndLogSession
 If Rust is not available, then running the command `cargo --version` will give
 an error such as `cargo: command not found`. If this is the case, then please
