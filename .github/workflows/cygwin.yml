@@ -34,7 +34,7 @@ jobs:
            git config --global core.autocrlf false
            git config --global core.eol lf
       - name: "Install Cygwin"
-        uses: gap-actions/setup-cygwin@master
+        uses: gap-actions/setup-cygwin@v1
       - name: "Set up rust"
         uses: actions-rs/toolchain@v1
         with:
