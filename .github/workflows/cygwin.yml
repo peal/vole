@@ -28,11 +28,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: "Set git to use UNIX-style line endings"
-        shell: bash
-        run: |
-           git config --global core.autocrlf false
-           git config --global core.eol lf
+        #- name: "Set git to use UNIX-style line endings"
+        #shell: bash
+        #run: |
+        #   git config --global core.autocrlf false
+        #   git config --global core.eol lf
       - name: "Install Cygwin"
         uses: gap-actions/setup-cygwin@v1
       - name: "Set up rust"
@@ -43,51 +43,15 @@ jobs:
         run: cd rust && cargo build --release --all-features
       - name: "Run the rust tests for Vole"
         run: cd rust && cargo test --release -q
-      - name: "Clone GAP"
-        uses: actions/checkout@v2
+      - name: "Clone GAP and some packages, and compile as necessary"
+        uses: gap-actions/setup-gap@cygwin-v2
         with:
-          repository: gap-system/gap
-          ref: master
-          path: gapdev
-      - name: "Build GAP and make bootstrap-pkg-full"
-        run: |
-          cd gapdev
-          ./autogen.sh
-          ./configure
-          make -j4
-          make bootstrap-pkg-full WGET="wget -N --no-check-certificate --tries=5 --waitretry=5 --retry-connrefused"
-      - name: "Clone OrbitalGraphs"
-        uses: actions/checkout@v2
-        with:
-          repository: gap-packages/OrbitalGraphs
-          path: gapdev/pkg/OrbitalGraphs
-      - name: "Clone QuickCheck"
-        uses: actions/checkout@v2
-        with:
-          repository: ChrisJefferson/QuickCheck
-          path: gapdev/pkg/QuickCheck
-      - name: "Clone BacktrackKit"
-        uses: actions/checkout@v2
-        with:
-          repository: peal/BacktrackKit
-          path: gapdev/pkg/BacktrackKit
-      - name: "Clone GraphBacktracking"
-        uses: actions/checkout@v2
-        with:
-          repository: peal/GraphBacktracking
-          path: gapdev/pkg/GraphBacktracking
-      - name: "Compile various GAP packages"
-        run: |
-          cd gapdev/pkg
-          for pkg in "datastructures" "digraphs" "ferret" "io" "json" "orb" "profiling"; do
-              ../bin/BuildPackages.sh --strict $pkg*
-          done
+          GAP_PKGS_TO_CLONE: "OrbitalGraphs ChrisJefferson/QuickCheck peal/BacktrackKit peal/GraphBacktracking"
+          GAP_PKGS_TO_BUILD: "datastructures digraphs ferret io json orb profiling"
       - name: "Run GAP tests for Vole"
-        run: |
-          mkdir -p gaproot/pkg/
-          ln -f -s $PWD gaproot/pkg/
-          GAP="$PWD/gapdev/bin/gap.sh -l $PWD/gaproot; --quitonbreak"
-          $GAP tst/testall.g
+        uses: gap-actions/run-pkg-tests@cygwin-v2
+      - uses: gap-actions/process-coverage@cygwin-v2
+      - uses: codecov/codecov-action@v2
       - name: "Setup tmate session"
         uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
