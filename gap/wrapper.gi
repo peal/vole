@@ -191,7 +191,7 @@ Vole.CanonicalDigraph := function(D)
     return Vole.CanonicalImage(SymmetricGroup(DigraphVertices(D)), D, OnDigraphs);
 end;
 
-# Ignores raw := true
+# Respects raw := true
 Vole.DigraphCanonicalLabelling := function(D, colours...)
     if not IsDigraph(D) then
         ErrorNoReturn("Vole.AutomorphismGroup: ",
@@ -211,7 +211,7 @@ Vole.IsIsomorphicDigraph := function(D1, D2)
     return Vole.IsomorphismDigraphs(D1, D2) <> fail;
 end;
 
-# Ignores raw := true
+# Respects raw := true
 Vole.IsomorphismDigraphs := function(D1, D2)
     local G;
     if not (IsDigraph(D1) and IsDigraph(D2)) then
