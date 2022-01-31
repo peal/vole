@@ -252,9 +252,9 @@ impl Refiner for SetSetTransporter {
 
         // Record: number of sets in the set, whether set contains the empty set
         state.add_invariant_fact(set.len())?;
-        state.add_invariant_fact(set.iter().any(|x| x.len() == 0))?;        
+        state.add_invariant_fact(set.iter().any(|x| x.is_empty()))?;        
 
-        if set.len() == 0 {
+        if set.is_empty() {
             return Ok(());
         }
 
