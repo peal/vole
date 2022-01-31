@@ -302,4 +302,3 @@ pub fn root_search(state: &mut State, sols: &mut Solutions, search_config: &Sear
     let (ret_sols, _) = sub_simple_search(state, search_config);
     *sols = ret_sols;
 }
-

@@ -2,10 +2,9 @@ use tracing::info;
 
 use crate::gap_chat::GapChatType;
 use crate::perm::Permutation;
-use crate::vole::solutions::{Canonical, Solutions, SolutionFound};
+use crate::vole::solutions::{Canonical, SolutionFound, Solutions};
 use crate::vole::state::State;
-use crate::vole::{trace, partition_stack};
-
+use crate::vole::{partition_stack, trace};
 
 /// Check when we reach a candidate solution
 
