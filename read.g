@@ -10,6 +10,7 @@ ReadPackage("Vole", "gap/internal/util.g");
 ReadPackage("Vole", "gap/internal/comms.gi");
 ReadPackage("Vole", "gap/interface.gi");
 ReadPackage("Vole", "gap/refiners.gi");
+ReadPackage("Vole", "gap/constraints.gi");
 ReadPackage("Vole", "gap/wrapper.gi");
 
 Perform(["_Vole", "Vole", "VoleFind", "VoleRefiner"],

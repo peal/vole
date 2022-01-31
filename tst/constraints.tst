@@ -1,4 +1,4 @@
-#@local n, Sn, pts, G, x, y, con, D
+#@local n, Sn, pts, G, x, y, con, D, D1, D2
 gap> START_TEST("constraints.tst");
 gap> LoadPackage("vole", false);
 true
@@ -42,6 +42,14 @@ gap> VoleFind.Rep(6, Constraint.Transport([x, D], [y, D, x], OnTuplesDigraphs));
 fail
 gap> VoleFind.Coset(6, Constraint.Transport([x, D], [y, D], OnTuplesDigraphs));
 RightCoset(Group(()),(2,6)(3,5))
+
+# Representative
+gap> D1 := CycleDigraph(5);;
+gap> D2 := DigraphReverse(D1);;
+gap> con := Constraint.Transport(D1, D2, OnDigraphs);;
+gap> x := Representative(con);;
+gap> IsPerm(x) and IsDigraphIsomorphism(D1, D2, x);
+true
 
 #
 gap> STOP_TEST("constraints.tst");
