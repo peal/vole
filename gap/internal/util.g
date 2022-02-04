@@ -9,6 +9,12 @@ DeclareGlobalVariable("_Vole");
 InstallValue(_Vole, rec());
 
 
+# ForceQuitGap is only available in GAP >= 4.12, it used to be FORCE_QUIT_GAP
+if not IsBound(ForceQuitGap) and IsBound(FORCE_QUIT_GAP) then
+    ForceQuitGap := FORCE_QUIT_GAP;
+fi;
+
+
 # Get the upper and lower bounds for a list of constraints
 # The list of constraints may contain permutation groups (in the event
 # we are solving a canonical problem)
