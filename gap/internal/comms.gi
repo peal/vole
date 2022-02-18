@@ -168,7 +168,7 @@ else
 fi;
 
 _Vole.ForkVole := function(extraargs...)
-    local rustpipe, gappipe, bind, args, ret, prog, firsttime, t, f, pipe, dirs;
+    local rustpipe, gappipe, bind, args, ret, prog, firsttime, t, f, pipe, dirs, child;
     firsttime := false;
     if VOLE_MODE = "opt-first" then
         firsttime := true;
@@ -181,6 +181,37 @@ _Vole.ForkVole := function(extraargs...)
 
     pipe := _Vole.UsePipe;
 
+    # Prepare program we will run
+    prog := "cargo";
+
+    if VOLE_MODE = "opt" or firsttime then
+        args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--quiet"];
+    elif VOLE_MODE = "opt-nobuild" then
+        dirs := DirectoriesPackageLibrary("vole", "rust/target/release");
+        # Check for windows-style executable
+        if Length(dirs) >= 1 and "vole.exe" in DirectoryContents(dirs[1]) then
+            prog := "target/release/vole.exe";
+        elif Length(dirs) >= 1 and  "vole" in DirectoryContents(dirs[1]) then
+            prog := "target/release/vole";
+        else
+            ErrorNoReturn("'vole' external program not built");
+        fi;
+        args :=  [];
+    elif VOLE_MODE = "trace" then
+        args :=  ["run",  "-q", "--bin", "vole", "--", "--trace", ];
+    elif VOLE_MODE = "flamegraph" then
+        args :=  ["flamegraph", "--bin", "vole", "--"];
+    elif VOLE_MODE = "valgrind" then
+        args := ["--tool=callgrind", "target/release/vole"];
+        prog := "valgrind";
+    elif VOLE_MODE = "debug" then
+        args :=  ["with", "rust-gdb --args {bin} {args}", "--", "run" ,"--bin", "vole" ,"--", "--trace"];
+    else
+        Error("Invalid VOLE_MODE");
+    fi;
+
+    Append(args, extraargs);
+    
     Info(InfoVole, 2, "Preparing to fork vole");
     if pipe then
         rustpipe :=_Vole.IO_Pipe();
@@ -190,81 +221,53 @@ _Vole.ForkVole := function(extraargs...)
         IO_listen(bind.socket, 1);
     fi;
 
-    Info(InfoVole, 2, "PreFork\n");
-    ret := IO_fork();
-
-    if ret = fail then
-        Error("Fork failed");
+    if pipe then
+        Append(args, [ "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)]);
+    else
+        Append(args, [ "--port", String(bind.port)]);
     fi;
-    Info(InfoVole, 2, "PostFork\n");
-    if ret = 0 then
-        # In the child
-        if pipe then
+
+    Info(InfoVole, 2, "PreFork\n");
+
+
+    if pipe then
+        ret := IO_fork();
+        if ret = fail then
+            Error("Fork failed");
+        fi;
+        Info(InfoVole, 2, "PostFork\n");
+        if ret = 0 then
+            # In the child
+            Info(InfoVole, 2, "C: In child\n");
             IO_Close(rustpipe.towrite);
             IO_Close(gappipe.toread);
-        else
-            IO_close(bind.socket);
-        fi;
 
-        Info(InfoVole, 2, "C: In child\n");
-        prog := "cargo";
+            Info(InfoVole, 2, "C:", args,"\n");
+            ChangeDirectoryCurrent(DirectoriesPackageLibrary("vole", "rust")[1]![1]);
 
-        if VOLE_MODE = "opt" or firsttime then
-            args :=  ["run", "--release", "-q", "--bin", "vole", "--", "--quiet"];
-        elif VOLE_MODE = "opt-nobuild" then
-            dirs := DirectoriesPackageLibrary("vole", "rust/target/release");
-            # Check for windows-style executable
-            if Length(dirs) >= 1 and "vole.exe" in DirectoryContents(dirs[1]) then
-                prog := "target/release/vole.exe";
-            elif Length(dirs) >= 1 and  "vole" in DirectoryContents(dirs[1]) then
-                prog := "target/release/vole";
+            IO_execvp(prog, args);
+            if prog = "cargo" then
+                Print("#I Vole: Fatal Error - 'cargo' is not installed\n");
             else
-                ErrorNoReturn("'vole' external program not built");
+                Print("#I Vole: Fatal Error - Package has not been built\n");
             fi;
-            args :=  [];
-        elif VOLE_MODE = "trace" then
-            args :=  ["run",  "-q", "--bin", "vole", "--", "--trace", ];
-        elif VOLE_MODE = "flamegraph" then
-            args :=  ["flamegraph", "--bin", "vole", "--"];
-        elif VOLE_MODE = "valgrind" then
-            args := ["--tool=callgrind", "target/release/vole"];
-            prog := "valgrind";
-        elif VOLE_MODE = "debug" then
-            args :=  ["with", "rust-gdb --args {bin} {args}", "--", "run" ,"--bin", "vole" ,"--", "--trace"];
-        else
-            Error("Invalid VOLE_MODE");
+            ForceQuitGap();
         fi;
-
-        if pipe then
-            Append(args, [ "--inpipe", String(rustpipe.toreadRaw), "--outpipe", String(gappipe.towriteRaw)]);
-        else
-            Append(args, [ "--port", String(bind.port)]);
-        fi;
-
-        Append(args, extraargs);
-
-        Info(InfoVole, 2, "C:", args,"\n");
-        ChangeDirectoryCurrent(DirectoriesPackageLibrary("vole", "rust")[1]![1]);
-        IO_execvp(prog, args);
-        if prog = "cargo" then
-            Print("#I Vole: Fatal Error - 'cargo' is not installed\n");
-        else
-            Print("#I Vole: Fatal Error - Package has not been built\n");
-        fi;
-        ForceQuitGap();
     else
-        # In the parent
-        Info(InfoVole, 2, "P: In parent");
-        if pipe then
-            IO_Close(rustpipe.toread);
-            IO_Close(gappipe.towrite);
-            return rec(write := rustpipe.towrite, read := gappipe.toread, pid := ret);
-        else
-            t := IO_accept(bind.socket, IO_MakeIPAddressPort("127.0.0.1", 0));
-            f := IO_WrapFD(t,IO.DefaultBufSize,IO.DefaultBufSize);
-            return rec(write := f, read := f, pid := ret, socket := bind.socket, port := bind.port);
-        fi;
+        child := InputOutputLocalProcess(DirectoriesPackageLibrary("vole", "rust"[1]![1]),
+                                         prog, args);
+    fi;
 
+    # In the parent / original GAP
+    Info(InfoVole, 2, "P: In parent / original GAP");
+    if pipe then
+        IO_Close(rustpipe.toread);
+        IO_Close(gappipe.towrite);
+        return rec(write := rustpipe.towrite, read := gappipe.toread, pid := ret);
+    else
+        t := IO_accept(bind.socket, IO_MakeIPAddressPort("127.0.0.1", 0));
+        f := IO_WrapFD(t,IO.DefaultBufSize,IO.DefaultBufSize);
+        return rec(write := f, read := f, child := child, socket := bind.socket, port := bind.port);
     fi;
 end;
 
@@ -307,7 +310,11 @@ _Vole.ExecuteVole := function(obj, refiners, canonicalgroup)
                 IO_close(pipe.socket);
             fi;
 
-            IO_WaitPid(pipe.pid, true);
+            if IsBound(pipe.pid) then
+                IO_WaitPid(pipe.pid, true);
+            else
+                CloseStream(pipe.child);
+            fi;
             result[2].stats.gap_callbacks := gapcallbacks;
             return result[2];
         elif result[1] = "error" then
@@ -353,7 +360,11 @@ _Vole.ExecuteVole := function(obj, refiners, canonicalgroup)
         else
             IO_Close(pipe.write);
             IO_Close(pipe.read);
-            IO_WaitPid(pipe.pid, true);
+            if IsBound(pipe.pid) then
+                IO_WaitPid(pipe.pid, true);
+            else
+                CloseStream(pipe.child);
+            fi;
             ErrorNoReturn("Invalid return value from Vole: ", result);
         fi;
         flush := IO_Flush(pipe.write);
