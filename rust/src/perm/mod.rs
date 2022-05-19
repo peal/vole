@@ -25,7 +25,7 @@ impl Permutation {
 
     /// Tests if the permutation is the identity
     /// ```
-    /// use rust_vole::perm::Permutation;
+    /// use vole::perm::Permutation;
     /// assert!(Permutation::id().is_id());
     /// let a = Permutation::from_vec(vec![1, 0]);
     /// assert!(a.multiply(&a).is_id());
@@ -49,7 +49,7 @@ impl Permutation {
 
     /// Applies the permutation to a point
     /// ```
-    /// use rust_vole::perm::Permutation;
+    /// use vole::perm::Permutation;
     /// assert_eq!(Permutation::id().apply(1), 1);
     /// ```
     pub fn apply(&self, x: usize) -> usize {
@@ -65,7 +65,7 @@ impl Permutation {
     /// identity for i >= values.len()
     /// Requires: values is a permutation on 0..values.len()
     /// ```
-    /// use rust_vole::perm::Permutation;
+    /// use vole::perm::Permutation;
     /// let a = Permutation::from_vec(vec![1, 0]);
     /// ```
     pub fn from_vec(mut values: Vec<usize>) -> Self {
@@ -90,7 +90,7 @@ impl Permutation {
     /// Note this also lazily caches the inverse, so subsequent calls should
     /// be extremely quick
     /// ```
-    /// use rust_vole::perm::Permutation;
+    /// use vole::perm::Permutation;
     /// let a = Permutation::from_vec(vec![1, 0]);
     /// assert_eq!(a, a.inv());
     /// ```
@@ -113,7 +113,7 @@ impl Permutation {
 
     /// Multiplies two permutations
     /// ```
-    /// use rust_vole::perm::Permutation;
+    /// use vole::perm::Permutation;
     /// let a = Permutation::from_vec(vec![0, 2, 1]);
     /// let b = a.inv();
     /// assert_eq!(a.multiply(&b), Permutation::id());

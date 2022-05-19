@@ -1,5 +1,5 @@
 [package]
-name = "rust-vole"
+name = "vole"
 version = "0.1.1"
 authors = ["Chris Jefferson <caj21@st-andrews.ac.uk>"]
 edition = "2018"

@@ -2,18 +2,18 @@ use std::fs::File;
 
 use anyhow::bail;
 use cpu_time::ProcessTime;
-use rust_vole::vole::trace;
-use rust_vole::vole::{domain_state::DomainState, trace::TracingType};
-use rust_vole::vole::{parse_input, state::State};
-use rust_vole::vole::{
+use vole::vole::trace;
+use vole::vole::{domain_state::DomainState, trace::TracingType};
+use vole::vole::{parse_input, state::State};
+use vole::vole::{
     refiners::refiner_store::RefinerStore,
     search::{simple_coset_search, simple_group_search},
 };
-use rust_vole::vole::{search::root_search, solutions::Solutions};
+use vole::vole::{search::root_search, solutions::Solutions};
 
 use tracing::Level;
 
-use rust_vole::gap_chat::{GapChatType, GAP_CHAT};
+use vole::gap_chat::{GapChatType, GAP_CHAT};
 use tracing_subscriber::fmt::format::FmtSpan;
 
 use std::panic;
@@ -23,7 +23,7 @@ fn main() -> anyhow::Result<()> {
 
     let (non_block, _guard) = tracing_appender::non_blocking(File::create("vole.trace")?);
 
-    if rust_vole::gap_chat::OPTIONS.trace {
+    if vole::gap_chat::OPTIONS.trace {
         tracing_subscriber::fmt()
             .with_span_events(FmtSpan::ACTIVE)
             .with_max_level(Level::TRACE)
@@ -36,7 +36,7 @@ fn main() -> anyhow::Result<()> {
     }
 
     // Hide panic messages, if we are not tracing
-    if rust_vole::gap_chat::OPTIONS.quiet {
+    if vole::gap_chat::OPTIONS.quiet {
         panic::set_hook(Box::new(|_| {}));
     }
 
