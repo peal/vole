@@ -577,7 +577,7 @@ pub fn perm_between(lhs: &PartitionStack, rhs: &PartitionStack) -> Permutation {
 
 #[cfg(test)]
 mod tests {
-    use test_env_log::test;
+    use test_log::test;
 
     use super::perm_between;
     use super::PartitionStack;
