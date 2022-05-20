@@ -13,8 +13,8 @@ use vole::vole::{search::root_search, solutions::Solutions};
 
 use tracing::Level;
 
-use vole::gap_chat::{GapChatType, GAP_CHAT};
 use tracing_subscriber::fmt::format::FmtSpan;
+use vole::gap_chat::{GapChatType, GAP_CHAT};
 
 use std::panic;
 

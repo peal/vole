@@ -113,8 +113,8 @@ struct GapError {
 }
 
 impl GapChatType {
-    /// Send an object to GAP, and receieve a reply. `T` is serialised
-    /// to JSON, and the reply is deserialised into type `U`.
+    /// Send an object to GAP, and receive a reply. `T` is serialized
+    /// to JSON, and the reply is deserialized into type `U`.
     pub fn send_request<T, U>(request: &T) -> Result<U, Error>
     where
         T: serde::Serialize + std::fmt::Debug,
@@ -129,7 +129,7 @@ impl GapChatType {
         let _: Result<String, Error> = Self::send_request(&("error", error));
     }
 
-    /// A variant of send_request where, if communication is always in progress
+    /// A variant of send_request where, if communication is already in progress
     /// will return fail instead.
     pub fn try_send_request<T, U>(request: &T) -> Result<U, Error>
     where
@@ -230,7 +230,7 @@ impl GapChatType {
     }
 }
 
-/// Represent a variable stored in GAP
+/// A reference to a GAP variable
 #[derive(Deserialize, Serialize, Hash)]
 pub struct GapRef {
     id: isize,
