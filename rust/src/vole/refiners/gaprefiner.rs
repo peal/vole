@@ -204,6 +204,10 @@ impl Refiner for GapRefiner {
         self.generic_refine(s, "changed", side)
     }
 
+    fn solution_found(&mut self, p: &Permutation) {
+        let _: bool = GapChatType::send_request(&("refiner", &self.gap_id, "solutionFound", p)).unwrap();
+    }
+
     fn snapshot_rbase(&mut self, s: &mut DomainState) {
         // The 'Side' is not used here
         self.generic_refine(s, "rBaseFinished", Side::Left)

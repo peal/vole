@@ -151,6 +151,10 @@ impl RefinerStore {
 
         self.refiners.iter().all(|x| x.check(p))
     }
+
+    pub fn iter_mut(&mut self) -> std::slice::IterMut<Box<dyn Refiner>> {
+        self.refiners.iter_mut()
+    }
 }
 
 impl Backtrack for RefinerStore {

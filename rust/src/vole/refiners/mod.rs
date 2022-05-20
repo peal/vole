@@ -70,6 +70,10 @@ pub trait Refiner: Backtrack {
         Ok(())
     }
 
+    /// Report to refiner a solution has been found (it is very unusual to implement this,
+    /// if you think you need it, consider discussing it!)
+    fn solution_found(&mut self, _: &Permutation) {}
+
     fn snapshot_rbase(&mut self, _: &mut DomainState) {}
 }
 

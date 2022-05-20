@@ -118,6 +118,7 @@ pub fn check_solution(in_state: &mut State, sols: &mut Solutions) -> SolutionFou
         if is_sol {
             info!("Found solution: {:?}", sol);
             stats.good_iso += 1;
+            refiners.iter_mut().for_each(|r| r.solution_found(&sol));
             sol_found = sols.add_solution(&sol);
         } else {
             stats.bad_iso += 1;

@@ -58,6 +58,12 @@ function(savedvals, state, type, args)
     elif type = "check" then
         Info(InfoVole,2, "Checking ", args[1]);
         return BTKit_CheckPermutation(PermList(List(args[1].values, x -> x+1)), state!.conlist[1]);
+    elif type = "solutionFound" then
+        Info(InfoVole, 2, "Informing refiner that solution has been found");
+        if IsBound(state!.conlist[1]!.refine.solutionFound) then
+            state!.conlist[1]!.refine.solutionFound(PermList(List(args[1].values, x -> x+1)));
+        fi;
+        return true;
     elif type = "image" then
         Info(InfoVole, 2, "Generating image", args[1]);
         Assert(2, args[1] in ["Left", "Right"]);
@@ -88,7 +94,7 @@ function(savedvals, state, type, args)
         RestoreState(state, Remove(state!.saved_stack));
         return true;
     else
-        Assert(2, type in ["begin", "fixed", "changed", "rBaseFinished"]);
+        Assert(2, type in ["begin", "fixed", "changed", "rBaseFinished", "solutionFound"]);
         Assert(2, args[1] = "Left" or args[1] = "Right");
         is_left := (args[1] = "Left");
         tracer := RecordingTracer();
@@ -267,7 +273,10 @@ end;
 # and query
 _Vole.ExecuteVole := function(obj, refiners, canonicalgroup)
     local pipe,str, st, result, preimage, postimage, gapcallbacks, savedvals, flush, time, pwd;
-    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0, fixed := 0, changed := 0, rBaseFinished := 0, image := 0, compare := 0, refiner_time := 0, canonicalmin_time := 0, save_state := 0, restore_state := 0);
+    gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0,
+      fixed := 0, changed := 0, rBaseFinished := 0, solutionFound := 0, image := 0,
+      compare := 0, refiner_time := 0, canonicalmin_time := 0,
+      save_state := 0, restore_state := 0);
 
     pipe := _Vole.ForkVole();
 
