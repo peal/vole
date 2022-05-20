@@ -74,7 +74,7 @@ impl Refiner for SetTransporter {
     }
 
     fn is_group(&self) -> bool {
-        Rc::ptr_eq(&self.set_left, &self.set_right)
+        self.set_left == self.set_right
     }
 }
 
@@ -275,7 +275,7 @@ impl Refiner for SetSetTransporter {
     }
 
     fn is_group(&self) -> bool {
-        self.check(&Permutation::id())
+        self.set_left == self.set_right
     }
 }
 
@@ -395,7 +395,7 @@ impl Refiner for SetTupleTransporter {
     }
 
     fn is_group(&self) -> bool {
-        self.check(&Permutation::id())
+        self.set_left == self.set_right
     }
 }
 
