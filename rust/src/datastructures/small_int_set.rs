@@ -36,6 +36,7 @@ impl SmallIntSet {
         self.values.iter()
     }
 
+    /// Remove all elements from the set
     pub fn clear(&mut self) {
         for i in self.values.iter() {
             self.bit_set[*i] = false;
@@ -44,6 +45,7 @@ impl SmallIntSet {
         assert!(self.values.is_empty());
     }
 
+    /// Check if set is empty
     pub fn is_empty(&self) -> bool {
         self.values.is_empty()
     }

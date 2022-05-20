@@ -2,29 +2,35 @@ use std::iter::FromIterator;
 
 use serde::{Deserialize, Serialize};
 
+/// A vector which is always sorted.
 #[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd, Serialize, Deserialize, Hash)]
 pub struct SortedVec<T: Ord> {
     vec: Vec<T>,
 }
 
 impl<T: Ord> SortedVec<T> {
+    /// Creates a new sorted vector
     pub fn from_unsorted(mut vec: Vec<T>) -> Self {
         vec.sort_unstable();
         Self { vec }
     }
 
+    /// Checks if vector contains `val`
     pub fn contains(&self, val: &T) -> bool {
         self.vec.binary_search(val).is_ok()
     }
 
+    /// Length of vector
     pub fn len(&self) -> usize {
         self.vec.len()
     }
 
+    /// Returns if vector is empty
     pub fn is_empty(&self) -> bool {
         self.vec.is_empty()
     }
 
+    /// Returns an iterator over the vector
     pub fn iter(&self) -> std::slice::Iter<T> {
         self.into_iter()
     }

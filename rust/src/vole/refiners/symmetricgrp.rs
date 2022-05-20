@@ -5,6 +5,7 @@ use crate::{datastructures::sortedvec::SortedVec, vole::trace};
 use crate::{perm::Permutation, vole::backtracking::Backtrack};
 use std::{cmp::Ordering, rc::Rc};
 
+/// Refine which represents the symmetric group on `set`
 pub struct InSymmetricGrp {
     set: Rc<SortedVec<usize>>,
 }

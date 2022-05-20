@@ -141,6 +141,7 @@ impl RefinerStore {
         None
     }
 
+    /// Check every refiner accepts `p`
     pub fn check_all(&self, p: &Permutation) -> bool {
         // This line checks that the 'check' function, and the canonical image code, agree
         debug_assert!(self.refiners.iter().all(|x| x.check(p)
