@@ -355,7 +355,7 @@ impl Refiner for SetTupleTransporter {
 
         // Record: number of tuples in set, whether set contains empty tuple
         state.add_invariant_fact(set.len())?;
-        state.add_invariant_fact(set.iter().any(|x| x.len() == 0))?;
+        state.add_invariant_fact(set.iter().any(|x| x.is_empty()))?;
 
         let base = state.partition().base_domain_size();
         let extended = state.partition().extended_domain_size();
