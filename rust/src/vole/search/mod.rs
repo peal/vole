@@ -15,7 +15,7 @@ use tracing::{info, trace, trace_span};
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct SearchConfig {
     pub full_graph_refine: bool,
-    pub find_single: bool,
+    find_single: bool,
 }
 
 impl Default for SearchConfig {
@@ -27,7 +27,7 @@ impl Default for SearchConfig {
     }
 }
 
-pub fn build_rbase(state: &mut State, search_config: &SearchConfig) {
+fn build_rbase(state: &mut State, search_config: &SearchConfig) {
     let part = state.domain.partition();
 
     if part.base_cells().len() == part.base_domain_size() {
@@ -88,7 +88,7 @@ fn get_branch_cell(state: &State, to_sort: bool) -> (usize, Vec<usize>) {
 }
 
 #[must_use]
-pub fn simple_search_recurse(
+fn simple_search_recurse(
     state: &mut State,
     sols: &mut Solutions,
     first_branch_in: bool,
@@ -161,7 +161,7 @@ pub fn simple_search_recurse(
 }
 
 #[must_use]
-pub fn simple_coset_search_recurse(
+fn simple_coset_search_recurse(
     state: &mut State,
     sols: &mut Solutions,
     depth: usize,

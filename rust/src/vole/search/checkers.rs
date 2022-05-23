@@ -9,7 +9,7 @@ use crate::vole::{partition_stack, trace};
 /// Check when we reach a candidate solution
 
 /// Check if current DomainState produces a smaller canonical image
-pub fn check_canonical(in_state: &mut State, sols: &mut Solutions) {
+fn check_canonical(in_state: &mut State, sols: &mut Solutions) {
     let refiners = &mut in_state.refiners;
     let state = &mut in_state.domain;
     let stats = &mut in_state.stats;

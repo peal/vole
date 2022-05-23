@@ -8,7 +8,7 @@ use super::state::State;
 
 /// Method of choosing which cell (ignoring cells of size 1) to branch on.
 /// All techniques use 'earliest cell' as the final tie-breaking strategy
-pub enum Selector {
+enum Selector {
     /// Smallest cell
     Smallest,
     /// Largest cell

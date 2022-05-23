@@ -140,7 +140,7 @@ impl DomainState {
         *self.digraph_stack_cells_refined = 0;
     }
 
-    pub fn add_graphs(&mut self, digraphs: &[Digraph]) {
+    fn add_graphs(&mut self, digraphs: &[Digraph]) {
         self.digraph_stack.add_graphs(digraphs);
         // Need to refine whole graph
         *self.digraph_stack_cells_refined = 0;

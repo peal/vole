@@ -1,12 +1,12 @@
 pub mod backtracking;
 pub mod domain_state;
 pub mod parse_input;
-pub mod partition_stack;
+mod partition_stack;
 pub mod refiners;
 pub mod search;
-pub mod selector;
+mod selector;
 pub mod solutions;
 pub mod state;
 pub mod stats;
-pub mod subsearch;
+mod subsearch;
 pub mod trace;

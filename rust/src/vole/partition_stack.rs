@@ -47,7 +47,7 @@ impl MarkStore {
 
 /// Data about the partition
 #[derive(Clone, Debug)]
-pub struct CellData {
+struct CellData {
     /// The partition, and its inverse
     values: Vec<usize>,
     inv_values: Vec<usize>,
@@ -83,10 +83,10 @@ pub struct CellData {
 #[derive(Clone, Debug)]
 pub struct PartitionStack {
     /// Initial size of partition
-    pub base_size: usize,
+    base_size: usize,
 
     /// Extended size of partition
-    pub extended_size: usize,
+    extended_size: usize,
 
     cells: CellData,
 
@@ -179,7 +179,7 @@ impl PartitionStack {
     }
 
     /// All cells in the extended partition are fixed (of size 1)
-    pub fn extended_domain_fixed(&self) -> bool {
+    fn extended_domain_fixed(&self) -> bool {
         self.extended_domain_size() == self.extended_cells().len()
     }
 
@@ -194,7 +194,7 @@ impl PartitionStack {
     }
 
     /// Convert partition to a list of ordered lists (include only 'base' values)
-    pub fn base_as_list_set(&self) -> Vec<Vec<usize>> {
+    fn base_as_list_set(&self) -> Vec<Vec<usize>> {
         self.as_list_set(self.base_cells())
     }
 
@@ -215,7 +215,7 @@ impl PartitionStack {
     }
 
     /// Convert partition to an indicator function (include 'extended' values)
-    pub fn extended_as_indicator(&self) -> Vec<usize> {
+    fn extended_as_indicator(&self) -> Vec<usize> {
         let mut p = vec![0; self.extended_domain_size()];
         for &i in self.extended_cells() {
             for &c in self.cell(i) {
@@ -241,7 +241,7 @@ impl PartitionStack {
     }
 
     /// Cells containing base values which are of size 1, in the order they were fixed
-    pub fn base_fixed_cells(&self) -> &[usize] {
+    fn base_fixed_cells(&self) -> &[usize] {
         &self.cells.base_fixed
     }
 
@@ -552,7 +552,7 @@ impl PartitionStack {
         Ok(())
     }
 
-    pub fn refine_partition_by_graph(&mut self, tracer: &mut trace::Tracer, d: &Digraph) -> trace::Result<()> {
+    fn refine_partition_by_graph(&mut self, tracer: &mut trace::Tracer, d: &Digraph) -> trace::Result<()> {
         self.refine_partition_cells_by_graph(tracer, d, 0)
     }
 }

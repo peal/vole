@@ -69,7 +69,7 @@ impl<T: Clone + fmt::Debug> Backtracking<T> {
 
 /// A stack which implements [Backtrack]
 #[derive(Debug, Clone)]
-pub struct BacktrackingStack<T: Clone + fmt::Debug> {
+struct BacktrackingStack<T: Clone + fmt::Debug> {
     stack: Vec<T>,
     saved_depths: Vec<usize>,
 }

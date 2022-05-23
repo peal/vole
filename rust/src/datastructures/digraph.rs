@@ -17,10 +17,10 @@ use super::hash::{QHash, QuickHashable};
 /// The neighbours of a vertex in a directed graph.
 /// The keys are the neighbours, the image of the keys the "colour" of the edge
 /// Directed graphs have edges in both directions, but with different colours.
-pub type BTNeighbours = std::collections::BTreeMap<usize, Wrapping<QHash>>;
-pub type VNeighbours = Vec<(usize, Wrapping<QHash>)>;
-pub type Neighbours = BTNeighbours;
-//pub type Neighbours = indexmap::map::IndexMap<usize, Wrapping<QHash>>;
+type BTNeighbours = std::collections::BTreeMap<usize, Wrapping<QHash>>;
+type VNeighbours = Vec<(usize, Wrapping<QHash>)>;
+type Neighbours = BTNeighbours;
+// type Neighbours = indexmap::map::IndexMap<usize, Wrapping<QHash>>;
 
 /// A directed graph
 #[derive(Clone, Debug, Eq, Deserialize, Serialize)]
@@ -148,7 +148,7 @@ impl Digraph {
     /// as first mergeing \[a,b\] at depth 0, then \[c,d,e\] at depth 2.
     /// whereas merging \[a,b\] at depth 0, then \[c,d,e\] at depth 0 will
     /// produce a different graph
-    pub fn merge(&mut self, digraphs: &[Self], in_depth: usize) {
+    fn merge(&mut self, digraphs: &[Self], in_depth: usize) {
         let mut resort = HashSet::new();
         for (size, d) in digraphs.iter().enumerate() {
             let depth = in_depth + size;
