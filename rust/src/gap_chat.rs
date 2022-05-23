@@ -26,23 +26,23 @@ use crate::vole::{solutions::Solutions, stats::Stats};
 pub struct Opt {
     /// Input file
     #[structopt(parse(from_os_str))]
-    pub input: Option<PathBuf>,
+    input: Option<PathBuf>,
 
     /// Output file
     #[structopt(parse(from_os_str))]
-    pub output: Option<PathBuf>,
+    output: Option<PathBuf>,
 
     /// Input pipe (as a POSIX file id)
     #[structopt(short, long)]
-    pub inpipe: Option<i32>,
+    inpipe: Option<i32>,
 
     /// Output pipe (as a POSIX file id)
     #[structopt(short, long)]
-    pub outpipe: Option<i32>,
+    outpipe: Option<i32>,
 
     /// TCP port
     #[structopt(short, long)]
-    pub port: Option<i32>,
+    port: Option<i32>,
 
     /// Enable tracing
     #[structopt(short, long)]
@@ -58,7 +58,7 @@ pub struct GapChatType {
     /// Communication channel to GAP
     pub in_file: Option<Box<dyn BufRead + Send>>,
     /// Communication channel from GAP
-    pub out_file: Option<Box<dyn Write + Send>>,
+    out_file: Option<Box<dyn Write + Send>>,
 }
 
 impl Opt {
@@ -131,7 +131,7 @@ impl GapChatType {
 
     /// A variant of send_request where, if communication is already in progress
     /// will return fail instead.
-    pub fn try_send_request<T, U>(request: &T) -> Result<U, Error>
+    fn try_send_request<T, U>(request: &T) -> Result<U, Error>
     where
         T: serde::Serialize + std::fmt::Debug,
         U: serde::de::DeserializeOwned + std::fmt::Debug,
@@ -143,7 +143,7 @@ impl GapChatType {
         }
     }
 
-    pub fn send_request_internal<T, U>(request: &T, mut gap_channel: MutexGuard<Self>) -> Result<U, Error>
+    fn send_request_internal<T, U>(request: &T, mut gap_channel: MutexGuard<Self>) -> Result<U, Error>
     where
         T: serde::Serialize + std::fmt::Debug,
         U: serde::de::DeserializeOwned + std::fmt::Debug,

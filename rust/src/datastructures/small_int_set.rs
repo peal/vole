@@ -17,7 +17,7 @@ impl SmallIntSet {
     }
 
     /// Check if set contains `i`
-    pub fn contains(&self, i: usize) -> bool {
+    fn contains(&self, i: usize) -> bool {
         self.bit_set[i]
     }
 
@@ -37,7 +37,7 @@ impl SmallIntSet {
     }
 
     /// Remove all elements from the set
-    pub fn clear(&mut self) {
+    fn clear(&mut self) {
         for i in self.values.iter() {
             self.bit_set[*i] = false;
         }
@@ -46,7 +46,7 @@ impl SmallIntSet {
     }
 
     /// Check if set is empty
-    pub fn is_empty(&self) -> bool {
+    fn is_empty(&self) -> bool {
         self.values.is_empty()
     }
 }

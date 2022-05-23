@@ -6,7 +6,7 @@
 #![allow(clippy::stable_sort_primitive)]
 #![allow(clippy::rc_buffer)]
 #![warn(clippy::needless_borrow, clippy::use_self)]
-pub mod datastructures;
+mod datastructures;
 pub mod gap_chat;
 pub mod perm;
 pub mod vole;

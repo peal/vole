@@ -18,40 +18,40 @@ impl UnionFind {
         }
     }
 
-    pub fn expand_to(&mut self, size: usize) {
+    fn expand_to(&mut self, size: usize) {
         while self.orbit_mins.len() < size {
             self.orbit_mins.push(usize::max_value());
             self.depth_explored.push(usize::max_value());
         }
     }
 
-    pub fn len(&self) -> usize {
+    fn len(&self) -> usize {
         self.orbit_mins.len()
     }
 
-    pub fn is_empty(&self) -> bool {
+    fn is_empty(&self) -> bool {
         self.orbit_mins.is_empty()
     }
 
-    pub fn find(&self, mut p: usize) -> usize {
+    fn find(&self, mut p: usize) -> usize {
         while self.orbit_mins[p] != usize::max_value() {
             p = self.orbit_mins[p];
         }
         p
     }
 
-    pub fn depth_explored(&self, p: usize) -> usize {
+    fn depth_explored(&self, p: usize) -> usize {
         let find_p = self.find(p);
         self.depth_explored[find_p]
     }
 
-    pub fn set_depth_explored(&mut self, p: usize, depth: usize) {
+    fn set_depth_explored(&mut self, p: usize, depth: usize) {
         let find_p = self.find(p);
         assert!(self.depth_explored[find_p] > depth);
         self.depth_explored[find_p] = depth;
     }
 
-    pub fn union(&mut self, a: usize, b: usize) -> bool {
+    fn union(&mut self, a: usize, b: usize) -> bool {
         if a == b {
             return false;
         }

@@ -15,7 +15,7 @@ use super::{
     trace::{self, TraceFailure},
 };
 
-pub fn sub_single_search(state: &mut State, search_config: &SearchConfig) -> Solutions {
+fn sub_single_search(state: &mut State, search_config: &SearchConfig) -> Solutions {
     state.save_state();
     let part_depth = state.domain.partition().state_depth() - 1;
     assert!(state.domain.has_rbase());
