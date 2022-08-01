@@ -383,7 +383,7 @@ end;
 # TODO: Add Canonical group
 _Vole.Solve :=
 function(points, find_single, find_coset, find_canonical, constraints, canonical_group, root_search)
-    local ret, gapcons, i, sc, gens, group, result, start_time,cosetrep;
+    local ret, gapcons, i, sc, gens, group, result, start_time,cosetrep, grprefiner;
 
     start_time := NanosecondsSinceEpoch();
 
@@ -391,8 +391,13 @@ function(points, find_single, find_coset, find_canonical, constraints, canonical
     points := Maximum(2, points);
 
     if canonical_group <> false then
+        if IsNaturalSymmetricGroup(canonical_group) then
+            grprefiner := VoleRefiner.InSymmetricGroup(MovedPoints(canonical_group));
+        else
+            grprefiner := GB_Con.InGroupSimple(canonical_group);
+        fi;
         # TODO: Allow the refiner for the canonical group to be user-specified
-        constraints := Concatenation([VoleRefiner.FromConstraint(Constraint.InGroup(canonical_group))], constraints);
+        constraints := Concatenation([grprefiner], constraints);
     fi;
 
     gapcons := [];
