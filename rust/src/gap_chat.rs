@@ -63,7 +63,7 @@ pub struct GapChatType {
 
 impl Opt {
     #[cfg(target_family = "unix")]
-    fn in_out(&self) -> GapChatType {
+    fn in_out_unix(&self) -> GapChatType {
         use std::os::unix::io::FromRawFd;
         trace!("Linking to GAP");
         let in_file = Box::new(BufReader::new(unsafe {
@@ -79,7 +79,11 @@ impl Opt {
     }
 
     #[cfg(not(target_family = "unix"))]
-    fn in_out(&self) -> GapChatType {
+    fn in_out_unix(&self) -> GapChatType {
+        panic!("Unix sockets are not supported on this platform");
+    }
+
+    fn in_out_net(&self) -> GapChatType {
         trace!("Making socket");
         let socket = std::net::SocketAddr::new(
             std::net::IpAddr::V4(std::net::Ipv4Addr::new(127, 0, 0, 1)),
@@ -93,6 +97,16 @@ impl Opt {
         GapChatType {
             in_file: Some(Box::new(BufReader::new(t))),
             out_file: Some(Box::new(BufWriter::new(t2))),
+        }
+    }
+
+    fn in_out(&self) -> GapChatType {
+        assert!(self.inpipe.is_some() == self.outpipe.is_some(), "must declare both --inpipe and --outpipe, or neither");
+        assert!(self.inpipe.is_some() != self.port.is_some(), "must declare either --inpipe or --port, but not both");
+        if self.inpipe.is_some() && self.outpipe.is_some() {
+            self.in_out_unix()
+        } else {
+            self.in_out_net()
         }
     }
 }
