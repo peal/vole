@@ -254,7 +254,10 @@ _Vole.ForkVole := function(extraargs...)
             ForceQuitGap();
         fi;
     else
-        child := InputOutputLocalProcess(DirectoriesPackageLibrary("vole", "rust"[1]![1]),
+        if prog = "cargo" then
+            prog := Filename(DirectoriesSystemPrograms(), prog);
+        fi;
+        child := InputOutputLocalProcess(DirectoriesPackageLibrary("vole", "rust")[1],
                                          prog, args);
     fi;
 
