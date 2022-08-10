@@ -256,6 +256,8 @@ _Vole.ForkVole := function(extraargs...)
     else
         if prog = "cargo" then
             prog := Filename(DirectoriesSystemPrograms(), prog);
+        else
+            prog := Filename(DirectoriesPackageLibrary("vole", "rust")[1], prog);
         fi;
         child := InputOutputLocalProcess(DirectoriesPackageLibrary("vole", "rust")[1],
                                          prog, args);
@@ -393,6 +395,10 @@ function(points, find_single, find_coset, find_canonical, constraints, canonical
     # Get rid of trivial cases
     points := Maximum(2, points);
 
+    Assert(0, find_canonical = (canonical_group <> false));
+
+    # If we are solving a 'canonical' problem, the first refiner must be a refiner for
+    # the group being canonised (even if it just the identity refiner)
     if canonical_group <> false then
         if IsNaturalSymmetricGroup(canonical_group) then
             grprefiner := VoleRefiner.InSymmetricGroup(MovedPoints(canonical_group));
