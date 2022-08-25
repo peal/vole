@@ -3,6 +3,9 @@ use std::cell::RefCell;
 use std::cmp::max;
 use std::rc::Rc;
 
+pub mod random;
+pub mod stabchain;
+
 /// Represents a permutation
 /// The values are reference counted and stored to allow for easy copy
 /// The inverse is also stored in an option, so it can be cached.
