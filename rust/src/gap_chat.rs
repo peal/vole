@@ -101,8 +101,14 @@ impl Opt {
     }
 
     fn in_out(&self) -> GapChatType {
-        assert!(self.inpipe.is_some() == self.outpipe.is_some(), "must declare both --inpipe and --outpipe, or neither");
-        assert!(self.inpipe.is_some() != self.port.is_some(), "must declare either --inpipe or --port, but not both");
+        assert!(
+            self.inpipe.is_some() == self.outpipe.is_some(),
+            "must declare both --inpipe and --outpipe, or neither"
+        );
+        assert!(
+            self.inpipe.is_some() != self.port.is_some(),
+            "must declare either --inpipe or --port, but not both"
+        );
         if self.inpipe.is_some() && self.outpipe.is_some() {
             self.in_out_unix()
         } else {
