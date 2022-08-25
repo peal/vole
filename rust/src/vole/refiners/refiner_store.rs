@@ -96,12 +96,18 @@ impl RefinerStore {
         }
     }
 
-    /// Get the 'image' of each refiner under the permutation 'p'
+    /// Get the 'image' of each refiner under the permutation 'p', skipping the first refiner
     pub fn get_canonical_images(&self, p: &Permutation) -> Vec<Box<dyn Any>> {
-        return self.refiners.iter().map(|r| r.any_image(p, Side::Left)).collect();
+        return self
+            .refiners
+            .iter()
+            .skip(1)
+            .map(|r| r.any_image(p, Side::Left))
+            .collect();
     }
 
     /// Check if applying 'p' produces a small image than 'prev'.
+    /// Note that we skip the first refiner, as it is for the group we are searching in.
     pub fn get_smaller_canonical_image(
         &self,
         p: &Permutation,
@@ -114,14 +120,14 @@ impl RefinerStore {
         info!(
             "Comparing Canonical. prev: {:?} image: {:?}",
             (0..len)
-                .map(|i| self.refiners[i].any_to_string(&prev[i]))
+                .map(|i| self.refiners[i + 1].any_to_string(&prev[i]))
                 .collect::<Vec<_>>(),
             (0..len)
-                .map(|i| self.refiners[i].any_to_string(&image[i]))
+                .map(|i| self.refiners[i + 1].any_to_string(&image[i]))
                 .collect::<Vec<_>>()
         );
         for i in 0..prev.len() {
-            let ord = self.refiners[i].any_compare(&image[i], &prev[i]);
+            let ord = self.refiners[i + 1].any_compare(&image[i], &prev[i]);
             match ord {
                 std::cmp::Ordering::Less => {
                     info!("Improved Canonical");
