@@ -133,10 +133,10 @@ function(savedvals, state, type, args)
             elif IsFunction(filters[i]) then
                 # Call these 'vertlabels' just for consistency, to make it easier to read in GAP
                 filters[i] := rec(vertlabels := List([1..PS_Points(state!.ps)], {x} -> HashBasic(filters[i](x))));
-            else
-                if IsBound(filters[i].graph) then
+            elif IsBound(filters[i].graph) then
                     filters[i].graph := OutNeighbours(filters[i].graph);
-                fi;
+            else
+                Info(InfoVole,1, "Invalid return from refiner: ", filters[i]);
             fi;
         od;
 
