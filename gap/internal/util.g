@@ -20,7 +20,11 @@ fi;
 # we are solving a canonical problem)
 _Vole.getBounds := function(constraints, initial_max, allow_max_inf)
     local min, max, this_min, this_max, c;
-    min := 1;
+    if initial_max < infinity then
+        min := initial_max;
+    else
+        min := 1;
+    fi;
     max := initial_max;
     for c in constraints do
         this_min := 1;

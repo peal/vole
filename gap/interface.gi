@@ -19,7 +19,6 @@ VoleFind.Representative := function(arguments...)
     if temp.is_known_empty then
         return fail;
     fi;
-
     constraints := Concatenation(temp.refiners, Flat(List(temp.constraints_without_refiners, VoleRefiner.FromConstraint)));
     bounds := _Vole.getBounds(constraints, conf.points, true);
     ret    := _Vole.CosetSolve(Minimum(bounds.min, bounds.max), constraints);

@@ -129,12 +129,13 @@ function(savedvals, state, type, args)
         for i in [1..Length(filters)] do
             # Can't convert 'fail' to JSON. Make an object we can clearly identify later
             if filters[i] = fail then
-                filters[i] := rec(failed := true);
+                filters[i] := "Failed";
             elif IsFunction(filters[i]) then
                 # Call these 'vertlabels' just for consistency, to make it easier to read in GAP
-                filters[i] := rec(vertlabels := List([1..PS_Points(state!.ps)], {x} -> HashBasic(filters[i](x))));
+                filters[i] := rec(RefinerResult := rec(vertlabels := List([1..PS_Points(state!.ps)], {x} -> HashBasic(filters[i](x)))));
             elif IsBound(filters[i].graph) then
                     filters[i].graph := OutNeighbours(filters[i].graph);
+                    filters[i] := rec(RefinerResult := filters[i]);
             else
                 Info(InfoVole,1, "Invalid return from refiner: ", filters[i]);
             fi;

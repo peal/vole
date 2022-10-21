@@ -30,15 +30,9 @@ struct GapRefinerGraph {
 }
 
 #[derive(Debug, Deserialize, Serialize, Hash)]
-struct GapRefinerFailed {
-    failed: bool,
-}
-
-#[derive(Debug, Deserialize, Serialize, Hash)]
-#[serde(untagged)]
 enum GapRefinerReturn {
-    Graph(GapRefinerGraph),
-    Failed(GapRefinerFailed),
+    RefinerResult(GapRefinerGraph),
+    Failed,
 }
 
 impl GapRefiner {
@@ -87,13 +81,11 @@ impl GapRefiner {
 
         for gap_ret in ret_list {
             match gap_ret {
-                GapRefinerReturn::Failed(gapfailed) => {
-                    // failed should always be true here
-                    assert!(gapfailed.failed);
+                GapRefinerReturn::Failed => {
                     // GAP caused search to fail
                     return Err(trace::TraceFailure {});
                 }
-                GapRefinerReturn::Graph(mut ret) => {
+                GapRefinerReturn::RefinerResult(mut ret) => {
                     // Normalise graph, so hash will return same value
                     if let Some(graph) = &mut ret.graph {
                         for neighbour in graph {
