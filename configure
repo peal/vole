@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+# Why this this here? Because GAP will only run makefiles if there is a configure script
