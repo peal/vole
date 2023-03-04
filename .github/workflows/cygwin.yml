@@ -51,7 +51,7 @@ jobs:
       - name: "Run GAP tests for Vole"
         uses: gap-actions/run-pkg-tests@cygwin-v2
       - uses: gap-actions/process-coverage@cygwin-v2
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
       - name: "Setup tmate session"
         uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
