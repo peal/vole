@@ -15,7 +15,7 @@ jobs:
     if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: gap-actions/setup-gap@v2
         with:
           GAP_PKGS_TO_BUILD: ''
@@ -28,13 +28,13 @@ jobs:
         with:
           use-latex: 'true'
       - name: 'Upload PDF manual'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Vole manual (PDF)
           path: ./doc/manual.pdf
           retention-days: 3
       - name: 'Upload HTML manual'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Vole manual (HTML)
           path: |
