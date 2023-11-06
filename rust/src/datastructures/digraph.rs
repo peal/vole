@@ -228,7 +228,7 @@ impl DigraphStack {
 
     /// Get current digraph
     pub fn digraph(&self) -> &Digraph {
-        &**self.digraph
+        &self.digraph
     }
 
     /// Merge in a digraph stored in an Arc

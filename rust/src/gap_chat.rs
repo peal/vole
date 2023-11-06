@@ -222,7 +222,7 @@ impl GapChatType {
             .map(|c| c.perm.as_vec().iter().map(|&x| x + 1).collect());
 
         serde_json::to_writer(
-            &mut (self.out_file.as_mut().unwrap()),
+            self.out_file.as_mut().unwrap(),
             &(
                 "end",
                 Results {
