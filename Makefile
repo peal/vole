@@ -6,6 +6,7 @@ all:
 	cd rust && cargo build --bins && cargo build --release --bins
 
 doc:
-	../../bin/gap.sh -A -q -r --quitonbreak makedoc.g
+	../../gap -A -q -r --quitonbreak makedoc.g
+# We should really go and find gap 'properly', but this is just for doc building
 
 .PHONY: doc
