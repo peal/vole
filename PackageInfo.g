@@ -84,7 +84,7 @@ PackageDoc := rec(
 ),
 
 Dependencies := rec(
-  GAP := ">= 4.11.0",
+  GAP := ">= 4.13.0",
   NeededOtherPackages := [
     [ "Digraphs", ">= 1.1.1" ],
     # to enable GAP and rust to talk to each other

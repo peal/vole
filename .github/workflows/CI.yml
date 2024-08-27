@@ -23,7 +23,7 @@ jobs:
       matrix:
         gap-branch:
           - master
-          - stable-4.12
+          - stable-4.13
         rust-version:
           - stable
           #- 1.48
