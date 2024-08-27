@@ -4,14 +4,18 @@
 # Reading the declaration part of the package.
 #
 
+if not IsBound(_ReadGBPackage) then
+    _ReadGBPackage := {f} -> ReadPackage("GraphBacktracking", f);
+fi;
+
 
 if not IsBound(_BT_SKIP_INTERFACE) and not IsBound(_BTKit.InitInterfaceGB) then
     # _BTKit.InitInterfaceGB := true; in gap/interface.gd
-    ReadPackage( "GraphBacktracking", "gap/interface.gd");
+    _ReadGBPackage( "gap/interface.gd");
 fi;
 
 if not IsBound(_BTKit.FilesInitGB) then
     # _BTKit.FilesInitGB := true; in gap/GraphBacktracking.gd
-    ReadPackage( "GraphBacktracking", "gap/GraphBacktracking.gd");
-    ReadPackage( "GraphBacktracking", "gap/Equitable.gd");
+    _ReadGBPackage( "gap/GraphBacktracking.gd");
+    _ReadGBPackage( "gap/Equitable.gd");
 fi;

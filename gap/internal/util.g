@@ -126,9 +126,18 @@ _Vole.Digraph := function(g)
 end;
 
 
+Unbind(_ReadGBPackage);
+Unbind(_ReadBTPackage);
+
 _Vole.LoadFullDependencies := function()
+    BindGlobal("_ReadGBPackage", {f} -> ReadPackage("Vole", Concatenation("dependancies/GraphBacktracking/", f)));
+    BindGlobal("_ReadBTPackage", {f} -> ReadPackage("Vole", Concatenation("dependancies/BacktrackKit/", f)));
     ReadPackage("Vole", "dependancies/BacktrackKit/init.g");
     ReadPackage("Vole", "dependancies/GraphBacktracking/init.g");
     ReadPackage("Vole", "dependancies/BacktrackKit/read.g");
     ReadPackage("Vole", "dependancies/GraphBacktracking/read.g");
+    MakeReadWriteGlobal("_ReadGBPackage");
+    MakeReadWriteGlobal("_ReadBTPackage");
+    UnbindGlobal("_ReadBTPackage");
+    UnbindGlobal("_ReadGBPackage");
 end;

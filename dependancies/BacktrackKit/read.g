@@ -4,6 +4,7 @@
 # Reading the implementation part of the package.
 #
 
+
 # A store of the BTKit refiners
 if not IsBound(BTKit_Refiner) then
     BTKit_Refiner := AtomicRecord(rec());
@@ -12,32 +13,32 @@ fi;
 
 
 if not IsBound(_BTKit.CheckReadg) then
-    ReadPackage( "BacktrackKit", "gap/internal/util.g");
-    ReadPackage( "BacktrackKit", "gap/stabtree.g");
-    ReadPackage( "BacktrackKit", "gap/BacktrackKit.gi");
+    _ReadBTPackage( "gap/internal/util.g");
+    _ReadBTPackage( "gap/stabtree.g");
+    _ReadBTPackage( "gap/BacktrackKit.gi");
 fi;
 
 
 if not IsBound(_BT_SKIP_INTERFACE) and not IsBound(_BTKit.CheckReadgInterface) then
     # _BTKit.CheckReadgInterface := true; set in gap/interface.gi
-    ReadPackage( "BacktrackKit", "gap/interface.gi");
+    _ReadBTPackage( "gap/interface.gi");
 fi;
 
 if not IsBound(_BTKit.CheckReadg) then
     # _BTKit.CheckReadg := true; set in gap/canonical.gi
 
-    ReadPackage( "BacktrackKit", "gap/canonical.gi");
-    ReadPackage( "BacktrackKit", "gap/constraint.gi");
-    ReadPackage( "BacktrackKit", "gap/partitionstack.gi");
-    ReadPackage( "BacktrackKit", "gap/refiner.gi");
-    ReadPackage( "BacktrackKit", "gap/tracer.gi");
+    _ReadBTPackage( "gap/canonical.gi");
+    _ReadBTPackage( "gap/constraint.gi");
+    _ReadBTPackage( "gap/partitionstack.gi");
+    _ReadBTPackage( "gap/refiner.gi");
+    _ReadBTPackage( "gap/tracer.gi");
 
-    ReadPackage( "BacktrackKit", "gap/refiners/simple.g");
-    ReadPackage( "BacktrackKit", "gap/refiners/conjugacyexample.g");
-    ReadPackage( "BacktrackKit", "gap/refiners/normaliserexample.g");
-    ReadPackage( "BacktrackKit", "gap/refiners/graphs.g");
-    ReadPackage( "BacktrackKit", "gap/refiners/canonicalrefiners.g");
-    ReadPackage( "BacktrackKit", "gap/refiners/tree/tree.g");
+    _ReadBTPackage( "gap/refiners/simple.g");
+    _ReadBTPackage( "gap/refiners/conjugacyexample.g");
+    _ReadBTPackage( "gap/refiners/normaliserexample.g");
+    _ReadBTPackage( "gap/refiners/graphs.g");
+    _ReadBTPackage( "gap/refiners/canonicalrefiners.g");
+    _ReadBTPackage( "gap/refiners/tree/tree.g");
 
     Perform(["BTKit_Refiner", "_BTKit", "Constraint"],
             SetNamesForFunctionsInRecord);
