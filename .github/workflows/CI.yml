@@ -42,7 +42,7 @@ jobs:
         uses: gap-actions/setup-gap@v2
         with:
           GAPBRANCH: ${{ matrix.gap-branch }}
-          GAP_PKGS_TO_CLONE: "OrbitalGraphs ChrisJefferson/QuickCheck peal/BacktrackKit peal/GraphBacktracking"
+          GAP_PKGS_TO_CLONE: "OrbitalGraphs ChrisJefferson/QuickCheck"
           GAP_PKGS_TO_BUILD: "datastructures digraphs ferret io json orb profiling"
       - name: "Run GAP tests for Vole"
         uses: gap-actions/run-pkg-tests@v2
