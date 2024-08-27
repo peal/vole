@@ -86,15 +86,15 @@ PackageDoc := rec(
 Dependencies := rec(
   GAP := ">= 4.11.0",
   NeededOtherPackages := [
-    [ "BacktrackKit", ">= 0.6.1" ],
     [ "Digraphs", ">= 1.1.1" ],
-    [ "GraphBacktracking", ">= 0.5.2" ],
     # to enable GAP and rust to talk to each other
     [ "IO", ">= 4.7.0" ],
     [ "json", ">= 2.0.1" ],
     # required by BacktrackKit and Digraphs... so we may as well include it?
     [ "datastructures", ">= 0.2.6" ],
-  ],
+    ["images", ">=1.3.0"],   # For MinimalImagePerm
+    ["primgrp", ">=3.4.0" ],
+  ], # For the tests  ],
   SuggestedOtherPackages := [
     [ "AutoDoc", ">= 2019.09.04" ], # to compile documentation
     [ "ferret", ">= 1.0.2" ],       # used in tests

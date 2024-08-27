@@ -123,4 +123,12 @@ _Vole.Digraph := function(g)
     else
         Error("Invalid graph");
     fi;
-end; 
+end;
+
+
+_Vole.LoadFullDependencies := function()
+    ReadPackage("Vole", "dependancies/BacktrackKit/init.g");
+    ReadPackage("Vole", "dependancies/GraphBacktracking/init.g");
+    ReadPackage("Vole", "dependancies/BacktrackKit/read.g");
+    ReadPackage("Vole", "dependancies/GraphBacktracking/read.g");
+end;

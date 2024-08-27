@@ -5,6 +5,11 @@
 #
 # Reading the declaration part of the package.
 
+_BT_SKIP_INTERFACE := true;
+ReadPackage("Vole", "dependancies/BacktrackKit/init.g");
+ReadPackage("Vole", "dependancies/GraphBacktracking/init.g");
+UnbindGlobal("_BT_SKIP_INTERFACE");
+
 ReadPackage("Vole", "gap/internal/comms.gd");
 ReadPackage("Vole", "gap/constraints.gd");
 ReadPackage("Vole", "gap/interface.gd");

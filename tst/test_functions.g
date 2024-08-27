@@ -2,6 +2,8 @@ LoadPackage("vole", false);
 LoadPackage("quickcheck", false);
 LoadPackage("ferret", false);
 
+_Vole.LoadFullDependencies();
+
 VoleTestCanonical := function(grp, obj, VoleFunc, action)
     local p, newobj, ret, newret, image, newimage;
     p := Random(grp);
@@ -14,7 +16,7 @@ VoleTestCanonical := function(grp, obj, VoleFunc, action)
     if not(newret in grp) then
         return StringFormatted("B - Not in group! {} {} {}", grp, obj, ret);
     fi;
-    
+
     image := action(obj, ret);
     newimage := action(newobj, newret);
     if image <> newimage then
@@ -82,7 +84,7 @@ function(p, l)
         if IsVoleRefiner(c) and IsBound(c!.con) then
             c := c!.con;
         fi;
-        
+
         if IsBTKitRefiner(c) or IsGBRefiner(c) then
             g := GB_SimpleSearch(PartitionStack(p), [GB_Con.InGroup(g), c]);
         elif IsBound(c.SetStab) then
