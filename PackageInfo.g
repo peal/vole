@@ -69,10 +69,10 @@ ArchiveFormats := ".tar.gz",
 Status := "dev",
 
 AbstractHTML := """
-<B>Vole</B> is a <B>GAP</B> package that implements
-graph backtracking, which can be used to solve many problems in finite
-permutation groups, such as subgroup intersections, normalisers,
-set stabilisers, and canonical images of groups.""",
+<B>Vole</B> is a <B>GAP</B> package that implements algorithms in
+finite permutation groups, such as canonical images, stabilisers, and
+subgroup intersection. These are all implemented as part of the general
+'graph backtracking' framework.""",
 
 PackageDoc := rec(
   BookName  := ~.PackageName,

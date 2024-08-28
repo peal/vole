@@ -5,13 +5,13 @@
 The purpose of this manual is to describe the capabilities of &Vole;, and to
 give directions, hints, and explanations about its use.
 
+&Vole; is a very general framework. The easiest way to learn about the capabilities
+of &Vole; is by reading the tutorial (Chapter <Ref Chap="Chapter_tut"/>), to see a number of worked examples.
+
 In this manual, a **permutation** is defined on the set of all positive
-integers, but moves only finitely many points;
-unless otherwise stated, a **group** is a finite permutation group
-(which, by the definition of a permutation, necessarily has a finite set of
-moved points);
+integers, but moves only finitely many points. Unless otherwise stated, a **group** is a finite permutation group (which, by the definition of a permutation, necessarily has a finite set of moved points);
 and a **coset** is a left or right coset of such a group determined by some
-permutation (the parent group is unspecified).
+permutation.
 
 In full generality,
 &Vole; can be used to find permutations
@@ -30,8 +30,8 @@ objects under an action of an arbitrary permutation group.
 This includes, for example, the canonical image of a digraph under the natural
 action of an arbitrary permutation group, or the canonical image of a
 permutation group under conjugation by another.
-<B>As far as we are aware, most of this canonical image functionality is not
-possible with existing tools</B>.
+<E>As far as we are aware, most of this canonical image functionality is not
+possible with existing tools</E>.
 
 In order to offer all of this functionality, &Vole; implements the
 **graph backtracking** framework,
@@ -87,7 +87,7 @@ potential to offer better performance in many cases where there is an overlap.
 The perfomance of &Vole; is discussed in
 Section&nbsp;<Ref Sect="Section_performance"/>.
 
-&GAP; <B>itself</B>
+&GAP; <E>itself</E>
 
 &GAP; <Cite Key="GAP4"/> contains an implementation of Jeffrey Leon's
 partition backtrack framework
@@ -121,7 +121,7 @@ as `SmallestImageSet`.
 The overlap of &Vole;'s functionality with &images; is detailed in
 Section&nbsp;<Ref Sect="Section_images_wrapper"/>.
 
-&Digraphs; <B>and</B> &GRAPE;
+&Digraphs; <E>and</E> &GRAPE;
 
 The &Digraphs; package <Cite Key="Digraphs"/> offers interfaces to
 <Package>nauty</Package> <Cite Key="nauty"/>
@@ -134,7 +134,7 @@ and their labelled variants. The overlap of &Vole;'s functionality with
 automorphism groups of graphs, and computing canonical images of graphs in the
 symmetric group.
 
-&BacktrackKit; <B>and</B> &GraphBacktracking;
+&BacktrackKit; <E>and</E> &GraphBacktracking;
 
 &BacktrackKit; <Cite Key="BacktrackKit"/> and &GraphBacktracking; <Cite
 Key="GraphBacktracking"/> contain &GAP;-level reference implementations of
@@ -175,8 +175,8 @@ tend to find very difficult.
 As mentioned in Section&nbsp;<Ref Sect="Section_wip"/>, we are still working
 towards these aims.
 
-<B>If you encounter disappointing and/or surprising performance for your
-use-case, please let us know,</B> by
+<E>If you encounter disappointing and/or surprising performance for your
+use-case, please let us know,</E> by
 <URL>
   <Link>&VoleIssues;</Link>
   <LinkText>creating an issue on our issue tracker</LinkText>
@@ -220,7 +220,7 @@ at computing canonical images of sets in groups.
 There are further reasons why existing implementations may beat the current
 version of &Vole;, in some situations.
 
-* <B>Very few special cases:</B>
+* <E>Very few special cases:</E>
   &Vole; passes almost every problem that it receives on to the
   full graph backtracking algorithm,
   with its corresponding overheads and poor worst-case complexity.
@@ -232,7 +232,7 @@ version of &Vole;, in some situations.
   different methods, the system can use heuristics to choose the most
   appropriate one to run in each instance.
 
-* <B>First-time compilation of Vole:</B>
+* <E>First-time compilation of Vole:</E>
   When the first &Vole; search is executed in any particular &GAP; session,
   &Vole; tests whether its Rust component is compiled, and it builds the
   component if necessary.
@@ -242,7 +242,7 @@ version of &Vole;, in some situations.
   when you update your &Vole; installation via the `make` command,
   as described in Section&nbsp;<Ref Subsect="Section_install"/>.
 
-* <B>Communication between the GAP layer and the Rust component:</B>
+* <E>Communication between the GAP layer and the Rust component:</E>
   There is also a delay that is incurred when the &GAP;-level interface of
   &Vole; communicates with the Rust component of &Vole;.
   This is exacerbated by the fact that &Vole; does not yet include its
@@ -252,10 +252,10 @@ version of &Vole;, in some situations.
   time penalty.  Implementing Rust-level stabiliser chains is a work in
   progress.
 
-* <B>Fortune:</B>
+* <E>Fortune:</E>
   The nature of backtrack search means that one algorithm may beat another just
   by being ‘lucky’, and (by chance) stumbling upon particularly fruitful
-  branches early in search. 
+  branches early in search.
   Conversely, an algorithm may be ‘unlucky’ and fall down a particular
   unfruitful branch that a different algorithm accidentally avoids.
 

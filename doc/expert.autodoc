@@ -29,7 +29,7 @@ then writing a colon, and then assigning values to some or all of the permitted
 option names.
 Writing an option name without an explicitly assigned value is a shorthand for
 assigning the value <K>true</K> to that option.
-Note that <B>options are passed down to subsequent function calls</B> that are
+Note that <E>options are passed down to subsequent function calls</E> that are
 initiated by the original call.
 
 Here is an example of a &Vole; function call with the option `raw` set to
