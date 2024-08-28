@@ -22,7 +22,7 @@ Therefore we are keen to hear your comments, remarks, and complaints.
 
 
 @Section Dependencies
-@SectionLabel deps 
+@SectionLabel deps
 
 &Vole; requires &GAP; &GAPVersion; or newer and various other &GAP;
 packages to run, and Rust version &RustVersion; or newer is required to
@@ -54,23 +54,11 @@ In addition, the following &GAP; packages must be available in order to use
 &Vole;.  This means that &Vole; will not load if one or more of these packages
 cannot be loaded in your &GAP; installation in a new enough version.
 * <URL>
-    <Link>https://peal.github.io/BacktrackKit</Link>
-    <LinkText>&BacktrackKit;</LinkText>
-  </URL>
-  version &BacktrackKitVersion;, or newer
-  <Cite Key="BacktrackKit"/>.
-* <URL>
     <Link>https://digraphs.github.io/Digraphs</Link>
     <LinkText>&Digraphs;</LinkText>
   </URL>
   version &DigraphsVersion;, or newer
   <Cite Key="Digraphs"/>.
-* <URL>
-    <Link>https://peal.github.io/GraphBacktracking</Link>
-    <LinkText>&GraphBacktracking;</LinkText>
-  </URL>
-  version &GraphBacktrackingVersion;, or newer
-  <Cite Key="GraphBacktracking"/>.
 * <URL>
     <Link>https://gap-packages.github.io/io</Link>
     <LinkText>&IO;</LinkText>
