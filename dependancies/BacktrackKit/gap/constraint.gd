@@ -25,7 +25,7 @@
 ################################################################################
 
 
-#! @Section The concept of constraints in &BacktrackKit;
+#! @Section The concept of constraints
 #! @SectionLabel concept
 
 
@@ -36,8 +36,8 @@
 #! property of permutations, such that if the set of permutations
 #! satisfying the property is nonempty, then that set must be a
 #! (possibly infinite) permutation group, or a coset thereof.
-#! Furthermore, it must be ‘easy’ to test whether any given permutation
-#! satisfies the property.
+#! For constraints to be useful in practice, it should be ‘easy’ to test whether
+#! any given permutation satisfies the property.
 #!
 #! For example:
 #! * “is a member of the group $G = \langle X \rangle$”,
@@ -47,7 +47,7 @@
 #!   $H = \langle Y \rangle$”,
 #! * “is an automorphism of the graph $\Gamma$”, and
 #! * “is even”
-#! 
+#!
 #! are all examples of constraints.
 #! On the other hand:
 #! * “is a member of the socle of the group $G$”, and
@@ -63,22 +63,20 @@
 #! satisfaction problems, constraint programming, and constraint solvers,
 #! with which backtrack search algorithms are very closely linked.
 #!
-#! &BacktrackKit; provides a number of built-in constraints.
-#! Constraints, and the functions to create them, are contained in the
+#! A number of built in constraints, and the functions to create them, are contained in the
 #! <Ref Var="Constraint"/> record. The members of this record are documented
 #! individually in Section&nbsp;<Ref Sect="Section_providedcons"/>.
 #!
-#! To use &BacktrackKit;, it is necessary to
+#! To perform a search, it is necessary to
 #! (at least implicitly) specify constraints that, in conjunction,
 #! define the permutation(s) that you wish to find.
 #! This is documented in Chapter&nbsp;<Ref Chap="Chapter_Executing_a_search"/>.
 #! A constraint will typically be converted into one or more
 #! **refiners** by that the time that a search takes place.
 #! Refiners are introduced in
-#! Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>.
-#! We do not yet explicitly document the conversion of &BacktrackKit;
-#! constraints into refiners;
-#! the conversion may change in future versions of &BacktrackKit;.
+#! Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>, which are the low-level code
+#! which implement constraints. We do not explicitly document the conversion of
+#! constraints into refiners; the conversion may change in the future.
 
 
 #! @Section The <C>Constraints</C> record
@@ -87,7 +85,7 @@
 #! @Description
 #!
 #! <Ref Var="Constraint"/> is a record that contains functions for producing
-#! all of the constraints that &BacktrackKit; provides.
+#! all of the constraints provided by default.
 #!
 #! The members of <Ref Var="Constraint"/> are documented individually in
 #! Section&nbsp;<Ref Sect="Section_providedcons"/>.
@@ -97,9 +95,9 @@
 #! @BeginExampleSession
 #! gap> LoadPackage("BacktrackKit", false);;
 #! gap> Set(RecNames(Constraint));
-#! [ "Centralise", "Centralize", "Conjugate", "Everything", "InCoset", 
-#!   "InGroup", "InLeftCoset", "InRightCoset", "IsEven", "IsOdd", "IsTrivial", 
-#!   "LargestMovedPoint", "MovedPoints", "None", "Normalise", "Normalize", 
+#! [ "Centralise", "Centralize", "Conjugate", "Everything", "InCoset",
+#!   "InGroup", "InLeftCoset", "InRightCoset", "IsEven", "IsOdd", "IsTrivial",
+#!   "LargestMovedPoint", "MovedPoints", "None", "Normalise", "Normalize",
 #!   "Nothing", "Stabilise", "Stabilize", "Transport" ]
 #!  @EndExampleSession
 DeclareGlobalVariable("Constraint");
@@ -285,7 +283,7 @@ DeclareGlobalFunction("Constraint.InRightCoset");
 #! @Description
 #! This constraint is satisfied by precisely those permutations in the left
 #! coset of the group <A>G</A> determined by the permutation <A>x</A>.
-#! 
+#!
 #! See also <Ref Func="Constraint.InRightCoset"/> for the right-hand version,
 #! and <Ref Func="Constraint.InCoset"/> for a &GAP; right coset object.
 #! @BeginExampleSession
