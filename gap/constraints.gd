@@ -8,9 +8,6 @@
 
 #! @Chapter Constraints
 
-#! See the Chapter <Ref BookName="BacktrackKit" Chap="Constraints"/> of the
-#! &BacktrackKit; manual.
-
 
 #! @Section Bounds associated with a constraint or refiner
 #! @SectionLabel bounds

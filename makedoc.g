@@ -31,6 +31,7 @@ _autodoc := rec(
                    "gap/constraints.gd",
                    "gap/refiners.gd",
                    "doc/expert.autodoc",
+                   "dependancies/BacktrackKit/gap/constraint.gd",
                  ],
         scan_dirs := [
                      ],

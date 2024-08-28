@@ -1,8 +1,107 @@
 @Chapter Tutorial
 @ChapterLabel tut
 
+There are two interfaces to Vole, the 'Simple Interface', which are methods which start with <C>Vole.</C>, and the 'Full Interface', which are methods which start with <C>VoleFind.</C>. The simple interface is no less efficient, each of the simple interface methods just call a problem in the full interface. Some problems cannot be expressed in the simple interface, in particular problems which involve solving multiple problems simultaneously.
 
-@Section Computing the intersection of a normaliser and a stabiliser
+@Section Simple interface
+
+The 'simple interface' to Vole consists of functions whose names begin <C>Vole.</C>. These methods implement existing methods in core GAP, and some GAP packages.
+
+These functions are given as follows (grouped into sections:)
+
+The following functions have very high quality implementations. The <C>Canonical</C> methods are described below, and are otherwise implemented in the Images package.
+
+* CanonicalImage
+* CanonicalPerm
+* CanonicalImagePerm
+* RepresentativeAction
+* IsConjugate
+* Stabilizer
+
+These functions are implemented in Digraphs. They are generally slower than the functions provided there, but can be faster for multi-edge and edge-coloured graphs. Vole is much better when we want to search on a group other than the automorphism group on the vertices.
+
+* AutomorphismGroup
+* CanonicalDigraph
+* DigraphCanonicalLabelling
+* IsIsomorphicDigraph
+* IsomorphismDigraphs
+
+
+* These functions are standard group algorithms. Vole can sometimes outperform GAP, particularly when cosets are involved (for example coset intersection), but GAP is often faster for many problems.
+
+* TwoClosure
+* Centralizer
+* Normalizer
+* Intersection
+* Centraliser
+
+@Subsection Simple computation of canonical images
+
+Finding a canonical image always requires two arguments:
+
+* The group in which we are searching.
+* The object whose canonical image we want to find.
+
+As a simple example, let's consider 3 sets, and if they are in the same orbit of $M_{12}$.
+
+@BeginExampleSession
+gap> s := [1,2,3,4,5,6];
+[ 1, 2, 3, 4, 5, 6 ]
+gap> t := [2,4,6,8,10,12];
+[ 2, 4, 6, 8, 10, 12 ]
+gap> u := [3,6,9,12,15,18];
+[ 3, 6, 9, 12, 15, 18 ]
+gap> Vole.CanonicalImage(M12, s, OnSets);
+[ 2, 6, 8, 9, 11, 12 ]
+gap> Vole.CanonicalImage(M12, t, OnSets);
+[ 2, 6, 8, 9, 11, 12 ]
+gap> Vole.CanonicalImage(M12, u, OnSets);
+[ 2, 3, 4, 5, 15, 18 ]
+@EndExampleSession
+
+As $s$ and $t$ have the same canonical image, this means they are in the same orbit of $M_{12}$, which $u$ is in a different orbit.
+
+How can we find the permutation in $M_{12}$ which maps $s$ to $t$? The function <C>CanonicalImagePerm</C> gives the permutation which maps something to it's canonical image.
+
+@BeginExampleSession
+gap> ps := Vole.CanonicalImagePerm(M12, s, OnSets);
+(1,6,9,5,2,12)(3,8,4,11,10,7)
+gap> pt := Vole.CanonicalImagePerm(M12, t, OnSets);
+(1,3,4,12,2,6,11,7)(9,10)
+gap> OnSets(s, ps); # Gives the canonical image from earlier
+[ 2, 6, 8, 9, 11, 12 ]
+gap> OnSets(s, ps*(pt^-1)); # Gives t
+[ 2, 4, 6, 8, 10, 12 ]
+gap> ps*(pt^-1) in M12;
+true
+@EndExampleSession
+
+As we can see here, it is easy to get the canonical image from the result of <C>CanonicalImagePerm</C>, but the reverse is not true!
+
+We can find the canonical image of many different types of objects, for example:
+
+
+@BeginExampleSession
+gap> Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsSets);
+[ [ 2, 3, 7, 12 ], [ 3, 6, 10, 11 ] ]
+gap> Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsTuples);
+[ [ 2, 8, 3, 6 ], [ 6, 4, 10, 5 ] ]
+gap> Vole.CanonicalImage(M12, DigraphCycle(12), OnDigraphs);
+<immutable digraph with 12 vertices, 12 edges>
+@EndExampleSession
+
+Note that while we could use a tool like Nauty, from the GRAPE or Digraphs packages, to calculate the canonical image of our graph, that doesn't support adding searching within a named group.
+
+The <C>CanonicalImage</C> and <C>CanonicalImagePerm</C> functions work on a wide range of GAP objects and actions -- if there an object or action you find is not implemented, please report it at <URL>
+  <Link>&VoleIssues;</Link>
+  <LinkText>The vole issue tracker</LinkText>
+</URL> and we will investigate if it is possible to add.
+
+
+
+@Section The full Vole interface
+
+We will begin by working through an example of the  intersection of a normaliser and a stabiliser, and then look at how this problem can be more efficiently and directly solved in &Vole;.
 
 Suppose that we wish to compute the intersection of the stabiliser in
 $M_{12}$ of the set $S:=\{1,2,4,5\}$ with the normaliser of $H$ in $G$,
@@ -45,7 +144,7 @@ true
 
 Or we can slightly reformulate the task, and first intersect $M_{12}$ with $G$,
 and then compute the stabiliser of the set in that smaller group,
-and finally compute the normaliser of $H$ in that (even smaller) stabiliser: 
+and finally compute the normaliser of $H$ in that (even smaller) stabiliser:
 
 @BeginExampleSession
 gap> M12andG := Intersection(M12, G);;
@@ -157,9 +256,3 @@ gap> VoleFind.Group(Constraint.InGroup(M12),
 > = answer;
 true
 @EndExampleSession
-
-
-@Section Computing a canonical image
-
-See the end of the manual entry for <Ref Func="VoleFind.Canonical"/>
-for an example of canonisation with &Vole;.
