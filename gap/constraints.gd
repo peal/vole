@@ -62,3 +62,7 @@
 #!
 #! The largest moved point of a constraint can serve as an upper bound for the
 #! largest required point of a constraint.
+#!
+#! @BeginExampleSession
+#! gap> LoadPackage("vole", false);;
+#! @EndExampleSession

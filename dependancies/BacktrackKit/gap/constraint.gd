@@ -93,7 +93,6 @@
 #! The members whose names differ only by their “-ise” and “-ize” endings
 #! are synonyms, included to accommodate different spellings in English.
 #! @BeginExampleSession
-#! gap> LoadPackage("BacktrackKit", false);;
 #! gap> Set(RecNames(Constraint));
 #! [ "Centralise", "Centralize", "Conjugate", "Everything", "InCoset",
 #!   "InGroup", "InLeftCoset", "InRightCoset", "IsEven", "IsOdd", "IsTrivial",
