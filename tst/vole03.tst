@@ -10,13 +10,15 @@
 #
 gap> START_TEST("vole03.tst");
 
-# doc/_Chapter_tut.xml:102-115
+# doc/_Chapter_tut.xml:102-117
+gap> LoadPackage("vole", false);;
 gap> s := [1,2,3,4,5,6];
 [ 1, 2, 3, 4, 5, 6 ]
 gap> t := [2,4,6,8,10,12];
 [ 2, 4, 6, 8, 10, 12 ]
 gap> u := [3,6,9,12,15,18];
 [ 3, 6, 9, 12, 15, 18 ]
+gap> M12 := MathieuGroup(12);;
 gap> Vole.CanonicalImage(M12, s, OnSets);
 [ 2, 6, 8, 9, 11, 12 ]
 gap> Vole.CanonicalImage(M12, t, OnSets);
@@ -24,7 +26,7 @@ gap> Vole.CanonicalImage(M12, t, OnSets);
 gap> Vole.CanonicalImage(M12, u, OnSets);
 [ 2, 3, 4, 5, 15, 18 ]
 
-# doc/_Chapter_tut.xml:123-134
+# doc/_Chapter_tut.xml:125-136
 gap> ps := Vole.CanonicalImagePerm(M12, s, OnSets);
 (1,6,9,5,2,12)(3,8,4,11,10,7)
 gap> pt := Vole.CanonicalImagePerm(M12, t, OnSets);
@@ -36,7 +38,7 @@ gap> OnSets(s, ps*(pt^-1)); # Gives t
 gap> ps*(pt^-1) in M12;
 true
 
-# doc/_Chapter_tut.xml:142-149
+# doc/_Chapter_tut.xml:144-151
 gap> Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsSets);
 [ [ 2, 3, 7, 12 ], [ 3, 6, 10, 11 ] ]
 gap> Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsTuples);
@@ -44,45 +46,44 @@ gap> Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsTuples);
 gap> Vole.CanonicalImage(M12, DigraphCycle(12), OnDigraphs);
 <immutable digraph with 12 vertices, 12 edges>
 
-# doc/_Chapter_tut.xml:176-181
+# doc/_Chapter_tut.xml:178-183
 gap> M12 := MathieuGroup(12);;
 gap> S := [ 1, 2, 4, 5 ];;
 gap> G := Group([(1,8,7,2,3,10,9,4)(5,6,11,12), (3,11)(4,12,6,8,10)]);;
 gap> H := Group([(1,2,3,4,9,10,5,6,11,8)(7,12), (1,5,9)(6,12)(8,10)]);;
 
-# doc/_Chapter_tut.xml:191-197
+# doc/_Chapter_tut.xml:193-199
 gap> answer := Group([(1,2)(3,10)(4,5)(6,7)(8,9)(11,12),
 >                     (2,4)(3,7)(8,12)(9,11)]);
 Group([ (1,2)(3,10)(4,5)(6,7)(8,9)(11,12), (2,4)(3,7)(8,12)(9,11) ])
 gap> StructureDescription(answer);
 "D8"
 
-# doc/_Chapter_tut.xml:209-214
+# doc/_Chapter_tut.xml:211-216
 gap> Intersection(Stabiliser(M12, S, OnSets),
 >                 Normaliser(G, H))
 > = answer;
 true
 
-# doc/_Chapter_tut.xml:222-227
+# doc/_Chapter_tut.xml:224-229
 gap> M12andG := Intersection(M12, G);;
 gap> stab := Stabiliser(M12andG, S, OnSets);;
 gap> Normaliser(stab, H) = answer;
 true
 
-# doc/_Chapter_tut.xml:234-239
+# doc/_Chapter_tut.xml:236-241
 gap> M12andG := Intersection(M12, G);;
 gap> norm := Normaliser(M12andG, H);;
 gap> Stabiliser(norm, S, OnSets) = answer;
 true
 
-# doc/_Chapter_tut.xml:249-255
-gap> LoadPackage("vole", false);;
+# doc/_Chapter_tut.xml:251-256
 gap> stab := Vole.Stabiliser(M12, S, OnSets);;
 gap> norm := Vole.Normaliser(G, H);;
 gap> answer = Vole.Intersection(stab, norm);
 true
 
-# doc/_Chapter_tut.xml:314-321
+# doc/_Chapter_tut.xml:315-322
 gap> VoleFind.Group(Constraint.InGroup(M12),
 >                   Constraint.Stabilize(S, OnSets),
 >                   Constraint.InGroup(G),
@@ -90,7 +91,7 @@ gap> VoleFind.Group(Constraint.InGroup(M12),
 > = answer;
 true
 
-# doc/_Chapter_tut.xml:341-355
+# doc/_Chapter_tut.xml:342-356
 gap> VoleFind.Group(Constraint.InGroup(M12),
 >                   Constraint.Stabilize(S, OnSets),
 >                   Constraint.InGroup(G),

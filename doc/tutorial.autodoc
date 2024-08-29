@@ -45,12 +45,14 @@ Finding a canonical image always requires two arguments:
 As a simple example, let's consider 3 sets, and if they are in the same orbit of $M_{12}$.
 
 @BeginExampleSession
+gap> LoadPackage("vole", false);;
 gap> s := [1,2,3,4,5,6];
 [ 1, 2, 3, 4, 5, 6 ]
 gap> t := [2,4,6,8,10,12];
 [ 2, 4, 6, 8, 10, 12 ]
 gap> u := [3,6,9,12,15,18];
 [ 3, 6, 9, 12, 15, 18 ]
+gap> M12 := MathieuGroup(12);;
 gap> Vole.CanonicalImage(M12, s, OnSets);
 [ 2, 6, 8, 9, 11, 12 ]
 gap> Vole.CanonicalImage(M12, t, OnSets);
@@ -170,7 +172,6 @@ Chapter&nbsp;<Ref Chap="Chapter_wrapper"/>. However, this is not the recommended
 approach, as we will see below.
 
 @BeginExampleSession
-gap> LoadPackage("vole", false);;
 gap> stab := Vole.Stabiliser(M12, S, OnSets);;
 gap> norm := Vole.Normaliser(G, H);;
 gap> answer = Vole.Intersection(stab, norm);
