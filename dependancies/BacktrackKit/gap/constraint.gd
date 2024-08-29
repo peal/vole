@@ -4,7 +4,7 @@
 # Declarations for constraint objects
 #
 #! @Chapter Constraints
-
+#! @ChapterLabel Constraints
 
 ################################################################################
 ## Chunks
@@ -70,7 +70,7 @@
 #! To perform a search, it is necessary to
 #! (at least implicitly) specify constraints that, in conjunction,
 #! define the permutation(s) that you wish to find.
-#! This is documented in Chapter&nbsp;<Ref Chap="Chapter_Executing_a_search"/>.
+#!
 #! A constraint will typically be converted into one or more
 #! **refiners** by that the time that a search takes place.
 #! Refiners are introduced in

@@ -28,22 +28,22 @@
 
 #! @BeginChunk group-ingroup
 #! * A permutation group <A>G</A>, which is interpreted as an instance of the
-#!   constraint <Ref BookName="BacktrackKit" Func="Constraint.InGroup"/> with argument <A>G</A>.
+#!   constraint <Ref  Func="Constraint.InGroup"/> with argument <A>G</A>.
 #! @EndChunk
 
 #! @BeginChunk coset-incoset
 #! * A &GAP; right coset object <A>U</A>, which is interpreted as an instance
-#!   of the constraint <Ref BookName="BacktrackKit" Func="Constraint.InCoset"/> with argument <A>U</A>.
+#!   of the constraint <Ref  Func="Constraint.InCoset"/> with argument <A>U</A>.
 #! @EndChunk
 
 #! @BeginChunk posint-lmp
 #! * A positive integer <A>k</A>, which is interpreted as an instance of the
-#!   constraint <Ref BookName="BacktrackKit" Func="Constraint.LargestMovedPoint"/> with argument <A>k</A>.
+#!   constraint <Ref  Func="Constraint.LargestMovedPoint"/> with argument <A>k</A>.
 #! @EndChunk
 
 #! @BeginChunk fail-none
 #! * The value <K>fail</K>, which is interpreted as an instance of the
-#!   constraint <Ref BookName="BacktrackKit" Func="Constraint.None"/>.
+#!   constraint <Ref  Func="Constraint.None"/>.
 #! @EndChunk
 
 #! @BeginChunk canonical-warning-session
@@ -282,7 +282,7 @@ DeclareGlobalFunction("VoleFind.Coset");
 #!
 #! **For users who
 #! wish to canonise an object under an action listed in the table in
-#! <Ref BookName="BacktrackKit" Func="Constraint.Stabilise"/>, and who
+#! <Ref  Func="Constraint.Stabilise"/>, and who
 #! do not wish to specify particular refiners,
 #! it may be easier to use the simpler functions
 #! <Ref Func="Vole.CanonicalPerm"/> and
@@ -296,13 +296,13 @@ DeclareGlobalFunction("VoleFind.Coset");
 #! The <A>arguments</A> that follow <A>G</A> may be given separately,
 #! or in a list.
 #! Each of the <A>arguments</A> must be an instance of a
-#! <Ref BookName="BacktrackKit" Func="Constraint.Stabilise"/> constraint,
+#! <Ref  Func="Constraint.Stabilise"/> constraint,
 #! either directly, or indirectly as an instance of
-#! <Ref BookName="BacktrackKit" Func="Constraint.Normalise"/> or
-#! <Ref BookName="BacktrackKit" Func="Constraint.Centralise"/>.
+#! <Ref  Func="Constraint.Normalise"/> or
+#! <Ref  Func="Constraint.Centralise"/>.
 #! <B>Note that it is not permitted to include constraints of the kind
 #! produced by</B>
-#! <Ref BookName="BacktrackKit" Func="Constraint.InGroup"/>.
+#! <Ref  Func="Constraint.InGroup"/>.
 #!
 #! It is also permitted to include special kinds of refiners as arguments
 #! to <Ref Func="VoleFind.Canonical"/>, although we do not yet document the

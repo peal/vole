@@ -206,7 +206,7 @@ For most users, the easiest way to solve the problem with
 <Ref Func="VoleFind.Group"/> is to find a collection of **constraints**
 that together specify the problem.
 Constraints are discussed in
-Chapter&nbsp;<Ref BookName="BacktrackKit" Chap="Constraints"/> of the
+Chapter&nbsp;<Ref Chap="Chapter_Refiners"/> of the
 &BacktrackKit; manual.
 
 Specifically,

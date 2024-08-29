@@ -75,7 +75,7 @@ gap> ret := Vole.Intersection(AlternatingGroup(6), PGL(2,5) : raw);;
 * `points`: a non-negative integer or (default) <K>infinity</K>:
     * This option can be used in place of the constraint
       `Constraint.LargestMovedPoint(points)`;
-      see <Ref BookName="BacktrackKit" Func="Constraint.LargestMovedPoint"/>.
+      see <Ref  Func="Constraint.LargestMovedPoint"/>.
     * Note that for relevant functions that accept constraints,
       an integer argument is interpreted as an instance of a ‘largest moved
       point’ constraint, which achieves the same affect as this option more
