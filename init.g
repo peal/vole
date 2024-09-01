@@ -5,11 +5,11 @@
 #
 # Reading the declaration part of the package.
 
-_ReadGBPackage := {f} -> ReadPackage("Vole", Concatenation("dependancies/GraphBacktracking/", f));
-_ReadBTPackage := {f} -> ReadPackage("Vole", Concatenation("dependancies/BacktrackKit/", f));
+_ReadGBPackage := {f} -> ReadPackage("Vole", Concatenation("dependencies/GraphBacktracking/", f));
+_ReadBTPackage := {f} -> ReadPackage("Vole", Concatenation("dependencies/BacktrackKit/", f));
 _BT_SKIP_INTERFACE := true;
-ReadPackage("Vole", "dependancies/BacktrackKit/init.g");
-ReadPackage("Vole", "dependancies/GraphBacktracking/init.g");
+ReadPackage("Vole", "dependencies/BacktrackKit/init.g");
+ReadPackage("Vole", "dependencies/GraphBacktracking/init.g");
 UnbindGlobal("_BT_SKIP_INTERFACE");
 Unbind(_ReadBTPackage);
 Unbind(_ReadGBPackage);
