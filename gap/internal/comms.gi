@@ -99,7 +99,7 @@ function(savedvals, state, type, args)
         is_left := (args[1] = "Left");
         tracer := RecordingTracer();
         PS_SplitCellsByFunction(state!.ps, tracer, x -> args[2][x]);
-        
+
         Assert(2, Length(state!.conlist) = 1);
         filters := [];
         if type = "begin" then
@@ -144,7 +144,7 @@ function(savedvals, state, type, args)
 
         retval := filters;
         return retval;
-    fi; 
+    fi;
 end;
 
 # Choose how vole is run:
@@ -155,8 +155,8 @@ end;
 # "flamegraph": Output a flamegraph of where CPU is used in "flamegraph.svg"
 # "debug": Run inside the debugger
 
-# if 'cargo' exists, we will automatically build vole
-if Filename(DirectoriesSystemPrograms(), "cargo") <> fail then
+# if 'cargo' exists, and vole executable is missing, we will automatically build vole
+if Filename(DirectoriesSystemPrograms(), "cargo") <> fail and Length(DirectoriesPackageLibrary("vole", "rust/target/release")) = 0 then
     VOLE_MODE := "opt-first";
 else
     VOLE_MODE := "opt-nobuild";
@@ -213,7 +213,7 @@ _Vole.ForkVole := function(extraargs...)
     fi;
 
     Append(args, extraargs);
-    
+
     Info(InfoVole, 2, "Preparing to fork vole");
     if pipe then
         rustpipe :=_Vole.IO_Pipe();

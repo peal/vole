@@ -107,18 +107,13 @@ Dependencies := rec(
 ),
 
 AvailabilityTest := function()
-  ## This is currently commented out, because the package tries to compile
-  ## the rust component when it first runs a computation.
-  ##
-  ## Note that the code below might not work properly if the user has multiple
-  ## Voles living in their machine.
-
-  #if Filename(List(GAPInfo.PackagesInfo.vole, x -> Directory(Concatenation(
-  #    x.InstallationPath, "/rust/target/release"))), "vole.d") = fail then
-  #  LogPackageLoadingMessage(PACKAGE_WARNING,
-  #    "Vole package is not compiled; please run `make` in the Vole directory");
-  #  return fail;
-  #fi;
+  local dirs;
+  dirs := DirectoriesPackageLibrary("vole", "rust/target/release");
+  if not (Length(dirs) >= 1 and ForAny(["vole", "vole.exe"], f -> f in DirectoryContents(dirs[1])) ) then
+    LogPackageLoadingMessage(PACKAGE_WARNING,
+      "Vole package is not compiled; please run `make` in the Vole directory");
+    return fail;
+  fi;
   return true;
 end,
 

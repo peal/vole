@@ -3,7 +3,10 @@ ifeq (, $(shell which cargo))
  endif
 
 all:
-	cd rust && cargo build --bins && cargo build --release --bins
+	cd rust && cargo build --release --bins
+
+clean:
+	cd rust && cargo clean
 
 doc:
 	../../gap -A -q -r --quitonbreak makedoc.g
