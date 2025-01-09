@@ -6,7 +6,7 @@
   [33X[0;0YIf  you encounter problems, or have any other feedback for the authors, then
   please      create      an      issue      on      our     issue     tracker
   ([7Xhttps://github.com/peal/vole/issues[107X),   or   contact   us   by   any  other
-  appropriate  means.  See  the  title  page  of  this  manual for our contact
+  appropriate  means.  See the [14XVole: Title page[114X of this manual for our contact
   details.  We  published  [5XVole[105X so that our ideas and algorithms could be used
   by,  and be useful to, others in the community. But without feedback, it can
   be  difficult  to  know  whether we are achieving this aim. Therefore we are
@@ -15,7 +15,7 @@
   
   [1X2.1 [33X[0;0YDependencies[133X[101X
   
-  [33X[0;0Y[5XVole[105X requires [5XGAP[105X 4.11.0 or newer and various other [5XGAP[105X packages to run, and
+  [33X[0;0Y[5XVole[105X requires [5XGAP[105X 4.13.0 or newer and various other [5XGAP[105X packages to run, and
   Rust version 1.48 or newer is required to compile [5XVole[105X.[133X
   
   [33X[0;0YPlease note that if you are using [5XVole[105X via a [5XGAP[105X Cygwin release (i.e. if you
@@ -31,7 +31,7 @@
   
   [4X[32X  Example  [32X[104X
     [4X[28X$ cargo --version[128X[104X
-    [4X[28Xcargo 1.54.0[128X[104X
+    [4X[28Xcargo 1.57.0[128X[104X
   [4X[32X[104X
   
   [33X[0;0YIf Rust is not available, then running the command [10Xcargo --version[110X will give
@@ -43,14 +43,8 @@
   [5XVole[105X.  This  means  that [5XVole[105X will not load if one or more of these packages
   cannot be loaded in your [5XGAP[105X installation in a new enough version.[133X
   
-  [30X    [33X[0;6Y[5XBacktrackKit[105X  ([7Xhttps://peal.github.io/BacktrackKit[107X)  version 0.6.1, or
-        newer [JW21a].[133X
-  
   [30X    [33X[0;6Y[5XDigraphs[105X ([7Xhttps://digraphs.github.io/Digraphs[107X) version 1.1.1, or newer
         [BJM+21].[133X
-  
-  [30X    [33X[0;6Y[5XGraphBacktracking[105X  ([7Xhttps://peal.github.io/GraphBacktracking[107X)  version
-        0.5.2, or newer [JW21b].[133X
   
   [30X    [33X[0;6Y[5XIO[105X   ([7Xhttps://gap-packages.github.io/io[107X)   version   4.7.0,  or  newer
         [Neu21].[133X
@@ -168,7 +162,7 @@
   [33X[0;0YIf  you encounter problems, or have any other feedback for the authors, then
   please      create      an      issue      on      our     issue     tracker
   ([7Xhttps://github.com/peal/vole/issues[107X),   or   contact   us   by   any  other
-  appropriate  means.  See  the  title  page  of  this  manual for our contact
+  appropriate  means.  See the [14XVole: Title page[114X of this manual for our contact
   details.  We  published  [5XVole[105X so that our ideas and algorithms could be used
   by,  and be useful to, others in the community. But without feedback, it can
   be  difficult  to  know  whether we are achieving this aim. Therefore we are

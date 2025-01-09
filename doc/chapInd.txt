@@ -2,6 +2,26 @@
   
   [1XIndex[101X
   
+  [2XConstraint[102X 6.3-1 
+  [2XConstraint.Centralise[102X 6.4-8 
+  [2XConstraint.Centralize[102X 6.4-8 
+  [2XConstraint.Conjugate[102X 6.4-9 
+  [2XConstraint.Everything[102X 6.4-16 
+  [2XConstraint.InCoset[102X 6.4-2 
+  [2XConstraint.InGroup[102X 6.4-1 
+  [2XConstraint.InLeftCoset[102X 6.4-4 
+  [2XConstraint.InRightCoset[102X 6.4-3 
+  [2XConstraint.IsEven[102X 6.4-12 
+  [2XConstraint.IsOdd[102X 6.4-13 
+  [2XConstraint.IsTrivial[102X 6.4-14 
+  [2XConstraint.LargestMovedPoint[102X 6.4-11 
+  [2XConstraint.MovedPoints[102X 6.4-10 
+  [2XConstraint.None[102X 6.4-15 
+  [2XConstraint.Normalise[102X 6.4-7 
+  [2XConstraint.Normalize[102X 6.4-7 
+  [2XConstraint.Stabilise[102X 6.4-6 
+  [2XConstraint.Stabilize[102X 6.4-6 
+  [2XConstraint.Transport[102X 6.4-5 
   [2XInfoVole[102X 8.1-1 
   [2XVole[102X 4.2-1 
   [2XVole.AutomorphismGroup[102X 4.6-1 

@@ -7,10 +7,10 @@
                                   with graphs [101X
   
   
-                                     0.5.3
+                                     0.6.0
   
   
-                                21 December 2021
+                                 9 January 2025
   
   
                                  Mun See Chang
@@ -29,7 +29,7 @@
   
   Christopher Jefferson
       Email:    [7Xmailto:caj21@st-andrews.ac.uk[107X
-      Homepage: [7Xhttps://caj.host.cs.st-andrews.ac.uk[107X
+      Homepage: [7Xhttps://heather.cafe[107X
       Address:  [33X[0;14YSchool  of  Computer  Science,  University  of  St Andrews, St
                 Andrews, Fife, KY16 9SX, Scotland[133X
   
@@ -44,14 +44,15 @@
   
   -------------------------------------------------------
   [1XAbstract[101X
-  [33X[0;0Y[12XVole[112X  is a [12XGAP[112X package that implements graph backtracking, which can be used
-  to  solve  many  problems  in  finite  permutation  groups, such as subgroup
-  intersections, normalisers, set stabilisers, and canonical images of groups.[133X
+  [33X[0;0Y[12XVole[112X  is  a  [12XGAP[112X  package  that  implements algorithms in finite permutation
+  groups,  such  as  canonical images, stabilisers, and subgroup intersection.
+  These  are  all  implemented  as  part  of  the general 'graph backtracking'
+  framework.[133X
   
   
   -------------------------------------------------------
   [1XCopyright[101X
-  [33X[0;0Y© 2021 by Christopher Jefferson, Mun See Chang, and Wilf A. Wilson.[133X
+  [33X[0;0Y© 2025 by Christopher Jefferson, Mun See Chang, and Wilf A. Wilson.[133X
   
   [33X[0;0Y[5XVole[105X is licensed under the Mozilla Public License, version 2.0.[133X
   
@@ -80,10 +81,11 @@
     2.4 [33X[0;0YRunning [5XVole[105X's test suite[133X
     2.5 [33X[0;0YCompiling the documentation for [5XVole[105X[133X
   3 [33X[0;0YTutorial[133X
-    3.1 [33X[0;0YComputing the intersection of a normaliser and a stabiliser[133X
-      3.1-1 [33X[0;0YThe general [5XGAP[105X approach[133X
-      3.1-2 [33X[0;0YThe general [5XVole[105X approach[133X
-    3.2 [33X[0;0YComputing a canonical image[133X
+    3.1 [33X[0;0YSimple interface[133X
+      3.1-1 [33X[0;0YSimple computation of canonical images[133X
+    3.2 [33X[0;0YThe full Vole interface[133X
+      3.2-1 [33X[0;0YThe general [5XGAP[105X approach[133X
+      3.2-2 [33X[0;0YThe general [5XVole[105X approach[133X
   4 [33X[0;0YEmulating traditional interfaces with [5XVole[105X[133X
     4.1 [33X[0;0YThe concept[133X
       4.1-1 [33X[0;0YA warning[133X
@@ -120,6 +122,26 @@
       5.3-2 VoleFind.CanonicalPerm
   6 [33X[0;0YConstraints[133X
     6.1 [33X[0;0YBounds associated with a constraint or refiner[133X
+    6.2 [33X[0;0YThe concept of constraints[133X
+    6.3 [33X[0;0YThe [10XConstraints[110X record[133X
+      6.3-1 Constraint
+    6.4 [33X[0;0YConstraints via the [10XConstraint[110X record[133X
+      6.4-1 Constraint.InGroup
+      6.4-2 Constraint.InCoset
+      6.4-3 Constraint.InRightCoset
+      6.4-4 Constraint.InLeftCoset
+      6.4-5 Constraint.Transport
+      6.4-6 Constraint.Stabilise
+      6.4-7 Constraint.Normalise
+      6.4-8 Constraint.Centralise
+      6.4-9 Constraint.Conjugate
+      6.4-10 Constraint.MovedPoints
+      6.4-11 Constraint.LargestMovedPoint
+      6.4-12 Constraint.IsEven
+      6.4-13 Constraint.IsOdd
+      6.4-14 Constraint.IsTrivial
+      6.4-15 Constraint.None
+      6.4-16 Constraint.Everything
   7 [33X[0;0YRefiners in [5XVole[105X[133X
     7.1 [33X[0;0YRefiners[133X
     7.2 [33X[0;0YThe [10XVoleRefiner[110X record[133X

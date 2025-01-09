@@ -92,7 +92,7 @@
 
 <p>Where we identify that <strong class="pkg">GAP</strong>, or a package, provides a function whose result could reasonably be computed with <strong class="pkg">Vole</strong>, we provide a wrapper function whose interface closely matches that of the original function, but which uses <strong class="pkg">Vole</strong> to perform the computation. <strong class="button">We do not claim that the</strong> <strong class="pkg">Vole</strong> <strong class="button">wrapper functions are necesarily faster than the original functions</strong>; see Section <a href="chap4.html#X7A54C0D57E5B4A8D"><span class="RefLink">4.1-1</span></a>.</p>
 
-<p>For example, the <strong class="pkg">GAP</strong> function <code class="func">Normaliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39_mj.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>) can be used to compute normalisers of permutation groups. Since <strong class="pkg">Vole</strong> can also be used for such computations, we provide the corresponding function <code class="func">Vole.Normaliser</code> (<a href="chap4.html#X874824B47C09B1AF"><span class="RefLink">4.4-4</span></a>), which can be used in the same way. Thus <code class="code">Normaliser(<var class="Arg">G</var>,<var class="Arg">U</var>)</code> and <code class="code">Vole.Normaliser(<var class="Arg">G</var>,<var class="Arg">U</var>)</code> will (barring bugs!) return equal groups for all permutation groups <var class="Arg">G</var> and <var class="Arg">U</var>.</p>
+<p>For example, the <strong class="pkg">GAP</strong> function <code class="func">Normaliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>) can be used to compute normalisers of permutation groups. Since <strong class="pkg">Vole</strong> can also be used for such computations, we provide the corresponding function <code class="func">Vole.Normaliser</code> (<a href="chap4.html#X874824B47C09B1AF"><span class="RefLink">4.4-4</span></a>), which can be used in the same way. Thus <code class="code">Normaliser(<var class="Arg">G</var>,<var class="Arg">U</var>)</code> and <code class="code">Vole.Normaliser(<var class="Arg">G</var>,<var class="Arg">U</var>)</code> will (barring bugs!) return equal groups for all permutation groups <var class="Arg">G</var> and <var class="Arg">U</var>.</p>
 
 <p>All such functions are contained in the <code class="func">Vole</code> (<a href="chap4.html#X877669AE7981FCED"><span class="RefLink">4.2-1</span></a>) record, which is documented in Section <a href="chap4.html#X7F8DAE2379A72BB8"><span class="RefLink">4.2</span></a>. The functions themselves are individually documented in Sections <a href="chap4.html#X800CAA4182BAB6D7"><span class="RefLink">4.4</span></a>–<a href="chap4.html#X7E533E72831AC20B"><span class="RefLink">4.6</span></a>.</p>
 
@@ -117,7 +117,7 @@
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole</code></td><td class="tdright">(&nbsp;global variable&nbsp;)</td></tr></table></div>
 <p><code class="code">Vole</code> is a record that contains all of the <strong class="pkg">Vole</strong> wrapper functions that are provided to emulate aspects of <strong class="pkg">GAP</strong>, and its packages <strong class="pkg">images</strong> and <strong class="pkg">Digraphs</strong>. The components of this record are functions that are named to coincide with the corresponding <strong class="pkg">GAP</strong>/<strong class="pkg">images</strong>/<strong class="pkg">Digraphs</strong> functions.</p>
 
-<p>For example, <code class="func">Vole.Normaliser</code> (<a href="chap4.html#X874824B47C09B1AF"><span class="RefLink">4.4-4</span></a>) emulates <code class="func">Normaliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39_mj.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>).</p>
+<p>For example, <code class="func">Vole.Normaliser</code> (<a href="chap4.html#X874824B47C09B1AF"><span class="RefLink">4.4-4</span></a>) emulates <code class="func">Normaliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>).</p>
 
 
 <div class="example"><pre>
@@ -157,42 +157,42 @@
 <td class="tdleft"><strong class="button">Corresponding object/pair of objects</strong></td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
 <td class="tdleft">A positive integer, permutation, or perm group</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
 <td class="tdleft">A list of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
 <td class="tdleft">A set of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
 <td class="tdleft">A set of sets of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
+<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
 <td class="tdleft">A set of lists of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
 <td class="tdleft">A list of sets of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
 <td class="tdleft">A list of lists of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
 <td class="tdleft">A digraph object, or a list of adjacencies</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
 <td class="tdleft">A list of digraphs/adjacency lists</td>
 </tr>
-</table><br /><p>&nbsp;</p><br />
+</table><br />
 </div>
 
 <p><a id="X800CAA4182BAB6D7" name="X800CAA4182BAB6D7"></a></p>
@@ -208,33 +208,33 @@
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.Intersection</code> (<a href="chap4.html#X851069107CACF98E"><span class="RefLink">4.4-1</span></a>)</td>
-<td class="tdleft"><code class="func">Intersection</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap30_mj.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>)</td>
+<td class="tdleft"><code class="func">Intersection</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap30.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>)</td>
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.Stabiliser</code> (<a href="chap4.html#X8606859F87CD8FB0"><span class="RefLink">4.4-2</span></a>)</td>
-<td class="tdleft"><code class="func">Stabiliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X86FB962786397E02"><span class="RefLink">Ref 41.5-2</span></a>)</td>
+<td class="tdleft"><code class="func">Stabiliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X86FB962786397E02"><span class="RefLink">Ref 41.5-2</span></a>)</td>
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.RepresentativeAction</code> (<a href="chap4.html#X857DC7B085EB0539"><span class="RefLink">4.4-3</span></a>)</td>
-<td class="tdleft"><code class="func">RepresentativeAction</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X857DC7B085EB0539"><span class="RefLink">Ref 41.6-1</span></a>)</td>
+<td class="tdleft"><code class="func">RepresentativeAction</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X857DC7B085EB0539"><span class="RefLink">Ref 41.6-1</span></a>)</td>
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.Normaliser</code> (<a href="chap4.html#X874824B47C09B1AF"><span class="RefLink">4.4-4</span></a>)</td>
-<td class="tdleft"><code class="func">Normaliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39_mj.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>)</td>
+<td class="tdleft"><code class="func">Normaliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>)</td>
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.Centraliser</code> (<a href="chap4.html#X7AD6E7EA84C2BB59"><span class="RefLink">4.4-5</span></a>)</td>
-<td class="tdleft"><code class="func">Centraliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap35_mj.html#X7DE33AFC823C7873"><span class="RefLink">Ref 35.4-4</span></a>)</td>
+<td class="tdleft"><code class="func">Centraliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap35.html#X7A2BF4527E08803C"><span class="RefLink">Ref 35.4-4</span></a>)</td>
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.IsConjugate</code> (<a href="chap4.html#X83DD148D7DA2ABA9"><span class="RefLink">4.4-6</span></a>)</td>
-<td class="tdleft"><code class="func">IsConjugate</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39_mj.html#X83DD148D7DA2ABA9"><span class="RefLink">Ref 39.10-9</span></a>)</td>
+<td class="tdleft"><code class="func">IsConjugate</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39.html#X83DD148D7DA2ABA9"><span class="RefLink">Ref 39.10-9</span></a>)</td>
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.TwoClosure</code> (<a href="chap4.html#X7A2D046B83DD5F5F"><span class="RefLink">4.4-7</span></a>)</td>
-<td class="tdleft"><code class="func">TwoClosure</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap43_mj.html#X7A2D046B83DD5F5F"><span class="RefLink">Ref 43.12-3</span></a>)</td>
+<td class="tdleft"><code class="func">TwoClosure</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap43.html#X7A2D046B83DD5F5F"><span class="RefLink">Ref 43.12-3</span></a>)</td>
 </tr>
-</table><br /><p>&nbsp;</p><br />
+</table><br />
 </div>
 
 <p><a id="X851069107CACF98E" name="X851069107CACF98E"></a></p>
@@ -244,9 +244,9 @@
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Intersection</code>( <var class="Arg">U1</var>, <var class="Arg">U2</var>, <var class="Arg">...</var>, <var class="Arg">Uk</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A perm group, a right coset, or an empty list</p>
 
-<p><code class="func">Vole.Intersection</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Intersection</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap30_mj.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>), and returns the intersection of the group and/or right coset arguments.</p>
+<p><code class="func">Vole.Intersection</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Intersection</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap30.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>), and returns the intersection of the group and/or right coset arguments.</p>
 
-<p>If all of the arguments are groups, then <code class="func">Vole.Intersection</code> again returns a group. Otherwise, if the result is nonempty, then <code class="func">Vole.Intersection</code> returns a <strong class="pkg">GAP</strong> right coset object. Note that this non-group case differs from <strong class="pkg">GAP</strong>'s <code class="func">Intersection</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap30_mj.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>), which always returns a list.</p>
+<p>If all of the arguments are groups, then <code class="func">Vole.Intersection</code> again returns a group. Otherwise, if the result is nonempty, then <code class="func">Vole.Intersection</code> returns a <strong class="pkg">GAP</strong> right coset object. Note that this non-group case differs from <strong class="pkg">GAP</strong>'s <code class="func">Intersection</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap30.html#X851069107CACF98E"><span class="RefLink">Ref 30.5-2</span></a>), which always returns a list.</p>
 
 <p>Note that <strong class="pkg">Vole</strong> performs the whole intersection in one search, rather than iteratively intersecting the arguments.</p>
 
@@ -272,13 +272,13 @@ RightCoset(Group([ (2,6)(3,5), (1,3)(4,6) ]),(1,5,4,2,6,3))
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Stabilizer</code>( <var class="Arg">G</var>, <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: An permutation group</p>
 
-<p><code class="func">Vole.Stabiliser</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Stabiliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X86FB962786397E02"><span class="RefLink">Ref 41.5-2</span></a>).</p>
+<p><code class="func">Vole.Stabiliser</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Stabiliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X86FB962786397E02"><span class="RefLink">Ref 41.5-2</span></a>).</p>
 
 <p>The <em>stabiliser</em> of an <var class="Arg">object</var> in a group <var class="Arg">G</var> under some group <var class="Arg">action</var> is the subgroup of <var class="Arg">G</var> of those elements that fix <var class="Arg">object</var> under <var class="Arg">action</var>, i.e. all permutations <code class="code">g</code> in <var class="Arg">G</var> such that <code class="code"><var class="Arg">action</var>(<var class="Arg">object</var>,g)=<var class="Arg">object</var></code>.</p>
 
 <p>The permitted combinations of objects and actions are given in the table below.</p>
 
-<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4_mj.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
 
 <p>There are many reasons why <strong class="pkg">GAP</strong> may be faster than <strong class="pkg">Vole</strong> for any particular problem; see Section <a href="chap1.html#X854F8C5579845066"><span class="RefLink">1.4</span></a> for some discussion about this. It may be possible to obtain better performance from <strong class="pkg">Vole</strong> by specifying custom refiners with the native interface, see <code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>) and Chapter <a href="chap7.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a>.</p>
 
@@ -301,42 +301,42 @@ true
 <td class="tdleft"><strong class="button">Corresponding object/pair of objects</strong></td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
 <td class="tdleft">A positive integer, permutation, or perm group</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
 <td class="tdleft">A list of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
 <td class="tdleft">A set of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
 <td class="tdleft">A set of sets of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
+<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
 <td class="tdleft">A set of lists of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
 <td class="tdleft">A list of sets of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
 <td class="tdleft">A list of lists of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
 <td class="tdleft">A digraph object, or a list of adjacencies</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
 <td class="tdleft">A list of digraphs/adjacency lists</td>
 </tr>
-</table><br /><p>&nbsp;</p><br />
+</table><br />
 </div>
 
 <p><a id="X857DC7B085EB0539" name="X857DC7B085EB0539"></a></p>
@@ -346,13 +346,13 @@ true
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.RepresentativeAction</code>( <var class="Arg">G</var>, <var class="Arg">object1</var>, <var class="Arg">object2</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A permutation, or <code class="keyw">fail</code></p>
 
-<p><code class="func">Vole.RepresentativeAction</code> emulates the built-in <strong class="pkg">GAP</strong> function <code class="func">RepresentativeAction</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X857DC7B085EB0539"><span class="RefLink">Ref 41.6-1</span></a>).</p>
+<p><code class="func">Vole.RepresentativeAction</code> emulates the built-in <strong class="pkg">GAP</strong> function <code class="func">RepresentativeAction</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X857DC7B085EB0539"><span class="RefLink">Ref 41.6-1</span></a>).</p>
 
 <p>This function returns an element of the permutation group <var class="Arg">G</var> that maps <var class="Arg">object1</var> to <var class="Arg">object2</var> under the given group <var class="Arg">action</var>, if such an element exists, and it returns <code class="keyw">fail</code> otherwise.</p>
 
 <p>The permitted combinations of objects and actions are given in the table below.</p>
 
-<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4_mj.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
 
 <p>There are many reasons why <strong class="pkg">GAP</strong> may be faster than <strong class="pkg">Vole</strong> for any particular problem; see Section <a href="chap1.html#X854F8C5579845066"><span class="RefLink">1.4</span></a> for some discussion about this. It may be possible to obtain better performance from <strong class="pkg">Vole</strong> by specifying custom refiners with the native interface, see <code class="func">VoleFind.Rep</code> (<a href="chap5.html#X8712249F879D9FA9"><span class="RefLink">5.2-1</span></a>) and Chapter <a href="chap7.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a>.</p>
 
@@ -373,42 +373,42 @@ fail
 <td class="tdleft"><strong class="button">Corresponding object/pair of objects</strong></td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
 <td class="tdleft">A positive integer, permutation, or perm group</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
 <td class="tdleft">A list of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
 <td class="tdleft">A set of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
 <td class="tdleft">A set of sets of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
+<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
 <td class="tdleft">A set of lists of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
 <td class="tdleft">A list of sets of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
 <td class="tdleft">A list of lists of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
 <td class="tdleft">A digraph object, or a list of adjacencies</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
 <td class="tdleft">A list of digraphs/adjacency lists</td>
 </tr>
-</table><br /><p>&nbsp;</p><br />
+</table><br />
 </div>
 
 <p><a id="X874824B47C09B1AF" name="X874824B47C09B1AF"></a></p>
@@ -419,7 +419,7 @@ fail
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Normalizer</code>( <var class="Arg">G</var>, <var class="Arg">U</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: An permutation group</p>
 
-<p><code class="func">Vole.Normaliser</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Normaliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39_mj.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>).</p>
+<p><code class="func">Vole.Normaliser</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Normaliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39.html#X87B5370C7DFD401D"><span class="RefLink">Ref 39.11-1</span></a>).</p>
 
 <p>If <var class="Arg">G</var> and <var class="Arg">U</var> are permutation groups, then this function returns the <em>normaliser</em> of <var class="Arg">U</var> in <var class="Arg">G</var>, <span class="Math">N_{G}(U)</span>, which is the stabiliser of <var class="Arg">U</var> under conjugation by <var class="Arg">G</var>. If <var class="Arg">U</var> is instead a permutation, then <code class="code">Vole.Normalizer(<var class="Arg">G</var>,<var class="Arg">U</var>)</code> returns <span class="Math">N_{G}(\langle U \rangle)</span>.</p>
 
@@ -442,7 +442,7 @@ true
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.Centralizer</code>( <var class="Arg">G</var>, <var class="Arg">x</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: An permutation group</p>
 
-<p><code class="func">Vole.Centraliser</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Centraliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap35_mj.html#X7DE33AFC823C7873"><span class="RefLink">Ref 35.4-4</span></a>).</p>
+<p><code class="func">Vole.Centraliser</code> emulates the built-in <strong class="pkg">GAP</strong> operation <code class="func">Centraliser</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap35.html#X7A2BF4527E08803C"><span class="RefLink">Ref 35.4-4</span></a>).</p>
 
 <p>If <var class="Arg">G</var> is a group and <var class="Arg">x</var> is a permutation, then this function returns the subgroup of <var class="Arg">G</var> comprising its elements that commute with <var class="Arg">x</var>.</p>
 
@@ -463,7 +463,7 @@ Group([ (1,4)(2,5)(3,6) ])
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.IsConjugate</code>( <var class="Arg">G</var>, <var class="Arg">x</var>, <var class="Arg">y</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
 
-<p><code class="func">Vole.IsConjugate</code> emulates the built-in <strong class="pkg">GAP</strong> function <code class="func">IsConjugate</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39_mj.html#X83DD148D7DA2ABA9"><span class="RefLink">Ref 39.10-9</span></a>).</p>
+<p><code class="func">Vole.IsConjugate</code> emulates the built-in <strong class="pkg">GAP</strong> function <code class="func">IsConjugate</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap39.html#X83DD148D7DA2ABA9"><span class="RefLink">Ref 39.10-9</span></a>).</p>
 
 <p>This function returns <code class="keyw">true</code> if there exists an element of the permutation group <var class="Arg">G</var> that conjugates <var class="Arg">x</var> to <var class="Arg">y</var>, and <code class="keyw">false</code> otherwise, where <var class="Arg">x</var> and <var class="Arg">y</var> are either both permutations, or both permutation groups. Note that <var class="Arg">x</var> and <var class="Arg">y</var> are not required to be contained in <var class="Arg">G</var>.</p>
 
@@ -506,7 +506,7 @@ true
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.TwoClosure</code>( <var class="Arg">G</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A permutation group</p>
 
-<p><code class="func">Vole.TwoClosure</code> emulates the built-in <strong class="pkg">GAP</strong> function <code class="func">TwoClosure</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap43_mj.html#X7A2D046B83DD5F5F"><span class="RefLink">Ref 43.12-3</span></a>) for a permutation group.</p>
+<p><code class="func">Vole.TwoClosure</code> emulates the built-in <strong class="pkg">GAP</strong> function <code class="func">TwoClosure</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap43.html#X7A2D046B83DD5F5F"><span class="RefLink">Ref 43.12-3</span></a>) for a permutation group.</p>
 
 <p>The <em>2-closure</em> of a permutation group <var class="Arg">G</var> is the largest group whose orbitals (orbits on pairs of positive integers) coincide with those of <var class="Arg">G</var>; equivalently, it is the intersection of the automorphism groups of the orbital graphs of <var class="Arg">G</var>.</p>
 
@@ -539,13 +539,13 @@ true
 <td class="tdleft"><code class="func">Vole.CanonicalPerm</code> (<a href="chap4.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>)</p>
 
 <p><code class="func">Vole.CanonicalImagePerm</code> (<a href="chap4.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>)</td>
-<td class="tdleft"><code class="func">CanonicalImagePerm</code> (<a href="https://gap-packages.github.io/images/doc/chap2_mj.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>)</td>
+<td class="tdleft"><code class="func">CanonicalImagePerm</code> (<a href="https://gap-packages.github.io/images/doc/chap2.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>)</td>
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.CanonicalImage</code> (<a href="chap4.html#X780189E3873B7A42"><span class="RefLink">4.5-2</span></a>)</td>
-<td class="tdleft"><code class="func">CanonicalImage</code> (<a href="https://gap-packages.github.io/images/doc/chap2_mj.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>)</td>
+<td class="tdleft"><code class="func">CanonicalImage</code> (<a href="https://gap-packages.github.io/images/doc/chap2.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>)</td>
 </tr>
-</table><br /><p>&nbsp;</p><br />
+</table><br />
 </div>
 
 <p><a id="X7DFC113D842DD5BC" name="X7DFC113D842DD5BC"></a></p>
@@ -556,13 +556,13 @@ true
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.CanonicalImagePerm</code>( <var class="Arg">G</var>, <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A permutation</p>
 
-<p>These functions, which are synonyms of each other, emulate <code class="func">CanonicalImagePerm</code> (<a href="https://gap-packages.github.io/images/doc/chap2_mj.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>) from the <strong class="pkg">images</strong> package, although they supports a wider range of objects and actions.</p>
+<p>These functions, which are synonyms of each other, emulate <code class="func">CanonicalImagePerm</code> (<a href="https://gap-packages.github.io/images/doc/chap2.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>) from the <strong class="pkg">images</strong> package, although they supports a wider range of objects and actions.</p>
 
 <p>Suppose that <var class="Arg">G</var> is a group, and that <var class="Arg">object</var> and <code class="code">object2</code> belong to a set on which <var class="Arg">G</var> has a group <var class="Arg">action</var>. Then <code class="code">Vole.CanonicalPerm(<var class="Arg">G</var>,<var class="Arg">object</var>,<var class="Arg">action</var>)</code> returns an element <code class="code">g</code> of <var class="Arg">G</var>, and <code class="code">Vole.CanonicalPerm(<var class="Arg">G</var>,object2,<var class="Arg">action</var>)</code> returns an element <code class="code">h</code> of <var class="Arg">G</var>, such that <var class="Arg">object</var> and <code class="code">object2</code> are in the same orbit of <var class="Arg">G</var> under <var class="Arg">action</var> if and only if <code class="code"><var class="Arg">object</var>^g = object2^h</code>.</p>
 
 <p>The permitted combinations of objects and actions are given in the table below.</p>
 
-<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4_mj.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
 
 <p>The native <strong class="pkg">Vole</strong> interface for this kind of computation is provided by <code class="func">VoleFind.CanonicalPerm</code> (<a href="chap5.html#X7ACA1CDC80D12604"><span class="RefLink">5.3-2</span></a>).</p>
 
@@ -580,42 +580,42 @@ true
 <td class="tdleft"><strong class="button">Corresponding object/pair of objects</strong></td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
 <td class="tdleft">A positive integer, permutation, or perm group</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
 <td class="tdleft">A list of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
 <td class="tdleft">A set of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
 <td class="tdleft">A set of sets of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
+<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
 <td class="tdleft">A set of lists of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
 <td class="tdleft">A list of sets of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
 <td class="tdleft">A list of lists of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
 <td class="tdleft">A digraph object, or a list of adjacencies</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
 <td class="tdleft">A list of digraphs/adjacency lists</td>
 </tr>
-</table><br /><p>&nbsp;</p><br />
+</table><br />
 </div>
 
 <p><a id="X780189E3873B7A42" name="X780189E3873B7A42"></a></p>
@@ -625,13 +625,13 @@ true
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.CanonicalImage</code>( <var class="Arg">G</var>, <var class="Arg">object</var>[, <var class="Arg">action</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: An image of <var class="Arg">object</var></p>
 
-<p>This function emulates <code class="func">CanonicalImage</code> (<a href="https://gap-packages.github.io/images/doc/chap2_mj.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>) from the <strong class="pkg">images</strong> package, although it supports a wider range of objects and actions.</p>
+<p>This function emulates <code class="func">CanonicalImage</code> (<a href="https://gap-packages.github.io/images/doc/chap2.html#X780189E3873B7A42"><span class="RefLink">images 2.1-3</span></a>) from the <strong class="pkg">images</strong> package, although it supports a wider range of objects and actions.</p>
 
 <p><code class="func">Vole.CanonicalImage</code> returns <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> is the permutation returned by Vole.CanonicalPerm(<var class="Arg">G</var>,<var class="Arg">object</var>,<var class="Arg">action</var>). See <code class="func">Vole.CanonicalPerm</code> (<a href="chap4.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>) for more information.</p>
 
 <p>The permitted combinations of objects and actions are given in the table below.</p>
 
-<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4_mj.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
+<p>The default <var class="Arg">action</var>, in the case that the argument is not given, is <code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Reference: OnPoints</span></a>). This is the name in <strong class="pkg">GAP</strong> of the action given by the <code class="code">^</code> operator, i.e. it corresponds to <code class="code"><var class="Arg">object</var>^g</code>, where <code class="code">g</code> in <var class="Arg">G</var>. See <code class="func">\^</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap4.html#X7B66C8707B5DE10A"><span class="RefLink">Reference: ^</span></a>).</p>
 
 <p>The native <strong class="pkg">Vole</strong> interface for this kind of computation is provided by <code class="func">VoleFind.CanonicalPerm</code> (<a href="chap5.html#X7ACA1CDC80D12604"><span class="RefLink">5.3-2</span></a>).</p>
 
@@ -669,42 +669,42 @@ fail
 <td class="tdleft"><strong class="button">Corresponding object/pair of objects</strong></td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
+<td class="tdleft"><code class="func">OnPoints</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FE417DD837987B4"><span class="RefLink">Ref 41.2-1</span></a>) [default]</td>
 <td class="tdleft">A positive integer, permutation, or perm group</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X832CC5F87EEA4A7E"><span class="RefLink">Ref 41.2-5</span></a>)</td>
 <td class="tdleft">A list of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
+<td class="tdleft"><code class="func">OnSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X85AA04347CD117F9"><span class="RefLink">Ref 41.2-4</span></a>)</td>
 <td class="tdleft">A set of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
+<td class="tdleft"><code class="func">OnSetsSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7C10492081D72376"><span class="RefLink">Ref 41.2-7</span></a>)</td>
 <td class="tdleft">A set of sets of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
+<td class="tdleft"><code class="func">OnSetsTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7ADE244E819035FF"><span class="RefLink">Ref 41.2-9</span></a>)</td>
 <td class="tdleft">A set of lists of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesSets</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X7FF556CD7E6739A9"><span class="RefLink">Ref 41.2-10</span></a>)</td>
 <td class="tdleft">A list of sets of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41_mj.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesTuples</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap41.html#X844E902382EB4151"><span class="RefLink">Ref 41.2-11</span></a>)</td>
 <td class="tdleft">A list of lists of positive integers</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
+<td class="tdleft"><code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>)</td>
 <td class="tdleft">A digraph object, or a list of adjacencies</td>
 </tr>
 <tr>
-<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
+<td class="tdleft"><code class="func">OnTuplesDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7F6A97E6870CDDA3"><span class="RefLink">Digraphs 7.1-3</span></a>)</td>
 <td class="tdleft">A list of digraphs/adjacency lists</td>
 </tr>
-</table><br /><p>&nbsp;</p><br />
+</table><br />
 </div>
 
 <p><a id="X7E533E72831AC20B" name="X7E533E72831AC20B"></a></p>
@@ -720,33 +720,33 @@ fail
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.AutomorphismGroup</code> (<a href="chap4.html#X87677B0787B4461A"><span class="RefLink">4.6-1</span></a>)</td>
-<td class="tdleft"><code class="func">AutomorphismGroup</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X858C32127A190175"><span class="RefLink">Digraphs 7.2-2</span></a>)</p>
+<td class="tdleft"><code class="func">AutomorphismGroup</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X858C32127A190175"><span class="RefLink">Digraphs 7.2-2</span></a>)</p>
 
-<p><code class="func">NautyAutomorphismGroup</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X857758B18144C0CD"><span class="RefLink">Digraphs 7.2-4</span></a>)</p>
+<p><code class="func">NautyAutomorphismGroup</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X857758B18144C0CD"><span class="RefLink">Digraphs 7.2-4</span></a>)</p>
 
-<p><code class="func">BlissAutomorphismGroup</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7E7B0D88865A89F6"><span class="RefLink">Digraphs 7.2-3</span></a>)</td>
+<p><code class="func">BlissAutomorphismGroup</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7E7B0D88865A89F6"><span class="RefLink">Digraphs 7.2-3</span></a>)</td>
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.CanonicalDigraph</code> (<a href="chap4.html#X860ADFA77D2FC5A4"><span class="RefLink">4.6-3</span></a>)</td>
-<td class="tdleft"><code class="func">NautyCanonicalDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X877B1D377EC197D7"><span class="RefLink">Digraphs 7.2-9</span></a>)</p>
+<td class="tdleft"><code class="func">NautyCanonicalDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X877B1D377EC197D7"><span class="RefLink">Digraphs 7.2-9</span></a>)</p>
 
-<p><code class="func">BlissCanonicalDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X877B1D377EC197D7"><span class="RefLink">Digraphs 7.2-9</span></a>)</td>
+<p><code class="func">BlissCanonicalDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X877B1D377EC197D7"><span class="RefLink">Digraphs 7.2-9</span></a>)</td>
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.DigraphCanonicalLabelling</code> (<a href="chap4.html#X81115B82856B08DA"><span class="RefLink">4.6-2</span></a>)</td>
-<td class="tdleft"><code class="func">NautyCanonicalLabelling</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>)</p>
+<td class="tdleft"><code class="func">NautyCanonicalLabelling</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>)</p>
 
-<p><code class="func">BlissCanonicalLabelling</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>)</td>
+<p><code class="func">BlissCanonicalLabelling</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>)</td>
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.IsomorphismDigraphs</code> (<a href="chap4.html#X7AEF42B27838C446"><span class="RefLink">4.6-5</span></a>)</td>
-<td class="tdleft"><code class="func">IsomorphismDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X8219FE6C839D9457"><span class="RefLink">Digraphs 7.2-17</span></a>)</td>
+<td class="tdleft"><code class="func">IsomorphismDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X8219FE6C839D9457"><span class="RefLink">Digraphs 7.2-17</span></a>)</td>
 </tr>
 <tr>
 <td class="tdleft"><code class="func">Vole.IsIsomorphicDigraph</code> (<a href="chap4.html#X8732C0A7786CBE39"><span class="RefLink">4.6-4</span></a>)</td>
-<td class="tdleft"><code class="func">IsIsomorphicDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7B4F24B283C9EE28"><span class="RefLink">Digraphs 7.2-15</span></a>)</td>
+<td class="tdleft"><code class="func">IsIsomorphicDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7B4F24B283C9EE28"><span class="RefLink">Digraphs 7.2-15</span></a>)</td>
 </tr>
-</table><br /><p>&nbsp;</p><br />
+</table><br />
 </div>
 
 <p><a id="X87677B0787B4461A" name="X87677B0787B4461A"></a></p>
@@ -756,9 +756,9 @@ fail
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.AutomorphismGroup</code>( <var class="Arg">D</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A permutation group</p>
 
-<p><code class="func">Vole.AutomorphismGroup</code> emulates the <strong class="pkg">Digraphs</strong> package functions <code class="func">AutomorphismGroup</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X858C32127A190175"><span class="RefLink">Digraphs 7.2-2</span></a>), <code class="func">NautyAutomorphismGroup</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X857758B18144C0CD"><span class="RefLink">Digraphs 7.2-4</span></a>), and <code class="func">BlissAutomorphismGroup</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7E7B0D88865A89F6"><span class="RefLink">Digraphs 7.2-3</span></a>).</p>
+<p><code class="func">Vole.AutomorphismGroup</code> emulates the <strong class="pkg">Digraphs</strong> package functions <code class="func">AutomorphismGroup</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X858C32127A190175"><span class="RefLink">Digraphs 7.2-2</span></a>), <code class="func">NautyAutomorphismGroup</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X857758B18144C0CD"><span class="RefLink">Digraphs 7.2-4</span></a>), and <code class="func">BlissAutomorphismGroup</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7E7B0D88865A89F6"><span class="RefLink">Digraphs 7.2-3</span></a>).</p>
 
-<p>This function returns the automorphism group of the digraph <var class="Arg">D</var>. The <em>automorphism group</em> of <var class="Arg">D</var> is the stabiliser of <var class="Arg">D</var> in <code class="code">SymmetricGroup(DigraphVertices(D))</code> under its natural action on digraphs, namely <code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>). The <strong class="pkg">Vole</strong> function <code class="func">Vole.Stabiliser</code> (<a href="chap4.html#X8606859F87CD8FB0"><span class="RefLink">4.4-2</span></a>) can be used to compute the stabiliser of <var class="Arg">D</var> in an arbitrary permutation group.</p>
+<p>This function returns the automorphism group of the digraph <var class="Arg">D</var>. The <em>automorphism group</em> of <var class="Arg">D</var> is the stabiliser of <var class="Arg">D</var> in <code class="code">SymmetricGroup(DigraphVertices(D))</code> under its natural action on digraphs, namely <code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>). The <strong class="pkg">Vole</strong> function <code class="func">Vole.Stabiliser</code> (<a href="chap4.html#X8606859F87CD8FB0"><span class="RefLink">4.4-2</span></a>) can be used to compute the stabiliser of <var class="Arg">D</var> in an arbitrary permutation group.</p>
 
 <p>Support for specifying vertex and/or edge colours has not yet been implemented, sorry. We are working on it!</p>
 
@@ -775,7 +775,7 @@ Group([ (3,4), (2,3,5,4), (1,2,6,5)(3,4) ])
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.DigraphCanonicalLabelling</code>( <var class="Arg">D</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A permutation</p>
 
-<p><code class="func">Vole.DigraphCanonicalLabelling</code> emulates the <strong class="pkg">Digraphs</strong> package functions <code class="func">BlissCanonicalLabelling</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>) and <code class="func">NautyCanonicalLabelling</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>).</p>
+<p><code class="func">Vole.DigraphCanonicalLabelling</code> emulates the <strong class="pkg">Digraphs</strong> package functions <code class="func">BlissCanonicalLabelling</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>) and <code class="func">NautyCanonicalLabelling</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7D676FE67A6684FF"><span class="RefLink">Digraphs 7.2-7</span></a>).</p>
 
 <p>If <var class="Arg">D</var> is a digraph, and <code class="code">G=SymmetricGroup(DigraphVertices(<var class="Arg">D</var>))</code>, then this function is a shortcut to <code class="code">Vole.CanonicalPerm(G,<var class="Arg">D</var>,OnDigraphs)</code>. It is also possible to use <code class="func">Vole.CanonicalPerm</code> (<a href="chap4.html#X7DFC113D842DD5BC"><span class="RefLink">4.5-1</span></a>) to canonise <var class="Arg">D</var> in an arbitrary permutation group.</p>
 
@@ -796,7 +796,7 @@ Group([ (3,4), (2,3,5,4), (1,2,6,5)(3,4) ])
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.CanonicalDigraph</code>( <var class="Arg">D</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A digraph</p>
 
-<p><code class="func">Vole.CanonicalDigraph</code> emulates the <strong class="pkg">Digraphs</strong> package functions <code class="func">BlissCanonicalDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X877B1D377EC197D7"><span class="RefLink">Digraphs 7.2-9</span></a>) and <code class="func">NautyCanonicalDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X877B1D377EC197D7"><span class="RefLink">Digraphs 7.2-9</span></a>).</p>
+<p><code class="func">Vole.CanonicalDigraph</code> emulates the <strong class="pkg">Digraphs</strong> package functions <code class="func">BlissCanonicalDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X877B1D377EC197D7"><span class="RefLink">Digraphs 7.2-9</span></a>) and <code class="func">NautyCanonicalDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X877B1D377EC197D7"><span class="RefLink">Digraphs 7.2-9</span></a>).</p>
 
 <p>If <var class="Arg">D</var> is a digraph, and <code class="code">G=SymmetricGroup(DigraphVertices(<var class="Arg">D</var>))</code>, then this function is a shortcut to <code class="code">Vole.CanonicalImage(G,<var class="Arg">D</var>,OnDigraphs)</code>. It is also possible to use <code class="func">Vole.CanonicalImage</code> (<a href="chap4.html#X780189E3873B7A42"><span class="RefLink">4.5-2</span></a>) to canonise <var class="Arg">D</var> in an arbitrary permutation group.</p>
 
@@ -815,9 +815,9 @@ Group([ (3,4), (2,3,5,4), (1,2,6,5)(3,4) ])
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.IsIsomorphicDigraph</code>( <var class="Arg">D1</var>, <var class="Arg">D2</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
 
-<p><code class="func">Vole.IsIsomorphicDigraph</code> emulates the <strong class="pkg">Digraphs</strong> package function <code class="func">IsIsomorphicDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X7B4F24B283C9EE28"><span class="RefLink">Digraphs 7.2-15</span></a>).</p>
+<p><code class="func">Vole.IsIsomorphicDigraph</code> emulates the <strong class="pkg">Digraphs</strong> package function <code class="func">IsIsomorphicDigraph</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X7B4F24B283C9EE28"><span class="RefLink">Digraphs 7.2-15</span></a>).</p>
 
-<p>If <var class="Arg">D1</var> and <var class="Arg">D2</var> are digraphs, then this function returns <code class="keyw">true</code> if there exists any permutation that maps <var class="Arg">D1</var> to <var class="Arg">D2</var> under the <code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>) action, and it returns <code class="keyw">false</code> otherwise. See also <code class="func">IsomorphismDigraphs</code> (<a href="chap4.html#X7AEF42B27838C446"><span class="RefLink">4.6-5</span></a>), which this function calls.</p>
+<p>If <var class="Arg">D1</var> and <var class="Arg">D2</var> are digraphs, then this function returns <code class="keyw">true</code> if there exists any permutation that maps <var class="Arg">D1</var> to <var class="Arg">D2</var> under the <code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>) action, and it returns <code class="keyw">false</code> otherwise. See also <code class="func">IsomorphismDigraphs</code> (<a href="chap4.html#X7AEF42B27838C446"><span class="RefLink">4.6-5</span></a>), which this function calls.</p>
 
 
 <div class="example"><pre>
@@ -835,9 +835,9 @@ false
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Vole.IsomorphismDigraphs</code>( <var class="Arg">D1</var>, <var class="Arg">D2</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A permutation, or <code class="keyw">fail</code></p>
 
-<p><code class="func">Vole.IsomorphismDigraphs</code> emulates the <strong class="pkg">Digraphs</strong> package function <code class="func">IsomorphismDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X8219FE6C839D9457"><span class="RefLink">Digraphs 7.2-17</span></a>).</p>
+<p><code class="func">Vole.IsomorphismDigraphs</code> emulates the <strong class="pkg">Digraphs</strong> package function <code class="func">IsomorphismDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X8219FE6C839D9457"><span class="RefLink">Digraphs 7.2-17</span></a>).</p>
 
-<p>If <var class="Arg">D1</var> and <var class="Arg">D2</var> are digraphs, then this function returns some permutation that maps <var class="Arg">D1</var> to <var class="Arg">D2</var> under the <code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7_mj.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>) action, if one exists, and it returns <code class="keyw">fail</code> otherwise. In other words, this function call is equivalent to <code class="code">VoleFind.Rep(Constraint.Transport(<var class="Arg">D1</var>,<var class="Arg">D2</var>,OnDigraphs)</code>.</p>
+<p>If <var class="Arg">D1</var> and <var class="Arg">D2</var> are digraphs, then this function returns some permutation that maps <var class="Arg">D1</var> to <var class="Arg">D2</var> under the <code class="func">OnDigraphs</code> (<a href="https://digraphs.github.io/Digraphs/doc/chap7.html#X808972017C486F1F"><span class="RefLink">Digraphs 7.1-1</span></a>) action, if one exists, and it returns <code class="keyw">fail</code> otherwise. In other words, this function call is equivalent to <code class="code">VoleFind.Rep(Constraint.Transport(<var class="Arg">D1</var>,<var class="Arg">D2</var>,OnDigraphs)</code>.</p>
 
 <p><strong class="pkg">Vole</strong> can also find such a permutation subject to additional properties, such as belonging to particular groups or cosets, or stabilising certain objects. See <code class="func">VoleFind.Rep</code> (<a href="chap5.html#X8712249F879D9FA9"><span class="RefLink">5.2-1</span></a>) for more information.</p>
 
@@ -857,6 +857,6 @@ fail
 <div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chap8.html">8</a>  <a href="chapBib.html">Bib</a>  <a href="chapInd.html">Ind</a>  </div>
 
 <hr />
-<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+<p class="foot">generated by <a href="https://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
 </body>
 </html>

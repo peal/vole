@@ -54,19 +54,16 @@
   refiner implies a constraint), or one of the following objects:[133X
   
   [30X    [33X[0;6YA  permutation  group  [3XG[103X,  which  is interpreted as an instance of the
-        constraint  [2XConstraint.InGroup[102X ([14XBacktrackKit: Constraint.InGroup[114X) with
-        argument [3XG[103X.[133X
+        constraint [2XConstraint.InGroup[102X ([14X6.4-1[114X) with argument [3XG[103X.[133X
   
   [30X    [33X[0;6YA [5XGAP[105X right coset object [3XU[103X, which is interpreted as an instance of the
-        constraint  [2XConstraint.InCoset[102X ([14XBacktrackKit: Constraint.InCoset[114X) with
-        argument [3XU[103X.[133X
+        constraint [2XConstraint.InCoset[102X ([14X6.4-2[114X) with argument [3XU[103X.[133X
   
   [30X    [33X[0;6YA  positive  integer  [3Xk[103X,  which  is  interpreted as an instance of the
-        constraint         [2XConstraint.LargestMovedPoint[102X         ([14XBacktrackKit:
-        Constraint.LargestMovedPoint[114X) with argument [3Xk[103X.[133X
+        constraint [2XConstraint.LargestMovedPoint[102X ([14X6.4-11[114X) with argument [3Xk[103X.[133X
   
   [30X    [33X[0;6YThe  value [9Xfail[109X, which is interpreted as an instance of the constraint
-        [2XConstraint.None[102X ([14XBacktrackKit: Constraint.None[114X).[133X
+        [2XConstraint.None[102X ([14X6.4-15[114X).[133X
   
   [33X[0;0YFor at least one of the [3Xarguments[103X, [5XVole[105X must be able to immediately deduce a
   positive integer [10Xk[110X, such that for the corresponding constraint:[133X
@@ -102,12 +99,10 @@
   refiner implies a constraint), or one of the following objects:[133X
   
   [30X    [33X[0;6YA  permutation  group  [3XG[103X,  which  is interpreted as an instance of the
-        constraint  [2XConstraint.InGroup[102X ([14XBacktrackKit: Constraint.InGroup[114X) with
-        argument [3XG[103X.[133X
+        constraint [2XConstraint.InGroup[102X ([14X6.4-1[114X) with argument [3XG[103X.[133X
   
   [30X    [33X[0;6YA  positive  integer  [3Xk[103X,  which  is  interpreted as an instance of the
-        constraint         [2XConstraint.LargestMovedPoint[102X         ([14XBacktrackKit:
-        Constraint.LargestMovedPoint[114X) with argument [3Xk[103X.[133X
+        constraint [2XConstraint.LargestMovedPoint[102X ([14X6.4-11[114X) with argument [3Xk[103X.[133X
   
   [33X[0;0YFor at least one of the [3Xarguments[103X, [5XVole[105X must be able to immediately deduce a
   (finite)  largest  moved  point  of  all  the  permutations that satisfy the
@@ -156,19 +151,16 @@
   refiner implies a constraint), or one of the following objects:[133X
   
   [30X    [33X[0;6YA  permutation  group  [3XG[103X,  which  is interpreted as an instance of the
-        constraint  [2XConstraint.InGroup[102X ([14XBacktrackKit: Constraint.InGroup[114X) with
-        argument [3XG[103X.[133X
+        constraint [2XConstraint.InGroup[102X ([14X6.4-1[114X) with argument [3XG[103X.[133X
   
   [30X    [33X[0;6YA [5XGAP[105X right coset object [3XU[103X, which is interpreted as an instance of the
-        constraint  [2XConstraint.InCoset[102X ([14XBacktrackKit: Constraint.InCoset[114X) with
-        argument [3XU[103X.[133X
+        constraint [2XConstraint.InCoset[102X ([14X6.4-2[114X) with argument [3XU[103X.[133X
   
   [30X    [33X[0;6YA  positive  integer  [3Xk[103X,  which  is  interpreted as an instance of the
-        constraint         [2XConstraint.LargestMovedPoint[102X         ([14XBacktrackKit:
-        Constraint.LargestMovedPoint[114X) with argument [3Xk[103X.[133X
+        constraint [2XConstraint.LargestMovedPoint[102X ([14X6.4-11[114X) with argument [3Xk[103X.[133X
   
   [30X    [33X[0;6YThe  value [9Xfail[109X, which is interpreted as an instance of the constraint
-        [2XConstraint.None[102X ([14XBacktrackKit: Constraint.None[114X).[133X
+        [2XConstraint.None[102X ([14X6.4-15[114X).[133X
   
   [33X[0;0YFor at least one of the [3Xarguments[103X, [5XVole[105X must be able to immediately deduce a
   (finite)  largest  moved  point  of  all  the  permutations that satisfy the
@@ -226,21 +218,20 @@
   [2XVoleFind.Canonical[102X.[133X
   
   [33X[0;0Y[13XFor users who wish to canonise an object under an action listed in the table
-  in [2XConstraint.Stabilise[102X ([14XBacktrackKit: Constraint.Stabilise[114X), and who do not
-  wish  to  specify  particular  refiners, it may be easier to use the simpler
-  functions [2XVole.CanonicalPerm[102X ([14X4.5-1[114X) and [2XVole.CanonicalImage[102X ([14X4.5-2[114X).[113X[133X
+  in  [2XConstraint.Stabilise[102X  ([14X6.4-6[114X), and who do not wish to specify particular
+  refiners,  it  may be easier to use the simpler functions [2XVole.CanonicalPerm[102X
+  ([14X4.5-1[114X) and [2XVole.CanonicalImage[102X ([14X4.5-2[114X).[113X[133X
   
   [33X[0;0YThe  first  argument  to  [2XVoleFind.Canonical[102X must be the group [3XG[103X in which to
   canonise.  The  remaining  [3Xarguments[103X  specify  the  rest of the canonisation
   problem; in particular, they define the relevant object and action.[133X
   
   [33X[0;0YThe  [3Xarguments[103X  that follow [3XG[103X may be given separately, or in a list. Each of
-  the  [3Xarguments[103X  must be an instance of a [2XConstraint.Stabilise[102X ([14XBacktrackKit:
-  Constraint.Stabilise[114X)  constraint,  either  directly,  or  indirectly  as an
-  instance  of  [2XConstraint.Normalise[102X  ([14XBacktrackKit:  Constraint.Normalise[114X) or
-  [2XConstraint.Centralise[102X ([14XBacktrackKit: Constraint.Centralise[114X). [12XNote that it is
-  not   permitted   to   include   constraints   of   the   kind  produced  by[112X
-  [2XConstraint.InGroup[102X ([14XBacktrackKit: Constraint.InGroup[114X).[133X
+  the  [3Xarguments[103X  must  be  an  instance  of  a  [2XConstraint.Stabilise[102X  ([14X6.4-6[114X)
+  constraint,   either   directly,   or   indirectly   as   an   instance   of
+  [2XConstraint.Normalise[102X  ([14X6.4-7[114X) or [2XConstraint.Centralise[102X ([14X6.4-8[114X). [12XNote that it
+  is   not   permitted   to  include  constraints  of  the  kind  produced  by[112X
+  [2XConstraint.InGroup[102X ([14X6.4-1[114X).[133X
   
   [33X[0;0YIt  is  also  permitted to include special kinds of refiners as arguments to
   [2XVoleFind.Canonical[102X,  although  we  do  not yet document the details of this,

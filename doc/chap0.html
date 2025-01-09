@@ -29,10 +29,10 @@
 <h2>Vole organises lengthy explorations: Backtrack search in permutation groups with graphs</h2>
 
 <p>
-    0.5.3</p>
+    0.6.0</p>
 
 <p>
-    21 December 2021
+    9 January 2025
   </p>
 
 </div>
@@ -52,7 +52,7 @@
 
   </b>
 <br />Email: <span class="URL"><a href="mailto:caj21@st-andrews.ac.uk">caj21@st-andrews.ac.uk</a></span>
-<br />Homepage: <span class="URL"><a href="https://caj.host.cs.st-andrews.ac.uk">https://caj.host.cs.st-andrews.ac.uk</a></span>
+<br />Homepage: <span class="URL"><a href="https://heather.cafe">https://heather.cafe</a></span>
 <br />Address: <br />School of Computer Science, University of St Andrews, St Andrews, Fife, KY16 9SX, Scotland<br />
 </p><p><b>
     Wilf A. Wilson
@@ -68,11 +68,11 @@
 
 <p><a id="X7AA6C5737B711C89" name="X7AA6C5737B711C89"></a></p>
 <h3>Abstract</h3>
-<p><strong class="button">Vole</strong> is a <strong class="button">GAP</strong> package that implements graph backtracking, which can be used to solve many problems in finite permutation groups, such as subgroup intersections, normalisers, set stabilisers, and canonical images of groups.</p>
+<p><strong class="button">Vole</strong> is a <strong class="button">GAP</strong> package that implements algorithms in finite permutation groups, such as canonical images, stabilisers, and subgroup intersection. These are all implemented as part of the general 'graph backtracking' framework.</p>
 
 <p><a id="X81488B807F2A1CF1" name="X81488B807F2A1CF1"></a></p>
 <h3>Copyright</h3>
-<p>© 2021 by Christopher Jefferson, Mun See Chang, and Wilf A. Wilson.</p>
+<p>© 2025 by Christopher Jefferson, Mun See Chang, and Wilf A. Wilson.</p>
 
 <p><strong class="pkg">Vole</strong> is licensed under the Mozilla Public License, version 2.0.</p>
 
@@ -117,17 +117,20 @@
 </div>
 </div>
 <div class="ContChap"><a href="chap3.html#X81932F777898AD72">3 <span class="Heading">Tutorial</span></a>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap3.html#X8596BEA486D8E2C4">3.1 <span class="Heading">Computing the intersection of a normaliser and a stabiliser</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap3.html#X7B47DF26819B8049">3.1 <span class="Heading">Simple interface</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap3.html#X7ABF0CDD7FA6346C">3.1-1 <span class="Heading">The general <strong class="pkg">GAP</strong> approach</span></a>
-</span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap3.html#X84B902F37E8024FB">3.1-2 <span class="Heading">The general <strong class="pkg">Vole</strong> approach</span></a>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap3.html#X7D3001AB8554AD90">3.1-1 <span class="Heading">Simple computation of canonical images</span></a>
 </span>
 </div></div>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap3.html#X87BC2DB48642883A">3.2 <span class="Heading">Computing a canonical image</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap3.html#X87BD83B57ADB35D4">3.2 <span class="Heading">The full Vole interface</span></a>
 </span>
-</div>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap3.html#X7ABF0CDD7FA6346C">3.2-1 <span class="Heading">The general <strong class="pkg">GAP</strong> approach</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap3.html#X84B902F37E8024FB">3.2-2 <span class="Heading">The general <strong class="pkg">Vole</strong> approach</span></a>
+</span>
+</div></div>
 </div>
 <div class="ContChap"><a href="chap4.html#X7C9C24D97DB3662F">4 <span class="Heading">Emulating traditional interfaces with <strong class="pkg">Vole</strong></span></a>
 <div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4.html#X7A4C79E57A55150B">4.1 <span class="Heading">The concept</span></a>
@@ -209,6 +212,34 @@
 <div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6.html#X83C3802E816A5013">6.1 <span class="Heading">Bounds associated with a constraint or refiner</span></a>
 </span>
 </div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6.html#X7E70E2CC7E86816E">6.2 <span class="Heading">The concept of constraints</span></a>
+</span>
+</div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6.html#X7B9120587846382A">6.3 <span class="Heading">The <code class="code">Constraints</code> record</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7CFD0CB77DBD3EAF">6.3-1 Constraint</a></span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap6.html#X87477C9F83C21275">6.4 <span class="Heading">Constraints via the <code class="code">Constraint</code> record</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7F4B593980803A70">6.4-1 Constraint.InGroup</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7FBD53647F43F667">6.4-2 Constraint.InCoset</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X8776BEBD7C3BDF53">6.4-3 Constraint.InRightCoset</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X876173A9825FE297">6.4-4 Constraint.InLeftCoset</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X8284E27E87D06FA7">6.4-5 Constraint.Transport</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7BA3B89D8206CBCE">6.4-6 Constraint.Stabilise</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X851757EC7DC5D0CE">6.4-7 Constraint.Normalise</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X7B129ACB85ABD064">6.4-8 Constraint.Centralise</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X81E722EA84F47EC1">6.4-9 Constraint.Conjugate</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X825348DB7DD165F7">6.4-10 Constraint.MovedPoints</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X85EC63B08043C2BC">6.4-11 Constraint.LargestMovedPoint</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X824DCDD682D86290">6.4-12 Constraint.IsEven</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X86A1A070831A03BF">6.4-13 Constraint.IsOdd</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X781AC8657A774E44">6.4-14 Constraint.IsTrivial</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X84CD09F07F5C990B">6.4-15 Constraint.None</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap6.html#X84B07F977D150A31">6.4-16 Constraint.Everything</a></span>
+</div></div>
 </div>
 <div class="ContChap"><a href="chap7.html#X7846B7A27DCCAAB3">7 <span class="Heading">Refiners in <strong class="pkg">Vole</strong></span></a>
 <div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap7.html#X786EF6928319D57A">7.1 <span class="Heading">Refiners</span></a>
@@ -259,6 +290,6 @@
 <div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chap8.html">8</a>  <a href="chapBib.html">Bib</a>  <a href="chapInd.html">Ind</a>  </div>
 
 <hr />
-<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+<p class="foot">generated by <a href="https://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
 </body>
 </html>

@@ -5,12 +5,15 @@
   capabilities  of [5XVole[105X, and to give directions, hints, and explanations about
   its use.[133X
   
+  [33X[0;0Y[5XVole[105X  is  a  very  general  framework.  The  easiest  way to learn about the
+  capabilities of [5XVole[105X is by reading the tutorial (Chapter [14X3[114X), to see a number
+  of worked examples.[133X
+  
   [33X[0;0YIn  this  manual,  a  [13Xpermutation[113X  is  defined  on  the  set of all positive
-  integers,  but  moves  only finitely many points; unless otherwise stated, a
+  integers,  but  moves  only finitely many points. Unless otherwise stated, a
   [13Xgroup[113X  is  a  finite  permutation  group  (which,  by  the  definition  of a
   permutation, necessarily has a finite set of moved points); and a [13Xcoset[113X is a
-  left  or  right  coset  of  such a group determined by some permutation (the
-  parent group is unspecified).[133X
+  left or right coset of such a group determined by some permutation.[133X
   
   [33X[0;0YIn  full  generality, [5XVole[105X can be used to find permutations (groups given by
   strong   generating  sets,  cosets  thereof,  or  individual  representative
@@ -24,9 +27,9 @@
   ‘canonical  forms’)  of  various  kinds  of  objects  under  an action of an
   arbitrary permutation group. This includes, for example, the canonical image
   of  a digraph under the natural action of an arbitrary permutation group, or
-  the  canonical image of a permutation group under conjugation by another. [12XAs
+  the  canonical image of a permutation group under conjugation by another. [13XAs
   far  as  we  are  aware,  most  of this canonical image functionality is not
-  possible with existing tools[112X.[133X
+  possible with existing tools[113X.[133X
   
   [33X[0;0YIn  order  to  offer  all  of  this functionality, [5XVole[105X implements the [13Xgraph
   backtracking[113X   framework,  which  was  introduced  in  [JPWW21],  and  which
@@ -64,7 +67,7 @@
   [33X[0;0YIf  you encounter problems, or have any other feedback for the authors, then
   please      create      an      issue      on      our     issue     tracker
   ([7Xhttps://github.com/peal/vole/issues[107X),   or   contact   us   by   any  other
-  appropriate  means.  See  the  title  page  of  this  manual for our contact
+  appropriate  means.  See the [14XVole: Title page[114X of this manual for our contact
   details.  We  published  [5XVole[105X so that our ideas and algorithms could be used
   by,  and be useful to, others in the community. But without feedback, it can
   be  difficult  to  know  whether we are achieving this aim. Therefore we are
@@ -78,7 +81,7 @@
   has  the  potential to offer better performance in many cases where there is
   an overlap. The perfomance of [5XVole[105X is discussed in Section [14X1.4[114X.[133X
   
-  [33X[0;0Y[5XGAP[105X [12Xitself[112X[133X
+  [33X[0;0Y[5XGAP[105X [13Xitself[113X[133X
   
   [33X[0;0Y[5XGAP[105X [GAP21] contains an implementation of Jeffrey Leon's partition backtrack
   framework  [Leo91],  [Leo97]  at  the  [5XGAP[105X  level, as improved upon by Heiko
@@ -104,7 +107,7 @@
   [10XSmallestImageSet[110X.  The  overlap  of  [5XVole[105X's  functionality  with  [5Ximages[105X  is
   detailed in Section [14X4.5[114X.[133X
   
-  [33X[0;0Y[5XDigraphs[105X [12Xand[112X [5XGRAPE[105X[133X
+  [33X[0;0Y[5XDigraphs[105X [13Xand[113X [5XGRAPE[105X[133X
   
   [33X[0;0YThe  [5XDigraphs[105X  package  [BJM+21]  offers interfaces to [5Xnauty[105X [MP14] (via the
   [5XNautyTracesInterface[105X) and [5Xbliss[105X [JK07] for computing automorphism groups and
@@ -114,7 +117,7 @@
   groups  of graphs, and computing canonical images of graphs in the symmetric
   group.[133X
   
-  [33X[0;0Y[5XBacktrackKit[105X [12Xand[112X [5XGraphBacktracking[105X[133X
+  [33X[0;0Y[5XBacktrackKit[105X [13Xand[113X [5XGraphBacktracking[105X[133X
   
   [33X[0;0Y[5XBacktrackKit[105X   [JW21a]   and  [5XGraphBacktracking[105X  [JW21b]  contain  [5XGAP[105X-level
   reference  implementations of partition backtracking and graph backtracking,
@@ -145,8 +148,8 @@
   tend  to  find  very  difficult.  As  mentioned in Section [14X1.3[114X, we are still
   working towards these aims.[133X
   
-  [33X[0;0Y[12XIf  you  encounter  disappointing  and/or  surprising  performance  for your
-  use-case,  please  let  us  know,[112X  by creating an issue on our issue tracker
+  [33X[0;0Y[13XIf  you  encounter  disappointing  and/or  surprising  performance  for your
+  use-case,  please  let  us  know,[113X  by creating an issue on our issue tracker
   ([7Xhttps://github.com/peal/vole/issues[107X),   or   contacting  us  by  any  other
   appropriate  means.  See  the  title  page  of  this  manual for our contact
   details. This will help us to improve [5XVole[105X.[133X
@@ -183,7 +186,7 @@
   [33X[0;0YThere  are further reasons why existing implementations may beat the current
   version of [5XVole[105X, in some situations.[133X
   
-  [30X    [33X[0;6Y[12XVery  few  special  cases:[112X  [5XVole[105X  passes  almost every problem that it
+  [30X    [33X[0;6Y[13XVery  few  special  cases:[113X  [5XVole[105X  passes  almost every problem that it
         receives  on  to  the  full  graph  backtracking  algorithm,  with its
         corresponding  overheads  and poor worst-case complexity. On the other
         hand,  other  implementations  (particularly those in the [5XGAP[105X library)
@@ -194,7 +197,7 @@
         system can use heuristics to choose the most appropriate one to run in
         each instance.[133X
   
-  [30X    [33X[0;6Y[12XFirst-time compilation of Vole:[112X When the first [5XVole[105X search is executed
+  [30X    [33X[0;6Y[13XFirst-time compilation of Vole:[113X When the first [5XVole[105X search is executed
         in  any  particular [5XGAP[105X session, [5XVole[105X tests whether its Rust component
         is  compiled,  and  it  builds  the  component if necessary. The check
         itself  can  take  a  noticeable amount of time, but compilation takes
@@ -202,7 +205,7 @@
         recompile  [5XVole[105X  when  you  update your [5XVole[105X installation via the [10Xmake[110X
         command, as described in Section [14X2.2[114X.[133X
   
-  [30X    [33X[0;6Y[12XCommunication  between  the GAP layer and the Rust component:[112X There is
+  [30X    [33X[0;6Y[13XCommunication  between  the GAP layer and the Rust component:[113X There is
         also  a  delay  that  is incurred when the [5XGAP[105X-level interface of [5XVole[105X
         communicates  with  the Rust component of [5XVole[105X. This is exacerbated by
         the   fact   that  [5XVole[105X  does  not  yet  include  its  own  Rust-level
@@ -212,7 +215,7 @@
         significant time penalty. Implementing Rust-level stabiliser chains is
         a work in progress.[133X
   
-  [30X    [33X[0;6Y[12XFortune:[112X  The  nature of backtrack search means that one algorithm may
+  [30X    [33X[0;6Y[13XFortune:[113X  The  nature of backtrack search means that one algorithm may
         beat  another  just  by  being ‘lucky’, and (by chance) stumbling upon
         particularly   fruitful  branches  early  in  search.  Conversely,  an
         algorithm  may  be  ‘unlucky’  and  fall  down a particular unfruitful

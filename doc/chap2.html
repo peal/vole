@@ -43,13 +43,13 @@
 
 <p>This chapter contains instructions for getting <strong class="pkg">Vole</strong> up and running.</p>
 
-<p>If you encounter problems, or have any other feedback for the authors, then please <span class="URL"><a href="https://github.com/peal/vole/issues">create an issue on our issue tracker</a></span>, or contact us by any other appropriate means. See the title page of this manual for our contact details. We published <strong class="pkg">Vole</strong> so that our ideas and algorithms could be used by, and be useful to, others in the community. But without feedback, it can be difficult to know whether we are achieving this aim. Therefore we are keen to hear your comments, remarks, and complaints.</p>
+<p>If you encounter problems, or have any other feedback for the authors, then please <span class="URL"><a href="https://github.com/peal/vole/issues">create an issue on our issue tracker</a></span>, or contact us by any other appropriate means. See the <a href="../../../pkg/vole/doc/chap0.html#X7D2C85EC87DD46E5"><span class="RefLink">title page</span></a> of this manual for our contact details. We published <strong class="pkg">Vole</strong> so that our ideas and algorithms could be used by, and be useful to, others in the community. But without feedback, it can be difficult to know whether we are achieving this aim. Therefore we are keen to hear your comments, remarks, and complaints.</p>
 
 <p><a id="X7C0B91E37C8FC531" name="X7C0B91E37C8FC531"></a></p>
 
 <h4>2.1 <span class="Heading">Dependencies</span></h4>
 
-<p><strong class="pkg">Vole</strong> requires <strong class="pkg">GAP</strong> 4.11.0 or newer and various other <strong class="pkg">GAP</strong> packages to run, and Rust version 1.48 or newer is required to compile <strong class="pkg">Vole</strong>.</p>
+<p><strong class="pkg">Vole</strong> requires <strong class="pkg">GAP</strong> 4.13.0 or newer and various other <strong class="pkg">GAP</strong> packages to run, and Rust version 1.48 or newer is required to compile <strong class="pkg">Vole</strong>.</p>
 
 <p>Please note that if you are using <strong class="pkg">Vole</strong> via a <strong class="pkg">GAP</strong> Cygwin release (i.e. if you installed <strong class="pkg">GAP</strong> in Windows via an installer that included <strong class="pkg">Vole</strong>), then <strong class="pkg">Vole</strong> came ready-compiled, and the included versions of <strong class="pkg">GAP</strong> and its packages are sufficient to run <strong class="pkg">Vole</strong> out-of-the-box. Therefore you may skip straight to Section <a href="chap2.html#X7B9EF0AA85282A2E"><span class="RefLink">2.3</span></a>.</p>
 
@@ -58,7 +58,7 @@
 
 <div class="example"><pre>
 $ cargo --version
-cargo 1.54.0
+cargo 1.57.0
 </pre></div>
 
 <p>If Rust is not available, then running the command <code class="code">cargo --version</code> will give an error such as <code class="code">cargo: command not found</code>. If this is the case, then please follow the instructions at <span class="URL"><a href="https://www.rust-lang.org/tools/install">https://www.rust-lang.org/tools/install</a></span> or <span class="URL"><a href="https://rustup.rs">https://rustup.rs</a></span> for installing Rust.</p>
@@ -67,13 +67,7 @@ cargo 1.54.0
 
 
 <ul>
-<li><p><span class="URL"><a href="https://peal.github.io/BacktrackKit"><strong class="pkg">BacktrackKit</strong></a></span> version 0.6.1, or newer <a href="chapBib.html#biBBacktrackKit">[JW21a]</a>.</p>
-
-</li>
 <li><p><span class="URL"><a href="https://digraphs.github.io/Digraphs"><strong class="pkg">Digraphs</strong></a></span> version 1.1.1, or newer <a href="chapBib.html#biBDigraphs">[BJM+21]</a>.</p>
-
-</li>
-<li><p><span class="URL"><a href="https://peal.github.io/GraphBacktracking"><strong class="pkg">GraphBacktracking</strong></a></span> version 0.5.2, or newer <a href="chapBib.html#biBGraphBacktracking">[JW21b]</a>.</p>
 
 </li>
 <li><p><span class="URL"><a href="https://gap-packages.github.io/io"><strong class="pkg">IO</strong></a></span> version 4.7.0, or newer <a href="chapBib.html#biBIO">[Neu21]</a>.</p>
@@ -162,7 +156,7 @@ cd rust &amp;&amp; cargo build --bins &amp;&amp; cargo build --release --bins
 
 <h4>2.3 <span class="Heading">Loading <strong class="pkg">Vole</strong></span></h4>
 
-<p>If <strong class="pkg">Vole</strong> is available to load, then it can be loaded by calling the function <code class="func">LoadPackage</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap76_mj.html#X79B373A77B29D1F5"><span class="RefLink">Reference: LoadPackage</span></a>) with the argument <code class="code">"vole"</code>, from within the relevant <strong class="pkg">GAP</strong> installation. This should return <code class="keyw">true</code>.</p>
+<p>If <strong class="pkg">Vole</strong> is available to load, then it can be loaded by calling the function <code class="func">LoadPackage</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap76.html#X79B373A77B29D1F5"><span class="RefLink">Reference: LoadPackage</span></a>) with the argument <code class="code">"vole"</code>, from within the relevant <strong class="pkg">GAP</strong> installation. This should return <code class="keyw">true</code>.</p>
 
 
 <div class="example"><pre>
@@ -170,9 +164,9 @@ cd rust &amp;&amp; cargo build --bins &amp;&amp; cargo build --release --bins
 true
 </pre></div>
 
-<p>If <code class="code">LoadPackage</code> instead returns <code class="keyw">fail</code>, then <strong class="pkg">Vole</strong> has failed to load. This is probably because <strong class="pkg">GAP</strong> cannot find <strong class="pkg">Vole</strong> or <strong class="pkg">Vole</strong> is not compiled (Section <a href="chap2.html#X7BB03C16800B014E"><span class="RefLink">2.2</span></a>), or one of the dependencies of <strong class="pkg">Vole</strong> is not available (Section <a href="chap2.html#X7C0B91E37C8FC531"><span class="RefLink">2.1</span></a>). If <strong class="pkg">Vole</strong> fails to load, then please see the <code class="func">LoadPackage</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap76_mj.html#X79B373A77B29D1F5"><span class="RefLink">Reference: LoadPackage</span></a>) documentation for ways to help diagnose the problem further.</p>
+<p>If <code class="code">LoadPackage</code> instead returns <code class="keyw">fail</code>, then <strong class="pkg">Vole</strong> has failed to load. This is probably because <strong class="pkg">GAP</strong> cannot find <strong class="pkg">Vole</strong> or <strong class="pkg">Vole</strong> is not compiled (Section <a href="chap2.html#X7BB03C16800B014E"><span class="RefLink">2.2</span></a>), or one of the dependencies of <strong class="pkg">Vole</strong> is not available (Section <a href="chap2.html#X7C0B91E37C8FC531"><span class="RefLink">2.1</span></a>). If <strong class="pkg">Vole</strong> fails to load, then please see the <code class="func">LoadPackage</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap76.html#X79B373A77B29D1F5"><span class="RefLink">Reference: LoadPackage</span></a>) documentation for ways to help diagnose the problem further.</p>
 
-<p>If you encounter problems, or have any other feedback for the authors, then please <span class="URL"><a href="https://github.com/peal/vole/issues">create an issue on our issue tracker</a></span>, or contact us by any other appropriate means. See the title page of this manual for our contact details. We published <strong class="pkg">Vole</strong> so that our ideas and algorithms could be used by, and be useful to, others in the community. But without feedback, it can be difficult to know whether we are achieving this aim. Therefore we are keen to hear your comments, remarks, and complaints.</p>
+<p>If you encounter problems, or have any other feedback for the authors, then please <span class="URL"><a href="https://github.com/peal/vole/issues">create an issue on our issue tracker</a></span>, or contact us by any other appropriate means. See the <a href="../../../pkg/vole/doc/chap0.html#X7D2C85EC87DD46E5"><span class="RefLink">title page</span></a> of this manual for our contact details. We published <strong class="pkg">Vole</strong> so that our ideas and algorithms could be used by, and be useful to, others in the community. But without feedback, it can be difficult to know whether we are achieving this aim. Therefore we are keen to hear your comments, remarks, and complaints.</p>
 
 <p>Otherwise, <strong class="pkg">Vole</strong> is ready to use. To reassure yourself, you can quickly test that <strong class="pkg">Vole</strong> is behaving as intended by quickly running a search, such that the following one:</p>
 
@@ -218,7 +212,7 @@ $ ./run-tests.sh
 
 <p>To compile the manual, it suffices to read <strong class="pkg">Vole</strong>'s <code class="file">makedoc.g</code> file into <strong class="pkg">GAP</strong>.</p>
 
-<p>This can be done directly within <strong class="pkg">GAP</strong> via the function <code class="func">Read</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap9_mj.html#X8373AC6B7D5F9167"><span class="RefLink">Ref 9.7-1</span></a>):</p>
+<p>This can be done directly within <strong class="pkg">GAP</strong> via the function <code class="func">Read</code> (<a href="https://www.gap-system.org/Manuals/doc/ref/chap9.html#X8373AC6B7D5F9167"><span class="RefLink">Ref 9.7-1</span></a>):</p>
 
 
 <div class="example"><pre>
@@ -246,6 +240,6 @@ $ make doc
 <div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chap8.html">8</a>  <a href="chapBib.html">Bib</a>  <a href="chapInd.html">Ind</a>  </div>
 
 <hr />
-<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+<p class="foot">generated by <a href="https://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
 </body>
 </html>

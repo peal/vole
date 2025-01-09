@@ -1,8 +1,147 @@
   
   [1X3 [33X[0;0YTutorial[133X[101X
   
+  [33X[0;0YThere  are two interfaces to Vole, the 'Simple Interface', which are methods
+  which  start  with  [10XVole.[110X, and the 'Full Interface', which are methods which
+  start with [10XVoleFind.[110X. The simple interface is no less efficient, each of the
+  simple  interface  methods  just  call a problem in the full interface. Some
+  problems cannot be expressed in the simple interface, in particular problems
+  which involve solving multiple problems simultaneously.[133X
   
-  [1X3.1 [33X[0;0YComputing the intersection of a normaliser and a stabiliser[133X[101X
+  
+  [1X3.1 [33X[0;0YSimple interface[133X[101X
+  
+  [33X[0;0YThe  'simple  interface'  to  Vole  consists  of functions whose names begin
+  [10XVole.[110X.  These  methods  implement existing methods in core GAP, and some GAP
+  packages.[133X
+  
+  [33X[0;0YThese functions are given as follows (grouped into sections:)[133X
+  
+  [33X[0;0YThe   following  functions  have  very  high  quality  implementations.  The
+  [10XCanonical[110X  methods are described below, and are otherwise implemented in the
+  Images package.[133X
+  
+  [30X    [33X[0;6YCanonicalImage[133X
+  
+  [30X    [33X[0;6YCanonicalPerm[133X
+  
+  [30X    [33X[0;6YCanonicalImagePerm[133X
+  
+  [30X    [33X[0;6YRepresentativeAction[133X
+  
+  [30X    [33X[0;6YIsConjugate[133X
+  
+  [30X    [33X[0;6YStabilizer[133X
+  
+  [33X[0;0YThese  functions are implemented in Digraphs. They are generally slower than
+  the  functions  provided  there,  but  can  be  faster  for  multi-edge  and
+  edge-coloured  graphs. Vole is much better when we want to search on a group
+  other than the automorphism group on the vertices.[133X
+  
+  [30X    [33X[0;6YAutomorphismGroup[133X
+  
+  [30X    [33X[0;6YCanonicalDigraph[133X
+  
+  [30X    [33X[0;6YDigraphCanonicalLabelling[133X
+  
+  [30X    [33X[0;6YIsIsomorphicDigraph[133X
+  
+  [30X    [33X[0;6YIsomorphismDigraphs[133X
+  
+  [30X    [33X[0;6YThese  functions  are  standard  group  algorithms. Vole can sometimes
+        outperform  GAP,  particularly  when  cosets are involved (for example
+        coset intersection), but GAP is often faster for many problems.[133X
+  
+  [30X    [33X[0;6YTwoClosure[133X
+  
+  [30X    [33X[0;6YCentralizer[133X
+  
+  [30X    [33X[0;6YNormalizer[133X
+  
+  [30X    [33X[0;6YIntersection[133X
+  
+  [30X    [33X[0;6YCentraliser[133X
+  
+  
+  [1X3.1-1 [33X[0;0YSimple computation of canonical images[133X[101X
+  
+  [33X[0;0YFinding a canonical image always requires two arguments:[133X
+  
+  [30X    [33X[0;6YThe group in which we are searching.[133X
+  
+  [30X    [33X[0;6YThe object whose canonical image we want to find.[133X
+  
+  [33X[0;0YAs  a  simple  example,  let's  consider 3 sets, and if they are in the same
+  orbit of [23XM_{12}[123X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("vole", false);;[127X[104X
+    [4X[25Xgap>[125X [27Xs := [1,2,3,4,5,6];[127X[104X
+    [4X[28X[ 1, 2, 3, 4, 5, 6 ][128X[104X
+    [4X[25Xgap>[125X [27Xt := [2,4,6,8,10,12];[127X[104X
+    [4X[28X[ 2, 4, 6, 8, 10, 12 ][128X[104X
+    [4X[25Xgap>[125X [27Xu := [3,6,9,12,15,18];[127X[104X
+    [4X[28X[ 3, 6, 9, 12, 15, 18 ][128X[104X
+    [4X[25Xgap>[125X [27XM12 := MathieuGroup(12);;[127X[104X
+    [4X[25Xgap>[125X [27XVole.CanonicalImage(M12, s, OnSets);[127X[104X
+    [4X[28X[ 2, 6, 8, 9, 11, 12 ][128X[104X
+    [4X[25Xgap>[125X [27XVole.CanonicalImage(M12, t, OnSets);[127X[104X
+    [4X[28X[ 2, 6, 8, 9, 11, 12 ][128X[104X
+    [4X[25Xgap>[125X [27XVole.CanonicalImage(M12, u, OnSets);[127X[104X
+    [4X[28X[ 2, 3, 4, 5, 15, 18 ][128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YAs  [23Xs[123X  and  [23Xt[123X have the same canonical image, this means they are in the same
+  orbit of [23XM_{12}[123X, which [23Xu[123X is in a different orbit.[133X
+  
+  [33X[0;0YHow  can  we  find the permutation in [23XM_{12}[123X which maps [23Xs[123X to [23Xt[123X? The function
+  [10XCanonicalImagePerm[110X  gives  the  permutation  which  maps  something  to it's
+  canonical image.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xps := Vole.CanonicalImagePerm(M12, s, OnSets);[127X[104X
+    [4X[28X(1,6,9,5,2,12)(3,8,4,11,10,7)[128X[104X
+    [4X[25Xgap>[125X [27Xpt := Vole.CanonicalImagePerm(M12, t, OnSets);[127X[104X
+    [4X[28X(1,3,4,12,2,6,11,7)(9,10)[128X[104X
+    [4X[25Xgap>[125X [27XOnSets(s, ps); # Gives the canonical image from earlier[127X[104X
+    [4X[28X[ 2, 6, 8, 9, 11, 12 ][128X[104X
+    [4X[25Xgap>[125X [27XOnSets(s, ps*(pt^-1)); # Gives t[127X[104X
+    [4X[28X[ 2, 4, 6, 8, 10, 12 ][128X[104X
+    [4X[25Xgap>[125X [27Xps*(pt^-1) in M12;[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YAs we can see here, it is easy to get the canonical image from the result of
+  [10XCanonicalImagePerm[110X, but the reverse is not true![133X
+  
+  [33X[0;0YWe  can  find  the  canonical  image of many different types of objects, for
+  example:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XVole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsSets);[127X[104X
+    [4X[28X[ [ 2, 3, 7, 12 ], [ 3, 6, 10, 11 ] ][128X[104X
+    [4X[25Xgap>[125X [27XVole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsTuples);[127X[104X
+    [4X[28X[ [ 2, 8, 3, 6 ], [ 6, 4, 10, 5 ] ][128X[104X
+    [4X[25Xgap>[125X [27XVole.CanonicalImage(M12, DigraphCycle(12), OnDigraphs);[127X[104X
+    [4X[28X<immutable digraph with 12 vertices, 12 edges>[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YNote  that  while we could use a tool like Nauty, from the GRAPE or Digraphs
+  packages,  to  calculate  the  canonical  image  of  our graph, that doesn't
+  support adding searching within a named group.[133X
+  
+  [33X[0;0YThe  [10XCanonicalImage[110X and [10XCanonicalImagePerm[110X functions work on a wide range of
+  GAP  objects  and  actions  --  if there an object or action you find is not
+  implemented,    please    report    it    at    The   vole   issue   tracker
+  ([7Xhttps://github.com/peal/vole/issues[107X)  and  we  will  investigate  if  it is
+  possible to add.[133X
+  
+  
+  [1X3.2 [33X[0;0YThe full Vole interface[133X[101X
+  
+  [33X[0;0YWe  will  begin  by  working  through  an  example  of the intersection of a
+  normaliser  and  a stabiliser, and then look at how this problem can be more
+  efficiently and directly solved in [5XVole[105X.[133X
   
   [33X[0;0YSuppose that we wish to compute the intersection of the stabiliser in [23XM_{12}[123X
   of  the  set [23XS:=\{1,2,4,5\}[123X with the normaliser of [23XH[123X in [23XG[123X, where [23XH[123X and [23XG[123X are
@@ -29,7 +168,7 @@
   [4X[32X[104X
   
   
-  [1X3.1-1 [33X[0;0YThe general [5XGAP[105X[101X[1X approach[133X[101X
+  [1X3.2-1 [33X[0;0YThe general [5XGAP[105X[101X[1X approach[133X[101X
   
   [33X[0;0YWith  the  [5XGAP[105X library, there are several ways to compute this. For example,
   we  can stick as closely to the statement as possible, and first compute the
@@ -69,7 +208,6 @@
   However, this is not the recommended approach, as we will see below.[133X
   
   [4X[32X  Example  [32X[104X
-    [4X[25Xgap>[125X [27XLoadPackage("vole", false);;[127X[104X
     [4X[25Xgap>[125X [27Xstab := Vole.Stabiliser(M12, S, OnSets);;[127X[104X
     [4X[25Xgap>[125X [27Xnorm := Vole.Normaliser(G, H);;[127X[104X
     [4X[25Xgap>[125X [27Xanswer = Vole.Intersection(stab, norm);[127X[104X
@@ -98,15 +236,14 @@
               performing several searches that each have few restrictions.[133X
   
   
-  [1X3.1-2 [33X[0;0YThe general [5XVole[105X[101X[1X approach[133X[101X
+  [1X3.2-2 [33X[0;0YThe general [5XVole[105X[101X[1X approach[133X[101X
   
   [33X[0;0YThe  ‘[5XVole[105X’  way of solving this is problem is to do it in one step with the
   function [2XVoleFind.Group[102X ([14X5.2-2[114X).[133X
   
   [33X[0;0YFor  most  users,  the  easiest way to solve the problem with [2XVoleFind.Group[102X
   ([14X5.2-2[114X)  is  to  find  a collection of [13Xconstraints[113X that together specify the
-  problem. Constraints are discussed in Chapter [14X'BacktrackKit: Constraints'[114X of
-  the [5XBacktrackKit[105X manual.[133X
+  problem. Constraints are discussed in Chapter [14X7[114X of the [5XBacktrackKit[105X manual.[133X
   
   [33X[0;0YSpecifically,  we  are  looking  for  all permutations that are contained in
   [23XM_{12}[123X,  that  stabilise  the set [23X\{1,2,3,5\}[123X, that are also contained in [23XG[123X,
@@ -152,10 +289,4 @@
     [4X[25X>[125X [27X= answer;[127X[104X
     [4X[28Xtrue[128X[104X
   [4X[32X[104X
-  
-  
-  [1X3.2 [33X[0;0YComputing a canonical image[133X[101X
-  
-  [33X[0;0YSee  the  end  of  the  manual  entry  for [2XVoleFind.Canonical[102X ([14X5.3-1[114X) for an
-  example of canonisation with [5XVole[105X.[133X
   

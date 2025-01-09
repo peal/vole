@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "Vole",
 Subtitle := "Vole organises lengthy explorations: Backtrack search in permutation groups with graphs",
-Version := "0.5.3",
-Date := "21/12/2021", # dd/mm/yyyy format
+Version := "0.6.0",
+Date := "09/01/2025", # dd/mm/yyyy format
 License := "MPL-2.0",
 
 Persons := [
@@ -19,6 +19,7 @@ Persons := [
     FirstNames := "Mun See",
     LastName := "Chang",
     Email := "msc2@st-andrews.ac.uk",
+    GitHubUsername := "Munsee",
     IsAuthor := true,
     IsMaintainer := false,
     Institution := "University of St Andrews",
@@ -28,8 +29,9 @@ Persons := [
   rec(
     FirstNames := "Christopher",
     LastName := "Jefferson",
-    WWWHome := "https://caj.host.cs.st-andrews.ac.uk",
+    WWWHome := "https://heather.cafe",
     Email := "caj21@st-andrews.ac.uk",
+    GitHubUsername := "ChrisJefferson",
     IsAuthor := true,
     IsMaintainer := true,
     Institution := "University of St Andrews",
@@ -40,6 +42,7 @@ Persons := [
     FirstNames := "Wilf A.",
     LastName := "Wilson",
     WWWHome := "https://wilf.me",
+    GitHubUsername := "wilfwilson",
     Email := "gap@wilf-wilson.net",
     IsAuthor := true,
     IsMaintainer := true,
@@ -66,10 +69,10 @@ ArchiveFormats := ".tar.gz",
 Status := "dev",
 
 AbstractHTML := """
-<B>Vole</B> is a <B>GAP</B> package that implements
-graph backtracking, which can be used to solve many problems in finite
-permutation groups, such as subgroup intersections, normalisers,
-set stabilisers, and canonical images of groups.""",
+<B>Vole</B> is a <B>GAP</B> package that implements algorithms in
+finite permutation groups, such as canonical images, stabilisers, and
+subgroup intersection. These are all implemented as part of the general
+'graph backtracking' framework.""",
 
 PackageDoc := rec(
   BookName  := ~.PackageName,
@@ -81,17 +84,17 @@ PackageDoc := rec(
 ),
 
 Dependencies := rec(
-  GAP := ">= 4.11.0",
+  GAP := ">= 4.13.0",
   NeededOtherPackages := [
-    [ "BacktrackKit", ">= 0.6.1" ],
     [ "Digraphs", ">= 1.1.1" ],
-    [ "GraphBacktracking", ">= 0.5.2" ],
     # to enable GAP and rust to talk to each other
     [ "IO", ">= 4.7.0" ],
     [ "json", ">= 2.0.1" ],
     # required by BacktrackKit and Digraphs... so we may as well include it?
     [ "datastructures", ">= 0.2.6" ],
-  ],
+    ["images", ">=1.3.0"],   # For MinimalImagePerm
+    ["primgrp", ">=3.4.0" ],
+  ], # For the tests  ],
   SuggestedOtherPackages := [
     [ "AutoDoc", ">= 2019.09.04" ], # to compile documentation
     [ "ferret", ">= 1.0.2" ],       # used in tests
@@ -104,18 +107,13 @@ Dependencies := rec(
 ),
 
 AvailabilityTest := function()
-  ## This is currently commented out, because the package tries to compile
-  ## the rust component when it first runs a computation.
-  ##
-  ## Note that the code below might not work properly if the user has multiple
-  ## Voles living in their machine.
-
-  #if Filename(List(GAPInfo.PackagesInfo.vole, x -> Directory(Concatenation(
-  #    x.InstallationPath, "/rust/target/release"))), "vole.d") = fail then
-  #  LogPackageLoadingMessage(PACKAGE_WARNING,
-  #    "Vole package is not compiled; please run `make` in the Vole directory");
-  #  return fail;
-  #fi;
+  local dirs;
+  dirs := DirectoriesPackageLibrary("vole", "rust/target/release");
+  if not (Length(dirs) >= 1 and ForAny(["vole", "vole.exe"], f -> f in DirectoryContents(dirs[1])) ) then
+    LogPackageLoadingMessage(PACKAGE_WARNING,
+      "Vole package is not compiled; please run `make` in the Vole directory");
+    return fail;
+  fi;
   return true;
 end,
 

@@ -1,8 +1,6 @@
   
   [1X6 [33X[0;0YConstraints[133X[101X
   
-  [33X[0;0YSee the Chapter [14X'BacktrackKit: Constraints'[114X of the [5XBacktrackKit[105X manual.[133X
-  
   
   [1X6.1 [33X[0;0YBounds associated with a constraint or refiner[133X[101X
   
@@ -51,4 +49,415 @@
   
   [33X[0;0YThe  largest moved point of a constraint can serve as an upper bound for the
   largest required point of a constraint.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("vole", false);;[127X[104X
+  [4X[32X[104X
+  
+  
+  [1X6.2 [33X[0;0YThe concept of constraints[133X[101X
+  
+  [33X[0;0YFundamentally,  the  partition backtrack algorithm (and its generalisations)
+  performs a search for permutations that satisfy a collection of constraints.[133X
+  
+  [33X[0;0YA  [13Xconstraint[113X  is  a  [9Xtrue[109X/[9Xfalse[109X mathematical property of permutations, such
+  that  if  the  set of permutations satisfying the property is nonempty, then
+  that  set  must  be  a  (possibly  infinite)  permutation  group, or a coset
+  thereof.  For  constraints  to be useful in practice, it should be ‘easy’ to
+  test whether any given permutation satisfies the property.[133X
+  
+  [33X[0;0YFor example:[133X
+  
+  [30X    [33X[0;6Y“is a member of the group [23XG = \langle X \rangle[123X”,[133X
+  
+  [30X    [33X[0;6Y“transports the set A to the set B”,[133X
+  
+  [30X    [33X[0;6Y“commutes with the permutation [23Xx[123X”,[133X
+  
+  [30X    [33X[0;6Y“conjugates the group [23XG = \langle X \rangle[123X to the group [23XH = \langle Y
+        \rangle[123X”,[133X
+  
+  [30X    [33X[0;6Y“is an automorphism of the graph [23X\Gamma[123X”, and[133X
+  
+  [30X    [33X[0;6Y“is even”[133X
+  
+  [33X[0;0Yare all examples of constraints. On the other hand:[133X
+  
+  [30X    [33X[0;6Y“is a member of the socle of the group [23XG[123X”, and[133X
+  
+  [30X    [33X[0;6Y“is a member of a largest maximal subgroup of the group [23XG[123X”[133X
+  
+  [33X[0;0Ydo not qualify, unless generating sets for the socle and the largest maximal
+  subgroups  of  [23XG[123X  are  [13Xalready[113X  known,  and  there  is a unique such maximal
+  subgroup  (in which case these properties become instances of the constraint
+  “is a member of the group defined by the generating set...”).[133X
+  
+  [33X[0;0YThe  term  ‘constraint’  comes from the computer science field of constraint
+  satisfaction  problems, constraint programming, and constraint solvers, with
+  which backtrack search algorithms are very closely linked.[133X
+  
+  [33X[0;0YA  number  of  built  in  constraints, and the functions to create them, are
+  contained  in  the [2XConstraint[102X ([14X6.3-1[114X) record. The members of this record are
+  documented individually in Section [14X6.4[114X.[133X
+  
+  [33X[0;0YTo  perform  a  search,  it  is  necessary  to (at least implicitly) specify
+  constraints that, in conjunction, define the permutation(s) that you wish to
+  find.  A constraint will typically be converted into one or more [13Xrefiners[113X by
+  that  the  time  that  a  search  takes  place.  Refiners  are introduced in
+  Chapter [14X7[114X,  which  are the low-level code which implement constraints. We do
+  not  explicitly  document  the  conversion of constraints into refiners; the
+  conversion may change in the future.[133X
+  
+  
+  [1X6.3 [33X[0;0YThe [10XConstraints[110X[101X[1X record[133X[101X
+  
+  [1X6.3-1 Constraint[101X
+  
+  [33X[1;0Y[29X[2XConstraint[102X [32X global variable[133X
+  
+  [33X[0;0Y[2XConstraint[102X  is  a  record  that  contains functions for producing all of the
+  constraints provided by default.[133X
+  
+  [33X[0;0YThe members of [2XConstraint[102X are documented individually in Section [14X6.4[114X.[133X
+  
+  [33X[0;0YThe  members  whose names differ only by their “-ise” and “-ize” endings are
+  synonyms, included to accommodate different spellings in English.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("BacktrackKit", false);;[127X[104X
+    [4X[25Xgap>[125X [27XSet(RecNames(Constraint));[127X[104X
+    [4X[28X[ "Centralise", "Centralize", "Conjugate", "Everything", "InCoset",[128X[104X
+    [4X[28X  "InGroup", "InLeftCoset", "InRightCoset", "IsEven", "IsOdd", "IsTrivial",[128X[104X
+    [4X[28X  "LargestMovedPoint", "MovedPoints", "None", "Normalise", "Normalize",[128X[104X
+    [4X[28X  "Nothing", "Stabilise", "Stabilize", "Transport" ][128X[104X
+  [4X[32X[104X
+  
+  
+  [1X6.4 [33X[0;0YConstraints via the [10XConstraint[110X[101X[1X record[133X[101X
+  
+  [33X[0;0YIn  this  section,  we individually document the functions of the [2XConstraint[102X
+  ([14X6.3-1[114X)  record,  which  can  be  used  to  create  the built-in constraints
+  provided by [5XBacktrackKit[105X.[133X
+  
+  [33X[0;0YMany  of  these  constraints  come  in  pairs, with a “group” version, and a
+  corresponding   “coset”  version.  These  relationships  are  given  in  the
+  following table.[133X
+  
+        Group version                           Coset version                  
+        ─────────────────────────────────────   ────────────────────────────  
+        [2XConstraint.InGroup[102X ([14X6.4-1[114X)              [2XConstraint.InCoset[102X ([14X6.4-2[114X)     
+        [2XConstraint.Stabilise[102X ([14X6.4-6[114X)            [2XConstraint.Transport[102X ([14X6.4-5[114X)   
+        [2XConstraint.Normalise[102X ([14X6.4-7[114X)            [2XConstraint.Conjugate[102X ([14X6.4-9[114X)   
+        [2XConstraint.Centralise[102X ([14X6.4-8[114X)           [2XConstraint.Conjugate[102X ([14X6.4-9[114X)   
+        [2XConstraint.MovedPoints[102X ([14X6.4-10[114X)         N/A                            
+        [2XConstraint.LargestMovedPoint[102X ([14X6.4-11[114X)   N/A                            
+        [2XConstraint.IsEven[102X ([14X6.4-12[114X)              [2XConstraint.IsOdd[102X ([14X6.4-13[114X)      
+        [2XConstraint.IsTrivial[102X ([14X6.4-14[114X)           N/A                            
+        N/A                                     [2XConstraint.None[102X ([14X6.4-15[114X)       
+  
+  [1X6.4-1 Constraint.InGroup[101X
+  
+  [33X[1;0Y[29X[2XConstraint.InGroup[102X( [3XG[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is  satisfied  by  precisely  those  permutations  in  the
+  permutation group [3XG[103X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcon1 := Constraint.InGroup(DihedralGroup(IsPermGroup, 8));[127X[104X
+    [4X[28X<constraint: in group: Group( [ (1,2,3,4), (2,4) ] )>[128X[104X
+    [4X[25Xgap>[125X [27Xcon2 := Constraint.InGroup(AlternatingGroup(4));[127X[104X
+    [4X[28X<constraint: in group: AlternatingGroup( [ 1 .. 4 ] )>[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-2 Constraint.InCoset[101X
+  
+  [33X[1;0Y[29X[2XConstraint.InCoset[102X( [3XU[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is  satisfied  by  precisely those permutations in the [5XGAP[105X
+  right coset object [3XU[103X.[133X
+  
+  [33X[0;0YSee also [2XConstraint.InLeftCoset[102X ([14X6.4-4[114X) and [2XConstraint.InRightCoset[102X ([14X6.4-3[114X),
+  which  allow  a  coset  to  be  specifed  by a subgroup and a representative
+  element.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XU := PSL(2,5) * (3,4,6);[127X[104X
+    [4X[28XRightCoset(Group([ (3,5)(4,6), (1,2,5)(3,4,6) ]),(3,4,6))[128X[104X
+    [4X[25Xgap>[125X [27XConstraint.InCoset(U);[127X[104X
+    [4X[28X<constraint: in coset: Group( [ (3,5)(4,6), (1,2,5)(3,4,6) ] ) * (3,4,6)[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-3 Constraint.InRightCoset[101X
+  
+  [33X[1;0Y[29X[2XConstraint.InRightCoset[102X( [3XG[103X, [3Xx[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is  satisfied by precisely those permutations in the right
+  coset of the group [3XG[103X determined by the permutation [3Xx[103X.[133X
+  
+  [33X[0;0YSee  also  [2XConstraint.InLeftCoset[102X  ([14X6.4-4[114X)  for  the  left-hand version, and
+  [2XConstraint.InCoset[102X ([14X6.4-2[114X) for a [5XGAP[105X right coset object.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XConstraint.InRightCoset(PSL(2,5), (3,4,6));[127X[104X
+    [4X[28X<constraint: in coset: Group( [ (3,5)(4,6), (1,2,5)(3,4,6) ] ) * (3,4,6)[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-4 Constraint.InLeftCoset[101X
+  
+  [33X[1;0Y[29X[2XConstraint.InLeftCoset[102X( [3XG[103X, [3Xx[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is  satisfied  by precisely those permutations in the left
+  coset of the group [3XG[103X determined by the permutation [3Xx[103X.[133X
+  
+  [33X[0;0YSee  also  [2XConstraint.InRightCoset[102X  ([14X6.4-3[114X)  for the right-hand version, and
+  [2XConstraint.InCoset[102X ([14X6.4-2[114X) for a [5XGAP[105X right coset object.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XConstraint.InLeftCoset(PSL(2,5), (3,4,6));[127X[104X
+    [4X[28X<constraint: in coset: Group( [ (3,6)(4,5), (1,2,5)(3,4,6) ] ) * (3,4,6)[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-5 Constraint.Transport[101X
+  
+  [33X[1;0Y[29X[2XConstraint.Transport[102X( [3Xobject1[103X, [3Xobject2[103X[, [3Xaction[103X] ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is  satisfied  by  precisely  those  permutations that map
+  [3Xobject1[103X  to  [3Xobject2[103X  under  the given group [3Xaction[103X, i.e. all permutations [10Xg[110X
+  such  that [10X[3Xaction[103X[10X([3Xobject1[103X[10X,g)=[3Xobject2[103X[10X[110X. Note that the set of such permutations
+  may be infinite.[133X
+  
+  [33X[0;0YThe   combinations   of   objects   and   actions   that  are  supported  by
+  [10XConstraint.Transport[110X are given in the table below.[133X
+  
+  [33X[0;0YThe  default [3Xaction[103X, in the case that the argument is not given, is [2XOnPoints[102X
+  ([14XReference:  OnPoints[114X). This is the name in [5XGAP[105X of the action given by the [10X^[110X
+  operator,  i.e. it corresponds to [10X[3Xobject[103X[10X^g[110X, where [10Xg[110X in [3XG[103X. See [2X\^[102X ([14XReference:
+  ^[114X).[133X
+  
+        [12XPermitted action[112X                                                                [12XCorresponding object/pair of objects[112X           
+        ───────────────────────────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                                          A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                                                    A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                                        A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                                                A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                                            A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/adjacency lists               
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xsetofsets1 := [[1, 3, 6], [2, 3, 6]];;[127X[104X
+    [4X[25Xgap>[125X [27Xsetofsets2 := [[1, 2, 5], [1, 5, 7]];;[127X[104X
+    [4X[25Xgap>[125X [27Xcon := Constraint.Transport(setofsets1, setofsets2, OnSetsSets);[127X[104X
+    [4X[28X<constraint: transporter of [ [ 1, 3, 6 ], [ 2, 3, 6 ] ] to [ [ 1, 2, 5 ], [ 1\[128X[104X
+    [4X[28X, 5, 7 ] ] under OnSetsSets>[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-6 Constraint.Stabilise[101X
+  
+  [33X[1;0Y[29X[2XConstraint.Stabilise[102X( [3Xobject[103X[, [3Xaction[103X] ) [32X function[133X
+  [33X[1;0Y[29X[2XConstraint.Stabilize[102X( [3Xobject[103X[, [3Xaction[103X] ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis constraint is satisfied by precisely those permutations that fix [3Xobject[103X
+  under   the   given   group  [3Xaction[103X,  i.e.  all  permutations  [10Xg[110X  such  that
+  [10X[3Xaction[103X[10X([3Xobject[103X[10X,g)=[3Xobject[103X[10X[110X.  Note  that  the  set  of  such permutations may be
+  infinite.[133X
+  
+  [33X[0;0YThe   combinations   of   objects   and   actions   that  are  supported  by
+  [10XConstraint.Stabilise[110X are given in the table below.[133X
+  
+  [33X[0;0YThe  default [3Xaction[103X, in the case that the argument is not given, is [2XOnPoints[102X
+  ([14XReference:  OnPoints[114X). This is the name in [5XGAP[105X of the action given by the [10X^[110X
+  operator,  i.e. it corresponds to [10X[3Xobject[103X[10X^g[110X, where [10Xg[110X in [3XG[103X. See [2X\^[102X ([14XReference:
+  ^[114X).[133X
+  
+        [12XPermitted action[112X                                                                [12XCorresponding object/pair of objects[112X           
+        ───────────────────────────────────────────────────────────────────────────────   ──────────────────────────────────────────────  
+        [2XOnPoints[102X ([14XReference: OnPoints[114X) [default]                                          A positive integer, permutation, or perm group   
+        [2XOnTuples[102X ([14XReference: OnTuples[114X)                                                    A list of positive integers                      
+        [2XOnSets[102X ([14XReference: OnSets[114X)                                                        A set of positive integers                       
+        [2XOnSetsSets[102X ([14XReference: OnSetsSets[114X)                                                A set of sets of positive integers               
+        [2XOnSetsTuples[102X ([14XReference: OnSetsTuples[114X)                                            A set of lists of positive integers              
+        [2XOnTuplesSets[102X ([14XReference: OnTuplesSets[114X)                                            A list of sets of positive integers              
+        [2XOnTuplesTuples[102X ([14XReference: OnTuplesTuples[114X)                                        A list of lists of positive integers             
+        [2XOnDigraphs[102X ([14XDigraphs: OnDigraphs for a digraph and a perm[114X)                        A digraph object, or a list of adjacencies       
+        [2XOnTuplesDigraphs[102X ([14XDigraphs: OnTuplesDigraphs for a list of digraphs and a perm[114X)   A list of digraphs/adjacency lists               
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcon1 := Constraint.Stabilise(CycleDigraph(6), OnDigraphs);[127X[104X
+    [4X[28X<constraint: stabiliser of CycleDigraph(6) under OnDigraphs>[128X[104X
+    [4X[25Xgap>[125X [27Xcon2 := Constraint.Stabilise([2,4,6], OnSets);[127X[104X
+    [4X[28X<constraint: stabiliser of [ 2, 4, 6 ] under OnSets>[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-7 Constraint.Normalise[101X
+  
+  [33X[1;0Y[29X[2XConstraint.Normalise[102X( [3XG[103X ) [32X function[133X
+  [33X[1;0Y[29X[2XConstraint.Normalize[102X( [3XG[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint is satisfied by precisely those permutations that normalise
+  the permutation group [3XG[103X, i.e. that preserve [3XG[103X under conjugation.[133X
+  
+  [33X[0;0YNote that the set of such permutations is infinite.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XConstraint.Normalise(PSL(2,5));[127X[104X
+    [4X[28X<constraint: normalise Group( [ (3,5)(4,6), (1,2,5)(3,4,6) ] )>[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-8 Constraint.Centralise[101X
+  
+  [33X[1;0Y[29X[2XConstraint.Centralise[102X( [3XG[103X ) [32X function[133X
+  [33X[1;0Y[29X[2XConstraint.Centralize[102X( [3XG[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint  is  satisfied by precisely those permutations that commute
+  with [3XG[103X, if [3XG[103X is a permutation, or that commute with every element of [3XG[103X, if [3XG[103X
+  is a permutation group.[133X
+  
+  [33X[0;0YNote that the set of such permutations is infinite.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XD12 := DihedralGroup(IsPermGroup, 12);;[127X[104X
+    [4X[25Xgap>[125X [27XConstraint.Centralise(D12);[127X[104X
+    [4X[28X<constraint: centralise group Group( [ (1,2,3,4,5,6), (2,6)(3,5) ] )>[128X[104X
+    [4X[25Xgap>[125X [27Xx := (1,6)(2,5)(3,4);;[127X[104X
+    [4X[25Xgap>[125X [27XConstraint.Centralise(x);[127X[104X
+    [4X[28X<constraint: centralise perm (1,6)(2,5)(3,4)>[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-9 Constraint.Conjugate[101X
+  
+  [33X[1;0Y[29X[2XConstraint.Conjugate[102X( [3Xx[103X, [3Xy[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis  constraint is satisfied by precisely those permutations that conjugate
+  [3Xx[103X  to  [3Xy[103X,  where  [3Xx[103X  and [3Xy[103X are either both permutations, or both permutation
+  groups.[133X
+  
+  [33X[0;0YNote that the set of such permutations may be infinite.[133X
+  
+  [33X[0;0YThis constraint is equivalent to [10XConstraint.Transport([3Xx[103X[10X,[3Xy[103X[10X,OnPoints)[110X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XConstraint.Conjugate((3,4)(2,5,1), (1,2,3)(4,5));[127X[104X
+    [4X[28X<constraint: conjugate perm (1,2,5)(3,4) to (1,2,3)(4,5)>[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-10 Constraint.MovedPoints[101X
+  
+  [33X[1;0Y[29X[2XConstraint.MovedPoints[102X( [3Xpointlist[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis          constraint          is         a         shorthand         for
+  [10XConstraint.InGroup(SymmetricGroup([3Xpointlist[103X[10X))[110X.     See    [2XConstraint.InGroup[102X
+  ([14X6.4-1[114X).[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcon1 := Constraint.MovedPoints([1..5]);[127X[104X
+    [4X[28X<constraint: moved points: [ 1 .. 5 ]>[128X[104X
+    [4X[25Xgap>[125X [27Xcon2 := Constraint.MovedPoints([2,6,4,5]);[127X[104X
+    [4X[28X<constraint: moved points: [ 2, 6, 4, 5 ]>[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-11 Constraint.LargestMovedPoint[101X
+  
+  [33X[1;0Y[29X[2XConstraint.LargestMovedPoint[102X( [3Xpoint[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YA constraint[133X
+  
+  [33X[0;0YThis          constraint          is         a         shorthand         for
+  [10XConstraint.InGroup(SymmetricGroup([3Xpoint[103X[10X))[110X,  where  [3Xpoint[103X  is  a  nonnegative
+  integer. See [2XConstraint.InGroup[102X ([14X6.4-1[114X).[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xcon := Constraint.LargestMovedPoint(5);[127X[104X
+    [4X[28X<constraint: largest moved point: 5>[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-12 Constraint.IsEven[101X
+  
+  [33X[1;0Y[29X[2XConstraint.IsEven[102X [32X global variable[133X
+  
+  [33X[0;0YThis   constraint   is  satisfied  by  the  even  permutations,  i.e.  those
+  permutations with sign [10X1[110X. In other words, this constraint restricts a search
+  to some alternating group.[133X
+  
+  [33X[0;0YNote that the set of such permutations is infinite.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XConstraint.IsEven;[127X[104X
+    [4X[28X<constraint: is even permutation>[128X[104X
+    [4X[25Xgap>[125X [27XRepresentative(Constraint.IsEven);[127X[104X
+    [4X[28X()[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-13 Constraint.IsOdd[101X
+  
+  [33X[1;0Y[29X[2XConstraint.IsOdd[102X [32X global variable[133X
+  
+  [33X[0;0YThis   constraint   is   satisfied  by  the  odd  permutations,  i.e.  those
+  permutations  with  sign  [10X-1[110X.  In  other  words, this constraint restricts a
+  search to the unique coset of some alternating group.[133X
+  
+  [33X[0;0YNote that the set of such permutations is infinite.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XConstraint.IsOdd;[127X[104X
+    [4X[28X<constraint: is odd permutation>[128X[104X
+    [4X[25Xgap>[125X [27XRepresentative(Constraint.IsOdd);[127X[104X
+    [4X[28X(1,2)[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-14 Constraint.IsTrivial[101X
+  
+  [33X[1;0Y[29X[2XConstraint.IsTrivial[102X [32X global variable[133X
+  
+  [33X[0;0YThis constraint is satisfied by the identity permutation and no others.[133X
+  
+  [33X[0;0YThis constraint will typically not be required by the user.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XConstraint.IsTrivial;[127X[104X
+    [4X[28X<trivial constraint: is identity permutation>[128X[104X
+    [4X[25Xgap>[125X [27XRepresentative(Constraint.IsTrivial);[127X[104X
+    [4X[28X()[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-15 Constraint.None[101X
+  
+  [33X[1;0Y[29X[2XConstraint.None[102X [32X global variable[133X
+  
+  [33X[0;0YThis constraint is satisfied by no permutations.[133X
+  
+  [33X[0;0YThis constraint will typically not be required by the user.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XConstraint.None;[127X[104X
+    [4X[28X<empty constraint: satisfied by no permutations>[128X[104X
+    [4X[25Xgap>[125X [27XRepresentative(Constraint.None);[127X[104X
+    [4X[28Xfail[128X[104X
+  [4X[32X[104X
+  
+  [1X6.4-16 Constraint.Everything[101X
+  
+  [33X[1;0Y[29X[2XConstraint.Everything[102X [32X global variable[133X
+  
+  [33X[0;0YThis constraint is satisfied by all permutations.[133X
+  
+  [33X[0;0YThis constraint will typically not be required by the user.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XConstraint.Everything;[127X[104X
+    [4X[28X<constraint: satisfied by all permutations>[128X[104X
+    [4X[25Xgap>[125X [27XRepresentative(Constraint.Everything);[127X[104X
+    [4X[28X()[128X[104X
+  [4X[32X[104X
   

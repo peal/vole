@@ -22,24 +22,177 @@
 <p id="mathjaxlink" class="pcenter"><a href="chap3_mj.html">[MathJax on]</a></p>
 <p><a id="X81932F777898AD72" name="X81932F777898AD72"></a></p>
 <div class="ChapSects"><a href="chap3.html#X81932F777898AD72">3 <span class="Heading">Tutorial</span></a>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap3.html#X8596BEA486D8E2C4">3.1 <span class="Heading">Computing the intersection of a normaliser and a stabiliser</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap3.html#X7B47DF26819B8049">3.1 <span class="Heading">Simple interface</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap3.html#X7ABF0CDD7FA6346C">3.1-1 <span class="Heading">The general <strong class="pkg">GAP</strong> approach</span></a>
-</span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap3.html#X84B902F37E8024FB">3.1-2 <span class="Heading">The general <strong class="pkg">Vole</strong> approach</span></a>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap3.html#X7D3001AB8554AD90">3.1-1 <span class="Heading">Simple computation of canonical images</span></a>
 </span>
 </div></div>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap3.html#X87BC2DB48642883A">3.2 <span class="Heading">Computing a canonical image</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap3.html#X87BD83B57ADB35D4">3.2 <span class="Heading">The full Vole interface</span></a>
 </span>
-</div>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap3.html#X7ABF0CDD7FA6346C">3.2-1 <span class="Heading">The general <strong class="pkg">GAP</strong> approach</span></a>
+</span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap3.html#X84B902F37E8024FB">3.2-2 <span class="Heading">The general <strong class="pkg">Vole</strong> approach</span></a>
+</span>
+</div></div>
 </div>
 
 <h3>3 <span class="Heading">Tutorial</span></h3>
 
-<p><a id="X8596BEA486D8E2C4" name="X8596BEA486D8E2C4"></a></p>
+<p>There are two interfaces to Vole, the 'Simple Interface', which are methods which start with <code class="code">Vole.</code>, and the 'Full Interface', which are methods which start with <code class="code">VoleFind.</code>. The simple interface is no less efficient, each of the simple interface methods just call a problem in the full interface. Some problems cannot be expressed in the simple interface, in particular problems which involve solving multiple problems simultaneously.</p>
 
-<h4>3.1 <span class="Heading">Computing the intersection of a normaliser and a stabiliser</span></h4>
+<p><a id="X7B47DF26819B8049" name="X7B47DF26819B8049"></a></p>
+
+<h4>3.1 <span class="Heading">Simple interface</span></h4>
+
+<p>The 'simple interface' to Vole consists of functions whose names begin <code class="code">Vole.</code>. These methods implement existing methods in core GAP, and some GAP packages.</p>
+
+<p>These functions are given as follows (grouped into sections:)</p>
+
+<p>The following functions have very high quality implementations. The <code class="code">Canonical</code> methods are described below, and are otherwise implemented in the Images package.</p>
+
+
+<ul>
+<li><p>CanonicalImage</p>
+
+</li>
+<li><p>CanonicalPerm</p>
+
+</li>
+<li><p>CanonicalImagePerm</p>
+
+</li>
+<li><p>RepresentativeAction</p>
+
+</li>
+<li><p>IsConjugate</p>
+
+</li>
+<li><p>Stabilizer</p>
+
+</li>
+</ul>
+<p>These functions are implemented in Digraphs. They are generally slower than the functions provided there, but can be faster for multi-edge and edge-coloured graphs. Vole is much better when we want to search on a group other than the automorphism group on the vertices.</p>
+
+
+<ul>
+<li><p>AutomorphismGroup</p>
+
+</li>
+<li><p>CanonicalDigraph</p>
+
+</li>
+<li><p>DigraphCanonicalLabelling</p>
+
+</li>
+<li><p>IsIsomorphicDigraph</p>
+
+</li>
+<li><p>IsomorphismDigraphs</p>
+
+</li>
+</ul>
+
+<ul>
+<li><p>These functions are standard group algorithms. Vole can sometimes outperform GAP, particularly when cosets are involved (for example coset intersection), but GAP is often faster for many problems.</p>
+
+</li>
+</ul>
+
+<ul>
+<li><p>TwoClosure</p>
+
+</li>
+<li><p>Centralizer</p>
+
+</li>
+<li><p>Normalizer</p>
+
+</li>
+<li><p>Intersection</p>
+
+</li>
+<li><p>Centraliser</p>
+
+</li>
+</ul>
+<p><a id="X7D3001AB8554AD90" name="X7D3001AB8554AD90"></a></p>
+
+<h5>3.1-1 <span class="Heading">Simple computation of canonical images</span></h5>
+
+<p>Finding a canonical image always requires two arguments:</p>
+
+
+<ul>
+<li><p>The group in which we are searching.</p>
+
+</li>
+<li><p>The object whose canonical image we want to find.</p>
+
+</li>
+</ul>
+<p>As a simple example, let's consider 3 sets, and if they are in the same orbit of <span class="Math">M_{12}</span>.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">LoadPackage("vole", false);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">s := [1,2,3,4,5,6];</span>
+[ 1, 2, 3, 4, 5, 6 ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">t := [2,4,6,8,10,12];</span>
+[ 2, 4, 6, 8, 10, 12 ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">u := [3,6,9,12,15,18];</span>
+[ 3, 6, 9, 12, 15, 18 ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">M12 := MathieuGroup(12);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.CanonicalImage(M12, s, OnSets);</span>
+[ 2, 6, 8, 9, 11, 12 ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.CanonicalImage(M12, t, OnSets);</span>
+[ 2, 6, 8, 9, 11, 12 ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.CanonicalImage(M12, u, OnSets);</span>
+[ 2, 3, 4, 5, 15, 18 ]
+</pre></div>
+
+<p>As <span class="Math">s</span> and <span class="Math">t</span> have the same canonical image, this means they are in the same orbit of <span class="Math">M_{12}</span>, which <span class="Math">u</span> is in a different orbit.</p>
+
+<p>How can we find the permutation in <span class="Math">M_{12}</span> which maps <span class="Math">s</span> to <span class="Math">t</span>? The function <code class="code">CanonicalImagePerm</code> gives the permutation which maps something to it's canonical image.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">ps := Vole.CanonicalImagePerm(M12, s, OnSets);</span>
+(1,6,9,5,2,12)(3,8,4,11,10,7)
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">pt := Vole.CanonicalImagePerm(M12, t, OnSets);</span>
+(1,3,4,12,2,6,11,7)(9,10)
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">OnSets(s, ps); # Gives the canonical image from earlier</span>
+[ 2, 6, 8, 9, 11, 12 ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">OnSets(s, ps*(pt^-1)); # Gives t</span>
+[ 2, 4, 6, 8, 10, 12 ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">ps*(pt^-1) in M12;</span>
+true
+</pre></div>
+
+<p>As we can see here, it is easy to get the canonical image from the result of <code class="code">CanonicalImagePerm</code>, but the reverse is not true!</p>
+
+<p>We can find the canonical image of many different types of objects, for example:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsSets);</span>
+[ [ 2, 3, 7, 12 ], [ 3, 6, 10, 11 ] ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsTuples);</span>
+[ [ 2, 8, 3, 6 ], [ 6, 4, 10, 5 ] ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Vole.CanonicalImage(M12, DigraphCycle(12), OnDigraphs);</span>
+&lt;immutable digraph with 12 vertices, 12 edges&gt;
+</pre></div>
+
+<p>Note that while we could use a tool like Nauty, from the GRAPE or Digraphs packages, to calculate the canonical image of our graph, that doesn't support adding searching within a named group.</p>
+
+<p>The <code class="code">CanonicalImage</code> and <code class="code">CanonicalImagePerm</code> functions work on a wide range of GAP objects and actions -- if there an object or action you find is not implemented, please report it at <span class="URL"><a href="https://github.com/peal/vole/issues">The vole issue tracker</a></span> and we will investigate if it is possible to add.</p>
+
+<p><a id="X87BD83B57ADB35D4" name="X87BD83B57ADB35D4"></a></p>
+
+<h4>3.2 <span class="Heading">The full Vole interface</span></h4>
+
+<p>We will begin by working through an example of the intersection of a normaliser and a stabiliser, and then look at how this problem can be more efficiently and directly solved in <strong class="pkg">Vole</strong>.</p>
 
 <p>Suppose that we wish to compute the intersection of the stabiliser in <span class="Math">M_{12}</span> of the set <span class="Math">S:=\{1,2,4,5\}</span> with the normaliser of <span class="Math">H</span> in <span class="Math">G</span>, where <span class="Math">H</span> and <span class="Math">G</span> are defined by the generating sets given below:</p>
 
@@ -66,7 +219,7 @@ Group([ (1,2)(3,10)(4,5)(6,7)(8,9)(11,12), (2,4)(3,7)(8,12)(9,11) ])
 
 <p><a id="X7ABF0CDD7FA6346C" name="X7ABF0CDD7FA6346C"></a></p>
 
-<h5>3.1-1 <span class="Heading">The general <strong class="pkg">GAP</strong> approach</span></h5>
+<h5>3.2-1 <span class="Heading">The general <strong class="pkg">GAP</strong> approach</span></h5>
 
 <p>With the <strong class="pkg">GAP</strong> library, there are several ways to compute this. For example, we can stick as closely to the statement as possible, and first compute the stabiliser and the normaliser separately, and then intersect them:</p>
 
@@ -102,7 +255,6 @@ true
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">LoadPackage("vole", false);;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">stab := Vole.Stabiliser(M12, S, OnSets);;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">norm := Vole.Normaliser(G, H);;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">answer = Vole.Intersection(stab, norm);</span>
@@ -131,11 +283,11 @@ true
 </ul>
 <p><a id="X84B902F37E8024FB" name="X84B902F37E8024FB"></a></p>
 
-<h5>3.1-2 <span class="Heading">The general <strong class="pkg">Vole</strong> approach</span></h5>
+<h5>3.2-2 <span class="Heading">The general <strong class="pkg">Vole</strong> approach</span></h5>
 
 <p>The ‘<strong class="pkg">Vole</strong>’ way of solving this is problem is to do it in one step with the function <code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>).</p>
 
-<p>For most users, the easiest way to solve the problem with <code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>) is to find a collection of <em>constraints</em> that together specify the problem. Constraints are discussed in Chapter <a href="https://peal.github.io/BacktrackKit/doc/chap4_mj.html#X79EAB456814AB11C"><span class="RefLink">BacktrackKit: Constraints</span></a> of the <strong class="pkg">BacktrackKit</strong> manual.</p>
+<p>For most users, the easiest way to solve the problem with <code class="func">VoleFind.Group</code> (<a href="chap5.html#X7A6FC97E7F94FC49"><span class="RefLink">5.2-2</span></a>) is to find a collection of <em>constraints</em> that together specify the problem. Constraints are discussed in Chapter <a href="chap7.html#X7846B7A27DCCAAB3"><span class="RefLink">7</span></a> of the <strong class="pkg">BacktrackKit</strong> manual.</p>
 
 <p>Specifically, we are looking for all permutations that are contained in <span class="Math">M_{12}</span>, that stabilise the set <span class="Math">\{1,2,3,5\}</span>, that are also contained in <span class="Math">G</span>, and that normalise <span class="Math">H</span>. Therefore, we can solve the problem with the following constraints:</p>
 
@@ -172,12 +324,6 @@ true
 true
 </pre></div>
 
-<p><a id="X87BC2DB48642883A" name="X87BC2DB48642883A"></a></p>
-
-<h4>3.2 <span class="Heading">Computing a canonical image</span></h4>
-
-<p>See the end of the manual entry for <code class="func">VoleFind.Canonical</code> (<a href="chap5.html#X7A32626983FEB066"><span class="RefLink">5.3-1</span></a>) for an example of canonisation with <strong class="pkg">Vole</strong>.</p>
-
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap2.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap4.html">[Next Chapter]</a>&nbsp;  </div>
 
@@ -185,6 +331,6 @@ true
 <div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chap8.html">8</a>  <a href="chapBib.html">Bib</a>  <a href="chapInd.html">Ind</a>  </div>
 
 <hr />
-<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+<p class="foot">generated by <a href="https://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
 </body>
 </html>
