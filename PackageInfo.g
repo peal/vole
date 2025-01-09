@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "Vole",
 Subtitle := "Vole organises lengthy explorations: Backtrack search in permutation groups with graphs",
-Version := "0.5.3",
-Date := "21/12/2021", # dd/mm/yyyy format
+Version := "0.6.0",
+Date := "09/01/2025", # dd/mm/yyyy format
 License := "MPL-2.0",
 
 Persons := [
@@ -29,7 +29,7 @@ Persons := [
   rec(
     FirstNames := "Christopher",
     LastName := "Jefferson",
-    WWWHome := "https://caj.host.cs.st-andrews.ac.uk",
+    WWWHome := "https://heather.cafe",
     Email := "caj21@st-andrews.ac.uk",
     GitHubUsername := "ChrisJefferson",
     IsAuthor := true,
