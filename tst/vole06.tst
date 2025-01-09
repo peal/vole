@@ -13,7 +13,8 @@ gap> START_TEST("vole06.tst");
 # doc/_Chapter_Constraints.xml:60-62
 gap> LoadPackage("vole", false);;
 
-# doc/_Chapter_Constraints.xml:157-163
+# doc/_Chapter_Constraints.xml:156-163
+gap> LoadPackage("BacktrackKit", false);;
 gap> Set(RecNames(Constraint));
 [ "Centralise", "Centralize", "Conjugate", "Everything", "InCoset",
   "InGroup", "InLeftCoset", "InRightCoset", "IsEven", "IsOdd", "IsTrivial",
