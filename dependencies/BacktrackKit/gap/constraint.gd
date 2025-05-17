@@ -93,11 +93,27 @@
 #! are synonyms, included to accommodate different spellings in English.
 #! @BeginExampleSession
 #! gap> LoadPackage("BacktrackKit", false);;
-#! gap> Set(RecNames(Constraint));
-#! [ "Centralise", "Centralize", "Conjugate", "Everything", "InCoset",
-#!   "InGroup", "InLeftCoset", "InRightCoset", "IsEven", "IsOdd", "IsTrivial",
-#!   "LargestMovedPoint", "MovedPoints", "None", "Normalise", "Normalize",
-#!   "Nothing", "Stabilise", "Stabilize", "Transport" ]
+#! gap> for c in Set(RecNames(Constraint)) do Print(c,"\n"); od;
+#! Centralise
+#! Centralize
+#! Conjugate
+#! Everything
+#! InCoset
+#! InGroup
+#! InLeftCoset
+#! InRightCoset
+#! IsEven
+#! IsOdd
+#! IsTrivial
+#! LargestMovedPoint
+#! MovedPoints
+#! None
+#! Normalise
+#! Normalize
+#! Nothing
+#! Stabilise
+#! Stabilize
+#! Transport
 #!  @EndExampleSession
 DeclareGlobalVariable("Constraint");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
@@ -311,8 +327,8 @@ DeclareGlobalFunction("Constraint.InLeftCoset");
 #! gap> setofsets1 := [[1, 3, 6], [2, 3, 6]];;
 #! gap> setofsets2 := [[1, 2, 5], [1, 5, 7]];;
 #! gap> con := Constraint.Transport(setofsets1, setofsets2, OnSetsSets);
-#! <constraint: transporter of [ [ 1, 3, 6 ], [ 2, 3, 6 ] ] to [ [ 1, 2, 5 ], [ 1\
-#! , 5, 7 ] ] under OnSetsSets>
+#! <constraint: transporter of <matrix object of dimensions 2x3 over Rationals> t\
+#! o <matrix object of dimensions 2x3 over Rationals> under OnSetsSets>
 #! @EndExampleSession
 DeclareGlobalFunction("Constraint.Transport");
 
@@ -339,7 +355,8 @@ DeclareGlobalFunction("Constraint.Stabilise");
 #! @Group StabiliseDoc
 #! @BeginExampleSession
 #! gap> con1 := Constraint.Stabilise(CycleDigraph(6), OnDigraphs);
-#! <constraint: stabiliser of CycleDigraph(6) under OnDigraphs>
+#! <constraint: stabiliser of <immutable cycle digraph with 6 vertices> under OnD\
+#! igraphs>
 #! gap> con2 := Constraint.Stabilise([2,4,6], OnSets);
 #! <constraint: stabiliser of [ 2, 4, 6 ] under OnSets>
 #! @EndExampleSession

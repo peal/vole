@@ -158,11 +158,11 @@ Constraint.Transport := function(x, y, action...)
 
     if IsGroupConstraint(con) then
         name := StringFormatted(
-            "<constraint: stabiliser of {} under {}>",
+            "<constraint: stabiliser of {!v} under {}>",
             x, NameFunction(action));
     else
         name := StringFormatted(
-            "<constraint: transporter of {} to {} under {}>",
+            "<constraint: transporter of {!v} to {!v} under {}>",
             x, y, NameFunction(action));
     fi;
     SetName(con, name);
