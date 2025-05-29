@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "Vole",
 Subtitle := "Vole organises lengthy explorations: Backtrack search in permutation groups with graphs",
-Version := "0.6.0",
-Date := "09/01/2025", # dd/mm/yyyy format
+Version := "1.0.0",
+Date := "29/05/2025", # dd/mm/yyyy format
 License := "MPL-2.0",
 
 Persons := [
