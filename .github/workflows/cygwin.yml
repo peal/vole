@@ -27,7 +27,7 @@ jobs:
       CHERE_INVOKING: 1
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         #- name: "Set git to use UNIX-style line endings"
         #shell: bash
         #run: |
@@ -51,7 +51,9 @@ jobs:
       - name: "Run GAP tests for Vole"
         uses: gap-actions/run-pkg-tests@cygwin-v2
       - uses: gap-actions/process-coverage@cygwin-v2
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: "Setup tmate session"
         uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
