@@ -15,30 +15,27 @@ jobs:
     if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: gap-actions/setup-gap@v2
         with:
           GAP_PKGS_TO_BUILD: ''
-      - name: 'Add a necessary symlink'
-        shell: bash
-        run: |
-          mkdir -p gaproot/pkg/
-          ln -f -s $PWD gaproot/pkg/
       - uses: gap-actions/build-pkg-docs@v1
         with:
           use-latex: 'true'
       - name: 'Upload PDF manual'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Vole manual (PDF)
           path: ./doc/manual.pdf
+          if-no-files-found: error
           retention-days: 3
       - name: 'Upload HTML manual'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Vole manual (HTML)
           path: |
             doc/*.html
             doc/*.css
             doc/*.js
+          if-no-files-found: error
           retention-days: 3
