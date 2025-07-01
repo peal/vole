@@ -163,7 +163,7 @@ else
 fi;
 
 # On Cygwin we need to use TCP rather than pipes
-if PositionSublist(GAPInfo.Architecture, "cygwin") <> fail then
+if PositionSublist(GAPInfo.Architecture, "cygwin") <> fail or PositionSublist(GAPInfo.Architecture, "julia") <> fail then
     _Vole.UsePipe := false;
 else
     _Vole.UsePipe := true;
