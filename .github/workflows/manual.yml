@@ -2,24 +2,18 @@ name: Documentation
 
 on:
   workflow_dispatch:
+  push:
   pull_request:
-
-#concurrency:
-#  group: ${{ github.workflow }}-${{ github.ref }}
-#  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
   manual:
     name: Build manual
     runs-on: ubuntu-latest
-    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: gap-actions/setup-gap@v2
-        with:
-          GAP_PKGS_TO_BUILD: ''
-      - uses: gap-actions/build-pkg-docs@v1
+      - uses: actions/checkout@v5
+      - uses: gap-actions/setup-gap@v3
+      - uses: gap-actions/build-pkg-docs@v2
         with:
           use-latex: 'true'
       - name: 'Upload PDF manual'
