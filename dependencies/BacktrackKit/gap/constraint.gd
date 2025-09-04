@@ -92,7 +92,6 @@
 #! The members whose names differ only by their “-ise” and “-ize” endings
 #! are synonyms, included to accommodate different spellings in English.
 #! @BeginExampleSession
-#! gap> LoadPackage("BacktrackKit", false);;
 #! gap> for c in Set(RecNames(Constraint)) do Print(c,"\n"); od;
 #! Centralise
 #! Centralize
