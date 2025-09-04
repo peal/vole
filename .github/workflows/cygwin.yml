@@ -45,7 +45,7 @@ jobs:
       - name: "Clone GAP and some packages, and compile as necessary"
         uses: gap-actions/setup-gap@cygwin-v2
         with:
-          GAP_PKGS_TO_CLONE: "OrbitalGraphs ChrisJefferson/QuickCheck peal/BacktrackKit peal/GraphBacktracking"
+          GAP_PKGS_TO_CLONE: "OrbitalGraphs quickcheck"
           GAP_PKGS_TO_BUILD: "datastructures digraphs ferret io json orb profiling"
       - name: "Run GAP tests for Vole"
         uses: gap-actions/run-pkg-tests@cygwin-v2
