@@ -182,7 +182,7 @@ use-case, please let us know,</E> by
   <LinkText>creating an issue on our issue tracker</LinkText>
 </URL>,
 or contacting us by any other appropriate means.  See the
-<Ref BookName="Vole" Label="Title page" Text="title page" />
+title page
 of this manual for our contact details. This will help us to improve &Vole;.
 
 The experiments in <Cite Key="GBpublished"/> showed that for some classes of
