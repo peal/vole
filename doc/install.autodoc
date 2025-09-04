@@ -11,7 +11,7 @@ please
   <LinkText>create an issue on our issue tracker</LinkText>
 </URL>,
 or contact us by any other appropriate means.  See the
-<Ref BookName="Vole" Label="title page" Text="title page" /> of this
+<Ref BookName="Vole" Label="Title page" Text="title page" /> of this
 manual for our contact details.  We published &Vole; so that our ideas and
 algorithms could be used by, and be useful to, others in the community. But
 without feedback, it can be difficult to know whether we are achieving this aim.

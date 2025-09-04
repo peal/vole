@@ -181,8 +181,9 @@ use-case, please let us know,</E> by
   <Link>&VoleIssues;</Link>
   <LinkText>creating an issue on our issue tracker</LinkText>
 </URL>,
-or contacting us by any other appropriate means.  See the title page of this
-manual for our contact details. This will help us to improve &Vole;.
+or contacting us by any other appropriate means.  See the
+<Ref BookName="Vole" Label="Title page" Text="title page" />
+of this manual for our contact details. This will help us to improve &Vole;.
 
 The experiments in <Cite Key="GBpublished"/> showed that for some classes of
 problems, graph backtracking typically performs a far smaller search than does
