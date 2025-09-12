@@ -69,9 +69,9 @@ ArchiveFormats := ".tar.gz",
 Status := "dev",
 
 AbstractHTML := """
-<Strong>Vole</Strong> is a <Strong>GAP</Strong> package that implements
-algorithms in finite permutation groups, such as canonical images, stabilisers,
-and subgroup intersection. These are all implemented as part of the general
+<B>Vole</B> is a <B>GAP</B> package that implements algorithms in
+finite permutation groups, such as canonical images, stabilisers, and
+subgroup intersection. These are all implemented as part of the general
 'graph backtracking' framework.""",
 
 PackageDoc := rec(
