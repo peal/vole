@@ -13,27 +13,14 @@ on:
 jobs:
   # The Cygwin job
   cygwin:
-    name: Cygwin / GAP master
-    runs-on: windows-2022
+    name: Cygwin - GAP master - Rust stable
+    runs-on: windows-latest
     strategy:
       fail-fast: false
 
-    defaults:
-      run:
-        shell: C:\cygwin64\bin\bash.exe --login -o igncr '{0}'
-
-    env:
-      CHERE_INVOKING: 1
-
     steps:
-      - uses: actions/checkout@v4
-        #- name: "Set git to use UNIX-style line endings"
-        #shell: bash
-        #run: |
-        #   git config --global core.autocrlf false
-        #   git config --global core.eol lf
-      - name: "Install Cygwin"
-        uses: gap-actions/setup-cygwin@v1
+      - uses: actions/checkout@v5
+      - uses: gap-actions/setup-cygwin@v2
       - name: "Set up rust"
         uses: actions-rs/toolchain@v1
         with:
@@ -43,13 +30,13 @@ jobs:
       - name: "Run the rust tests for Vole"
         run: cd rust && cargo test --release -q
       - name: "Clone GAP and some packages, and compile as necessary"
-        uses: gap-actions/setup-gap@cygwin-v2
+        uses: gap-actions/setup-gap@v2
         with:
           GAP_PKGS_TO_CLONE: "OrbitalGraphs quickcheck"
           GAP_PKGS_TO_BUILD: "datastructures digraphs ferret io json orb profiling"
       - name: "Run GAP tests for Vole"
-        uses: gap-actions/run-pkg-tests@cygwin-v2
-      - uses: gap-actions/process-coverage@cygwin-v2
+        uses: gap-actions/run-pkg-tests@v4
+      - uses: gap-actions/process-coverage@v2
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

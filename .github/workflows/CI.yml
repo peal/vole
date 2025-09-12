@@ -1,4 +1,4 @@
-name: Ubuntu
+name: CI
 
 on:
   workflow_dispatch:
@@ -14,11 +14,13 @@ on:
 
 jobs:
   test:
-    name: GAP ${{ matrix.gap-branch }} - Rust ${{matrix.rust-version}}
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }} - GAP ${{ matrix.gap-branch }} - Rust ${{matrix.rust-version}}
+    runs-on: ${{ matrix.os }}-latest
     strategy:
       fail-fast: false
       matrix:
+        os:
+          - ubuntu
         gap-branch:
           - master
           - stable-4.15
@@ -26,9 +28,10 @@ jobs:
           - stable-4.13
         rust-version:
           - stable
-          #- 1.48
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+      - uses: gap-actions/setup-cygwin@v2
+        if: ${{ runner.os == 'Windows' }}
       - name: "Set up rust"
         uses: actions-rs/toolchain@v1
         with:
@@ -45,7 +48,7 @@ jobs:
           GAP_PKGS_TO_CLONE: "OrbitalGraphs quickcheck"
           GAP_PKGS_TO_BUILD: "datastructures digraphs ferret io json orb profiling"
       - name: "Run GAP tests for Vole"
-        uses: gap-actions/run-pkg-tests@v2
+        uses: gap-actions/run-pkg-tests@v4
       - uses: gap-actions/process-coverage@v2
       - uses: codecov/codecov-action@v5
         with:
