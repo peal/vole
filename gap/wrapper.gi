@@ -43,22 +43,274 @@ Vole.Stabilizer := function(G, object, action...)
 end;
 Vole.Stabiliser := Vole.Stabilizer;
 
-# Respects raw := true
-Vole.Normalizer := function(G, U)
+# Wrapper family for Vole.Normalizer.
+#
+# A wrapper is an outer reduction that composes inner backtrack searches.
+# Different wrappers exploit different structural properties of H. They
+# share the same inner refiner family (default `Orbital`) but differ in
+# how they decompose the problem before the search runs.
+#
+# Currently supported (selected via ValueOption "wrapper"):
+#
+#   "direct"   — no outer reduction. One backtrack search in G for
+#                elements normalising H. Fastest when the inner refiner
+#                already encodes all useful structure (e.g. full direct
+#                products, where the orbital-graph widget captures the
+#                wreath structure on its own).
+#
+#   "ByOrbits" — Chang [CJR22] L-overgroup decomposition. For
+#                intransitive H ≤ S_n with orbits {Ω_1, …, Ω_k} the
+#                normaliser N_{S_n}(H) is contained in an overgroup L
+#                built from per-orbit data:
+#                  * Let G_i = H|_{Ω_i} (i-th enveloping factor).
+#                  * Group orbits into perm-isomorphism classes of
+#                    their restrictions. N(H) can swap orbits within
+#                    a class but not across classes.
+#                  * For each class, pick a representative orbit Ω_r
+#                    and compute N_r := N_{Sym(Ω_r)}(G_r). Lift to the
+#                    other class members via witness perms φ : Ω_r → Ω_j
+#                    conjugating G_r to G_j.
+#                  * L := direct product over classes of (N_r ≀ S_{|c|}).
+#                Then N(H) ≤ L by Lemma 2.8 of [CJR22], and the inner
+#                search runs in G ∩ L. L = N(H) exactly when H is a
+#                full direct product of its enveloping factors; the
+#                inner search refines L whenever H is a strict
+#                subdirect.
+#
+# All wrappers preserve the kept-algorithm contract: none of them is
+# strictly stronger than the others on every input, and removing one
+# would lose a benchmarking baseline. Default = "direct".
+#
+# Raw mode (`ValueOption "raw" := true`) bypasses any wrapper — the raw
+# inner-solver record is exposed directly. Wrappers that compose
+# multiple inner searches can't be expressed as a single raw record.
+#
+# Reference: M. S. Chang, C. Jefferson, C. M. Roney-Dougal,
+# "Computing normalisers of intransitive groups",
+# arXiv:2112.00388, §2.3 Lemma 2.8.
+
+# Restriction of `H` to a single orbit `orb`, returned as a perm group
+# acting on the original orb labelling (other points fixed).
+_Vole.RestrictedGroup := function(H, orb)
+    local gens;
+    gens := List(GeneratorsOfGroup(H), h -> RestrictedPerm(h, orb));
+    return Group(gens, ());
+end;
+
+# Canonicalisation record for a perm group acting on a specific point set.
+# Returns rec(relabel, relabelInv, canonGroup, canonPerm) where:
+#   relabel        — perm of S_n with orb mapped to [1..|orb|]
+#   relabelInv     — its inverse
+#   canonGroup     — Vole.CanonicalImage(Sym(|orb|), H ^ relabel)
+#   canonPerm      — canonicalising perm γ with (H ^ relabel) ^ γ = canonGroup
+#
+# Two perm groups on (possibly different) orbits are permutation-
+# isomorphic iff their canonGroups are equal as subgroups of Sym([1..m]).
+# The forward bijection Ω_i → Ω_j conjugating G_i to G_j is given by
+#     relabel_i · canonPerm_i · canonPerm_j^-1 · relabelInv_j
+# restricted to Ω_i. `_Vole.PermIsoWitness` turns this restriction into
+# an involution swapping Ω_i ↔ Ω_j and fixing the rest of [1..n].
+_Vole.CanonicalisePermGroup := function(orb, H)
+    local sortedOrb, m, sigma, Hrel, ret;
+    sortedOrb := SortedList(orb);
+    m := Length(sortedOrb);
+    sigma := MappingPermListList(sortedOrb, [1 .. m]);
+    Hrel := H ^ sigma;
+    ret := rec(
+        relabel    := sigma,
+        relabelInv := sigma ^ -1,
+        canonGroup := Vole.CanonicalImage(
+            SymmetricGroup(m), Hrel, OnPoints),
+        canonPerm  := Vole.CanonicalPerm(
+            SymmetricGroup(m), Hrel, OnPoints)
+    );
+    return ret;
+end;
+
+# Witness perm w ∈ S_n with the following structure:
+#   * w swaps Ω_i ↔ Ω_j as an involution (w|_Ω_i is a bijection
+#     Ω_i → Ω_j; w|_Ω_j is its inverse).
+#   * w fixes every point outside Ω_i ∪ Ω_j.
+#   * Conjugation by w sends G_i (acting on Ω_i, fixing Ω_j) to G_j
+#     (acting on Ω_j, fixing Ω_i).
+#
+# Construction: factor the bijection Ω_i → Ω_j through canonical-form
+# space. The "raw" product
+#     f = relabel_i · canonPerm_i · canonPerm_j^-1 · relabelInv_j
+# correctly maps Ω_i to Ω_j and conjugates G_i to G_j on Ω_i, but it
+# generally acts non-trivially on points in the relabel codomain
+# [1..m] (which may belong to other orbits). We extract f restricted
+# to Ω_i and build the involution from that restriction.
+_Vole.PermIsoWitness := function(orb_i, canon_i, canon_j)
+    local f, points, images, p, image;
+    f := canon_i.relabel
+         * canon_i.canonPerm
+         * canon_j.canonPerm ^ -1
+         * canon_j.relabelInv;
+    points := [];
+    images := [];
+    for p in orb_i do
+        image := p ^ f;
+        Add(points, p);      Add(images, image);
+        Add(points, image);  Add(images, p);
+    od;
+    return MappingPermListList(points, images);
+end;
+
+# Build the L overgroup from H's orbit data. Returns a perm group on
+# the ambient point set; N_{S_n}(H) ≤ L.
+_Vole.BuildLOvergroup := function(H, relevantPoints)
+    local orbs, restrictions, canons, classes, Lgens,
+          key, c, repIdx, repN, j, witness;
+
+    orbs := Orbits(H, relevantPoints);
+    restrictions := List(orbs, orb -> _Vole.RestrictedGroup(H, orb));
+    canons := List([1 .. Length(orbs)],
+                   i -> _Vole.CanonicalisePermGroup(
+                            orbs[i], restrictions[i]));
+
+    # Group orbit indices by (orbit length, canonical group elements).
+    # Two orbits with the same key have perm-isomorphic restrictions
+    # and may be swapped by an element of N(H). The canonical group
+    # is represented by its sorted element list (hashable, equal-iff-
+    # same-group; a perm group object directly isn't hashable).
+    classes := _BTKit.partitionByKey(
+        [1 .. Length(orbs)],
+        i -> [Length(orbs[i]),
+              Immutable(AsSortedList(canons[i].canonGroup))]);
+
+    Lgens := [];
+    for key in SortedList(Keys(classes)) do
+        c := classes[key];
+        repIdx := c[1];
+        # Per-orbit normaliser of the representative restriction. The
+        # restriction is transitive on its orbit, so this recursive
+        # Vole.Normalizer call falls through to the direct path.
+        repN := Vole.Normalizer(SymmetricGroup(orbs[repIdx]),
+                                restrictions[repIdx]);
+        Append(Lgens, GeneratorsOfGroup(repN));
+        # For each other orbit in the class, add the witness perm and
+        # the conjugated per-orbit normaliser. The witness perm swaps
+        # the representative orbit with this one; the conjugated
+        # generators act inside this orbit.
+        for j in c{[2 .. Length(c)]} do
+            witness := _Vole.PermIsoWitness(orbs[repIdx],
+                                            canons[repIdx], canons[j]);
+            Add(Lgens, witness);
+            Append(Lgens, List(GeneratorsOfGroup(repN),
+                               g -> g ^ witness));
+        od;
+    od;
+
+    if IsEmpty(Lgens) then
+        return Group(());
+    fi;
+    return Group(Lgens);
+end;
+
+# "direct" wrapper. Just one backtrack search in G with the normaliser
+# constraint on H. The simplest baseline; the inner refiner does all
+# the work.
+_Vole.NormalizerDirect := function(G, H)
     local ret;
+    ret := VoleFind.Group(G, Constraint.Normalise(H));
+    _Vole.setParent(ret, G);
+    return ret;
+end;
+
+# "ByOrbits" wrapper (Chang [CJR22] L-overgroup). Recursive on the
+# per-orbit normaliser (transitive on its single orbit so the
+# recursion bottoms out cleanly on the next call). Returns the
+# normaliser as a perm group.
+_Vole.NormalizerByOrbits := function(G, H)
+    local relevantPoints, n, orbs, L, ret;
+
+    if IsTrivial(H) then
+        # Every g normalises the trivial group. Just return G.
+        return G;
+    fi;
+
+    # Decompose by orbits within G's moved-point set. Restricting to
+    # MovedPoints(G) is the principled choice: an element of G can
+    # only act on points G itself moves, so points outside G's
+    # support contribute nothing to N_G(H). It also makes the
+    # per-class recursion bottom out — a per-orbit normaliser
+    # call on Sym(orb) sees `relevantPoints = orb` and immediately
+    # hits the single-orbit base case.
+    relevantPoints := MovedPoints(G);
+    if IsEmpty(relevantPoints) then
+        return G;
+    fi;
+    n := Maximum(relevantPoints);
+    orbs := Orbits(H, relevantPoints);
+
+    # Base case: H has at most one orbit within G's support. Hand off
+    # to the direct path.
+    if Length(orbs) <= 1 then
+        return _Vole.NormalizerDirect(G, H);
+    fi;
+
+    L := _Vole.BuildLOvergroup(H, relevantPoints);
+
+    # Inner search: find elements of G that lie in L AND normalise H.
+    # N(H) ≤ L (Lemma 2.8) so this captures the full normaliser; the
+    # search space is G ∩ L, much smaller than G when H has many
+    # equivalent orbits.
+    ret := VoleFind.Group(SymmetricGroup(n),
+                          Constraint.InGroup(G),
+                          Constraint.InGroup(L),
+                          Constraint.Normalise(H));
+    _Vole.setParent(ret, G);
+    return ret;
+end;
+
+# Registry of all wrapper strategies. Adding one here makes it
+# selectable via ValueOption "wrapper". Used by bank tests and
+# benchmarks to iterate over the full set.
+_Vole.NormalizerWrappers := rec(
+    direct   := _Vole.NormalizerDirect,
+    ByOrbits := _Vole.NormalizerByOrbits);
+
+# Currently-selected default wrapper. Empirically "direct" wins on
+# full-direct-product inputs because the orbital widget already
+# encodes the wreath structure; ByOrbits is the principled choice
+# for strict subdirect inputs and inhomogeneous classes (see jnp.g
+# bank tests). When the benchmarks tell us which input class wins
+# more often, swap this and document.
+_Vole.NormalizerDefaultWrapper := "direct";
+
+# Respects raw := true (raw bypasses all wrappers — the orbit
+# decomposition doesn't naturally yield a single `raw` record).
+# Respects ValueOption "wrapper" (string, key into _Vole.NormalizerWrappers).
+Vole.Normalizer := function(G, U)
+    local wrapperName, wrapper;
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.Normalizer: ",
                       "The first argument must be a perm group");
-    elif IsPermGroup(U) then
-        ret := VoleFind.Group(G, Constraint.Normalise(U));
-    elif IsPerm(U) then
-        ret := VoleFind.Group(G, Constraint.Normalise(Group(U)));
-    else
+    fi;
+    if IsPerm(U) then
+        U := Group(U);
+    elif not IsPermGroup(U) then
         ErrorNoReturn("Vole.Normalizer: The second argument ",
                       "must a perm group or a permutation");
     fi;
-    _Vole.setParent(ret, G);
-    return ret;
+    if ValueOption("raw") = true then
+        # raw := true requests the inner solver's raw record. Wrappers
+        # that compose multiple inner solves can't expose a single
+        # raw record; fall through to the direct path unconditionally.
+        return _Vole.NormalizerDirect(G, U);
+    fi;
+    wrapperName := ValueOption("wrapper");
+    if wrapperName = fail then
+        wrapperName := _Vole.NormalizerDefaultWrapper;
+    fi;
+    if not IsBound(_Vole.NormalizerWrappers.(wrapperName)) then
+        ErrorNoReturn("Vole.Normalizer: unknown wrapper '", wrapperName,
+                      "'. Known wrappers: ",
+                      RecNames(_Vole.NormalizerWrappers));
+    fi;
+    wrapper := _Vole.NormalizerWrappers.(wrapperName);
+    return wrapper(G, U);
 end;
 Vole.Normaliser := Vole.Normalizer;
 
