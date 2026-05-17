@@ -996,3 +996,63 @@ is sorted.
 | E^[2] as outer in inner solve | 7.2 | Speculative | Med |
 | NormalizerViaRadical analogue | 7.6 | High for solvable | Very high |
 
+## 8. Hunt benchmark results (May 2026)
+
+The loss hunt (tst/benchmarks/hunt.g, 94 instances spanning cyclic
+regular, elementary-abelian regular, intransitive C3/S3, inhomogeneous
+C3xS3, AGL(1,p), AGL(d,p), PSL(2,q), PGL(2,q), Mathieu, wreath
+products, hand-picked TransGrp_hard) gave the following per-backend
+totals at 30s/call budget. Each backend column sums wall time over all
+ok-status runs; max column gives the slowest single instance.
+
+| Backend                    | Total (ms) | Max (ms) | vs GAP |
+|----------------------------|-----------:|---------:|-------:|
+| gap (Normalizer)           |     1 629  |      101 |   1.0x |
+| OrbitalRegOrbitChar (D)    |    10 352  |    3 693 |   6.4x |
+| OrbitalDeep                |    10 852  |    2 131 |   6.7x |
+| OrbitalRegOrbit (C)        |    11 382  |    3 653 |   7.0x |
+| Orbital (A default)        |    11 390  |    3 660 |   7.0x |
+| OrbitalSmall               |    12 397  |    3 854 |   7.6x |
+| wrap:direct                |    16 707  |    4 494 |  10.3x |
+| wrap:ByOrbits              |    18 288  |    3 964 |  11.2x |
+
+Observations:
+
+* **Phase D is the best vole variant**, overtaking Phase C by ~10%
+  overall. The headline improvement is AGL(1, p) where Phase D drops
+  the per-instance ratio from 14x to 5x.
+* **Phase E (ByOrbits) is uniformly worse than direct** on these
+  benchmarks. The orbital widget already encodes the wreath structure
+  the L overgroup makes explicit, and L's construction overhead +
+  the inner search's L-constraint refinement add up to a net loss.
+  Kept as a baseline; needs IsNormal short-circuit + skip-small-orbits
+  to be competitive.
+* **wrap:direct is 60% slower than the OrbitalRegOrbitChar refiner
+  used standalone**. The gap is wrapper-dispatch overhead (option
+  parsing, IsSubset/IsNormal checks). The standalone path is
+  preferable for raw benchmarking, but Vole.Normalizer needs the
+  wrapper to provide the option machinery and short-circuits.
+* **One win**: TransGrp(12;1) — small symmetric group, ratio 0.3x.
+  The orbital widget on highly symmetric inputs is very efficient.
+* Top losses remaining: AGL(1, p) for p ∈ {23,29,31,...} (still
+  ~5x), inhomogeneous C3^a x S3^b at 2-4x, PSL/PGL/wreath at 2-3x,
+  intransitive C3/S3 at 2-3x.
+
+The data is reproducible via `tst/benchmarks/run-hunt.g` and analysed
+by `tst/benchmarks/analyse-hunt.g`. CSV is regenerated each run.
+
+### 8.1 Known bug: Phase D propose-branch hint
+
+The proposeBranchPoint hint in Phase D's deduction
+(`_BTKit.makeNormaliserRegOrbitDeduction`) gives wrong answers on
+some inputs (e.g. TransGrp(8,33) = E(8):A_4). The forced labels are
+sound and kept; the propose is disabled by default in Phase D until
+the bug is traced (the same propose works correctly in Phase C).
+Investigation note: Phase C and Phase D use the SAME propose code,
+the SAME deduction structure, but Phase D uses F's regular-orbit
+data (where F is a characteristic subgroup of E) instead of E's
+own. The g-equivariance argument that makes Phase C's propose sound
+seems to hold in Phase D too — both sides propose the same cell
+index for any valid g — yet the empirical search rejects valid g
+when propose is enabled. Worth a fresh look with a debugger.
+
