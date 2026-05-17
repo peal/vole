@@ -134,7 +134,10 @@ function(savedvals, state, type, args)
                 # Call these 'vertlabels' just for consistency, to make it easier to read in Rust
                 # AbsInt, because Vole expects unsigned hash values
                 filters[i] := rec(RefinerResult := rec(vertlabels := List([1..PS_Points(state!.ps)], {x} -> AbsInt(HashBasic(filters[i](x))))));
-            elif IsBound(filters[i].graph) then
+            elif IsRecord(filters[i]) and IsBound(filters[i].proposeBranchPoint) then
+                # Branch-point proposal for the selector (1-indexed).
+                filters[i] := rec(ProposeBranchPoint := filters[i].proposeBranchPoint);
+            elif IsRecord(filters[i]) and IsBound(filters[i].graph) then
                     filters[i].graph := OutNeighbours(filters[i].graph);
                     filters[i] := rec(RefinerResult := filters[i]);
             else

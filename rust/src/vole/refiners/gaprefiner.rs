@@ -32,6 +32,9 @@ struct GapRefinerGraph {
 #[derive(Debug, Deserialize, Serialize, Hash)]
 enum GapRefinerReturn {
     RefinerResult(GapRefinerGraph),
+    /// GAP nominates this 1-indexed point as the next branch target.
+    /// Consumed by the selector via `DomainState::proposed_branch_point`.
+    ProposeBranchPoint(usize),
     Failed,
 }
 
@@ -84,6 +87,16 @@ impl GapRefiner {
                 GapRefinerReturn::Failed => {
                     // GAP caused search to fail
                     return Err(trace::TraceFailure {});
+                }
+                GapRefinerReturn::ProposeBranchPoint(point_1_indexed) => {
+                    // GAP emits 1-indexed; the Rust side is 0-indexed.
+                    // The selector validates the resulting cell is a
+                    // base cell of size > 1; otherwise it falls back
+                    // to its default selection.
+                    assert!(point_1_indexed >= 1, "GAP proposed 0; expected 1-indexed");
+                    let zero_indexed = point_1_indexed - 1;
+                    info!("GAP refiner proposes branch point {}", zero_indexed);
+                    state.set_proposed_branch_point(zero_indexed);
                 }
                 GapRefinerReturn::RefinerResult(mut ret) => {
                     // Normalise graph, so hash will return same value

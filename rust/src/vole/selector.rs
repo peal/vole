@@ -46,6 +46,34 @@ fn find_first_cell(state: &State) -> usize {
 }
 
 pub fn select_branching_cell(state: &State) -> usize {
+    // A refiner may have nominated a specific point during the most
+    // recent refinement cycle. Use it only if (a) its cell is a base
+    // cell (the default selector also restricts to base_cells, so an
+    // extended cell containing auxiliary vertices from a set-of-
+    // graphs widget would be an unsafe branch target) and (b) the
+    // cell isn't already a singleton.
+    if let Some(p) = state.domain.proposed_branch_point() {
+        let part = state.domain.partition();
+        let cell = part.cell_of(p);
+        let is_base_cell = part.base_cells().contains(&cell);
+        if is_base_cell && part.cell(cell).len() > 1 {
+            info!(
+                "Selector consuming refiner proposal: point {:?} -> cell {:?} from {:?}",
+                p,
+                cell,
+                part.extended_as_list_set()
+            );
+            return cell;
+        }
+        info!(
+            "Refiner proposed point {:?} but its cell {:?} is not a usable branch target (is_base={}, size={}); falling back",
+            p,
+            cell,
+            is_base_cell,
+            part.cell(cell).len()
+        );
+    }
+
     let choice = Selector::Smallest;
     let cell = match choice {
         Selector::Smallest => find_best_cell(state, |s, i| s.domain.partition().cell(i).len()),

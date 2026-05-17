@@ -42,6 +42,9 @@ impl RefinerStore {
     /// Initialise the refiners
     pub fn init_refine(&mut self, state: &mut DomainState, side: Side, stats: &mut Stats) -> trace::Result<()> {
         let _span = trace_span!("init_refine:", side = debug(side)).entered();
+        // Any branch-point proposal from a previous refinement is no
+        // longer applicable; refiners may set a new one here.
+        state.clear_proposed_branch_point();
         for (i, r) in self.refiners.iter_mut().enumerate() {
             *self.base_fixed_values_considered[i] = state.partition().base_fixed_values().len();
             *self.cells_considered[i] = state.partition().base_cells().len();
@@ -54,6 +57,9 @@ impl RefinerStore {
     /// Run all refiners, based on changes to the state (assumes init_refine was previously called)
     pub fn do_refine(&mut self, state: &mut DomainState, side: Side, stats: &mut Stats) -> trace::Result<()> {
         let _span = trace_span!("do_refine").entered();
+        // Branch-point proposal is per-refinement-cycle; clear any
+        // proposal carried over from an earlier cycle.
+        state.clear_proposed_branch_point();
         loop {
             let init_fixed_points = state.partition().base_fixed_values().len();
 

@@ -18,9 +18,9 @@ fi;
 # tst/benchmarks/helpers.g.
 BankAllVariantNames     := ["Simple", "Simple2", "OrbitalNone",
                              "OrbitalRoot", "Orbital", "OrbitalDeep",
-                             "OrbitalSmall"];
+                             "OrbitalSmall", "OrbitalRegOrbit"];
 BankFastVariantNames    := ["OrbitalRoot", "Orbital", "OrbitalDeep",
-                             "OrbitalSmall"];
+                             "OrbitalSmall", "OrbitalRegOrbit"];
 
 # Returns true iff every variant in `variantNames` produces a group equal
 # to GAP's Normalizer(SymmetricGroup(n), G). Failures dumped to stdout.

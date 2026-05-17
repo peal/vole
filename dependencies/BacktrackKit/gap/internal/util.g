@@ -231,24 +231,21 @@ end;
 
 #############################################################################
 ##
-## Partition a list by a key function. Returns a record whose names are
-## stringified keys and whose values are the corresponding sublists, in
-## original list order.
+## Partition a list by a key function. Returns a HashMap from key to
+## sublist (in original list order). HashMap (rather than a record) so
+## keys may be arbitrary immutable values — including long structured
+## keys like canonical-form digraph data, which exceed GAP's 1023-char
+## record-name limit when stringified.
 ##
 _BTKit.partitionByKey := function(items, keyFunc)
-    local res, item, k, name;
-    res := rec();
+    local res, item, k;
+    res := HashMap();
     for item in items do
         k := keyFunc(item);
-        if IsString(k) then
-            name := k;
-        else
-            name := String(k);
+        if not (k in res) then
+            res[k] := [];
         fi;
-        if not IsBound(res.(name)) then
-            res.(name) := [];
-        fi;
-        Add(res.(name), item);
+        Add(res[k], item);
     od;
     return res;
 end;
@@ -273,12 +270,16 @@ _BTKit.orbitalEquivalenceKey := function(og)
     #
     # IMPORTANT: BlissCanonicalDigraph returns a digraph whose edge SET
     # is canonical, but the adjacency lists are stored in arbitrary
-    # order. Two equal digraphs may stringify differently. To produce
-    # a deterministic key we serialise the sorted out-neighbour list.
+    # order. Two equal digraphs may have adjacency lists in different
+    # orders, so sort each one to get a value that is deterministic per
+    # isomorphism class. We return the structured value directly (a
+    # list of sorted lists) — HashMap keys may be arbitrary immutable
+    # values, and we avoid the GAP 1023-char record-name limit that
+    # String(...) would otherwise hit on large graphs.
     local canon, neighbours;
     canon := BlissCanonicalDigraph(og);
     neighbours := OutNeighbours(canon);
-    return String(List(neighbours, Set));
+    return Immutable(List(neighbours, Set));
 end;
 
 #############################################################################
@@ -316,6 +317,75 @@ _BTKit.blockSystemsAsGraphs := function(G, orb, n)
         fi;
     od;
     return result;
+end;
+
+#############################################################################
+##
+## Generic BFS orbit traversal under a list of generating permutations.
+## Returns rec(orbit, position) where:
+##   orbit    — list of points in BFS-visitation order starting from `seed`,
+##   position — HashMap from point to its 1-indexed position in `orbit`.
+## The traversal is deterministic given (seed, gens) — same on left and right
+## search sides when called with the same arguments.
+##
+_BTKit.bfsOrbit := function(seed, gens)
+    local orbit, position, i, x, g, y;
+    orbit := [seed];
+    position := HashMap();
+    position[seed] := 1;
+    i := 1;
+    while i <= Length(orbit) do
+        x := orbit[i];
+        for g in gens do
+            y := x ^ g;
+            if not (y in position) then
+                Add(orbit, y);
+                position[y] := Length(orbit);
+            fi;
+        od;
+        i := i + 1;
+    od;
+    return rec(orbit := orbit, position := position);
+end;
+
+#############################################################################
+##
+## Build Schreier-tree data for `group` on a regular orbit `regOrb`:
+## for each point ω ∈ regOrb, the unique element of `group` sending the
+## orbit-minimum to ω. Returns rec(omega1, regOrbit, regOrbitSet,
+## regOrbitBFS, treeE), where:
+##   omega1       — min(regOrb), the canonical base point,
+##   regOrbit     — `regOrb` as a sorted list,
+##   regOrbitSet  — `regOrb` as a sorted set (immutable),
+##   regOrbitBFS  — orbit in BFS order from omega1 under `gens` (canonical
+##                  branching order for the selector hook),
+##   treeE        — HashMap from point ω ∈ regOrb to the element of
+##                  `group` with omega1 ^ treeE[ω] = ω.
+##
+_BTKit.regularOrbitSchreierTreeData := function(group, regOrb)
+    local omega1, gens, treeE, queue, x, g, y, bfs;
+    omega1 := Minimum(regOrb);
+    gens := GeneratorsOfGroup(group);
+    treeE := HashMap();
+    treeE[omega1] := ();
+    queue := [omega1];
+    while not IsEmpty(queue) do
+        x := Remove(queue, 1);
+        for g in gens do
+            y := x ^ g;
+            if not (y in treeE) then
+                treeE[y] := treeE[x] * g;
+                Add(queue, y);
+            fi;
+        od;
+    od;
+    bfs := _BTKit.bfsOrbit(omega1, gens);
+    return rec(
+        omega1      := omega1,
+        regOrbit    := Immutable(SortedList(regOrb)),
+        regOrbitSet := Immutable(Set(regOrb)),
+        regOrbitBFS := Immutable(bfs.orbit),
+        treeE       := treeE);
 end;
 
 _BTKit.LargestRelevantPoint := function(obj...)

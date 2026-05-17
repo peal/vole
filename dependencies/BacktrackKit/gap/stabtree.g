@@ -208,6 +208,53 @@ StabTreeStabilizerReducedOrbitalGraphs := function(group, points, omega)
     return StabTreeStabilizerOrbitalGraphs(group, points, rec(maxval := Maximum(omega), skipOneLarge := true));
 end;
 
+#############################################################################
+##
+## Regular-orbit data for `group`, cached on the root of the stabtree
+## (i.e. on `group!.stabTree` itself — independent of any stabilising
+## tuple, because the deduction in Theißen §3.7 uses the regular orbit
+## of E itself, not of any stabiliser of E).
+##
+## Returns rec(omega1, regOrbit, regOrbitSet, regOrbitBFS, treeE), or
+## `fail` if `group` has no regular orbit on the points it moves.
+##
+## The cache stores the canonical (orbit-min indexed) Schreier-tree
+## data; because L = R for the normaliser refiner, both sides pull the
+## same data from this cache without any per-side conjugation. The
+## deductions made from this data are g-covariant by virtue of the
+## symmetry of the formula (the same indices b_1..b_d are used on each
+## side; the points differ but the deduction is conjugation-symmetric
+## — see notes in normaliser.g).
+##
+## Callers must not mutate the returned record, its HashMap, or lists.
+##
+StabTreeRegularOrbitData := function(group)
+    local tree, regOrbits, regOrb, o, data;
+    tree := StabTree(group);
+    if not IsBound(tree.regOrbitData) then
+        # Regular orbits are E-orbits of size |E|.
+        regOrbits := Filtered(tree.orbits, o ->
+            Length(o) > 1 and Length(o) = Size(tree.group));
+        if IsEmpty(regOrbits) then
+            tree.regOrbitData := false;
+        else
+            # Canonical: the regular orbit with smallest minimum point.
+            regOrb := regOrbits[1];
+            for o in regOrbits do
+                if Minimum(o) < Minimum(regOrb) then
+                    regOrb := o;
+                fi;
+            od;
+            data := _BTKit.regularOrbitSchreierTreeData(tree.group, regOrb);
+            tree.regOrbitData := data;
+        fi;
+    fi;
+    if tree.regOrbitData = false then
+        return fail;
+    fi;
+    return tree.regOrbitData;
+end;
+
 
 # Block systems of Stab(group, points), returned as intra-block complete
 # digraphs on [1..maxval]. Each entry is rec(graph, key) where `key` is

@@ -16,7 +16,14 @@ if not IsBoundGlobal("BankCompareNormaliser") then
 fi;
 
 RegressionEntries := [
-    # (none yet — populate as bugs surface)
+    # 2026-05-17: PSL(2,25) on 26 points crashed the orbital refiner
+    # because _BTKit.orbitalEquivalenceKey serialised the canonical
+    # form to a multi-kB string and exceeded GAP's 1023-char record-
+    # name limit inside _BTKit.partitionByKey. Fix: HashMap with
+    # structured (immutable list-of-sorted-lists) keys.
+    rec(n := 26,
+        gens := GeneratorsOfGroup(PSL(2, 25)),
+        note := "partitionByKey record-name overflow on 26-vertex canonical form")
 ];
 
 RunBank_regression := function(mode)

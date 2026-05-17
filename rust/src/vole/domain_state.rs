@@ -22,6 +22,13 @@ pub struct DomainState {
     rbase_digraph_stack: Option<DigraphStack>,
     digraph_stack_cells_refined: Backtracking<usize>,
     rbase_branch_vals: Vec<usize>,
+    /// A refiner's proposal of the next point to branch on (0-indexed).
+    /// The selector consults this in preference to its default policy.
+    /// Reset to None at the start of each refinement cycle so the
+    /// proposal only ever reflects refiners that fired during the most
+    /// recent refinement. Backtracking-stacked so the proposal is
+    /// per-search-node.
+    proposed_branch_point: Backtracking<Option<usize>>,
 }
 
 impl DomainState {
@@ -34,6 +41,7 @@ impl DomainState {
             rbase_digraph_stack: Option::None,
             digraph_stack_cells_refined: Backtracking::new(0),
             rbase_branch_vals: vec![],
+            proposed_branch_point: Backtracking::new(None),
         }
     }
 }
@@ -146,6 +154,25 @@ impl DomainState {
         *self.digraph_stack_cells_refined = 0;
     }
 
+    /// A refiner may call this during refinement to nominate a point
+    /// for the selector to branch on next. The selector chooses the
+    /// cell containing this point if its size > 1; otherwise falls
+    /// back to its default policy. `p` is a 0-indexed point.
+    pub fn set_proposed_branch_point(&mut self, p: usize) {
+        *self.proposed_branch_point = Some(p);
+    }
+
+    /// Clear any pending branch-point proposal. Called by the refiner
+    /// store at the start of each refinement cycle so a proposal only
+    /// ever reflects refiners that fired during that cycle.
+    pub fn clear_proposed_branch_point(&mut self) {
+        *self.proposed_branch_point = None;
+    }
+
+    pub fn proposed_branch_point(&self) -> Option<usize> {
+        *self.proposed_branch_point
+    }
+
     pub fn refine_graphs(&mut self) -> trace::Result<()> {
         info!("Refining graph cells");
         self.stack.refine_partition_cells_by_graph(
@@ -164,6 +191,7 @@ impl Backtrack for DomainState {
         self.tracer.save_state();
         self.digraph_stack.save_state();
         self.digraph_stack_cells_refined.save_state();
+        self.proposed_branch_point.save_state();
     }
 
     fn restore_state(&mut self) {
@@ -171,12 +199,14 @@ impl Backtrack for DomainState {
         self.tracer.restore_state();
         self.digraph_stack.restore_state();
         self.digraph_stack_cells_refined.restore_state();
+        self.proposed_branch_point.restore_state();
     }
 
     fn state_depth(&self) -> usize {
         debug_assert_eq!(self.stack.state_depth(), self.tracer.state_depth());
         debug_assert_eq!(self.stack.state_depth(), self.digraph_stack.state_depth());
         debug_assert_eq!(self.stack.state_depth(), self.digraph_stack_cells_refined.state_depth());
+        debug_assert_eq!(self.stack.state_depth(), self.proposed_branch_point.state_depth());
         self.stack.state_depth()
     }
 }
