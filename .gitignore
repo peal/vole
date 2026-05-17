@@ -35,8 +35,10 @@
 /gh-pages/
 .vscode
 
-# Benchmark runtime artifact (baselines live under tst/benchmarks/baselines/).
+# Benchmark runtime artifacts (baselines live under tst/benchmarks/baselines/).
 /tst/benchmarks/latest.csv
+/tst/benchmarks/hunt.csv
+/tst/benchmarks/hunt-stdout.log
 
 # Local-only: the Theissen thesis PDF (copyright, not committed).
 /Theissen_DissNormalisatorPermGrp.pdf
