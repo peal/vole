@@ -323,16 +323,23 @@ _MakeGroupConjugacyOrbital := function(groupL, groupR, strategy, name)
                             false, strategy));
                 od;
 
-                # Phase C: regular-orbit deduction (Theißen §3.7).
-                # Runs once with the latest fp (deduction is monotone:
-                # depth d+1's deduction subsumes depth d's). Inert when
-                # `strategy.regOrbit` ≠ "always" or E lacks a regular
-                # orbit.
+                # Phase C/D: regular-orbit deduction (Theißen §3.7).
+                # Phase C (`strategy.regOrbit = "always"`): use E's own
+                # regular orbit. Inert when E has none (e.g. AGL(1,p)).
+                # Phase D (`strategy.regOrbitGroup` is bound to F ≤ E
+                # characteristic): use F's regular orbit instead. Sound
+                # because N(E) ≤ N(F) for characteristic F, so any
+                # label-deduction valid for N(F) is valid for N(E).
+                # Useful exactly when E is 2-transitive (or just lacks a
+                # regular orbit) but contains a regular characteristic
+                # subgroup, e.g. C_p ≤ AGL(1, p).
                 if IsBound(strategy.regOrbit)
                    and strategy.regOrbit = "always" then
                     Append(result,
                         _BTKit.makeNormaliserRegOrbitDeduction(
-                            group, fixedpoints, ps, n));
+                            _BTKit.regOrbitDeductionGroup(group, strategy),
+                            fixedpoints, ps, n,
+                            _BTKit.regOrbitProposeEnabled(strategy)));
                 fi;
 
                 r!.btdata.seenDepth := Length(fixedpoints);
@@ -340,6 +347,96 @@ _MakeGroupConjugacyOrbital := function(groupL, groupR, strategy, name)
             end)
     );
     return Objectify(GBRefinerType, r);
+end;
+
+# Phase C/D dispatch: returns the group whose regular-orbit data should
+# feed the deduction. Phase C: group itself. Phase D:
+# strategy.regOrbitGroup (a characteristic subgroup F ≤ E) if bound.
+_BTKit.regOrbitDeductionGroup := function(group, strategy)
+    if IsBound(strategy.regOrbitGroup) then
+        return strategy.regOrbitGroup;
+    fi;
+    return group;
+end;
+
+# Whether to emit a proposeBranchPoint hint from the regular-orbit
+# deduction. Phase C: yes (sound, gives ~50% speedup on AGL(1,p)).
+# Phase D: no by default — the propose currently has a soundness bug
+# on some inputs (e.g. TransGrp(8,33)); the regOrbit-set passed via
+# strategy.regOrbitGroup = F can have the L/R selector picking
+# non-corresponding cells when F is properly contained in E. The forced
+# labels remain sound and are kept. TODO: trace the bug and re-enable.
+_BTKit.regOrbitProposeEnabled := function(strategy)
+    if IsBound(strategy.regOrbitPropose) then
+        return strategy.regOrbitPropose;
+    fi;
+    if IsBound(strategy.regOrbitGroup) then
+        # Phase D path — propose disabled until the soundness bug is
+        # fixed (see above).
+        return false;
+    fi;
+    # Phase C path (regOrbitGroup unbound): propose enabled.
+    return true;
+end;
+
+# Phase D helper: search for a regular characteristic subgroup F ≤ E.
+# Returns either E (if E is itself regular on some orbit — Phase C
+# path), F ≤ E (a proper regular characteristic subgroup) — or `fail`
+# if neither exists.
+#
+# Tries candidates in cost order:
+#   1. E itself.
+#   2. DerivedSubgroup(E), FittingSubgroup(E), Centre(E) — all
+#      characteristic in E, cheap to compute.
+#   3. Socle(E) when E is primitive on its support — characteristic.
+#   4. CharacteristicSubgroups(E) — exhaustive but expensive; gated by
+#      Size(E) ≤ sizeCap to keep things bounded.
+#
+# A subgroup F is "uniquely regular" here if it has EXACTLY ONE orbit
+# O on MovedPoints(E) with |O| = |F| (other orbits may exist but must
+# be strictly smaller). This is the soundness condition for the
+# Phase D deduction: the regular-orbit labels we force are only
+# g-equivariant under candidates g that map O to itself. When F has
+# multiple regular orbits, N(E) (acting on F's orbit set) can permute
+# them; the search would reject valid g's that swap regular orbits.
+# Unique-regular-orbit F's avoid that pitfall — the unique O is
+# necessarily g-invariant since it's the only orbit of its size.
+_BTKit.findRegularCharacteristicSubgroup := function(group, sizeCap)
+    local mp, _hasUniqueReg, candidates, F, cs;
+
+    mp := MovedPoints(group);
+
+    _hasUniqueReg := function(F)
+        local orbs, regOrbs;
+        if IsTrivial(F) then return false; fi;
+        orbs := Orbits(F, mp);
+        regOrbs := Filtered(orbs, o -> Length(o) = Size(F));
+        return Length(regOrbs) = 1;
+    end;
+
+    if _hasUniqueReg(group) then
+        return group;
+    fi;
+
+    candidates := [DerivedSubgroup(group),
+                   FittingSubgroup(group),
+                   Centre(group)];
+    if IsTransitive(group, mp) and IsPrimitive(group, mp) then
+        Add(candidates, Socle(group));
+    fi;
+    for F in candidates do
+        if _hasUniqueReg(F) then return F; fi;
+    od;
+
+    # Exhaustive: slower but more thorough. Bounded by sizeCap.
+    if Size(group) <= sizeCap then
+        cs := CharacteristicSubgroups(group);
+        for F in cs do
+            if _hasUniqueReg(F) then return F; fi;
+        od;
+    fi;
+
+    return fail;
 end;
 
 # Phase C deduction: forced-refinement labels for the points of E's
@@ -368,7 +465,8 @@ end;
 # The branch-point proposal points to corresponding cells (same cell
 # index) on both sides since cell indices are g-equivariant for valid
 # candidates.
-_BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n)
+_BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n,
+                                                   proposeEnabled)
     local data, regOrbFPs, b1, gens, i, bfs, out, p, ci, best_idx, best_p;
     data := StabTreeRegularOrbitData(group);
     if data = fail then
@@ -385,6 +483,7 @@ _BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n)
         # g-equivariant (they're determined by trace-matching splits);
         # point values are not, which is why we don't iterate over
         # sorted points and pick the first.
+        if not proposeEnabled then return []; fi;
         best_idx := infinity;
         best_p := fail;
         for p in data.regOrbit do
@@ -425,19 +524,21 @@ _BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n)
         end);
     fi;
 
-    best_idx := infinity;
-    best_p := fail;
-    for p in data.regOrbit do
-        if not (p in bfs.position) then
-            ci := PS_CellOfPoint(ps, p);
-            if PS_CellLen(ps, ci) > 1 and ci < best_idx then
-                best_idx := ci;
-                best_p := p;
+    if proposeEnabled then
+        best_idx := infinity;
+        best_p := fail;
+        for p in data.regOrbit do
+            if not (p in bfs.position) then
+                ci := PS_CellOfPoint(ps, p);
+                if PS_CellLen(ps, ci) > 1 and ci < best_idx then
+                    best_idx := ci;
+                    best_p := p;
+                fi;
             fi;
+        od;
+        if best_p <> fail then
+            Add(out, rec(proposeBranchPoint := best_p));
         fi;
-    od;
-    if best_p <> fail then
-        Add(out, rec(proposeBranchPoint := best_p));
     fi;
 
     return out;
@@ -515,9 +616,51 @@ GB_Con.GroupConjugacyOrbitalRegOrbit := function(groupL, groupR)
         "GroupConjugacyOrbitalRegOrbit");
 end;
 
-GB_Con.NormaliserOrbital         := {g} -> GB_Con.GroupConjugacyOrbital(g, g);
-GB_Con.NormaliserOrbitalRoot     := {g} -> GB_Con.GroupConjugacyOrbitalRoot(g, g);
-GB_Con.NormaliserOrbitalNone     := {g} -> GB_Con.GroupConjugacyOrbitalNone(g, g);
-GB_Con.NormaliserOrbitalDeep     := {g} -> GB_Con.GroupConjugacyOrbitalDeep(g, g);
-GB_Con.NormaliserOrbitalSmall    := {g} -> GB_Con.GroupConjugacyOrbitalSmall(g, g);
-GB_Con.NormaliserOrbitalRegOrbit := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbit(g, g);
+# Phase D: Theißen §3.7.3 — when E itself has no regular orbit, search
+# for a regular characteristic subgroup F ≤ E and run the §3.7
+# deductions against F instead. N(E) ≤ N(F) for characteristic F, so
+# every label produced from F is valid for any g ∈ N(E).
+#
+# When E has a regular orbit, this is identical to OrbitalRegOrbit
+# (F = E). When E has none and no regular characteristic subgroup
+# either, the regular-orbit refiner is inert and behaviour matches
+# Orbital. The expected payoff is on AGL-like inputs where E is
+# 2-transitive (no orbital pruning, no regular orbit of E) but F = C_p
+# (the radical) is regular.
+#
+# Same canonical-unsafety caveat as OrbitalRegOrbit applies (regOrbit
+# point set depends on the labelling; conjugate inputs see conjugate
+# regOrbits).
+#
+# `sizeCap` parameter on the exhaustive CharacteristicSubgroups search
+# defaults to 10^5 (cheap on the AGL family — |AGL(1,p)| = p(p-1) is
+# well within budget for p up to a few hundred). Caller can override.
+GB_Con.GroupConjugacyOrbitalRegOrbitChar := function(groupL, groupR)
+    local F, sizeCap;
+    Assert(0, IsIdenticalObj(groupL, groupR),
+           "Phase D is normaliser-only; expect L = R");
+    sizeCap := ValueOption("regCharSizeCap");
+    if sizeCap = fail then sizeCap := 10 ^ 5; fi;
+    F := _BTKit.findRegularCharacteristicSubgroup(groupL, sizeCap);
+    if F = fail then
+        # No regular characteristic subgroup; fall back to Phase C
+        # (which is also inert in this case, so this matches Orbital).
+        return _MakeGroupConjugacyOrbital(groupL, groupR,
+            rec(orbitals := "always", blocks := "root",
+                regOrbit := "always"),
+            "GroupConjugacyOrbitalRegOrbitChar");
+    fi;
+    return _MakeGroupConjugacyOrbital(groupL, groupR,
+        rec(orbitals := "always", blocks := "root",
+            regOrbit := "always",
+            regOrbitGroup := F),
+        "GroupConjugacyOrbitalRegOrbitChar");
+end;
+
+GB_Con.NormaliserOrbital             := {g} -> GB_Con.GroupConjugacyOrbital(g, g);
+GB_Con.NormaliserOrbitalRoot         := {g} -> GB_Con.GroupConjugacyOrbitalRoot(g, g);
+GB_Con.NormaliserOrbitalNone         := {g} -> GB_Con.GroupConjugacyOrbitalNone(g, g);
+GB_Con.NormaliserOrbitalDeep         := {g} -> GB_Con.GroupConjugacyOrbitalDeep(g, g);
+GB_Con.NormaliserOrbitalSmall        := {g} -> GB_Con.GroupConjugacyOrbitalSmall(g, g);
+GB_Con.NormaliserOrbitalRegOrbit     := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbit(g, g);
+GB_Con.NormaliserOrbitalRegOrbitChar := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbitChar(g, g);

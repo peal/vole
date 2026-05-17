@@ -38,7 +38,7 @@ BankCanonicalSafeVariants := ["default", "Orbital"];
 # be detected (we'd see the variant pass a check we'd marked as
 # expected-to-fail). The current canonical-unsafe variant family is
 # `OrbitalRegOrbit` — see notes in normaliser.g.
-BankCanonicalUnsafeVariants := ["OrbitalRegOrbit"];
+BankCanonicalUnsafeVariants := ["OrbitalRegOrbit", "OrbitalRegOrbitChar"];
 
 BankCanonicalVariants := BankCanonicalSafeVariants;
 

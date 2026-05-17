@@ -450,8 +450,8 @@ RunHunt := function(budget_per_call_secs)
     # Refiner variants and wrapper variants in one list. The driver
     # dispatches on the "wrap:" prefix.
     backends := ["gap",
-                 "Orbital", "OrbitalRegOrbit", "OrbitalSmall",
-                 "OrbitalDeep",
+                 "Orbital", "OrbitalRegOrbit", "OrbitalRegOrbitChar",
+                 "OrbitalSmall", "OrbitalDeep",
                  "wrap:direct", "wrap:ByOrbits"];
 
     allSpecs := [];

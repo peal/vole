@@ -18,9 +18,11 @@ fi;
 # tst/benchmarks/helpers.g.
 BankAllVariantNames     := ["Simple", "Simple2", "OrbitalNone",
                              "OrbitalRoot", "Orbital", "OrbitalDeep",
-                             "OrbitalSmall", "OrbitalRegOrbit"];
+                             "OrbitalSmall", "OrbitalRegOrbit",
+                             "OrbitalRegOrbitChar"];
 BankFastVariantNames    := ["OrbitalRoot", "Orbital", "OrbitalDeep",
-                             "OrbitalSmall", "OrbitalRegOrbit"];
+                             "OrbitalSmall", "OrbitalRegOrbit",
+                             "OrbitalRegOrbitChar"];
 
 # Returns true iff every variant in `variantNames` produces a group equal
 # to GAP's Normalizer(SymmetricGroup(n), G). Failures dumped to stdout.
@@ -35,8 +37,7 @@ BankCheckVariants := function(n, G, problem_id, variantNames)
             failed := true;
             _BankStats.fail := _BankStats.fail + 1;
             Print(StringFormatted(
-                "FAIL (bank/variants): {} variant={}, " ,
-                "|G|={}, |gap N|={}, |vole N|={}\n",
+                "FAIL (bank/variants): {} variant={} |G|={} |gap N|={} |vole N|={}\n",
                 problem_id, v, Size(G), Size(gapResult),
                 Size(voleResult)));
         fi;

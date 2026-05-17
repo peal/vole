@@ -296,10 +296,12 @@ _Vole.NormalizerDefaultWrapper := "direct";
 
 # Default refiner used inside the direct wrapper. The hunt benchmark
 # rates OrbitalRegOrbit best by total wall time (2-3x over Orbital
-# across the input space). Note this refiner is NOT canonical-safe;
-# the default for Vole.CanonicalImage stays at the Constraint.Normalise
-# dispatch (which goes through GroupConjugacyOrbital), unaffected.
-_Vole.NormalizerDefaultRefiner := "OrbitalRegOrbit";
+# across the input space). OrbitalRegOrbitChar extends OrbitalRegOrbit
+# with Phase D — regular characteristic subgroup deductions — which
+# closes the AGL family gap (the biggest loss family in the hunt).
+# Both refiners are canonical-unsafe; canonical-image dispatch stays
+# at GroupConjugacyOrbital via refiners.gi:26.
+_Vole.NormalizerDefaultRefiner := "OrbitalRegOrbitChar";
 
 # Respects raw := true (raw bypasses all wrappers — the orbit
 # decomposition doesn't naturally yield a single `raw` record).
