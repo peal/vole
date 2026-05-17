@@ -208,12 +208,21 @@ _Vole.BuildLOvergroup := function(H, relevantPoints)
     return Group(Lgens);
 end;
 
-# "direct" wrapper. Just one backtrack search in G with the normaliser
-# constraint on H. The simplest baseline; the inner refiner does all
-# the work.
+# "direct" wrapper. One backtrack search in G with the normaliser
+# constraint on H. The simplest baseline. Honours ValueOption "refiner"
+# (string, key into `GB_Con.Normaliser<name>`) so different refiner
+# variants can be exercised through this wrapper for benchmarking;
+# default is "OrbitalRegOrbit" because the hunt benchmark shows it's
+# 2-3x faster than Orbital across the input space and the regular-
+# orbit deductions cost nothing when H has no regular orbit.
 _Vole.NormalizerDirect := function(G, H)
-    local ret;
-    ret := VoleFind.Group(G, Constraint.Normalise(H));
+    local refinerName, refiner, ret;
+    refinerName := ValueOption("refiner");
+    if refinerName = fail then
+        refinerName := _Vole.NormalizerDefaultRefiner;
+    fi;
+    refiner := GB_Con.(Concatenation("Normaliser", refinerName))(H);
+    ret := VoleFind.Group(G, refiner);
     _Vole.setParent(ret, G);
     return ret;
 end;
@@ -221,9 +230,9 @@ end;
 # "ByOrbits" wrapper (Chang [CJR22] L-overgroup). Recursive on the
 # per-orbit normaliser (transitive on its single orbit so the
 # recursion bottoms out cleanly on the next call). Returns the
-# normaliser as a perm group.
+# normaliser as a perm group. Honours ValueOption "refiner".
 _Vole.NormalizerByOrbits := function(G, H)
-    local relevantPoints, n, orbs, L, ret;
+    local relevantPoints, n, orbs, L, refinerName, refiner, ret;
 
     if IsTrivial(H) then
         # Every g normalises the trivial group. Just return G.
@@ -252,6 +261,12 @@ _Vole.NormalizerByOrbits := function(G, H)
 
     L := _Vole.BuildLOvergroup(H, relevantPoints);
 
+    refinerName := ValueOption("refiner");
+    if refinerName = fail then
+        refinerName := _Vole.NormalizerDefaultRefiner;
+    fi;
+    refiner := GB_Con.(Concatenation("Normaliser", refinerName))(H);
+
     # Inner search: find elements of G that lie in L AND normalise H.
     # N(H) ≤ L (Lemma 2.8) so this captures the full normaliser; the
     # search space is G ∩ L, much smaller than G when H has many
@@ -259,7 +274,7 @@ _Vole.NormalizerByOrbits := function(G, H)
     ret := VoleFind.Group(SymmetricGroup(n),
                           Constraint.InGroup(G),
                           Constraint.InGroup(L),
-                          Constraint.Normalise(H));
+                          refiner);
     _Vole.setParent(ret, G);
     return ret;
 end;
@@ -278,6 +293,13 @@ _Vole.NormalizerWrappers := rec(
 # bank tests). When the benchmarks tell us which input class wins
 # more often, swap this and document.
 _Vole.NormalizerDefaultWrapper := "direct";
+
+# Default refiner used inside the direct wrapper. The hunt benchmark
+# rates OrbitalRegOrbit best by total wall time (2-3x over Orbital
+# across the input space). Note this refiner is NOT canonical-safe;
+# the default for Vole.CanonicalImage stays at the Constraint.Normalise
+# dispatch (which goes through GroupConjugacyOrbital), unaffected.
+_Vole.NormalizerDefaultRefiner := "OrbitalRegOrbit";
 
 # Respects raw := true (raw bypasses all wrappers — the orbit
 # decomposition doesn't naturally yield a single `raw` record).
