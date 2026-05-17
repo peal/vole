@@ -159,6 +159,165 @@ _BTKit.OutNeighboursSafe := function(graph, v)
     fi;
 end;
 
+#############################################################################
+##
+## Set-of-graphs widget.
+##
+## Given a list `graphs` of labelled digraphs on [1..n] that the normaliser
+## (or similar coset-stabiliser) preserves AS A SET (not individually),
+## build a single labelled digraph whose Sym(Ω)-automorphism group equals
+## the setwise stabiliser of `graphs` in Sym(Ω).
+##
+## Encoding:
+##   - Vertices 1..n: original points, label 0.
+##   - Vertices n+1..n+k: family-member vertices w_1..w_k, label 1.
+##   - Vertices n+k+1..: arc-vertices u_{i,α,β}, label 2.
+## For each arc (α, β) in graphs[i], add directed edges
+##   α → u_{i,α,β},   u_{i,α,β} → β,   w_i → u_{i,α,β}.
+##
+## Returns a list of records: either a single set-widget record, or (in the
+## singleton-family fast path) a single record pushing the graph directly.
+## Returns the empty list if the input is empty.
+##
+_BTKit.buildSetOfGraphsWidget := function(graphs, n)
+    local k, adj, labels, wBase, uBase, i, w, arc, u, edges, nextAux, g;
+
+    k := Length(graphs);
+    if k = 0 then
+        return [];
+    fi;
+
+    # Contract: every input digraph must live entirely on [1..n].
+    # If you have a graph with auxiliary vertices, encode the structure
+    # as a graph on [1..n] (e.g. block systems as intra-block complete
+    # digraphs) before passing here.
+    for g in graphs do
+        Assert(0, DigraphNrVertices(g) <= n);
+    od;
+
+    # Singleton fast path: a graph in a class by itself is preserved
+    # individually by the normaliser, so we push it as a plain digraph.
+    if k = 1 then
+        return [rec(graph := graphs[1])];
+    fi;
+
+    # Multi-member family: build the widget.
+    adj := List([1..n], i -> []);
+    labels := ListWithIdenticalEntries(n, 0);
+
+    # Append k family-member vertices.
+    for i in [1..k] do
+        Add(adj, []);
+        Add(labels, 1);
+    od;
+    wBase := n;            # vertex w_i = wBase + i
+    nextAux := n + k;
+
+    for i in [1..k] do
+        w := wBase + i;
+        edges := DigraphEdges(graphs[i]);
+        for arc in edges do
+            nextAux := nextAux + 1;
+            u := nextAux;
+            Add(adj, [arc[2]]);        # u → β
+            Add(labels, 2);
+            Add(adj[arc[1]], u);       # α → u
+            Add(adj[w], u);            # w_i → u
+        od;
+    od;
+
+    return [rec(graph := Digraph(adj), vertlabels := labels)];
+end;
+
+#############################################################################
+##
+## Partition a list by a key function. Returns a record whose names are
+## stringified keys and whose values are the corresponding sublists, in
+## original list order.
+##
+_BTKit.partitionByKey := function(items, keyFunc)
+    local res, item, k, name;
+    res := rec();
+    for item in items do
+        k := keyFunc(item);
+        if IsString(k) then
+            name := k;
+        else
+            name := String(k);
+        fi;
+        if not IsBound(res.(name)) then
+            res.(name) := [];
+        fi;
+        Add(res.(name), item);
+    od;
+    return res;
+end;
+
+#############################################################################
+##
+## Equivalence key for an orbital graph, used to group orbital graphs into
+## families that the normaliser may permute among themselves.
+##
+## Phase-A: use the multiset of out-degrees (a coarse but sound invariant).
+## Orbital graphs of a transitive group are arc-transitive on their support
+## orbit, so vertices in the support all share the same out-degree (the
+## valence); vertices outside have out-degree 0. Two orbital graphs with
+## different valences cannot be permuted into each other by Sym(Ω).
+##
+## This can be tightened in Phase B with canonical-form hashing.
+##
+_BTKit.orbitalEquivalenceKey := function(og)
+    # Canonical-form key via Bliss. Two orbital graphs go into the same
+    # family iff they are isomorphic as digraphs on Ω — exactly the
+    # equivalence class that the normaliser can permute among itself.
+    #
+    # IMPORTANT: BlissCanonicalDigraph returns a digraph whose edge SET
+    # is canonical, but the adjacency lists are stored in arbitrary
+    # order. Two equal digraphs may stringify differently. To produce
+    # a deterministic key we serialise the sorted out-neighbour list.
+    local canon, neighbours;
+    canon := BlissCanonicalDigraph(og);
+    neighbours := OutNeighbours(canon);
+    return String(List(neighbours, Set));
+end;
+
+#############################################################################
+##
+## Block systems of G on orbit `orb`, packaged with a family-equivalence
+## key. Each entry is rec(graph := <digraph>, key := <block-size multiset>).
+##
+## The digraph for one block system is the "intra-block complete digraph"
+## on [1..n]: two points have arcs both ways iff they belong to the same
+## block. This encoding stays entirely on [1..n] (no aux vertices), so
+## block-system graphs compose correctly with buildSetOfGraphsWidget.
+## Connected components recover the blocks exactly, so no information is
+## lost.
+##
+_BTKit.blockSystemsAsGraphs := function(G, orb, n)
+    local result, blocks, b, parts, adj, p, q, blk, key;
+    result := [];
+    blocks := RepresentativesMinimalBlocks(G, orb);
+    for b in blocks do
+        parts := Orbit(G, Set(b), OnSets);
+        if Length(parts) > 1 then
+            adj := List([1..n], i -> []);
+            for blk in parts do
+                for p in blk do
+                    for q in blk do
+                        if p <> q then
+                            Add(adj[p], q);
+                        fi;
+                    od;
+                od;
+            od;
+            # Family key: (block-size, number-of-blocks).
+            key := [Length(parts[1]), Length(parts)];
+            Add(result, rec(graph := Digraph(adj), key := key));
+        fi;
+    od;
+    return result;
+end;
+
 _BTKit.LargestRelevantPoint := function(obj...)
     if Length(obj) = 1 then
         obj := obj[1];

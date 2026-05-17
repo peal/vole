@@ -23,7 +23,7 @@ GB_RefinerFromConstraint := function(con)
             return List([1 .. Length(source)], i -> GB_Con.PermConjugacy(source[i], result[i]));
 
         elif action = OnPoints and IsPermGroup(source) then
-            return GB_Con.GroupConjugacySimple2(source, result);
+            return GB_Con.GroupConjugacyOrbital(source, result);
 
         elif action = OnSetsDigraphs and ForAll(source, IsDigraph) then
             return GB_Con.SetDigraphs(source, result);
