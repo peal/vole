@@ -57,6 +57,59 @@ BankCompareNormaliserInGroup := function(G_outer, G_inner)
     return false;
 end;
 
+# Canonical-image-of-group consistency. For a group G ≤ S_n and a perm
+# pi ∈ S_n, the canonical image must be the same for G and G^pi (since
+# they are conjugate in S_n). We do `num_conjugates` random conjugates
+# from a seeded RandomSource so failures are reproducible.
+#
+# Optional `variantName` (default "Orbital"): a named refiner variant
+# in GB_Con (e.g. "OrbitalRegOrbit"). When given, both canonicals are
+# computed via `GB_Con.Normaliser<variant>(...)` rather than the default
+# dispatch from Constraint.Normalise — lets the bank exercise each
+# variant independently.
+BankCompareCanonicalGroup := function(n, G, rs, num_conjugates, variantName)
+    local refinerFn, baseCanon, k, pi, Gp, canon, info, computeCanonical;
+    if variantName = fail or variantName = "default" then
+        computeCanonical := function(U)
+            return Vole.CanonicalImage(SymmetricGroup(n), U, OnPoints);
+        end;
+    else
+        refinerFn := GB_Con.(Concatenation("Normaliser", variantName));
+        computeCanonical := function(U)
+            local ret;
+            ret := VoleFind.Canonical(SymmetricGroup(n), refinerFn(U));
+            # ret.canonical is the canonicalising perm; apply it.
+            return U ^ ret.canonical;
+        end;
+    fi;
+    baseCanon := computeCanonical(G);
+    for k in [1 .. num_conjugates] do
+        pi := Random(rs, SymmetricGroup(n));
+        Gp := G ^ pi;
+        canon := computeCanonical(Gp);
+        if canon <> baseCanon then
+            _BankStats.fail := _BankStats.fail + 1;
+            info := rec(
+                degree := n,
+                variant := variantName,
+                input_gens := GeneratorsOfGroup(G),
+                pi := pi,
+                base_canon := GeneratorsOfGroup(baseCanon),
+                conj_canon := GeneratorsOfGroup(canon));
+            Add(_BankStats.failures, info);
+            Print(StringFormatted(
+                "FAIL (bank/canonical): n={}, variant={}, |G|={}, ",
+                n, variantName, Size(G)));
+            Print(StringFormatted(
+                "pi={}, base={}, conj={}\n",
+                pi, info.base_canon, info.conj_canon));
+            return false;
+        fi;
+    od;
+    _BankStats.pass := _BankStats.pass + 1;
+    return true;
+end;
+
 BankResetStats := function()
     _BankStats.pass := 0;
     _BankStats.fail := 0;

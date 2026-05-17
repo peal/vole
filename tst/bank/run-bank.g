@@ -17,6 +17,7 @@ Read("tst/bank/smallgrp.g");
 Read("tst/bank/intransitive.g");
 Read("tst/bank/random.g");
 Read("tst/bank/variants.g");
+Read("tst/bank/canonical_groups.g");
 Read("tst/bank/regression.g");
 
 # Each runner returns `true` iff all its checks passed.
@@ -29,6 +30,7 @@ RunBank := function(mode)
     results.intransitive := RunBank_intransitive(mode);
     results.random       := RunBank_random(mode);
     results.variants     := RunBank_variants(mode);
+    results.canonical    := RunBank_canonical_groups(mode);
     results.regression   := RunBank_regression(mode);
 
     overall := ForAll(RecNames(results), n -> results.(n));
