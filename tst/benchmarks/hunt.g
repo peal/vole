@@ -47,6 +47,22 @@ _HuntChildVole := function(gens, n, variant)
         refiner_calls := ret.raw.stats.refiner_calls);
 end;
 
+# Wrapper-level backend: uses the Vole.Normalizer wrapper machinery so
+# the outer reduction is exercised. Refiner inside is the default
+# (Orbital). Backend name in CSV: "wrap:<wrapperName>".
+_HuntChildWrapper := function(gens, n, wrapperName)
+    local G, t, N, ms;
+    G := Group(gens);
+    t := NanosecondsSinceEpoch();
+    N := Vole.Normalizer(SymmetricGroup(n), G : wrapper := wrapperName);
+    ms := Int((NanosecondsSinceEpoch() - t) / 1000000);
+    return rec(
+        ms := ms,
+        size := Size(N),
+        nodes := -1,
+        refiner_calls := -1);
+end;
+
 # ─── Family builders ────────────────────────────────────────────────
 # Each builder is parent-side: build G, return a list of records
 # rec(category, name, n, G).
@@ -279,7 +295,14 @@ RunHuntInstance := function(spec, backends, budget, path)
 
     for b in backends do
         if b = "gap" then continue; fi;
-        raw := IO_CallWithTimeout(timeoutRec, _HuntChildVole, gens, n, b);
+        # Backend strings starting with "wrap:" exercise the Vole.Normalizer
+        # wrapper machinery. Everything else is a refiner-variant name.
+        if StartsWith(b, "wrap:") then
+            raw := IO_CallWithTimeout(timeoutRec, _HuntChildWrapper,
+                                      gens, n, b{[6 .. Length(b)]});
+        else
+            raw := IO_CallWithTimeout(timeoutRec, _HuntChildVole, gens, n, b);
+        fi;
         if Length(raw) >= 2 and raw[1] = true then
             sz := raw[2].size;
             eq := refSize = -1 or sz = refSize;
@@ -302,22 +325,148 @@ RunHuntInstance := function(spec, backends, budget, path)
     od;
 end;
 
+# Mathieu / sporadic almost-simple primitive families.
+_HuntBuildMathieu := function()
+    local out, specs, spec, G, n, name;
+    out := [];
+    # MathieuGroup(d) for d ∈ {10, 11, 12, 22, 23, 24} gives the natural
+    # action of M_d on d points. M_10 = A_6.2 etc. — interesting "almost
+    # simple" cases.
+    for spec in [[10, "M_10"], [11, "M_11"], [12, "M_12"]] do
+        n := spec[1]; name := spec[2];
+        G := MathieuGroup(n);
+        Add(out, rec(
+            category := "mathieu",
+            name := name,
+            n := n,
+            G := G));
+    od;
+    return out;
+end;
+
+# PGL / PΓL on the projective line. PGL(2, q) acts on q+1 points; ΓL
+# adds field automorphisms when q is a prime power.
+_HuntBuildPGL := function()
+    local out, specs, spec, q, G, n, name;
+    out := [];
+    for spec in [[2, 8], [2, 9], [2, 11], [2, 16], [2, 17], [2, 19],
+                 [2, 23], [2, 25], [2, 27]] do
+        q := spec[2];
+        n := q + 1;
+        G := PGL(2, q);
+        name := Concatenation("PGL(2;", String(q), ")");
+        Add(out, rec(
+            category := "PGL_2_q",
+            name := name,
+            n := n,
+            G := G));
+    od;
+    return out;
+end;
+
+# Wreath products at larger degree — exercises the "many large blocks"
+# corner.
+_HuntBuildBigWreath := function()
+    local out, specs, spec, G, n, name;
+    out := [];
+    for spec in [[SymmetricGroup(4), SymmetricGroup(3), "S_4wrS_3", 12],
+                 [SymmetricGroup(5), SymmetricGroup(2), "S_5wrS_2", 10],
+                 [SymmetricGroup(5), SymmetricGroup(3), "S_5wrS_3", 15],
+                 [SymmetricGroup(4), SymmetricGroup(4), "S_4wrS_4", 16],
+                 [SymmetricGroup(3), SymmetricGroup(5), "S_3wrS_5", 15],
+                 [CyclicGroup(IsPermGroup, 4), SymmetricGroup(4),
+                      "C_4wrS_4", 16]] do
+        G := WreathProduct(spec[1], spec[2]);
+        Add(out, rec(
+            category := "big_wreath",
+            name := spec[3],
+            n := spec[4],
+            G := G));
+    od;
+    return out;
+end;
+
+# Inhomogeneous direct products targeting the ByOrbits wrapper.
+_HuntBuildInhomogeneous := function()
+    local out, a, b, gens, base, i, k, name;
+    out := [];
+    # C_3^a × S_3^b, a + b ∈ {3, 4, 5, 6}.
+    for a in [1, 2, 3] do
+        for b in [1, 2, 3] do
+            if a + b < 3 or a + b > 6 then continue; fi;
+            gens := [];
+            for i in [1 .. a] do
+                base := 3*(i-1);
+                Add(gens, CycleFromList([base+1, base+2, base+3]));
+            od;
+            for i in [1 .. b] do
+                base := 3*(a + i - 1);
+                Add(gens, CycleFromList([base+1, base+2, base+3]));
+                Add(gens, (base+1, base+2));
+            od;
+            name := Concatenation("C_3^", String(a),
+                                  "_x_S_3^", String(b));
+            Add(out, rec(
+                category := "inhomogeneous",
+                name := name,
+                n := 3*(a + b),
+                G := Group(gens)));
+        od;
+    od;
+    return out;
+end;
+
+# Large transitive groups via TransGrp library at degrees where there's
+# a non-trivial bottleneck.
+_HuntBuildTransGrpHard := function()
+    local out, specs, spec, n, k, G, name;
+    out := [];
+    # Hand-picked "interesting" entries — solvable, primitive, and high-
+    # symmetry transitive groups at modest degree.
+    for spec in [[12, 1], [12, 50], [12, 100], [12, 200],
+                 [14, 1], [14, 5], [14, 10],
+                 [15, 50], [15, 100],
+                 [16, 100], [16, 500],
+                 [18, 100], [18, 500], [18, 800]] do
+        n := spec[1]; k := spec[2];
+        if NrTransitiveGroups(n) < k then continue; fi;
+        G := TransitiveGroup(n, k);
+        name := Concatenation("TransGrp(", String(n), ";",
+                              String(k), ")");
+        Add(out, rec(
+            category := "transgrp_hard",
+            name := name,
+            n := n,
+            G := G));
+    od;
+    return out;
+end;
+
 RunHunt := function(budget_per_call_secs)
     local path, t0, allSpecs, backends, spec, total_ms;
     path := "tst/benchmarks/hunt.csv";
     _HuntCsvHeader(path);
 
-    backends := ["gap", "Orbital", "OrbitalRegOrbit", "OrbitalSmall",
-                 "OrbitalDeep"];
+    # Refiner variants and wrapper variants in one list. The driver
+    # dispatches on the "wrap:" prefix.
+    backends := ["gap",
+                 "Orbital", "OrbitalRegOrbit", "OrbitalSmall",
+                 "OrbitalDeep",
+                 "wrap:direct", "wrap:ByOrbits"];
 
     allSpecs := [];
     Append(allSpecs, _HuntBuildCyclicRegular());
     Append(allSpecs, _HuntBuildElemAbelianRegular());
     Append(allSpecs, _HuntBuildIntransitive());
+    Append(allSpecs, _HuntBuildInhomogeneous());
     Append(allSpecs, _HuntBuildAGL1());
     Append(allSpecs, _HuntBuildAGLmd());
     Append(allSpecs, _HuntBuildPSL());
+    Append(allSpecs, _HuntBuildPGL());
+    Append(allSpecs, _HuntBuildMathieu());
     Append(allSpecs, _HuntBuildWreath());
+    Append(allSpecs, _HuntBuildBigWreath());
+    Append(allSpecs, _HuntBuildTransGrpHard());
 
     Print("# ", Length(allSpecs), " instances; budget=",
           budget_per_call_secs, "s/call; backends=", backends, "\n");

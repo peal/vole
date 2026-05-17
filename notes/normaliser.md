@@ -824,3 +824,175 @@ magnitude on highly intransitive inputs, per [CJR22].
   `rust/src/vole/{domain_state,selector,search/mod}.rs`,
   `dependencies/GraphBacktracking/gap/constraints/normaliser.g`,
   `dependencies/BacktrackKit/gap/constraint.gi:218`.
+
+## 7. Rereview findings (2026-05) — techniques in Theißen / GAP not yet on the phase plan
+
+After implementing Phase A (orbital widget) + Phase C (regular-orbit
+selector) + Phase E (ByOrbits / L-overgroup wrapper), I went back to
+both Theißen's thesis and `stbcbckt.gi` to look for anything we missed.
+Notes here are intentionally short — these are seeds for future PRs, not
+finished designs.
+
+### 7.1 The "ξ_∞" iterated equitable refinement on the orbital config
+
+Theißen §3.4.8 explicitly states the GAP impl only does ONE round of the
+orbital-graph distance/local-structure refinement ξ(Γ, α), saying the
+full McKay iterated equitable refinement is too expensive *as a
+subroutine* of the normaliser search. Vole's `digraph_stack`
+(`partition_stack.rs:519-553`) already runs that iteration to fixed
+point automatically. **This is the one place we have a strictly free
+win over GAP and it's worth quantifying.** Phase A pushes orbital
+graphs into `digraph_stack` so we DO iterate to fixed point — but only
+within a single orbital widget. Pushing more graphs (e.g. union-of-
+suborbits orbital graphs of multiple Γ_i, §3.5.6) would let the
+iteration cross-talk between widgets, potentially yielding strictly
+finer partitions than GAP can reach. This is a candidate Phase B
+extension.
+
+### 7.2 §3.6: 2-closure as a structural pre-step
+
+Two facts from §3.6 / §3.6.5:
+* `E^[2] = Aut(Σ_2(E))` — the 2-closure equals the automorphism group
+  of the orbital-graph configuration of E.
+* `N_S(E) = N_S(E) ∩ E^[2]` whenever every g ∈ N_S(E) fixes every
+  orbital graph as a set; more generally, the kernel of `N → Sym(set
+  of orbital graphs)` is exactly `N ∩ E^[2]`.
+
+Implication: when E is **2-closed** (E = E^[2]), `N_S(E)` is the
+*outer* part — elements that permute orbital graphs but lie outside
+the kernel — composed with E itself. JWW22 Cor. 8.4 already gives us
+"0 search nodes on 2-closed E" via the set-of-orbital-graphs widget,
+so this isn't new. But the *structural* observation suggests an
+alternative pipeline:
+
+1. Compute E^[2] = Aut of the individual orbital graphs (pushed as
+   fixed digraphs, not in a permuting widget). This is a 2-closure
+   computation, fast in Vole.
+2. Check whether E = E^[2]. If yes, `N(E) = Aut(orbital-config)` —
+   compute via the set-of-graphs widget. Done.
+3. If no, the inner search lives inside E^[2] rather than S_n.
+   E^[2] is often a much tighter outer group than S_n, especially when
+   E is "almost" 2-closed.
+
+This composes with Phase E: at the inner solve, use E^[2] as the outer
+constraint instead of S_n. Plausible candidate for a Phase E variant.
+
+### 7.3 §3.5.6–§3.5.7: edge-unions of orbital graphs by Π-type
+
+§3.5.7 defines the Π-type of an orbital graph Γ = (α, β)E as the set
+of cell indices in the current partition Π that meet the distance-1
+zone of Γ from α. The Π-type is invariant under any valid g, so all
+orbital graphs of the same Π-type can be unioned into a single edge-
+multigraph and pushed as one widget. This is strictly between "push
+each orbital separately" (computes the 2-closure, too strong) and
+"push the whole set permutably" (the Phase A set-of-graphs widget).
+Vole's Phase A widget groups by valence/orbital-equivalence-key, which
+is coarser than Π-type. Refining the equivalence key to Π-type would
+give finer partitions in some cases (especially deeper in the search,
+where Π has more singleton cells).
+
+### 7.4 §3.5.4: cheap two-singleton-cells refinement
+
+When the current partition Π has at least two singleton cells {α} and
+{β}, the single orbital graph (α, β)E is a P-refinement. This is the
+cheapest possible orbital-graph push and avoids enumerating the full
+set. Vole's Phase A always enumerates the full orbital set (the
+`StabTreeStabilizerOrbitalGraphs` call). At deeper depths, where Π
+has many singletons, switching to the "two-singletons" cheap case
+would save the orbital enumeration time. Effectively the `cheap` half
+of Phase B as planned.
+
+### 7.5 §3.7.3: regular characteristic subgroup F ≤ E (Phase D)
+
+§3.7.3 explicitly proposes: when E itself is not regular, search for a
+regular characteristic subgroup F (DerivedSubgroup, FittingSubgroup,
+Centre, socle for primitive affine, etc.) and apply the regular-orbit
+machinery to F. The deductions remain valid for N(E) because
+N(E) ≤ N(F) for characteristic F. This is Phase D in our plan and
+remains undone — worth picking up after the perf situation on Phase C
+is sorted.
+
+### 7.6 GAP-specific techniques not in Theißen
+
+* **`Refinements.Suborbits0..3`** (`stbcbckt.gi:1744-1850`): suborbit
+  *length-distribution* refinement. After fixing a base point, the
+  suborbits of `Stab(F, base)` partition Ω; the multi-set of suborbit
+  lengths is a g-invariant. Refines by suborbit length, and (more
+  finely) by intersection profile with existing cells. Vole's orbital
+  widget captures orbit lengths via vertex colours but **not the
+  full Suborbits3 intersection profile**. Worth investigating.
+
+* **`NormalizerViaRadical`** (`norad.gi:380`): a completely separate
+  algorithm using Fitting-radical layers via Pcgs. GAP uses it when
+  `HasFittingFreeLiftSetup(G)` AND `NrMovedPoints(G) > 1000` AND the
+  radical is at least `Size(G)^(1/3)`. This is the algorithm of choice
+  for solvable-radical-heavy groups; Vole has nothing remotely
+  similar. Likely a long-term candidate, but if we want to beat GAP on
+  solvable inputs we'd need either this or something equivalent.
+
+* **`SubgroupProperty` fallback for huge degree** (`stbcbckt.gi:2626-
+  2628`): when `NrMovedPoints(G) > 500 AND NrMovedPoints(G) > |G|`,
+  GAP gives up on the backtrack and uses SubgroupProperty (an element-
+  by-element check). Vole has no analogous fallback — for very-large-
+  degree, very-small-group inputs we might be doing strictly more
+  work than necessary.
+
+* **`Size(E) = 2` special case** (`stbcbckt.gi:2662-2668`): when E is
+  generated by a single involution, normaliser computation reduces to
+  RepOpElmTuplesPermGroup — the conjugacy problem for the involution
+  in G. Vole hits the generic path for this case. Cheap win for
+  cyclic-2 inputs but probably rare in practice.
+
+* **Skip-small-orbits heuristic** (`stbcbckt.gi:2723-2726`): in the
+  orbit-by-orbit loop, GAP unions orbits until total length ≥ 10 (or
+  exhausts orbits). For one-or-two-point orbits, the per-orbit
+  reduction overhead exceeds the saving. Our Phase E `ByOrbits` does
+  NOT apply this heuristic — every orbit, however tiny, contributes
+  a perm-iso class and a recursive call. Cheap to add and might fix
+  the perf regression observed on full-direct-product inputs.
+
+* **`IsNormal(G, E)` early-stop in orbit loop** (`stbcbckt.gi:2705-
+  2708`): GAP checks after every per-orbit refinement and bails out
+  immediately when G already normalises E. We don't have this. Cheap
+  to add (single call per outer iteration) and would dominate on
+  transitive-by-luck refinements.
+
+* **`NormalizerViaRadical` precondition**: only invoked when
+  `HasFittingFreeLiftSetup(G)`. GAP computes this for nice perm
+  groups (transgrp / primgrp library entries) automatically.
+
+### 7.7 Things our Phase C does NOT do that Theißen §3.7 does
+
+* **Schreier-tree update across rbase points**: in
+  `NextLevelRegularGroups` (line 1888-1916), GAP extends the regular-
+  orbit Schreier tree IN PARALLEL with the rbase descent. Each
+  newly-fixed regular-orbit point adds one generator to the tree, so
+  the deduced-image set grows monotonically with depth. Phase C
+  re-computes the BFS orbit from scratch at each event, which is
+  wasteful. Replacing with incremental tree extension would save
+  O(s · |O|) refiner work at the deepest levels (where O is the
+  regular orbit and s is the number of E-generators).
+
+* **`STBBCKT_STRING_REGORB3` cross-orbit propagation** (line 1924-
+  1953): "if the image of a point ω is known, the image of its
+  E-orbit is known". When the regular orbit has been pinned, ANY
+  other E-orbit's images are derivable from a single point — propagate
+  to fix the entire orbit. Phase C as implemented only fires on
+  regular-orbit points; it doesn't propagate to other orbits once
+  the regular orbit is settled. The §3.7.2 generalisation (regular
+  characteristic subgroup F ≤ E) is even broader.
+
+### 7.8 Summary table (priority guess, no commitments)
+
+| Idea | Section | Likely payoff | Cost |
+|------|---------|---------------|------|
+| Π-type orbital union (§3.5.7) | 7.3 | Med | Low (extend equiv key) |
+| 2-singleton cheap (§3.5.4) | 7.4 | Med (deep depths) | Low |
+| Phase D (reg char subgroup) | 7.5 | High for AGL-class | Med |
+| Suborbits3 intersection profile | 7.6 | Unknown | Med |
+| Phase C cross-orbit propagation | 7.7 | Med | Low |
+| IsNormal short-circuit in ByOrbits | 7.6 | Low-Med | Trivial |
+| Skip-small-orbits in ByOrbits | 7.6 | Fixes ByOrbits perf regression | Trivial |
+| E^[2] as outer in inner solve | 7.2 | Speculative | Med |
+| NormalizerViaRadical analogue | 7.6 | High for solvable | Very high |
+
