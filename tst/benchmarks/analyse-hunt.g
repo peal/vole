@@ -10,11 +10,14 @@
 
 if not IsBoundGlobal("LoadCsvHunt") then
     LoadCsvHunt := function(path)
-        local lines, header, rows, line, fields, row, raw;
+        local lines, rows, line, fields, row, raw, i;
         raw := StringFile(path);
         if raw = fail then
             Error("Cannot read ", path);
         fi;
+        # AppendTo wraps long lines on a backslash. Un-wrap them: any
+        # "\\\n" (literal backslash followed by newline) is a wrap join.
+        raw := ReplacedString(raw, "\\\n", "");
         lines := SplitString(raw, "\n");
         rows := [];
         for line in lines do

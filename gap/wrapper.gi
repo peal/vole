@@ -324,6 +324,15 @@ Vole.Normalizer := function(G, U)
         # raw record; fall through to the direct path unconditionally.
         return _Vole.NormalizerDirect(G, U);
     fi;
+    # Cheap pre-checks borrowed from GAP's NormalizerPermGroup
+    # (stbcbckt.gi:2660-2676). These short-circuit a backtrack that
+    # would otherwise enumerate all of G to confirm a trivial answer.
+    if IsTrivial(U) then
+        return G;
+    fi;
+    if IsSubset(G, U) and IsNormal(G, U) then
+        return G;
+    fi;
     wrapperName := ValueOption("wrapper");
     if wrapperName = fail then
         wrapperName := _Vole.NormalizerDefaultWrapper;
