@@ -207,7 +207,9 @@ end;
 _HuntBuildPSL := function()
     local out, specs, spec, q, G, n;
     out := [];
-    for spec in [[2, 11], [2, 13], [2, 17], [2, 19], [2, 23], [2, 25]] do
+    for spec in [[2, 11], [2, 13], [2, 17], [2, 19], [2, 23], [2, 25],
+                 [2, 27], [2, 29], [2, 31], [2, 32], [2, 37], [2, 41],
+                 [2, 43], [2, 47]] do
         q := spec[2];
         G := PSL(2, q);
         n := q + 1;
@@ -215,6 +217,112 @@ _HuntBuildPSL := function()
             category := "PSL_2_q",
             name := Concatenation("PSL(2;", String(q), ")"),
             n := n,
+            G := G));
+    od;
+    return out;
+end;
+
+# Larger AGL families — AGL(1, p) for p up to ~200, AGL(d, p) for
+# bigger (d, p). The 1-d AGL family is solvable so GAP can be slow if
+# it falls into a fittingfree branch.
+_HuntBuildBigAGL := function()
+    local out, primes, p, G, n, NrPrim, d, spec;
+    out := [];
+    primes := [53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
+               101, 103, 107, 109, 113, 127];
+    for p in primes do
+        NrPrim := NrPrimitiveGroups(p);
+        G := First(List([1 .. NrPrim], i -> PrimitiveGroup(p, i)),
+                   H -> Size(H) = p * (p - 1));
+        if G = fail then continue; fi;
+        Add(out, rec(
+            category := "big_AGL_1_p",
+            name := Concatenation("AGL(1;", String(p), ")"),
+            n := p,
+            G := G));
+    od;
+    # AGL(d, p) for larger (d, p) — these are bigger primitive groups,
+    # 2-transitive, often nontrivial.
+    for spec in [[2, 7], [2, 11], [2, 13],
+                 [3, 3], [3, 5],
+                 [4, 3], [5, 2], [6, 2]] do
+        d := spec[1]; p := spec[2]; n := p ^ d;
+        G := First(List([1 .. NrPrimitiveGroups(n)], i -> PrimitiveGroup(n, i)),
+                   H -> HasSize(H) and Size(H) = n * Size(GL(d, p)));
+        if G = fail then continue; fi;
+        Add(out, rec(
+            category := "big_AGL_d_p",
+            name := Concatenation("AGL(", String(d), ";", String(p), ")"),
+            n := n,
+            G := G));
+    od;
+    return out;
+end;
+
+# Mathieu groups — sporadic almost-simple primitive on larger
+# point-sets. M_22 to M_24 in their natural actions.
+_HuntBuildBigMathieu := function()
+    local out, spec, G, name, n;
+    out := [];
+    for spec in [[22, "M_22"], [23, "M_23"], [24, "M_24"]] do
+        n := spec[1]; name := spec[2];
+        G := MathieuGroup(n);
+        Add(out, rec(
+            category := "big_mathieu",
+            name := name,
+            n := n,
+            G := G));
+    od;
+    return out;
+end;
+
+# Larger primitive groups by degree — sample from the primitive
+# library between 21 and 50, every third entry. Skip the huge orders
+# (S_n / A_n at top indices) and the trivial cases.
+_HuntBuildBigPrimitive := function()
+    local out, n, num, k, G, name;
+    out := [];
+    for n in [21, 22, 24, 25, 27, 28, 32, 36, 45, 49] do
+        num := NrPrimitiveGroups(n);
+        for k in [1, 1 + QuoInt(num, 5), 1 + QuoInt(2 * num, 5),
+                  1 + QuoInt(3 * num, 5), 1 + QuoInt(4 * num, 5), num] do
+            if k < 1 or k > num then continue; fi;
+            G := PrimitiveGroup(n, k);
+            if Size(G) > 10 ^ 9 then continue; fi;
+            # Skip A_n and S_n themselves (always normalised trivially).
+            if Size(G) >= Factorial(n) / 2 then continue; fi;
+            name := Concatenation("PrimGrp(", String(n), ";", String(k), ")");
+            Add(out, rec(
+                category := "big_primitive",
+                name := name,
+                n := n,
+                G := G));
+        od;
+    od;
+    return out;
+end;
+
+# Deeper wreath products: imprimitive wreath at larger total degree.
+_HuntBuildBigWreathDeep := function()
+    local out, spec, inner, outer, G, n, name;
+    out := [];
+    for spec in [[SymmetricGroup(5), SymmetricGroup(5), "S_5wrS_5", 25],
+                 [SymmetricGroup(6), SymmetricGroup(4), "S_6wrS_4", 24],
+                 [SymmetricGroup(4), SymmetricGroup(6), "S_4wrS_6", 24],
+                 [SymmetricGroup(3), SymmetricGroup(8), "S_3wrS_8", 24],
+                 [CyclicGroup(IsPermGroup, 5), SymmetricGroup(5),
+                      "C_5wrS_5", 25],
+                 [CyclicGroup(IsPermGroup, 7), SymmetricGroup(4),
+                      "C_7wrS_4", 28],
+                 [CyclicGroup(IsPermGroup, 11), SymmetricGroup(3),
+                      "C_11wrS_3", 33],
+                 [SymmetricGroup(7), SymmetricGroup(3), "S_7wrS_3", 21],
+                 [SymmetricGroup(5), SymmetricGroup(6), "S_5wrS_6", 30]] do
+        G := WreathProduct(spec[1], spec[2]);
+        Add(out, rec(
+            category := "big_wreath_deep",
+            name := spec[3],
+            n := spec[4],
             G := G));
     od;
     return out;
@@ -467,6 +575,13 @@ RunHunt := function(budget_per_call_secs)
     Append(allSpecs, _HuntBuildWreath());
     Append(allSpecs, _HuntBuildBigWreath());
     Append(allSpecs, _HuntBuildTransGrpHard());
+    # Bigger families — built specifically so GAP itself takes 100ms+
+    # per instance, so Vole's startup overhead (Rust process + JSON IPC)
+    # doesn't dominate the comparison.
+    Append(allSpecs, _HuntBuildBigAGL());
+    Append(allSpecs, _HuntBuildBigMathieu());
+    Append(allSpecs, _HuntBuildBigPrimitive());
+    Append(allSpecs, _HuntBuildBigWreathDeep());
 
     Print("# ", Length(allSpecs), " instances; budget=",
           budget_per_call_secs, "s/call; backends=", backends, "\n");
