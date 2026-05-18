@@ -402,7 +402,7 @@ end;
 # Unique-regular-orbit F's avoid that pitfall — the unique O is
 # necessarily g-invariant since it's the only orbit of its size.
 _BTKit.findRegularCharacteristicSubgroup := function(group, sizeCap)
-    local mp, _hasUniqueReg, candidates, F, cs;
+    local mp, _hasUniqueReg, orbLens, candidates, F, cs;
 
     mp := MovedPoints(group);
 
@@ -418,20 +418,22 @@ _BTKit.findRegularCharacteristicSubgroup := function(group, sizeCap)
         return group;
     fi;
 
-    # Pre-compute CharacteristicSubgroups upfront, before any Size/
-    # Orbits probe on subgroups. Empirically (D_8^3 / D_8^5 subdirect
-    # mixers; reproducer in tst/benchmarks/refiner-sweep-slow.g),
-    # touching Size/Orbits on DerivedSubgroup/FittingSubgroup/Centre
-    # first puts GAP into an internal state where a later
-    # CharacteristicSubgroups call hangs indefinitely. The same call
-    # against the same H is fast (~30ms) when made before any
-    # subgroup-attribute query. Pre-computing here keeps the call
-    # cheap; we still try the cheap candidates first below as a cost-
-    # ordered prior (they're members of CS anyway).
-    if Size(group) <= sizeCap then
-        cs := CharacteristicSubgroups(group);
-    else
-        cs := fail;
+    # Early-skip for intransitive H with ≥ 2 equal-length orbits.
+    # Reasoning: if two H-orbits Ω_i, Ω_j have the same length, then
+    # generically Aut(H) contains a swap between them, and any
+    # characteristic F ≤ H must respect that swap. So F can't be
+    # regular on Ω_i without also being regular on Ω_j — and the
+    # uniqueness check fails. Skipping early also dodges a GAP-internal
+    # performance pathology in which CharacteristicSubgroups hangs
+    # after Size/Orbits have been called on Derived/Fitting/Centre
+    # subgroups (reproducer in tst/benchmarks/refiner-sweep-slow.g).
+    # This is a heuristic: there exist exotic H where two equal-length
+    # orbits have non-isomorphic H-actions and no Aut(H)-swap exists,
+    # in which case we may miss a usable F. But those cases are rare
+    # in practice and the bank doesn't include any.
+    orbLens := List(Orbits(group, mp), Length);
+    if Length(Set(orbLens)) < Length(orbLens) then
+        return fail;
     fi;
 
     candidates := [DerivedSubgroup(group),
@@ -444,7 +446,8 @@ _BTKit.findRegularCharacteristicSubgroup := function(group, sizeCap)
         if _hasUniqueReg(F) then return F; fi;
     od;
 
-    if cs <> fail then
+    if Size(group) <= sizeCap then
+        cs := CharacteristicSubgroups(group);
         for F in cs do
             if _hasUniqueReg(F) then return F; fi;
         od;
