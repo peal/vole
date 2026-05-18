@@ -418,6 +418,22 @@ _BTKit.findRegularCharacteristicSubgroup := function(group, sizeCap)
         return group;
     fi;
 
+    # Pre-compute CharacteristicSubgroups upfront, before any Size/
+    # Orbits probe on subgroups. Empirically (D_8^3 / D_8^5 subdirect
+    # mixers; reproducer in tst/benchmarks/refiner-sweep-slow.g),
+    # touching Size/Orbits on DerivedSubgroup/FittingSubgroup/Centre
+    # first puts GAP into an internal state where a later
+    # CharacteristicSubgroups call hangs indefinitely. The same call
+    # against the same H is fast (~30ms) when made before any
+    # subgroup-attribute query. Pre-computing here keeps the call
+    # cheap; we still try the cheap candidates first below as a cost-
+    # ordered prior (they're members of CS anyway).
+    if Size(group) <= sizeCap then
+        cs := CharacteristicSubgroups(group);
+    else
+        cs := fail;
+    fi;
+
     candidates := [DerivedSubgroup(group),
                    FittingSubgroup(group),
                    Centre(group)];
@@ -428,9 +444,7 @@ _BTKit.findRegularCharacteristicSubgroup := function(group, sizeCap)
         if _hasUniqueReg(F) then return F; fi;
     od;
 
-    # Exhaustive: slower but more thorough. Bounded by sizeCap.
-    if Size(group) <= sizeCap then
-        cs := CharacteristicSubgroups(group);
+    if cs <> fail then
         for F in cs do
             if _hasUniqueReg(F) then return F; fi;
         od;
