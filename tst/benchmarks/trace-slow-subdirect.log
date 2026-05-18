@@ -1,0 +1,190 @@
+
+========================================================
+CASE: D_8^3 sample 2
+========================================================
+|H| = 64, n = 12, orbits = [ 4, 4, 4 ]
+|N| = 1024  total wall = 17 ms
+
+--- entry 1 [DoNormalizerSA] ---
+  |G|=479001600 |U|=64 U_orbits=[ 4, 4, 4 ]
+  parent |P|=3072 reduction-index=155925 wall=16 ms
+--- entry 2 [DoNormalizerSA] ---
+  |G|=2 |U|=2 U_orbits=[ 2 ]
+  parent |P|=2 reduction-index=1 wall=1 ms
+--- entry 3 [NormalizerPermGroup] ---
+  input:  |G|=2 |E|=2 n=2 mpG=2 E_orbits=[ 2 ] depth=0
+  path:   size2
+  result: |N|=2 wall=0 ms
+--- entry 4 [DoNormalizerSA] ---
+  |G|=2 |U|=2 U_orbits=[ 2 ]
+  parent |P|=2 reduction-index=1 wall=0 ms
+--- entry 5 [NormalizerPermGroup] ---
+  input:  |G|=2 |E|=2 n=2 mpG=2 E_orbits=[ 2 ] depth=0
+  path:   size2
+  result: |N|=2 wall=0 ms
+--- entry 6 [NormalizerPermGroup] ---
+  input:  |G|=8 |E|=8 n=4 mpG=4 E_orbits=[ 4 ] depth=0
+  path:   G_eq_E
+  result: |N|=8 wall=0 ms
+--- entry 7 [DoNormalizerSA] ---
+  |G|=2 |U|=2 U_orbits=[ 2 ]
+  parent |P|=2 reduction-index=1 wall=0 ms
+--- entry 8 [NormalizerPermGroup] ---
+  input:  |G|=2 |E|=2 n=2 mpG=2 E_orbits=[ 2 ] depth=0
+  path:   size2
+  result: |N|=2 wall=0 ms
+--- entry 9 [DoNormalizerSA] ---
+  |G|=2 |U|=2 U_orbits=[ 2 ]
+  parent |P|=2 reduction-index=1 wall=0 ms
+--- entry 10 [NormalizerPermGroup] ---
+  input:  |G|=2 |E|=2 n=2 mpG=2 E_orbits=[ 2 ] depth=0
+  path:   size2
+  result: |N|=2 wall=0 ms
+--- entry 11 [NormalizerPermGroup] ---
+  input:  |G|=3072 |E|=64 n=12 mpG=12 E_orbits=[ 4, 4, 4 ] depth=0
+  path:   single
+  result: |N|=1024 wall=0 ms
+  sub-call 1:
+    |G|=3072 |E|=64 |Omega|=12 E_orbits=[ 4, 4, 4 ]
+    rbase=0 ms backtrack=0 ms
+    nodes=14 leaves=10 refinements=8 refine_time=0 ms
+    cells_added_by_refinement=4 pruned_min=0 pruned_part=1
+    |N|=1024
+
+
+========================================================
+CASE: S_4^4 sample 1
+========================================================
+|H| = 165888, n = 16, orbits = [ 4, 4, 4, 4 ]
+|N| = 7962624  total wall = 81 ms
+
+--- entry 1 [DoNormalizerSA] ---
+  |G|=20922789888000 |U|=165888 U_orbits=[ 4, 4, 4, 4 ]
+  parent |P|=7962624 reduction-index=2627625 wall=77 ms
+--- entry 2 [DoNormalizerSA] ---
+  |G|=24 |U|=24 U_orbits=[ 4 ]
+  parent |P|=24 reduction-index=1 wall=0 ms
+--- entry 3 [NormalizerPermGroup] ---
+  input:  |G|=24 |E|=24 n=4 mpG=4 E_orbits=[ 4 ] depth=0
+  path:   G_eq_E
+  result: |N|=24 wall=0 ms
+--- entry 4 [NormalizerPermGroup] ---
+  input:  |G|=7962624 |E|=165888 n=16 mpG=16 E_orbits=[ 4, 4, 4, 4 ] depth=0
+  path:   single
+  result: |N|=7962624 wall=3 ms
+  sub-call 1:
+    |G|=7962624 |E|=165888 |Omega|=16 E_orbits=[ 4, 4, 4, 4 ]
+    rbase=0 ms backtrack=3 ms
+    nodes=41 leaves=17 refinements=16 refine_time=0 ms
+    cells_added_by_refinement=6 pruned_min=0 pruned_part=0
+    |N|=7962624
+
+
+========================================================
+CASE: S_4^4 sample 2
+========================================================
+|H| = 165888, n = 16, orbits = [ 4, 4, 4, 4 ]
+|N| = 1327104  total wall = 108 ms
+
+--- entry 1 [DoNormalizerSA] ---
+  |G|=20922789888000 |U|=165888 U_orbits=[ 4, 4, 4, 4 ]
+  parent |P|=7962624 reduction-index=2627625 wall=102 ms
+--- entry 2 [DoNormalizerSA] ---
+  |G|=24 |U|=24 U_orbits=[ 4 ]
+  parent |P|=24 reduction-index=1 wall=0 ms
+--- entry 3 [NormalizerPermGroup] ---
+  input:  |G|=24 |E|=24 n=4 mpG=4 E_orbits=[ 4 ] depth=0
+  path:   G_eq_E
+  result: |N|=24 wall=0 ms
+--- entry 4 [NormalizerPermGroup] ---
+  input:  |G|=7962624 |E|=165888 n=16 mpG=16 E_orbits=[ 4, 4, 4, 4 ] depth=0
+  path:   single
+  result: |N|=1327104 wall=5 ms
+  sub-call 1:
+    |G|=7962624 |E|=165888 |Omega|=16 E_orbits=[ 4, 4, 4, 4 ]
+    rbase=0 ms backtrack=5 ms
+    nodes=83 leaves=22 refinements=39 refine_time=0 ms
+    cells_added_by_refinement=15 pruned_min=8 pruned_part=0
+    |N|=1327104
+
+
+========================================================
+CASE: D_8^5 sample 2
+========================================================
+|H| = 1024, n = 20, orbits = [ 4, 4, 4, 4, 4 ]
+|N| = 32768  total wall = 34 ms
+
+--- entry 1 [DoNormalizerSA] ---
+  |G|=2432902008176640000 |U|=1024 U_orbits=[ 4, 4, 4, 4, 4 ]
+  parent |P|=3932160 reduction-index=618718975875 wall=20 ms
+--- entry 2 [DoNormalizerSA] ---
+  |G|=2 |U|=2 U_orbits=[ 2 ]
+  parent |P|=2 reduction-index=1 wall=0 ms
+--- entry 3 [NormalizerPermGroup] ---
+  input:  |G|=2 |E|=2 n=2 mpG=2 E_orbits=[ 2 ] depth=0
+  path:   size2
+  result: |N|=2 wall=0 ms
+--- entry 4 [DoNormalizerSA] ---
+  |G|=2 |U|=2 U_orbits=[ 2 ]
+  parent |P|=2 reduction-index=1 wall=0 ms
+--- entry 5 [NormalizerPermGroup] ---
+  input:  |G|=2 |E|=2 n=2 mpG=2 E_orbits=[ 2 ] depth=0
+  path:   size2
+  result: |N|=2 wall=0 ms
+--- entry 6 [NormalizerPermGroup] ---
+  input:  |G|=8 |E|=8 n=4 mpG=4 E_orbits=[ 4 ] depth=0
+  path:   G_eq_E
+  result: |N|=8 wall=0 ms
+--- entry 7 [DoNormalizerSA] ---
+  |G|=2 |U|=2 U_orbits=[ 2 ]
+  parent |P|=2 reduction-index=1 wall=0 ms
+--- entry 8 [NormalizerPermGroup] ---
+  input:  |G|=2 |E|=2 n=2 mpG=2 E_orbits=[ 2 ] depth=0
+  path:   size2
+  result: |N|=2 wall=0 ms
+--- entry 9 [DoNormalizerSA] ---
+  |G|=2 |U|=2 U_orbits=[ 2 ]
+  parent |P|=2 reduction-index=1 wall=0 ms
+--- entry 10 [NormalizerPermGroup] ---
+  input:  |G|=2 |E|=2 n=2 mpG=2 E_orbits=[ 2 ] depth=0
+  path:   size2
+  result: |N|=2 wall=0 ms
+--- entry 11 [DoNormalizerSA] ---
+  |G|=2 |U|=2 U_orbits=[ 2 ]
+  parent |P|=2 reduction-index=1 wall=0 ms
+--- entry 12 [NormalizerPermGroup] ---
+  input:  |G|=2 |E|=2 n=2 mpG=2 E_orbits=[ 2 ] depth=0
+  path:   size2
+  result: |N|=2 wall=0 ms
+--- entry 13 [DoNormalizerSA] ---
+  |G|=2 |U|=2 U_orbits=[ 2 ]
+  parent |P|=2 reduction-index=1 wall=0 ms
+--- entry 14 [NormalizerPermGroup] ---
+  input:  |G|=2 |E|=2 n=2 mpG=2 E_orbits=[ 2 ] depth=0
+  path:   size2
+  result: |N|=2 wall=0 ms
+--- entry 15 [DoNormalizerSA] ---
+  |G|=2 |U|=2 U_orbits=[ 2 ]
+  parent |P|=2 reduction-index=1 wall=0 ms
+--- entry 16 [NormalizerPermGroup] ---
+  input:  |G|=2 |E|=2 n=2 mpG=2 E_orbits=[ 2 ] depth=0
+  path:   size2
+  result: |N|=2 wall=0 ms
+--- entry 17 [DoNormalizerSA] ---
+  |G|=2 |U|=2 U_orbits=[ 2 ]
+  parent |P|=2 reduction-index=1 wall=0 ms
+--- entry 18 [NormalizerPermGroup] ---
+  input:  |G|=2 |E|=2 n=2 mpG=2 E_orbits=[ 2 ] depth=0
+  path:   size2
+  result: |N|=2 wall=0 ms
+--- entry 19 [NormalizerPermGroup] ---
+  input:  |G|=3932160 |E|=1024 n=20 mpG=20 E_orbits=[ 4, 4, 4, 4, 4 ] depth=0
+  path:   single
+  result: |N|=32768 wall=14 ms
+  sub-call 1:
+    |G|=3932160 |E|=1024 |Omega|=20 E_orbits=[ 4, 4, 4, 4, 4 ]
+    rbase=0 ms backtrack=13 ms
+    nodes=700 leaves=143 refinements=689 refine_time=3 ms
+    cells_added_by_refinement=555 pruned_min=0 pruned_part=0
+    |N|=32768
+

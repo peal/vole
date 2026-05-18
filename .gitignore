@@ -43,3 +43,6 @@
 
 # Local-only: the Theissen thesis PDF (copyright, not committed).
 /Theissen_DissNormalisatorPermGrp.pdf
+
+# Claude Code per-conversation runtime state.
+/.claude/
