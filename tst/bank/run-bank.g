@@ -21,6 +21,7 @@ Read("tst/bank/canonical_groups.g");
 Read("tst/bank/regression.g");
 Read("tst/bank/jnp.g");
 Read("tst/bank/directprod.g");
+Read("tst/bank/subdirect.g");
 
 # Each runner returns `true` iff all its checks passed.
 RunBank := function(mode)
@@ -36,6 +37,7 @@ RunBank := function(mode)
     results.regression   := RunBank_regression(mode);
     results.jnp          := RunBank_jnp(mode);
     results.directprod   := RunBank_directprod(mode);
+    results.subdirect    := RunBank_subdirect(mode);
 
     overall := ForAll(RecNames(results), n -> results.(n));
     Print(StringFormatted("\n=== Bank result (mode={}) ===\n", mode));

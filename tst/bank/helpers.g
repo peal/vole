@@ -172,3 +172,37 @@ BankTimeCapMs := function(mode)
         Error("BankTimeCapMs: unknown mode ", mode);
     fi;
 end;
+
+# Shift a permutation by a positive integer, so its support moves up
+# by that amount. Used to place a transitive group's natural action
+# at a non-trivial offset for building disjoint-supports direct
+# products.
+BankShiftPerm := function(p, shift)
+    local lmp, sigma;
+    lmp := LargestMovedPoint(p);
+    if lmp = 0 then
+        return ();
+    fi;
+    sigma := MappingPermListList([1 .. lmp], [shift + 1 .. shift + lmp]);
+    return p ^ sigma;
+end;
+
+# Build the on-disjoint-supports direct product of `groups`. Each
+# group acts on its standard support [1..LargestMovedPoint(group)];
+# the i-th group is shifted to sit after the cumulative supports of
+# groups 1..i-1.
+BankDisjointDirectProduct := function(groups)
+    local gens, shift, G, g;
+    gens := [];
+    shift := 0;
+    for G in groups do
+        for g in GeneratorsOfGroup(G) do
+            Add(gens, BankShiftPerm(g, shift));
+        od;
+        shift := shift + LargestMovedPoint(G);
+    od;
+    if IsEmpty(gens) then
+        return Group(());
+    fi;
+    return Group(gens);
+end;

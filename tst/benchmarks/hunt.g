@@ -19,6 +19,16 @@ if not IsBoundGlobal("IO_CallWithTimeout") then
     LoadPackage("io", false);
 fi;
 
+# Pull in BankShiftPerm + BankDisjointDirectProduct + the subdirect
+# mixer (BankBuildSubdirectMixer) so we can build "messy" intransitive
+# inputs the same way the bank tests do.
+if not IsBoundGlobal("BankShiftPerm") then
+    Read("tst/bank/helpers.g");
+fi;
+if not IsBoundGlobal("BankBuildSubdirectMixer") then
+    Read("tst/bank/subdirect.g");
+fi;
+
 # ─── Child entry points ─────────────────────────────────────────────
 # These run inside the forked child. They take perm generators (a list)
 # and the degree n, build the group locally, do the timed work, and
@@ -298,6 +308,66 @@ _HuntBuildBigPrimitive := function()
                 n := n,
                 G := G));
         od;
+    od;
+    return out;
+end;
+
+# Subdirect mixer: build "messy" intransitive groups by sampling
+# random elements from disjoint direct products of larger transitives,
+# rejecting candidates that Vole.DDPD says are pure direct products
+# (Length(DDPD) = number of base orbits). The user's recipe: 4-5
+# orbits, base groups bigger than C_p, and verify non-trivial glueing
+# via DDPD.
+#
+# Dihedral-heavy base list because dihedrals have rich quotient
+# structure (Z_2 and Z_d quotients) and reliably give subdirect (not
+# direct) mixers — sampled empirically ~100% glue rate.
+_HuntBuildSubdirectMixer := function()
+    local out, rs, specs, idx, spec, mixer, n_total, name;
+    rs := RandomSource(IsMersenneTwister, 20260518);
+    specs := [
+        # Two orbits
+        [[DihedralGroup(IsPermGroup, 10), DihedralGroup(IsPermGroup, 10)],
+         3, "D10x2"],
+        [[DihedralGroup(IsPermGroup, 14), DihedralGroup(IsPermGroup, 14)],
+         3, "D14x2"],
+        [[SymmetricGroup(5), SymmetricGroup(5)], 3, "S5x2"],
+        # Three orbits
+        [[DihedralGroup(IsPermGroup, 8), DihedralGroup(IsPermGroup, 8),
+          DihedralGroup(IsPermGroup, 8)], 3, "D8x3"],
+        [[DihedralGroup(IsPermGroup, 12), DihedralGroup(IsPermGroup, 12),
+          DihedralGroup(IsPermGroup, 12)], 4, "D12x3"],
+        [[CyclicGroup(IsPermGroup, 7), CyclicGroup(IsPermGroup, 7),
+          CyclicGroup(IsPermGroup, 7)], 2, "C7x3"],
+        # Four orbits
+        [[DihedralGroup(IsPermGroup, 8), DihedralGroup(IsPermGroup, 8),
+          DihedralGroup(IsPermGroup, 8), DihedralGroup(IsPermGroup, 8)],
+         4, "D8x4"],
+        [[DihedralGroup(IsPermGroup, 12), DihedralGroup(IsPermGroup, 12),
+          DihedralGroup(IsPermGroup, 12), DihedralGroup(IsPermGroup, 12)],
+         5, "D12x4"],
+        [[SymmetricGroup(4), SymmetricGroup(4),
+          SymmetricGroup(4), SymmetricGroup(4)], 5, "S4x4"],
+        # Five orbits
+        [[DihedralGroup(IsPermGroup, 8), DihedralGroup(IsPermGroup, 8),
+          DihedralGroup(IsPermGroup, 8), DihedralGroup(IsPermGroup, 8),
+          DihedralGroup(IsPermGroup, 8)], 5, "D8x5"],
+        [[DihedralGroup(IsPermGroup, 10), DihedralGroup(IsPermGroup, 10),
+          DihedralGroup(IsPermGroup, 10), DihedralGroup(IsPermGroup, 10),
+          DihedralGroup(IsPermGroup, 10)], 6, "D10x5"]
+    ];
+    out := [];
+    for idx in [1 .. Length(specs)] do
+        spec := specs[idx];
+        n_total := Sum(spec[1], LargestMovedPoint);
+        mixer := BankBuildSubdirectMixer(rs, spec[1], spec[2],
+                                         Length(spec[1]) - 1, 40);
+        if mixer = fail then continue; fi;
+        Add(out, rec(
+            category := "subdirect_mixer",
+            name := spec[3],
+            n := n_total,
+            G := mixer.group));
     od;
     return out;
 end;
@@ -582,6 +652,7 @@ RunHunt := function(budget_per_call_secs)
     Append(allSpecs, _HuntBuildBigMathieu());
     Append(allSpecs, _HuntBuildBigPrimitive());
     Append(allSpecs, _HuntBuildBigWreathDeep());
+    Append(allSpecs, _HuntBuildSubdirectMixer());
 
     Print("# ", Length(allSpecs), " instances; budget=",
           budget_per_call_secs, "s/call; backends=", backends, "\n");
