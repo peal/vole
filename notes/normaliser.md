@@ -1056,3 +1056,65 @@ seems to hold in Phase D too — both sides propose the same cell
 index for any valid g — yet the empirical search rejects valid g
 when propose is enabled. Worth a fresh look with a debugger.
 
+### 8.2 Hard inputs found by post-hoc loss-hunt (May 2026)
+
+The original hunt averaged ~17 ms/instance in GAP, so we suspected
+Vole's startup + JSON-IPC overhead was the dominant factor.
+Re-running with GAP-slow inputs (1 s+ per instance) confirmed the
+constants story is incomplete: Vole loses **algorithmically** on
+two input classes, not just from overhead.
+
+**Chang-style JnP subdirect**: H ≤ (C_p)^k a strict subdirect of
+order `p^(k/2)`, intransitive on `pk` points, all orbit-restrictions
+the same. Class targeted by Phase F (Chang DDPD; [CJR22]) which we
+have not yet implemented.
+
+```
+jnp_subdirect(3, 10)   n=30   |H|=243
+  gap                       5.1 s
+  Orbital                   TIMEOUT >60 s
+  OrbitalRegOrbit           TIMEOUT >60 s
+  OrbitalRegOrbitChar (D)   TIMEOUT >60 s
+  wrap:direct               TIMEOUT >60 s
+  wrap:ByOrbits             TIMEOUT >60 s
+
+jnp_subdirect(3, 12)   n=36   |H|=729
+  gap                       19 min
+  All vole variants         TIMEOUT >60 s
+```
+
+All five Vole configurations time out at 60 s on (3, 10) where GAP
+takes 5 s — at least 12× slower, lower bound. ByOrbits (Phase E
+L-overgroup) doesn't help because all 10 orbits give the same
+perm-iso class `C_3` so L = S_3 ≀ S_10 is enormous and the inner
+search has the hard work alone. Phase F's DDPD would short-circuit
+this by recognising the subdirect signature at the wrapper level
+without searching.
+
+**Large affine primitive**: AGL(d, p) at degree ≥ 100. 2-transitive
+(orbital widget useless) but Phase D's regular-characteristic-subgroup
+machinery applies (the translation radical is regular and
+characteristic).
+
+```
+AGL(2, 5)   n=25   gap=6 ms     PhaseD=42 ms       (7x)
+AGL(2, 7)   n=49   gap=10 ms    PhaseD=170 ms      (17x)
+AGL(3, 3)   n=27   gap=6 ms     PhaseD=88 ms       (15x)
+AGL(3, 5)   n=125  gap=43 ms    Orbital=TIMEOUT
+                                OrbitalRegOrbit=TIMEOUT
+                                PhaseD=10 010 ms   (233x)
+AGL(3, 7)   n=343  gap=734 ms   (vole pending)
+```
+
+On the bigger AGL inputs only Phase D survives at all. Other Vole
+variants TIMEOUT >120 s. The 200-1000× factor against GAP at degree
+100+ likely reflects GAP's `NormalizerViaRadical` path — a Pcgs/
+radical-layer algorithm fundamentally different from backtrack
+(§7.6). Vole has no analog. Until we have one or until Phase D is
+much faster, the affine primitive class is out of reach.
+
+**Implication for the priority table in §7.8**: Phase F moves to top
+priority (it's the only way to compete on intransitive subdirect),
+followed by a NormalizerViaRadical-style algorithm or a much faster
+Phase D (constants need to come down ~100×).
+
