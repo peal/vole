@@ -19,5 +19,6 @@ ReadPackage("Vole", "gap/constraints.gd");
 ReadPackage("Vole", "gap/interface.gd");
 ReadPackage("Vole", "gap/refiners.gd");
 ReadPackage("Vole", "gap/wrapper.gd");
+ReadPackage("Vole", "gap/directprod.gd");
 
 
