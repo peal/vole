@@ -151,18 +151,32 @@ pub fn dump_partition(label: &str, depth: usize, state: &DomainState) {
 }
 
 /// Emit a branch-choice event.  `cell_size` is included so it's
-/// obvious how wide the branching cell was.
-pub fn dump_branch(depth: usize, cell: usize, value: usize, cell_size: usize) {
+/// obvious how wide the branching cell was.  `rbase_src` is the
+/// rbase value being mapped to `value` — i.e. the assignment we are
+/// trying is `rbase_src -> value`.  `None` if we are still building
+/// the rbase (left descent).
+pub fn dump_branch(
+    depth: usize,
+    cell: usize,
+    value: usize,
+    cell_size: usize,
+    rbase_src: Option<usize>,
+) {
     if !enabled(DumpLevel::BRANCH) {
         return;
     }
+    let src = match rbase_src {
+        Some(s) => format!("{}", s),
+        None => "(rbase)".to_string(),
+    };
     eprintln!(
-        "[vole d={} #{}] {:<10} cell={} size={} value={}",
+        "[vole d={} #{}] {:<10} cell={} size={} {} -> {}",
         depth,
         next_seq(),
         "branch",
         cell,
         cell_size,
+        src,
         value
     );
 }

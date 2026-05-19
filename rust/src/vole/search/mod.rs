@@ -142,7 +142,12 @@ fn simple_search_recurse(
     for c in cell {
         let _span = trace_span!("C", value = c).entered();
 
-        crate::vole::diag::dump_branch(depth, cell_num, c, cell_size);
+        let rbase_src = if doing_first_branch && first_branch_in {
+            None
+        } else {
+            state.domain.rbase_branch_vals().get(depth).copied()
+        };
+        crate::vole::diag::dump_branch(depth, cell_num, c, cell_size, rbase_src);
 
         if doing_first_branch && first_branch_in {
             state.domain.push_rbase_branch_val(c);
@@ -161,6 +166,11 @@ fn simple_search_recurse(
             state.save_state();
             let cell_count = state.domain.partition().base_cells().len();
             info!("Try branching on {:?} in cell {:?}", c, cell_num);
+            // Snapshot stats so we can detect dead branches (work
+            // done with no solutions found) post-recursion.
+            let nodes_before = state.stats.search_nodes;
+            let trace_fail_before = state.stats.trace_fail_nodes;
+            let solutions_before = sols.get().len();
             if state.domain.refine_partition_cell_by(cell_num, |x| *x == c).is_ok() {
                 assert!(state.domain.partition().base_cells().len() == cell_count + 1);
                 if state
@@ -182,6 +192,33 @@ fn simple_search_recurse(
                 }
             } else {
                 state.stats.trace_fail_nodes += 1;
+            }
+            // Dead-branch report: this branch's subtree did work
+            // but produced no solutions.  Telltale that the
+            // refinement above us wasn't strong enough to rule out
+            // the dead end before descending.
+            let nodes_under = state.stats.search_nodes - nodes_before;
+            let trace_fail_under = state.stats.trace_fail_nodes - trace_fail_before;
+            let solutions_under = sols.get().len() - solutions_before;
+            if solutions_under == 0 && nodes_under >= 5 {
+                let rbase_src = state.domain.rbase_branch_vals().get(depth).copied();
+                let src = match rbase_src {
+                    Some(s) => format!("{}", s),
+                    None => "(rbase)".to_string(),
+                };
+                crate::vole::diag::dump_event(
+                    "dead_branch",
+                    depth,
+                    &format!(
+                        "{} -> {}  nodes={}  trace_fail={}",
+                        src, c, nodes_under, trace_fail_under
+                    ),
+                );
+                // Dump the partition as it stood just before we
+                // descended into this doomed branch (we are still
+                // in the refined state — state.restore_state has
+                // not yet been called).
+                crate::vole::diag::dump_partition("dead_part", depth, &state.domain);
             }
             state.restore_state();
 
