@@ -2,6 +2,7 @@ use tracing::info;
 
 use crate::gap_chat::GapChatType;
 use crate::perm::Permutation;
+use crate::vole::search::SearchConfig;
 use crate::vole::solutions::{Canonical, SolutionFound, Solutions};
 use crate::vole::state::State;
 use crate::vole::{partition_stack, trace};
@@ -9,7 +10,7 @@ use crate::vole::{partition_stack, trace};
 /// Check when we reach a candidate solution
 
 /// Check if current DomainState produces a smaller canonical image
-fn check_canonical(in_state: &mut State, sols: &mut Solutions) {
+fn check_canonical(in_state: &mut State, sols: &mut Solutions, search_config: &SearchConfig) {
     let refiners = &mut in_state.refiners;
     let state = &mut in_state.domain;
     let stats = &mut in_state.stats;
@@ -19,10 +20,21 @@ fn check_canonical(in_state: &mut State, sols: &mut Solutions) {
 
     // Get canonical permutation
     let preimage: Vec<usize> = part.base_cells().iter().map(|&x| part.cell(x)[0]).collect();
-    // GAP needs 1 indexed
-    let preimagegap: Vec<usize> = preimage.iter().map(|&x| x + 1).collect();
-    let postimagegap: Vec<usize> = GapChatType::send_request(&("canonicalmin", &preimagegap)).unwrap();
-    let postimage: Vec<usize> = postimagegap.into_iter().map(|x| x - 1).collect();
+    // When the canonical group is the full symmetric group on the
+    // domain (signalled by canonical_min_trivial), the canonical-min
+    // of any tuple is `[0..k-1]` — we can compute this locally and
+    // skip the GAP round-trip entirely. This is exactly the case GAP's
+    // canonicalmin handler short-circuits (gap/internal/comms.gi:343);
+    // doing it Rust-side both saves the IPC and lets sub-searches
+    // (which must not call back into GAP) reach this code path.
+    let postimage: Vec<usize> = if search_config.canonical_min_trivial {
+        (0..preimage.len()).collect()
+    } else {
+        // GAP needs 1 indexed
+        let preimagegap: Vec<usize> = preimage.iter().map(|&x| x + 1).collect();
+        let postimagegap: Vec<usize> = GapChatType::send_request(&("canonicalmin", &preimagegap)).unwrap();
+        postimagegap.into_iter().map(|x| x - 1).collect()
+    };
     let mut image: Vec<usize> = vec![0; pnts];
     for i in 0..pnts {
         image[preimage[i]] = postimage[i];
@@ -63,7 +75,7 @@ fn check_canonical(in_state: &mut State, sols: &mut Solutions) {
     }
 }
 
-pub fn check_solution(in_state: &mut State, sols: &mut Solutions) -> SolutionFound {
+pub fn check_solution(in_state: &mut State, sols: &mut Solutions, search_config: &SearchConfig) -> SolutionFound {
     let refiners = &mut in_state.refiners;
     let state = &mut in_state.domain;
     let stats = &mut in_state.stats;
@@ -127,7 +139,7 @@ pub fn check_solution(in_state: &mut State, sols: &mut Solutions) -> SolutionFou
     }
 
     if tracing_type.contains(trace::TracingType::CANONICAL) {
-        check_canonical(in_state, sols);
+        check_canonical(in_state, sols, search_config);
     }
 
     sol_found

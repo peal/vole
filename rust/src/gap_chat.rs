@@ -135,11 +135,26 @@ struct GapError {
 impl GapChatType {
     /// Send an object to GAP, and receive a reply. `T` is serialized
     /// to JSON, and the reply is deserialized into type `U`.
+    ///
+    /// PANICS if called while a sub-search is active. The GAP-side
+    /// session has a fixed canonical-group binding for its whole
+    /// lifetime and no protocol for sub-search-scoped queries, so any
+    /// GAP callback originating inside a sub-search would be reading
+    /// from the wrong context. Sub-search code paths must handle their
+    /// own canonical-min / refinement locally. See
+    /// `crate::vole::subsearch::SubSearchGuard`.
     pub fn send_request<T, U>(request: &T) -> Result<U, Error>
     where
         T: serde::Serialize + std::fmt::Debug,
         U: serde::de::DeserializeOwned + std::fmt::Debug,
     {
+        assert_eq!(
+            crate::vole::subsearch::IN_SUB_SEARCH.load(std::sync::atomic::Ordering::SeqCst),
+            0,
+            "GAP callback during sub-search is not supported \
+             (the outer session's canonical-group binding is wrong \
+             for the sub-state; the sub-search must compute locally)"
+        );
         let gap_channel = GAP_CHAT.lock().unwrap();
         Self::send_request_internal(request, gap_channel)
     }
