@@ -193,6 +193,29 @@ fi;
 # miss structure that the per-node Aut computation could find.
 _Vole.FullGraphRefine := false;
 
+# Toggle for the root Aut shortcut: after the refiners' init pass,
+# run one sub-search to find Aut(post-init digraph stack), check
+# every returned generator against the outer refiners, add the
+# satisfying ones to the solution set. If every generator passes,
+# Aut(widget) ⊆ outer-group, and since the refiners always push
+# widgets the outer group preserves we have Aut(widget) ⊇ outer-
+# group, so the two are equal — and the partition backtrack is
+# skipped entirely.
+#
+# Empirically the shortcut SUCCEEDS at the root for the direct /
+# wreath product families we measured (they are all 2-closed; see
+# tst/benchmarks/probe-orbital-set-aut.g). But "succeeds" doesn't
+# always mean "saves time". The sub-search performs essentially the
+# same partition backtrack the main search would, just shifted into
+# "find Aut(widget)" instead of "find N(H)". When the main search
+# would be quick anyway, the shortcut is wasted work. Measured on
+# C_5^4 (deg 20): main search 105 ms, shortcut 1713 ms — a 16×
+# regression even though both return the same correct answer.
+#
+# So this is opt-in. Useful for probing whether a given input class
+# is 2-closed and well-served by the root-Aut answer; not a default.
+_Vole.RootAutShortcut := false;
+
 _Vole.ForkVole := function(extraargs...)
     local rustpipe, gappipe, bind, args, ret, prog, firsttime, t, f, pipe, dirs, child;
     firsttime := false;
@@ -457,6 +480,7 @@ function(points, find_single, find_coset, find_canonical, constraints, canonical
                       root_search    := root_search,
                       search_config  := rec(
                           full_graph_refine := _Vole.FullGraphRefine,
+                          root_aut_shortcut := _Vole.RootAutShortcut,
                           find_single := find_single),
                   ),
                   constraints := constraints),

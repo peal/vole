@@ -31,6 +31,18 @@ pub struct SearchConfig {
     /// during a sub-search.
     #[serde(default)]
     pub canonical_min_trivial: bool,
+    /// If true, run a one-shot sub-search at the root that finds
+    /// `Aut(post-init digraph stack)` and checks each generator
+    /// against the outer refiners. If every generator passes, the
+    /// shortcut completes the whole search without invoking the
+    /// partition backtrack. If some fail, the satisfying generators
+    /// are still added to `sols`, pre-populating the orbit map.
+    /// Useful when the refiners push enough graph structure for the
+    /// widget's automorphism group to already equal the desired
+    /// group (2-closed inputs — empirically including every
+    /// `(C_p)^k`, `D_n^k`, `S_n^k` instance we have measured).
+    #[serde(default)]
+    pub root_aut_shortcut: bool,
 }
 
 impl Default for SearchConfig {
@@ -39,6 +51,7 @@ impl Default for SearchConfig {
             full_graph_refine: true,
             find_single: false,
             canonical_min_trivial: false,
+            root_aut_shortcut: false,
         }
     }
 }
@@ -293,6 +306,54 @@ pub fn simple_coset_search(state: &mut State, sols: &mut Solutions, search_confi
     trace!("Finishing Single Permutation Search");
 }
 
+/// Try the root-level Aut shortcut: run a sub-search to find the
+/// automorphism group of the digraph stack as it stands after the
+/// outer refiners' initialise pass.  Check every generator the sub-
+/// search returns against the outer refiners.  Add the satisfying
+/// ones to the outer `sols` (these are valid strong generators of
+/// the outer problem).  Return `true` iff every generator passed —
+/// in that case `Aut(widget) ⊆ outer-group`, and since the refiners
+/// pushed the widget we also have `Aut(widget) ⊇ outer-group`, so
+/// the two are equal and the main partition backtrack is unnecessary.
+///
+/// When the shortcut fails we still get the pre-population benefit:
+/// the satisfying generators have been added to `sols`, so the main
+/// search starts with a richer orbit structure and prunes more
+/// branches.
+fn try_root_aut_shortcut(
+    state: &mut State,
+    sols: &mut Solutions,
+    search_config: &SearchConfig,
+) -> bool {
+    let mut sub_config = search_config.clone();
+    sub_config.canonical_min_trivial = true;
+    sub_config.full_graph_refine = false;
+    // Crucial: disable root_aut_shortcut in the sub-search itself,
+    // otherwise the sub-search's simple_group_search would recurse
+    // through try_root_aut_shortcut indefinitely.
+    sub_config.root_aut_shortcut = false;
+    let (sub_sols, _digraph) = crate::vole::subsearch::sub_simple_search(state, &sub_config);
+    let sub_gens = sub_sols.get().clone();
+    if sub_gens.is_empty() {
+        // Aut(widget) is trivial — N(H) is then also trivial (it's
+        // contained in Aut(widget)). Outer sols stays empty; caller
+        // gets the trivial group.
+        return true;
+    }
+    let mut all_pass = true;
+    for g in &sub_gens {
+        if state.refiners.check_all(g) {
+            sols.add_solution(g);
+        } else {
+            all_pass = false;
+        }
+    }
+    if all_pass {
+        info!("Root Aut shortcut succeeded; |gens| = {}", sub_gens.len());
+    }
+    all_pass
+}
+
 /// Standard complete search, for stabilizer + canonical image
 pub fn simple_group_search(state: &mut State, sols: &mut Solutions, search_config: &SearchConfig) {
     trace!("Starting Search");
@@ -300,6 +361,9 @@ pub fn simple_group_search(state: &mut State, sols: &mut Solutions, search_confi
         .refiners
         .init_refine(&mut state.domain, Side::Left, &mut state.stats);
     if ret.is_err() {
+        return;
+    }
+    if search_config.root_aut_shortcut && try_root_aut_shortcut(state, sols, search_config) {
         return;
     }
     let _ = simple_search_recurse(state, sols, true, 0, search_config);
@@ -428,5 +492,52 @@ mod fgr_tests {
             vec![6], vec![7], vec![8], vec![9], vec![5],
         ]);
         assert_eq!(stab_search_order(d, 10, true), 50);
+    }
+
+    /// Same setup as `stab_search_order` but turns on root_aut_shortcut.
+    /// For digraph stabiliser searches on these small inputs the
+    /// shortcut should consume the entire problem at the root and skip
+    /// the partition backtrack.
+    fn stab_search_order_with_shortcut(digraph: Digraph, n: usize) -> usize {
+        let refiner: Box<dyn Refiner> =
+            Box::new(DigraphTransporter::new_stabilizer(Arc::new(digraph)));
+        let refiners = RefinerStore::new_from_refiners(vec![refiner]);
+        let tracer = trace::Tracer::new_with_type(TracingType::BOTH);
+        let domain = DomainState::new(n, tracer);
+        let mut state = State {
+            domain,
+            refiners,
+            stats: Default::default(),
+        };
+        let mut sols = Solutions::new(n);
+        let config = SearchConfig {
+            full_graph_refine: false,
+            canonical_min_trivial: true,
+            root_aut_shortcut: true,
+            ..SearchConfig::default()
+        };
+        simple_group_search(&mut state, &mut sols, &config);
+        group_order(sols.get())
+    }
+
+    #[test]
+    fn shortcut_single_3cycle() {
+        let d = Digraph::from_vec(vec![vec![1], vec![2], vec![0]]);
+        assert_eq!(stab_search_order_with_shortcut(d, 3), 3);
+    }
+
+    #[test]
+    fn shortcut_two_3cycles() {
+        let d = Digraph::from_vec(vec![vec![1], vec![2], vec![0], vec![4], vec![5], vec![3]]);
+        assert_eq!(stab_search_order_with_shortcut(d, 6), 18);
+    }
+
+    #[test]
+    fn shortcut_two_5cycles() {
+        let d = Digraph::from_vec(vec![
+            vec![1], vec![2], vec![3], vec![4], vec![0],
+            vec![6], vec![7], vec![8], vec![9], vec![5],
+        ]);
+        assert_eq!(stab_search_order_with_shortcut(d, 10), 50);
     }
 }
