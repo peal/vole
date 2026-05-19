@@ -23,6 +23,7 @@ ReadPackage("Vole", "gap/refiners.gi");
 ReadPackage("Vole", "gap/constraints.gi");
 ReadPackage("Vole", "gap/wrapper.gi");
 ReadPackage("Vole", "gap/directprod.gi");
+ReadPackage("Vole", "gap/override.gi");
 
 Perform(["_Vole", "Vole", "VoleFind", "VoleRefiner"],
         SetNamesForFunctionsInRecord);
