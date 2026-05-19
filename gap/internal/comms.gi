@@ -214,7 +214,7 @@ _Vole.FullGraphRefine := false;
 #
 # So this is opt-in. Useful for probing whether a given input class
 # is 2-closed and well-served by the root-Aut answer; not a default.
-_Vole.RootAutShortcut := false;
+_Vole.RootAutShortcut := true;
 
 _Vole.ForkVole := function(extraargs...)
     local rustpipe, gappipe, bind, args, ret, prog, firsttime, t, f, pipe, dirs, child;

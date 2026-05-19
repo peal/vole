@@ -125,7 +125,20 @@ pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> (So
     (solutions, right_graph)
 }
 
-pub fn sub_full_refine(state: &mut State, search_config: &SearchConfig) -> Result<(), TraceFailure> {
+/// Run a sub-search to find `Aut(current digraph stack)`, refine the
+/// outer partition by its orbits on the base domain (canonical-form
+/// ordered so left and right see the same orbit indices), and emit a
+/// `FullGraph` trace event so the two sides remain in lockstep.
+///
+/// Shared by per-node full-graph refinement (FGR) and the root Aut
+/// shortcut.  The caller decides what (if anything) to do with the
+/// returned `Solutions`: FGR discards them; the root shortcut checks
+/// each sub-generator against the outer refiners and short-circuits
+/// the main search when every generator passes.
+pub fn sub_search_refine(
+    state: &mut State,
+    search_config: &SearchConfig,
+) -> Result<Solutions, TraceFailure> {
     info!(
         "Sub search with input domain {:?}",
         state.domain.partition().extended_as_list_set()
@@ -133,6 +146,10 @@ pub fn sub_full_refine(state: &mut State, search_config: &SearchConfig) -> Resul
 
     let mut new_search_config = (*search_config).clone();
     new_search_config.full_graph_refine = false;
+    // Belt-and-braces: forbid the sub-search from re-entering the
+    // root-Aut-shortcut path.  The shortcut already disables this
+    // before calling us, but FGR's caller path doesn't.
+    new_search_config.root_aut_shortcut = false;
     // The sub-search runs against a fresh State whose natural
     // canonical context is `Sym(sub_domain_size)` (we just want the
     // automorphism orbits of the digraph stack snapshot). That's
@@ -144,7 +161,16 @@ pub fn sub_full_refine(state: &mut State, search_config: &SearchConfig) -> Resul
     new_search_config.canonical_min_trivial = true;
     let (sols, digraph) = sub_simple_search(state, &new_search_config);
     info!("Sub Sols: {:?}", sols.get());
-    let canonical = sols.get_canonical().as_ref().unwrap().perm.clone();
+    // For trivial inputs (no widget pushed, empty digraph stack) the
+    // sub-search never reaches `check_canonical` so no canonical
+    // image gets recorded.  Aut on that input is the full symmetric
+    // group, whose orbit partition is the trivial one-cell partition
+    // we already have — refining by it is a no-op, so we just return
+    // the sols and skip the partition/trace bookkeeping.
+    let canonical = match sols.get_canonical().as_ref() {
+        Some(c) => c.perm.clone(),
+        None => return Ok(sols),
+    };
     let can_inv = canonical.inv();
     let orbits = sols.orbits();
     let v = orbits.to_vec_vec();
@@ -183,5 +209,12 @@ pub fn sub_full_refine(state: &mut State, search_config: &SearchConfig) -> Resul
         hash: do_hash(graph_canonical),
     })?;
 
+    Ok(sols)
+}
+
+/// Per-node full graph refinement: runs the sub-search and refines
+/// the outer partition, discarding any generators found.
+pub fn sub_full_refine(state: &mut State, search_config: &SearchConfig) -> Result<(), TraceFailure> {
+    sub_search_refine(state, search_config)?;
     Ok(())
 }

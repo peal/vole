@@ -363,38 +363,91 @@ pub fn simple_coset_search(state: &mut State, sols: &mut Solutions, search_confi
 /// the satisfying generators have been added to `sols`, so the main
 /// search starts with a richer orbit structure and prunes more
 /// branches.
+/// Returns `Ok(true)` if every sub-generator passes the outer
+/// refiners — caller should skip the main backtrack.  Returns
+/// `Ok(false)` to fall through into the main search (with the
+/// partition already refined by `Aut(widget)`'s orbits, so the
+/// fallthrough starts from a better state than it would have).
+/// Returns `Err` on a trace failure during partition refinement —
+/// caller should treat as "no solutions" and bail out.
 fn try_root_aut_shortcut(
     state: &mut State,
     sols: &mut Solutions,
     search_config: &SearchConfig,
-) -> bool {
-    let mut sub_config = search_config.clone();
-    sub_config.canonical_min_trivial = true;
-    sub_config.full_graph_refine = false;
-    // Crucial: disable root_aut_shortcut in the sub-search itself,
-    // otherwise the sub-search's simple_group_search would recurse
-    // through try_root_aut_shortcut indefinitely.
-    sub_config.root_aut_shortcut = false;
-    let (sub_sols, _digraph) = crate::vole::subsearch::sub_simple_search(state, &sub_config);
+) -> Result<bool, crate::vole::trace::TraceFailure> {
+    // Run the sub-search; refine the outer partition by its orbits
+    // (canonical-form ordered) and emit the FullGraph trace event.
+    // Shared with `sub_full_refine` — see subsearch.rs.  Aut(widget)
+    // ⊇ N(H), so its orbits on base are unions of N(H) orbits, and
+    // refining by them can never split an N(H) orbit incorrectly.
+    // In cases where Aut(widget)'s orbits are finer than what the
+    // equitable refinement already produced, this gives the main
+    // search a head start even when the shortcut doesn't fully close.
+    let sub_sols = crate::vole::subsearch::sub_search_refine(state, search_config)?;
     let sub_gens = sub_sols.get().clone();
     if sub_gens.is_empty() {
         // Aut(widget) is trivial — N(H) is then also trivial (it's
         // contained in Aut(widget)). Outer sols stays empty; caller
         // gets the trivial group.
-        return true;
+        return Ok(true);
     }
+    // The sub-search returns generators acting on the EXTENDED domain
+    // (base + auxiliary vertices from set-of-graphs widgets etc).
+    // The outer refiners only know about the base domain — in
+    // particular `Constraint.InGroup(SymmetricGroup(n))` rejects any
+    // permutation that moves a point outside `1..n`.  Restrict each
+    // generator to its action on `[0..base_n)` before checking,
+    // mirroring what `partition_stack::perm_between` does for the
+    // main search's `check_solution` path.  Aux ↔ base swaps cannot
+    // occur (different vertex-label cells, pinned by SetTransporters
+    // in the sub-search), so this restriction is well-defined.
+    //
+    // All-or-nothing: only commit the gens to `sols` if every gen
+    // passes.  A partial commit would seed the union-find used by
+    // orbit-needs-searching, which then trips the first-branch
+    // assertion in `simple_search_recurse` (RBase build assumes empty
+    // sols at the first branch).
+    let base_n = state.domain.partition().base_domain_size();
+    let mut base_gens = Vec::with_capacity(sub_gens.len());
     let mut all_pass = true;
     for g in &sub_gens {
-        if state.refiners.check_all(g) {
-            sols.add_solution(g);
-        } else {
+        let g_base = restrict_perm_to_base(g, base_n);
+        if !state.refiners.check_all(&g_base) {
             all_pass = false;
+            break;
         }
+        base_gens.push(g_base);
     }
     if all_pass {
+        for g in &base_gens {
+            // Mirror the main-search check_solution path: notify
+            // every refiner before recording the solution so refiners
+            // that track found generators stay consistent.
+            state.refiners.iter_mut().for_each(|r| r.solution_found(g));
+            sols.add_solution(g);
+        }
         info!("Root Aut shortcut succeeded; |gens| = {}", sub_gens.len());
     }
-    all_pass
+    Ok(all_pass)
+}
+
+/// Restrict a permutation on the extended domain to its action on
+/// the base domain `[0..base_n)`.  Panics if any base point maps
+/// outside the base domain (this would be a bug — see the comment in
+/// `try_root_aut_shortcut`).
+fn restrict_perm_to_base(p: &crate::perm::Permutation, base_n: usize) -> crate::perm::Permutation {
+    let mut values = Vec::with_capacity(base_n);
+    for i in 0..base_n {
+        let img = p.apply(i);
+        assert!(
+            img < base_n,
+            "shortcut sub-gen swaps base point {} with aux point {}",
+            i,
+            img
+        );
+        values.push(img);
+    }
+    crate::perm::Permutation::from_vec(values)
 }
 
 /// Count vertices of the combined digraph stack that have neither
@@ -434,8 +487,17 @@ pub fn simple_group_search(state: &mut State, sols: &mut Solutions, search_confi
         );
     }
     crate::vole::diag::dump_partition("init", 0, &state.domain);
-    if search_config.root_aut_shortcut && try_root_aut_shortcut(state, sols, search_config) {
-        return;
+    // The shortcut is a symmetry-search optimisation only.  Canonical
+    // image searches need to traverse the canonical-trace to choose a
+    // canonical representative — adding sub-search gens to `sols` and
+    // returning early would skip that and leave the caller without a
+    // canonical permutation.  Gate accordingly.
+    let symmetry_only = state.domain.tracer().tracing_type() == super::trace::TracingType::SYMMETRY;
+    if search_config.root_aut_shortcut && symmetry_only {
+        match try_root_aut_shortcut(state, sols, search_config) {
+            Ok(true) | Err(_) => return,
+            Ok(false) => {}
+        }
     }
     let _ = simple_search_recurse(state, sols, true, 0, search_config);
 }
