@@ -650,14 +650,39 @@ end;
 # regOrbits).
 #
 # `sizeCap` parameter on the exhaustive CharacteristicSubgroups search
-# defaults to 10^5 (cheap on the AGL family — |AGL(1,p)| = p(p-1) is
-# well within budget for p up to a few hundred). Caller can override.
+# defaults to 10^3, chosen by measuring the cost crossover.
+#
+# CharacteristicSubgroups(H) is implemented in GAP as
+#   Filtered(NormalSubgroups(H), x -> IsCharacteristicSubgroup(H, x))
+# so the dominant cost is the normal-subgroup lattice (and one
+# AutomorphismGroup(H)-invariance check per candidate). That lattice
+# scales with the SUBGROUP STRUCTURE of H — exponential for nilpotent
+# H — rather than with the partition-backtrack search space, which
+# is bounded by orbit structure inside S_n. So for the subdirect /
+# wreath-style inputs that motivate Phase D in the first place,
+# computing CharacteristicSubgroups can easily cost more than the
+# normaliser problem we want to solve.
+#
+# Empirical (clean-state timings, this file's commit message):
+#   |H|=64    NormalSubgroups 21 ms  CS 14 ms     Normalizer 27 ms
+#   |H|=32768 NormalSubgroups did not finish in >40 s; Normalizer 47 ms.
+# At |H|=10^3 the lattice has been comfortably small in everything I
+# have tried; at |H|=10^4 it starts to be a coin-flip; beyond that
+# the auxiliary cost dominates. 10^5 was the original default and was
+# wrong for the inputs we actually care about (subdirect mixers etc.).
+# Caller can override via ValueOption "regCharSizeCap".
+#
+# Note the cheap candidate list (DerivedSubgroup, FittingSubgroup,
+# Centre, Socle when primitive) is ALWAYS tried regardless of sizeCap;
+# only the exhaustive CS scan is gated. Theißen's primary motivating
+# case (AGL family, where F = the regular socle) is caught by the
+# cheap path, so the sizeCap cut doesn't lose those.
 GB_Con.GroupConjugacyOrbitalRegOrbitChar := function(groupL, groupR)
     local F, sizeCap;
     Assert(0, IsIdenticalObj(groupL, groupR),
            "Phase D is normaliser-only; expect L = R");
     sizeCap := ValueOption("regCharSizeCap");
-    if sizeCap = fail then sizeCap := 10 ^ 5; fi;
+    if sizeCap = fail then sizeCap := 10 ^ 3; fi;
     F := _BTKit.findRegularCharacteristicSubgroup(groupL, sizeCap);
     if F = fail then
         # No regular characteristic subgroup; fall back to Phase C
