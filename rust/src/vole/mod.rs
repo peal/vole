@@ -1,4 +1,5 @@
 pub mod backtracking;
+pub mod diag;
 pub mod domain_state;
 pub mod parse_input;
 mod partition_stack;

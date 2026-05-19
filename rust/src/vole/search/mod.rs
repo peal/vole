@@ -128,17 +128,21 @@ fn simple_search_recurse(
     let part = state.domain.partition();
 
     if part.base_domain_fixed() {
+        crate::vole::diag::dump_event("leaf", depth, "");
         return checkers::check_solution(state, sols, search_config);
     }
 
     let _span = trace_span!("B").entered();
 
     let (cell_num, cell) = get_branch_cell(state, first_branch_in);
+    let cell_size = cell.len();
 
     let mut doing_first_branch = first_branch_in;
 
     for c in cell {
         let _span = trace_span!("C", value = c).entered();
+
+        crate::vole::diag::dump_branch(depth, cell_num, c, cell_size);
 
         if doing_first_branch && first_branch_in {
             state.domain.push_rbase_branch_val(c);
@@ -165,6 +169,7 @@ fn simple_search_recurse(
                     .is_ok()
                     && (!search_config.full_graph_refine || sub_full_refine(state, search_config).is_ok())
                 {
+                    crate::vole::diag::dump_partition("refine", depth + 1, &state.domain);
                     let ret = simple_search_recurse(state, sols, doing_first_branch, depth + 1, search_config);
                     if !first_branch_in && ret != SolutionFound::None {
                         info!("Backtracking to special node");
@@ -172,6 +177,7 @@ fn simple_search_recurse(
                         return ret;
                     }
                 } else {
+                    crate::vole::diag::dump_event("trace_fail", depth + 1, "");
                     state.stats.trace_fail_nodes += 1;
                 }
             } else {
@@ -390,6 +396,7 @@ pub fn simple_group_search(state: &mut State, sols: &mut Solutions, search_confi
             isolated_vertex_count(dg),
         );
     }
+    crate::vole::diag::dump_partition("init", 0, &state.domain);
     if search_config.root_aut_shortcut && try_root_aut_shortcut(state, sols, search_config) {
         return;
     }
