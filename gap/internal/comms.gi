@@ -172,6 +172,27 @@ else
     _Vole.UsePipe := true;
 fi;
 
+# Toggle for Rust-side full-graph-refinement (sub-search at each
+# search node that computes Aut(current digraph stack) and refines
+# the partition by its orbits, plus a FullGraph trace hash event for
+# left/right consistency). Off by default because:
+#   (a) historically (and until recently) it was simply broken in
+#       group-search mode — the sub-search asked GAP for canonicalmin
+#       under a session-scoped canonical group that didn't match the
+#       sub-state's natural Sym(sub_n) context, so it got identity-
+#       sort responses that were not g-equivariant, giving either
+#       wrong answers (e.g. C_3^2 came back as 4 instead of 72) or
+#       runaway trace mismatch (e.g. C_5^2 didn't terminate);
+#   (b) post-fix it is correct but, on the input classes we have
+#       benchmarked (C_p^k abelian-regular families), Phase A's set-
+#       of-graphs widget already captures the same wreath structure
+#       as a partition refinement, so FGR's per-node sub-search is
+#       redundant cost without saved nodes. C_3^4 went from 65 ms
+#       (FGR off) to 1623 ms (FGR on); C_3^5 onwards timed out.
+# Worth experimenting on input classes where Phase A's widget might
+# miss structure that the per-node Aut computation could find.
+_Vole.FullGraphRefine := false;
+
 _Vole.ForkVole := function(extraargs...)
     local rustpipe, gappipe, bind, args, ret, prog, firsttime, t, f, pipe, dirs, child;
     firsttime := false;
@@ -434,7 +455,9 @@ function(points, find_single, find_coset, find_canonical, constraints, canonical
                       find_coset     := find_coset,
                       find_canonical := find_canonical,
                       root_search    := root_search,
-                      search_config  := rec(full_graph_refine := false, find_single:= find_single),
+                      search_config  := rec(
+                          full_graph_refine := _Vole.FullGraphRefine,
+                          find_single := find_single),
                   ),
                   constraints := constraints),
               gapcons,
