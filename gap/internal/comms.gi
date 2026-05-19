@@ -253,6 +253,14 @@ _Vole.ForkVole := function(extraargs...)
     elif VOLE_MODE = "valgrind" then
         args := ["--tool=callgrind", "target/release/vole"];
         prog := "valgrind";
+    elif VOLE_MODE = "samply" then
+        # Run the release binary under samply.  Profile is written to
+        # rust/samply.json (path is relative to the rust working
+        # directory we ChangeDirectoryCurrent into below).  Inspect
+        # with `samply load rust/samply.json` afterwards.
+        args := ["record", "--save-only", "-o", "samply.json",
+                 "target/release/vole"];
+        prog := "samply";
     elif VOLE_MODE = "debug" then
         args :=  ["with", "rust-gdb --args {bin} {args}", "--", "run" ,"--bin", "vole" ,"--", "--trace"];
     else
