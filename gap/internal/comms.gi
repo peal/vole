@@ -258,6 +258,16 @@ _Vole.ForkVole := function(extraargs...)
         # rust/samply.json (path is relative to the rust working
         # directory we ChangeDirectoryCurrent into below).  Inspect
         # with `samply load rust/samply.json` afterwards.
+        #
+        # macOS prerequisites (one-time per machine):
+        #   * `samply setup` (codesigns the samply binary so it can
+        #     sample other processes).  Without this you get
+        #     "Encountered an error during profiling: Unknown(1100)".
+        #   * `split-debuginfo = "packed"` in rust/Cargo.toml's
+        #     `[profile.release]` makes cargo emit
+        #     target/release/vole.dSYM alongside the binary, so the
+        #     profile gets symbolicated.  Without this the profile
+        #     shows raw addresses with no function names.
         args := ["record", "--save-only", "-o", "samply.json",
                  "target/release/vole"];
         prog := "samply";

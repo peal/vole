@@ -35,4 +35,8 @@ test-log = { version = "0.2.5", default-features = false, features=["trace"] }
 [profile.release]
 debug = true
 lto = "thin"
+# Emit a .dSYM bundle alongside the binary on macOS so profilers
+# (samply, Instruments) get symbols without a manual `dsymutil`
+# step. Has no effect on non-Apple targets.
+split-debuginfo = "packed"
 #opt-level = 1
