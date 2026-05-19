@@ -354,6 +354,25 @@ fn try_root_aut_shortcut(
     all_pass
 }
 
+/// Count vertices of the combined digraph stack that have neither
+/// incoming nor outgoing edges.  Such vertices contribute nothing
+/// to the partition refinement but still inflate the branching
+/// domain.  Printed once at search start when the
+/// VOLE_DIAG_ISOLATED env var is set, so we can see whether GAP-
+/// side widgets are sending them in.
+fn isolated_vertex_count(d: &crate::datastructures::digraph::Digraph) -> usize {
+    let n = d.vertices();
+    let mut has_out = vec![false; n];
+    let mut has_in = vec![false; n];
+    for v in 0..n {
+        for (w, _) in d.neighbours(v).iter() {
+            has_out[v] = true;
+            has_in[*w] = true;
+        }
+    }
+    (0..n).filter(|&v| !has_in[v] && !has_out[v]).count()
+}
+
 /// Standard complete search, for stabilizer + canonical image
 pub fn simple_group_search(state: &mut State, sols: &mut Solutions, search_config: &SearchConfig) {
     trace!("Starting Search");
@@ -362,6 +381,14 @@ pub fn simple_group_search(state: &mut State, sols: &mut Solutions, search_confi
         .init_refine(&mut state.domain, Side::Left, &mut state.stats);
     if ret.is_err() {
         return;
+    }
+    if std::env::var("VOLE_DIAG_ISOLATED").is_ok() {
+        let dg = state.domain.digraph_stack().digraph();
+        eprintln!(
+            "[vole-diag] digraph at search start: {} vertices, {} isolated",
+            dg.vertices(),
+            isolated_vertex_count(dg),
+        );
     }
     if search_config.root_aut_shortcut && try_root_aut_shortcut(state, sols, search_config) {
         return;
