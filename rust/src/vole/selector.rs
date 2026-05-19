@@ -1,34 +1,107 @@
-use std::fmt::Debug;
+use std::collections::HashMap;
+use std::num::Wrapping;
 
+use once_cell::sync::Lazy;
 use tracing::info;
 
-use crate::datastructures::hash::QuickHashable;
+use crate::datastructures::hash::QHash;
 
 use super::state::State;
 
 /// Method of choosing which cell (ignoring cells of size 1) to branch on.
-/// All techniques use 'earliest cell' as the final tie-breaking strategy
+/// All techniques use 'earliest cell' as the final tie-breaking strategy.
+#[derive(Clone, Copy, Debug)]
 enum Selector {
-    /// Smallest cell
+    /// Smallest cell.
     Smallest,
-    /// Largest cell
+    /// Largest cell.
     Largest,
-    /// First cell
+    /// First cell.
     First,
-    /// Cell where the values are non-trivially connected to the most other cells
+    /// Cell with the highest bliss-style refining power.
     MostConnected,
-    /// Smallest cell, breaking ties by choosing MostConnected
+    /// MostConnected, breaking ties by smallest cell. (Default.)
+    MostConnectedSmallest,
+    /// MostConnected, breaking ties by largest cell.
+    MostConnectedLargest,
+    /// Smallest cell, breaking ties by MostConnected.
     SmallestMostConnected,
 }
 
-fn find_best_cell<F: Copy, T: Ord + Debug + QuickHashable>(state: &State, func: F) -> usize
+/// Active strategy, parsed once from `VOLE_SELECTOR`.
+///
+///   smallest                 — Vole legacy default.
+///   largest
+///   first
+///   most-connected           — pure bliss-style score.
+///   most-connected-smallest  — score, tie-break smallest. (Default.)
+///   most-connected-largest   — score, tie-break largest.
+///   smallest-most-connected  — smallest, tie-break score.
+static SELECTOR: Lazy<Selector> = Lazy::new(|| {
+    let raw = std::env::var("VOLE_SELECTOR").unwrap_or_default();
+    let tok = raw.trim().to_ascii_lowercase();
+    match tok.as_str() {
+        "" | "default" | "most-connected-smallest" | "mostconnectedsmallest" => {
+            Selector::MostConnectedSmallest
+        }
+        "smallest" => Selector::Smallest,
+        "largest" => Selector::Largest,
+        "first" => Selector::First,
+        "most-connected" | "mostconnected" => Selector::MostConnected,
+        "most-connected-largest" | "mostconnectedlargest" => Selector::MostConnectedLargest,
+        "smallest-most-connected" | "smallestmostconnected" => Selector::SmallestMostConnected,
+        other => panic!("unknown VOLE_SELECTOR={:?}", other),
+    }
+});
+
+/// Bliss-style "refining power" of an individual cell.
+///
+/// Pick a representative `v` of the cell and group its outgoing
+/// neighbour-edges by `(neighbour_cell, edge_colour)`.  Each such
+/// group represents one signal that branching on this cell could use
+/// to split the neighbour cell.  We count a group only when:
+///   * the neighbour cell is non-singleton (singletons cannot split
+///     further), and
+///   * the count of edges in the group is not equal to the size of
+///     the neighbour cell (i.e. the connection to that cell is
+///     non-uniform — a uniform connection refines nothing).
+///
+/// This is the same idea as bliss's `sh_first_max_neighbours`
+/// (`graph.cc:2747-2797`), with the simplification that Vole stores
+/// in/out direction inside the edge colour, so a single pass over
+/// `neighbours(v)` covers both directions.
+fn cell_refining_power(state: &State, cell_id: usize) -> i64 {
+    let part = state.domain.partition();
+    let cell = part.cell(cell_id);
+    let rep = cell[0];
+    let digraph = state.domain.digraph_stack().digraph();
+    let neighbours = digraph.neighbours(rep);
+
+    let mut groups: HashMap<(usize, Wrapping<QHash>), usize> = HashMap::new();
+    for (&nbr, &colour) in neighbours {
+        let nc = part.cell_of(nbr);
+        *groups.entry((nc, colour)).or_insert(0) += 1;
+    }
+
+    let mut score: i64 = 0;
+    for ((nc, _colour), count) in &groups {
+        let len = part.cell(*nc).len();
+        if len > 1 && *count != len {
+            score += 1;
+        }
+    }
+    score
+}
+
+fn find_best_cell<F, T>(state: &State, func: F) -> usize
 where
     F: Fn(&State, usize) -> T,
+    T: Ord,
 {
     *state
         .domain
         .partition()
-        .base_cells() // Get cells to branch on
+        .base_cells()
         .iter()
         .filter(|&&i| state.domain.partition().cell(i).len() > 1)
         .min_by_key(|&&value| func(state, value))
@@ -39,7 +112,7 @@ fn find_first_cell(state: &State) -> usize {
     *state
         .domain
         .partition()
-        .base_cells() // Get cells to branch on
+        .base_cells()
         .iter()
         .find(|&&i| state.domain.partition().cell(i).len() > 1)
         .unwrap()
@@ -74,12 +147,34 @@ pub fn select_branching_cell(state: &State) -> usize {
         );
     }
 
-    let choice = Selector::Smallest;
+    let choice = *SELECTOR;
     let cell = match choice {
-        Selector::Smallest => find_best_cell(state, |s, i| s.domain.partition().cell(i).len()),
-        Selector::Largest => find_best_cell(state, |s, i| -(s.domain.partition().cell(i).len() as isize)),
+        Selector::Smallest => {
+            find_best_cell(state, |s, i| s.domain.partition().cell(i).len() as i64)
+        }
+        Selector::Largest => {
+            find_best_cell(state, |s, i| -(s.domain.partition().cell(i).len() as i64))
+        }
         Selector::First => find_first_cell(state),
-        _ => unimplemented!(),
+        Selector::MostConnected => find_best_cell(state, |s, i| -cell_refining_power(s, i)),
+        Selector::MostConnectedSmallest => find_best_cell(state, |s, i| {
+            (
+                -cell_refining_power(s, i),
+                s.domain.partition().cell(i).len() as i64,
+            )
+        }),
+        Selector::MostConnectedLargest => find_best_cell(state, |s, i| {
+            (
+                -cell_refining_power(s, i),
+                -(s.domain.partition().cell(i).len() as i64),
+            )
+        }),
+        Selector::SmallestMostConnected => find_best_cell(state, |s, i| {
+            (
+                s.domain.partition().cell(i).len() as i64,
+                -cell_refining_power(s, i),
+            )
+        }),
     };
 
     info!(
