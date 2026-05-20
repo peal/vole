@@ -383,7 +383,7 @@ fn try_root_aut_shortcut(
     // In cases where Aut(widget)'s orbits are finer than what the
     // equitable refinement already produced, this gives the main
     // search a head start even when the shortcut doesn't fully close.
-    let sub_sols = crate::vole::subsearch::sub_search_refine(state, search_config)?;
+    let (sub_sols, sub_base) = crate::vole::subsearch::sub_search_refine(state, search_config)?;
     let sub_gens = sub_sols.get().clone();
     if sub_gens.is_empty() {
         // Aut(widget) is trivial — N(H) is then also trivial (it's
@@ -426,7 +426,39 @@ fn try_root_aut_shortcut(
             state.refiners.iter_mut().for_each(|r| r.solution_found(g));
             sols.add_solution(g);
         }
-        info!("Root Aut shortcut succeeded; |gens| = {}", sub_gens.len());
+        // Hand the sub-search's base out as the outer rbase, so GAP
+        // builds the stab chain via StabChainBaseStrongGenerators
+        // (free Size / membership) instead of rebuilding it from
+        // scratch.  The sub-search produced `base_gens` as a strong
+        // generating set for `sub_base`; `base_gens[0]` is the
+        // identity (the sub-search's own rbase leaf), matching the
+        // identity-first invariant the GAP wrapper expects.
+        //
+        // Only safe when there are NO auxiliary vertices, i.e. the
+        // extended domain equals the base domain (a pure digraph /
+        // set problem).  Then `sub_base` ⊆ base domain, no generator
+        // moves an aux point, and (sub_base, base_gens) is exactly
+        // the base + strong generating set the main search would have
+        // produced.  When widgets added aux vertices, restricting the
+        // base to base-domain points (or keeping aux points in the
+        // base) does NOT in general preserve the strong-generating-set
+        // property — the chain would be wrong — so we leave the rbase
+        // empty and let GAP rebuild (correct, just not free).  These
+        // widget groups are small, so the rebuild is cheap anyway; the
+        // expensive case is exactly the large pure-graph one this
+        // covers.
+        let extended_n = state.domain.partition().extended_domain_size();
+        if extended_n == base_n {
+            for &b in &sub_base {
+                debug_assert!(b < base_n);
+                state.domain.push_rbase_branch_val(b);
+            }
+        }
+        info!(
+            "Root Aut shortcut succeeded; |gens| = {}, base len = {}",
+            sub_gens.len(),
+            sub_base.len()
+        );
     }
     Ok(all_pass)
 }
@@ -512,7 +544,7 @@ pub fn root_search(state: &mut State, sols: &mut Solutions, search_config: &Sear
         panic!("RBase Build Failures 0");
     }
 
-    let (ret_sols, _) = sub_simple_search(state, search_config);
+    let (ret_sols, _, _) = sub_simple_search(state, search_config);
     *sols = ret_sols;
 }
 

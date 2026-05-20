@@ -85,7 +85,7 @@ fn sub_single_search(state: &mut State, search_config: &SearchConfig) -> Solutio
     solutions
 }
 
-pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> (Solutions, Arc<Digraph>) {
+pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> (Solutions, Arc<Digraph>, Vec<usize>) {
     // Save / restore the OUTER state OUTSIDE the SubSearchGuard. The
     // outer refiners are GAP refiners whose save_state/restore_state
     // round-trips to GAP — that's allowed (the GAP-side state machine
@@ -121,8 +121,15 @@ pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> (So
         let _guard = SubSearchGuard::enter();
         simple_group_search(&mut new_state, &mut solutions, search_config);
     }
+    // The sub-search builds its own rbase (a base for the group it
+    // found, with the returned solutions a strong generating set for
+    // it).  Return it so callers that complete a search via the
+    // sub-search (the root-Aut shortcut) can hand GAP a ready base +
+    // strong generators instead of forcing a from-scratch stabiliser
+    // chain rebuild.
+    let sub_base = new_state.domain.rbase_branch_vals().to_vec();
     state.restore_state();
-    (solutions, right_graph)
+    (solutions, right_graph, sub_base)
 }
 
 /// Run a sub-search to find `Aut(current digraph stack)`, refine the
@@ -138,7 +145,7 @@ pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> (So
 pub fn sub_search_refine(
     state: &mut State,
     search_config: &SearchConfig,
-) -> Result<Solutions, TraceFailure> {
+) -> Result<(Solutions, Vec<usize>), TraceFailure> {
     info!(
         "Sub search with input domain {:?}",
         state.domain.partition().extended_as_list_set()
@@ -159,7 +166,7 @@ pub fn sub_search_refine(
     // Force the local canonical-min path so check_canonical never
     // touches GapChatType.
     new_search_config.canonical_min_trivial = true;
-    let (sols, digraph) = sub_simple_search(state, &new_search_config);
+    let (sols, digraph, sub_base) = sub_simple_search(state, &new_search_config);
     info!("Sub Sols: {:?}", sols.get());
     // For trivial inputs (no widget pushed, empty digraph stack) the
     // sub-search never reaches `check_canonical` so no canonical
@@ -169,7 +176,7 @@ pub fn sub_search_refine(
     // the sols and skip the partition/trace bookkeeping.
     let canonical = match sols.get_canonical().as_ref() {
         Some(c) => c.perm.clone(),
-        None => return Ok(sols),
+        None => return Ok((sols, sub_base)),
     };
     let can_inv = canonical.inv();
     let orbits = sols.orbits();
@@ -209,7 +216,7 @@ pub fn sub_search_refine(
         hash: do_hash(graph_canonical),
     })?;
 
-    Ok(sols)
+    Ok((sols, sub_base))
 }
 
 /// Per-node full graph refinement: runs the sub-search and refines
