@@ -43,6 +43,11 @@ pub struct SearchConfig {
     /// `(C_p)^k`, `D_n^k`, `S_n^k` instance we have measured).
     #[serde(default)]
     pub root_aut_shortcut: bool,
+    /// Branching-cell strategy, named by GAP (see `selector::Selector`).
+    /// `None` / `"default"` falls back to the `VOLE_SELECTOR` env var,
+    /// then to the built-in default.
+    #[serde(default)]
+    pub selector: Option<String>,
 }
 
 impl Default for SearchConfig {
@@ -52,6 +57,7 @@ impl Default for SearchConfig {
             find_single: false,
             canonical_min_trivial: false,
             root_aut_shortcut: false,
+            selector: None,
         }
     }
 }
@@ -66,7 +72,7 @@ fn build_rbase(state: &mut State, search_config: &SearchConfig) {
 
     let _span = trace_span!("B").entered();
 
-    let cell_num = select_branching_cell(state);
+    let cell_num = select_branching_cell(state, search_config);
     let mut cell: Vec<usize> = part.cell(cell_num).to_vec();
 
     cell.sort();
@@ -103,10 +109,10 @@ fn build_rbase(state: &mut State, search_config: &SearchConfig) {
     state.restore_state();
 }
 
-fn get_branch_cell(state: &State, to_sort: bool) -> (usize, Vec<usize>) {
+fn get_branch_cell(state: &State, to_sort: bool, search_config: &SearchConfig) -> (usize, Vec<usize>) {
     let part = state.domain.partition();
 
-    let cell_num = select_branching_cell(state);
+    let cell_num = select_branching_cell(state, search_config);
     let mut cell: Vec<usize> = part.cell(cell_num).to_vec();
     assert!(cell.len() > 1);
 
@@ -134,7 +140,7 @@ fn simple_search_recurse(
 
     let _span = trace_span!("B").entered();
 
-    let (cell_num, cell) = get_branch_cell(state, first_branch_in);
+    let (cell_num, cell) = get_branch_cell(state, first_branch_in, search_config);
     let cell_size = cell.len();
 
     let mut doing_first_branch = first_branch_in;
@@ -248,7 +254,7 @@ fn simple_coset_search_recurse(
 
     let _span = trace_span!("B").entered();
 
-    let (cell_num, cell) = get_branch_cell(state, false);
+    let (cell_num, cell) = get_branch_cell(state, false, search_config);
 
     let mut special_node = false;
 

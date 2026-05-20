@@ -216,6 +216,24 @@ _Vole.FullGraphRefine := false;
 # is 2-closed and well-served by the root-Aut answer; not a default.
 _Vole.RootAutShortcut := true;
 
+# Branching-cell selector strategy passed to the Rust engine. One of:
+#   "default" / ""           — engine default (most-connected-smallest),
+#                              or the VOLE_SELECTOR env var if set.
+#   "smallest", "largest", "first",
+#   "most-connected", "most-connected-smallest",
+#   "most-connected-largest", "smallest-most-connected".
+# Override per call with the option `selector := "..."`.
+_Vole.Selector := "default";
+
+_Vole.GetSelector := function()
+    local s;
+    s := ValueOption("selector");
+    if s = fail then
+        return _Vole.Selector;
+    fi;
+    return s;
+end;
+
 _Vole.ForkVole := function(extraargs...)
     local rustpipe, gappipe, bind, args, ret, prog, firsttime, t, f, pipe, dirs, child;
     firsttime := false;
@@ -499,6 +517,7 @@ function(points, find_single, find_coset, find_canonical, constraints, canonical
                       search_config  := rec(
                           full_graph_refine := _Vole.FullGraphRefine,
                           root_aut_shortcut := _Vole.RootAutShortcut,
+                          selector := _Vole.GetSelector(),
                           find_single := find_single),
                   ),
                   constraints := constraints),

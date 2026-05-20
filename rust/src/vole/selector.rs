@@ -6,6 +6,7 @@ use tracing::info;
 
 use crate::datastructures::hash::QHash;
 
+use super::search::SearchConfig;
 use super::state::State;
 
 /// Method of choosing which cell (ignoring cells of size 1) to branch on.
@@ -28,29 +29,50 @@ enum Selector {
     SmallestMostConnected,
 }
 
-/// Active strategy, parsed once from `VOLE_SELECTOR`.
-///
-///   smallest                 — Vole legacy default.
-///   largest
-///   first
-///   most-connected           — pure bliss-style score.
-///   most-connected-smallest  — score, tie-break smallest. (Default.)
-///   most-connected-largest   — score, tie-break largest.
-///   smallest-most-connected  — smallest, tie-break score.
-static SELECTOR: Lazy<Selector> = Lazy::new(|| {
-    let raw = std::env::var("VOLE_SELECTOR").unwrap_or_default();
-    let tok = raw.trim().to_ascii_lowercase();
-    match tok.as_str() {
-        "" | "default" | "most-connected-smallest" | "mostconnectedsmallest" => Selector::MostConnectedSmallest,
-        "smallest" => Selector::Smallest,
-        "largest" => Selector::Largest,
-        "first" => Selector::First,
-        "most-connected" | "mostconnected" => Selector::MostConnected,
-        "most-connected-largest" | "mostconnectedlargest" => Selector::MostConnectedLargest,
-        "smallest-most-connected" | "smallestmostconnected" => Selector::SmallestMostConnected,
-        other => panic!("unknown VOLE_SELECTOR={:?}", other),
+impl Selector {
+    /// Parse a strategy token. Accepts the same names whether they come
+    /// from GAP (`search_config.selector`) or the `VOLE_SELECTOR` env
+    /// var. `""`/`"default"` map to the default strategy.
+    ///
+    ///   smallest                 — Vole legacy default.
+    ///   largest
+    ///   first
+    ///   most-connected           — pure bliss-style score.
+    ///   most-connected-smallest  — score, tie-break smallest. (Default.)
+    ///   most-connected-largest   — score, tie-break largest.
+    ///   smallest-most-connected  — smallest, tie-break score.
+    fn from_token(tok: &str) -> Selector {
+        match tok.trim().to_ascii_lowercase().as_str() {
+            "" | "default" | "most-connected-smallest" | "mostconnectedsmallest" => {
+                Selector::MostConnectedSmallest
+            }
+            "smallest" => Selector::Smallest,
+            "largest" => Selector::Largest,
+            "first" => Selector::First,
+            "most-connected" | "mostconnected" => Selector::MostConnected,
+            "most-connected-largest" | "mostconnectedlargest" => Selector::MostConnectedLargest,
+            "smallest-most-connected" | "smallestmostconnected" => Selector::SmallestMostConnected,
+            other => panic!("unknown selector strategy {:?}", other),
+        }
     }
-});
+}
+
+/// Env fallback, parsed once. Used only when GAP does not name a
+/// selector in the search config, so existing `VOLE_SELECTOR`-driven
+/// benchmark scripts keep working.
+static SELECTOR_ENV: Lazy<Selector> =
+    Lazy::new(|| Selector::from_token(&std::env::var("VOLE_SELECTOR").unwrap_or_default()));
+
+/// Resolve the active strategy: GAP's `search_config.selector` wins;
+/// an empty / `"default"` value (or none) falls back to `VOLE_SELECTOR`.
+fn resolve_selector(cfg: Option<&str>) -> Selector {
+    match cfg {
+        Some(s) if !matches!(s.trim().to_ascii_lowercase().as_str(), "" | "default") => {
+            Selector::from_token(s)
+        }
+        _ => *SELECTOR_ENV,
+    }
+}
 
 /// Bliss-style "refining power" of an individual cell.
 ///
@@ -126,7 +148,7 @@ fn candidate_cells(state: &State) -> Vec<usize> {
         .collect()
 }
 
-pub fn select_branching_cell(state: &State) -> usize {
+pub fn select_branching_cell(state: &State, search_config: &SearchConfig) -> usize {
     // A refiner may have nominated a specific point during the most
     // recent refinement cycle. Use it only if (a) its cell is a base
     // cell (the default selector also restricts to base_cells, so an
@@ -165,7 +187,7 @@ pub fn select_branching_cell(state: &State) -> usize {
 
     let cells = candidate_cells(state);
 
-    let choice = *SELECTOR;
+    let choice = resolve_selector(search_config.selector.as_deref());
     let cell = match choice {
         Selector::Smallest => find_best_cell(state, &cells, |s, i| s.domain.partition().cell(i).len() as i64),
         Selector::Largest => find_best_cell(state, &cells, |s, i| -(s.domain.partition().cell(i).len() as i64)),
