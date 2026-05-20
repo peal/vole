@@ -24,6 +24,11 @@
 //!   [vole d=2 #14] branch   cell=2 value=5
 //!   [vole d=3 #15] enter
 //!   [vole d=3 #15] trace_fail
+//!   [vole t=7 #16] sym match     Split { cell: 2, size: 3, reason: .. }
+//!   [vole t=8 #17] sym violate   NoSplit { .. }  (expected Split { .. })
+//!
+//! Trace lines are tagged `t=` (the trace position) rather than `d=`
+//! (search depth), since the tracer counts events, not search nodes.
 //!
 //! The `d=` field is the search depth (0 at the root).  The `#`
 //! field is a per-search counter incremented on every event, so
@@ -179,18 +184,22 @@ pub fn dump_event(label: &str, depth: usize, detail: &str) {
     eprintln!("[vole d={} #{}] {:<10} {}", depth, next_seq(), label, detail);
 }
 
-/// Emit a tracer-level event (Split / NoSplit / EndRefine / ...).
-pub fn dump_trace(depth: usize, kind: &str, cell: usize, extra: &str) {
+/// True iff `VOLE_DUMP` requests the tracer-event stream. Callers gate
+/// the (non-trivial) `{:?}` formatting of a `TraceEvent` on this, so it
+/// costs nothing when the dump is off — `Tracer::add` is on the hot path.
+pub fn trace_enabled() -> bool {
+    enabled(DumpLevel::TRACE)
+}
+
+/// Emit one algorithmic trace event — the Split / NoSplit / refine-fact
+/// stream the `Tracer` compares between branches.  `pos` is the trace
+/// position, NOT the search-tree depth; the partition / branch dumps use
+/// depth, so these lines are tagged `t=` to keep them distinct.  `status`
+/// records how the event landed: added (new on this branch), matched /
+/// violated the symmetry trace, or new-best / violated the canonical one.
+pub fn dump_trace(pos: usize, status: &str, event: &str) {
     if !enabled(DumpLevel::TRACE) {
         return;
     }
-    eprintln!(
-        "[vole d={} #{}] {:<10} kind={} cell={} {}",
-        depth,
-        next_seq(),
-        "trace",
-        kind,
-        cell,
-        extra
-    );
+    eprintln!("[vole t={} #{}] {:<13} {}", pos, next_seq(), status, event);
 }

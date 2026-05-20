@@ -59,16 +59,32 @@ impl Tracer {
 
     /// Add new event to trace, returns an Err if search should backtrack
     pub fn add(&mut self, t: TraceEvent) -> Result<()> {
+        // `VOLE_DUMP=trace` mirrors the event stream to stderr. Gated so
+        // the `{:?}` formatting only happens when the dump is enabled.
+        let dbg = crate::vole::diag::trace_enabled();
         if self.tracing_type.contains(TracingType::SYMMETRY) {
             if *self.pos < self.symmetry_trace.len() {
                 if self.symmetry_trace[*self.pos] != t {
                     info!(target: "tracer", "Violating Symmetry Trace: found {:?}, expected {:?}", t, self.symmetry_trace[*self.pos]);
+                    if dbg {
+                        crate::vole::diag::dump_trace(
+                            *self.pos,
+                            "sym violate",
+                            &format!("{:?}  (expected {:?})", t, self.symmetry_trace[*self.pos]),
+                        );
+                    }
                     *self.tracing_type -= TracingType::SYMMETRY;
                 } else {
                     info!(target: "tracer", "Matching trace event: {:?}, depth {:?}", t, *self.pos);
+                    if dbg {
+                        crate::vole::diag::dump_trace(*self.pos, "sym match", &format!("{:?}", t));
+                    }
                 }
             } else {
                 info!(target: "tracer", "Adding trace event: {:?}, depth {:?}", t, *self.pos);
+                if dbg {
+                    crate::vole::diag::dump_trace(*self.pos, "sym add", &format!("{:?}", t));
+                }
                 assert!(self.symmetry_trace.len() == *self.pos);
                 self.symmetry_trace.push(t);
             }
@@ -79,17 +95,30 @@ impl Tracer {
                 match self.canonical_trace[*self.pos].cmp(&t) {
                     Ordering::Less => {
                         info!(target: "tracer", "Found a new best minimal canonical trace");
+                        if dbg {
+                            crate::vole::diag::dump_trace(*self.pos, "canon best", &format!("{:?}", t));
+                        }
                         self.canonical_trace.truncate(*self.pos);
                         self.canonical_trace.push(t);
                         self.canonical_trace_version += 1;
                     }
-                    Ordering::Equal => {}
+                    Ordering::Equal => {
+                        if dbg {
+                            crate::vole::diag::dump_trace(*self.pos, "canon match", &format!("{:?}", t));
+                        }
+                    }
                     Ordering::Greater => {
                         info!(target: "tracer", "Violating canonical trace");
+                        if dbg {
+                            crate::vole::diag::dump_trace(*self.pos, "canon violate", &format!("{:?}", t));
+                        }
                         *self.tracing_type -= TracingType::CANONICAL;
                     }
                 }
             } else {
+                if dbg {
+                    crate::vole::diag::dump_trace(*self.pos, "canon add", &format!("{:?}", t));
+                }
                 assert!(self.canonical_trace.len() == *self.pos);
                 self.canonical_trace.push(t);
             }
@@ -99,6 +128,9 @@ impl Tracer {
 
         if *self.tracing_type == TracingType::NONE {
             info!(target: "tracer", "Trace fail");
+            if dbg {
+                crate::vole::diag::dump_trace(*self.pos - 1, "BACKTRACK", "trace diverged — search backtracks");
+            }
             Err(TraceFailure {})
         } else {
             Ok(())
