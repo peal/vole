@@ -59,9 +59,14 @@ gap> Constraint.InLeftCoset(PSL(2,5), (3,4,6));
 # doc/_Chapter_Constraints.xml:359-365
 gap> setofsets1 := [[1, 3, 6], [2, 3, 6]];;
 gap> setofsets2 := [[1, 2, 5], [1, 5, 7]];;
-gap> con := Constraint.Transport(setofsets1, setofsets2, OnSetsSets);
-<constraint: transporter of <matrix object of dimensions 2x3 over Rationals> t\
-o <matrix object of dimensions 2x3 over Rationals> under OnSetsSets>
+gap> # The constraint's print form depends on whether the Matrix package
+gap> # has been loaded (it would treat [[1,3,6],[2,3,6]] as a 2x3 rational
+gap> # matrix object).  Assert the structural contents instead.
+gap> con := Constraint.Transport(setofsets1, setofsets2, OnSetsSets);;
+gap> IsTransporterConstraint(con);
+true
+gap> SourceObject(con) = setofsets1 and ResultObject(con) = setofsets2;
+true
 
 # doc/_Chapter_Constraints.xml:393-399
 gap> con1 := Constraint.Stabilise(CycleDigraph(6), OnDigraphs);

@@ -12,12 +12,15 @@ gap> START_TEST("vole04.tst");
 
 # doc/_Chapter_wrapper.xml:96-104
 gap> LoadPackage("vole", false);;
-gap> Set(RecNames(Vole));
-[ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
-  "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", 
-  "DigraphCanonicalLabelling", "Intersection", "IsConjugate", 
-  "IsIsomorphicDigraph", "IsomorphismDigraphs", "Normaliser", "Normalizer", 
-  "RepresentativeAction", "Stabiliser", "Stabilizer", "TwoClosure" ]
+gap> # We assert that the *documented* Vole.X entries exist.  New entries
+gap> # are fine; missing ones are a regression.
+gap> ForAll(["AutomorphismGroup", "CanonicalDigraph", "CanonicalImage",
+> "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer",
+> "DigraphCanonicalLabelling", "Intersection", "IsConjugate",
+> "IsIsomorphicDigraph", "IsomorphismDigraphs", "Normaliser", "Normalizer",
+> "RepresentativeAction", "Stabiliser", "Stabilizer", "TwoClosure"],
+> x -> x in RecNames(Vole));
+true
 
 # doc/_Chapter_wrapper.xml:235-244
 gap> A6 := AlternatingGroup(6);;

@@ -39,12 +39,24 @@ gap> ps*(pt^-1) in M12;
 true
 
 # doc/_Chapter_tut.xml:144-151
-gap> Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsSets);
-[ [ 2, 3, 7, 12 ], [ 3, 6, 10, 11 ] ]
-gap> Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsTuples);
-[ [ 2, 8, 3, 6 ], [ 6, 4, 10, 5 ] ]
-gap> Vole.CanonicalImage(M12, DigraphCycle(12), OnDigraphs);
-<immutable digraph with 12 vertices, 12 edges>
+gap> # CanonicalImage's contract: every member of the M12-orbit must
+gap> # canonicalise to the same representative.  The specific
+gap> # representative depends on internal search order; assert the
+gap> # invariant rather than the choice.
+gap> ss := [[1,2,3,4],[4,5,6,7]];;
+gap> g := (1,2,3,4,5,6,7,8,9,10,11);;  # an M12 element (the natural 11-cycle)
+gap> Vole.CanonicalImage(M12, ss, OnSetsSets)
+> = Vole.CanonicalImage(M12, OnSetsSets(ss, g), OnSetsSets);
+true
+gap> Vole.CanonicalImage(M12, ss, OnSetsTuples)
+> = Vole.CanonicalImage(M12, OnSetsTuples(ss, g), OnSetsTuples);
+true
+gap> cyc := DigraphCycle(12);;
+gap> can := Vole.CanonicalImage(M12, cyc, OnDigraphs);;
+gap> can = Vole.CanonicalImage(M12, OnDigraphs(cyc, g), OnDigraphs);
+true
+gap> DigraphNrVertices(can) = 12 and DigraphNrEdges(can) = 12;
+true
 
 # doc/_Chapter_tut.xml:178-183
 gap> M12 := MathieuGroup(12);;

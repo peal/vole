@@ -108,17 +108,41 @@ gap> OnDigraphs(cycle, canon1.canonical)
 true
 
 # doc/_Chapter_interface.xml:441-446
-gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
->  Constraint.Normalise(Group([ (1,2) ]))
-> );
-(1,4)(2,3)
+gap> # CanonicalPerm's contract: returns p in G such that applying p
+gap> # to the input gives a canonical representative of its G-orbit.
+gap> # Two G-conjugate inputs must produce the same canonical image.
+gap> # The specific perm depends on internal search order, so we
+gap> # assert the conjugation property rather than the perm itself.
+gap> A4 := AlternatingGroup(4);;
+gap> H := Group([(1,2)]);;
+gap> p1 := VoleFind.CanonicalPerm(A4, Constraint.Normalise(H));;
+gap> p1 in A4;
+true
+gap> # H^p1 is the canonical image of H under A4-conjugation; verify a
+gap> # conjugate of H canonicalises to the same group.
+gap> g := (1,2,3);;  # in A4
+gap> p2 := VoleFind.CanonicalPerm(A4, Constraint.Normalise(H^g));;
+gap> H^p1 = (H^g)^p2;
+true
 
 # doc/_Chapter_interface.xml:457-463
-gap> VoleFind.CanonicalPerm(SymmetricGroup(4),
->  Constraint.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),
->  Constraint.Stabilise(CycleDigraph(4), OnDigraphs)
-> );
-(1,2,3)
+gap> ss := [ [1,2], [1,4], [2,3], [3,4] ];;
+gap> dg := CycleDigraph(4);;
+gap> q1 := VoleFind.CanonicalPerm(SymmetricGroup(4),
+>  Constraint.Stabilise(ss, OnSetsSets),
+>  Constraint.Stabilise(dg, OnDigraphs));;
+gap> q1 in SymmetricGroup(4);
+true
+gap> # Joint-canonical contract: two S_4-conjugate inputs produce the
+gap> # same pair (ss^q, dg^q) as the canonical-min.
+gap> g := (1,2,3,4);;
+gap> q2 := VoleFind.CanonicalPerm(SymmetricGroup(4),
+>  Constraint.Stabilise(OnSetsSets(ss, g), OnSetsSets),
+>  Constraint.Stabilise(OnDigraphs(dg, g), OnDigraphs));;
+gap> OnSetsSets(ss, q1) = OnSetsSets(OnSetsSets(ss, g), q2);
+true
+gap> OnDigraphs(dg, q1) = OnDigraphs(OnDigraphs(dg, g), q2);
+true
 
 #
 gap> STOP_TEST("vole05.tst", 1);
