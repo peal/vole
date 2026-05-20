@@ -216,13 +216,28 @@ end;
 # 2-3x faster than Orbital across the input space and the regular-
 # orbit deductions cost nothing when H has no regular orbit.
 _Vole.NormalizerDirect := function(G, H)
-    local refinerName, refiner, ret;
+    local refinerName, refiner, simple, ret;
     refinerName := ValueOption("refiner");
     if refinerName = fail then
         refinerName := _Vole.NormalizerDefaultRefiner;
     fi;
     refiner := GB_Con.(Concatenation("Normaliser", refinerName))(H);
-    ret := VoleFind.Group(G, refiner);
+    # Robustness: also push NormaliserSimple2 alongside the chosen
+    # orbital refiner.  Simple2's block-system encoding (a 2-level
+    # aux structure) gives the selector a different signal from
+    # what `buildSetOfGraphsWidget` produces for orbital graphs,
+    # and on imprimitive transitive inputs (e.g. TransGrp(20;1000))
+    # branching on Simple2's block-aligned cells beats branching on
+    # the sub-cells that orbital-graph refinement produces.  Cost:
+    # one extra push per fixed-point event (~few ms on small inputs,
+    # negligible on big ones).  Skip when the user explicitly asked
+    # for "Simple"/"Simple2" — they'd be pushed twice otherwise.
+    if refinerName <> "Simple" and refinerName <> "Simple2" then
+        simple := GB_Con.NormaliserSimple2(H);
+        ret := VoleFind.Group(G, simple, refiner);
+    else
+        ret := VoleFind.Group(G, refiner);
+    fi;
     _Vole.setParent(ret, G);
     return ret;
 end;
@@ -270,11 +285,20 @@ _Vole.NormalizerByOrbits := function(G, H)
     # Inner search: find elements of G that lie in L AND normalise H.
     # N(H) ≤ L (Lemma 2.8) so this captures the full normaliser; the
     # search space is G ∩ L, much smaller than G when H has many
-    # equivalent orbits.
-    ret := VoleFind.Group(SymmetricGroup(n),
-                          Constraint.InGroup(G),
-                          Constraint.InGroup(L),
-                          refiner);
+    # equivalent orbits.  See NormalizerDirect for why we also push
+    # NormaliserSimple2 alongside the orbital refiner.
+    if refinerName <> "Simple" and refinerName <> "Simple2" then
+        ret := VoleFind.Group(SymmetricGroup(n),
+                              Constraint.InGroup(G),
+                              Constraint.InGroup(L),
+                              GB_Con.NormaliserSimple2(H),
+                              refiner);
+    else
+        ret := VoleFind.Group(SymmetricGroup(n),
+                              Constraint.InGroup(G),
+                              Constraint.InGroup(L),
+                              refiner);
+    fi;
     _Vole.setParent(ret, G);
     return ret;
 end;
