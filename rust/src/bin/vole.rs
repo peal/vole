@@ -75,6 +75,20 @@ fn main() -> anyhow::Result<()> {
         if let Ok(time) = ProcessTime::try_now() {
             state.stats.vole_time = time.as_duration().as_millis();
         }
+        // The base we hand to GAP (StabChainBaseStrongGenerators) must
+        // consist only of base-domain points. A base for the extended
+        // graph can live entirely in auxiliary vertices (e.g. the
+        // tuple-marker vertex of a set-of-tuples widget pins the whole
+        // symmetry on its own), and such a base cannot be repaired by
+        // stripping the aux points — it would silently yield a wrong
+        // stabiliser chain and group order. Crash rather than return one.
+        let base_n = state.domain.partition().base_domain_size();
+        assert!(
+            state.domain.rbase_branch_vals().iter().all(|&b| b < base_n),
+            "rbase branch values must lie in the base domain (got {:?}, base size {})",
+            state.domain.rbase_branch_vals(),
+            base_n
+        );
         GAP_CHAT.lock().unwrap().send_results(
             &solutions,
             match state.domain.rbase_partition() {
