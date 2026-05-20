@@ -429,28 +429,24 @@ fn try_root_aut_shortcut(
         // Hand the sub-search's base out as the outer rbase, so GAP
         // builds the stab chain via StabChainBaseStrongGenerators
         // (free Size / membership) instead of rebuilding it from
-        // scratch.  The sub-search produced `base_gens` as a strong
-        // generating set for `sub_base`; `base_gens[0]` is the
-        // identity (the sub-search's own rbase leaf), matching the
-        // identity-first invariant the GAP wrapper expects.
+        // scratch.
         //
-        // Only safe when there are NO auxiliary vertices, i.e. the
-        // extended domain equals the base domain (a pure digraph /
-        // set problem).  Then `sub_base` ⊆ base domain, no generator
-        // moves an aux point, and (sub_base, base_gens) is exactly
-        // the base + strong generating set the main search would have
-        // produced.  When widgets added aux vertices, restricting the
-        // base to base-domain points (or keeping aux points in the
-        // base) does NOT in general preserve the strong-generating-set
-        // property — the chain would be wrong — so we leave the rbase
-        // empty and let GAP rebuild (correct, just not free).  These
-        // widget groups are small, so the rebuild is cheap anyway; the
-        // expensive case is exactly the large pure-graph one this
-        // covers.
-        let extended_n = state.domain.partition().extended_domain_size();
-        if extended_n == base_n {
-            for &b in &sub_base {
-                debug_assert!(b < base_n);
+        // The sub-search branched the real points `[0..base_n)` before
+        // any auxiliary vertex (it set a branch_first_threshold of
+        // base_n), so the entries of `sub_base` that are `< base_n` are
+        // the rbase the search would have produced restricted to the
+        // base domain — and they are a genuine base for the restricted
+        // group G: once all real points are fixed the base domain is
+        // discrete, so only the identity of G fixes them.  The aux
+        // suffix pins the kernel (auxiliary symmetries that act
+        // trivially on the base domain), which we drop.  `base_gens`
+        // restricted to the base domain is a strong generating set for
+        // G relative to this base: the aux-level strong generators fix
+        // every real point and so restrict to the identity.  This holds
+        // whether or not widgets added aux vertices, so there is no
+        // longer a pure-digraph special case.
+        for &b in &sub_base {
+            if b < base_n {
                 state.domain.push_rbase_branch_val(b);
             }
         }
@@ -590,8 +586,7 @@ mod fgr_tests {
         // BOTH tracing — the same as production calls from GAP.
         // canonical_min_trivial = true lets the canonical-image
         // path short-circuit locally instead of calling GAP_CHAT.
-        let refiner: Box<dyn Refiner> =
-            Box::new(DigraphTransporter::new_stabilizer(Arc::new(digraph)));
+        let refiner: Box<dyn Refiner> = Box::new(DigraphTransporter::new_stabilizer(Arc::new(digraph)));
         let refiners = RefinerStore::new_from_refiners(vec![refiner]);
         let tracer = trace::Tracer::new_with_type(TracingType::BOTH);
         let domain = DomainState::new(n, tracer);
@@ -644,8 +639,16 @@ mod fgr_tests {
     #[test]
     fn two_5cycles_fgr_off() {
         let d = Digraph::from_vec(vec![
-            vec![1], vec![2], vec![3], vec![4], vec![0],
-            vec![6], vec![7], vec![8], vec![9], vec![5],
+            vec![1],
+            vec![2],
+            vec![3],
+            vec![4],
+            vec![0],
+            vec![6],
+            vec![7],
+            vec![8],
+            vec![9],
+            vec![5],
         ]);
         assert_eq!(stab_search_order(d, 10, false), 50);
     }
@@ -653,8 +656,16 @@ mod fgr_tests {
     #[test]
     fn two_5cycles_fgr_on() {
         let d = Digraph::from_vec(vec![
-            vec![1], vec![2], vec![3], vec![4], vec![0],
-            vec![6], vec![7], vec![8], vec![9], vec![5],
+            vec![1],
+            vec![2],
+            vec![3],
+            vec![4],
+            vec![0],
+            vec![6],
+            vec![7],
+            vec![8],
+            vec![9],
+            vec![5],
         ]);
         assert_eq!(stab_search_order(d, 10, true), 50);
     }
@@ -664,8 +675,7 @@ mod fgr_tests {
     /// shortcut should consume the entire problem at the root and skip
     /// the partition backtrack.
     fn stab_search_order_with_shortcut(digraph: Digraph, n: usize) -> usize {
-        let refiner: Box<dyn Refiner> =
-            Box::new(DigraphTransporter::new_stabilizer(Arc::new(digraph)));
+        let refiner: Box<dyn Refiner> = Box::new(DigraphTransporter::new_stabilizer(Arc::new(digraph)));
         let refiners = RefinerStore::new_from_refiners(vec![refiner]);
         let tracer = trace::Tracer::new_with_type(TracingType::BOTH);
         let domain = DomainState::new(n, tracer);
@@ -700,8 +710,16 @@ mod fgr_tests {
     #[test]
     fn shortcut_two_5cycles() {
         let d = Digraph::from_vec(vec![
-            vec![1], vec![2], vec![3], vec![4], vec![0],
-            vec![6], vec![7], vec![8], vec![9], vec![5],
+            vec![1],
+            vec![2],
+            vec![3],
+            vec![4],
+            vec![0],
+            vec![6],
+            vec![7],
+            vec![8],
+            vec![9],
+            vec![5],
         ]);
         assert_eq!(stab_search_order_with_shortcut(d, 10), 50);
     }

@@ -41,9 +41,7 @@ static SELECTOR: Lazy<Selector> = Lazy::new(|| {
     let raw = std::env::var("VOLE_SELECTOR").unwrap_or_default();
     let tok = raw.trim().to_ascii_lowercase();
     match tok.as_str() {
-        "" | "default" | "most-connected-smallest" | "mostconnectedsmallest" => {
-            Selector::MostConnectedSmallest
-        }
+        "" | "default" | "most-connected-smallest" | "mostconnectedsmallest" => Selector::MostConnectedSmallest,
         "smallest" => Selector::Smallest,
         "largest" => Selector::Largest,
         "first" => Selector::First,
@@ -93,29 +91,39 @@ fn cell_refining_power(state: &State, cell_id: usize) -> i64 {
     score
 }
 
-fn find_best_cell<F, T>(state: &State, func: F) -> usize
+fn find_best_cell<F, T>(state: &State, cells: &[usize], func: F) -> usize
 where
     F: Fn(&State, usize) -> T,
     T: Ord,
 {
-    *state
-        .domain
-        .partition()
-        .base_cells()
-        .iter()
-        .filter(|&&i| state.domain.partition().cell(i).len() > 1)
-        .min_by_key(|&&value| func(state, value))
-        .unwrap()
+    *cells.iter().min_by_key(|&&value| func(state, value)).unwrap()
 }
 
-fn find_first_cell(state: &State) -> usize {
-    *state
-        .domain
-        .partition()
-        .base_cells()
+fn find_first_cell(cells: &[usize]) -> usize {
+    cells[0]
+}
+
+/// The splittable base cells the selector is allowed to branch on.
+///
+/// Normally every non-singleton base cell is a candidate. When a
+/// `branch_first_threshold` `t` is set (the `Aut(widget)` sub-search),
+/// we branch all "real" points `< t` before any auxiliary point `>= t`:
+/// while any real cell is still splittable, the candidates are exactly
+/// the real splittable cells. This makes the rbase come out as a real
+/// prefix (a base for the restricted group) followed by aux points,
+/// without changing what group / canonical image the search computes
+/// (the domain is still the full extended one).
+fn candidate_cells(state: &State) -> Vec<usize> {
+    let part = state.domain.partition();
+    let threshold = state.domain.branch_first_threshold();
+    let real_first = matches!(threshold,
+        Some(t) if part.base_cells().iter().any(|&i| part.cell(i).len() > 1 && part.cell(i)[0] < t));
+    part.base_cells()
         .iter()
-        .find(|&&i| state.domain.partition().cell(i).len() > 1)
-        .unwrap()
+        .copied()
+        .filter(|&i| part.cell(i).len() > 1)
+        .filter(|&i| !real_first || part.cell(i)[0] < threshold.unwrap())
+        .collect()
 }
 
 pub fn select_branching_cell(state: &State) -> usize {
@@ -125,57 +133,70 @@ pub fn select_branching_cell(state: &State) -> usize {
     // extended cell containing auxiliary vertices from a set-of-
     // graphs widget would be an unsafe branch target) and (b) the
     // cell isn't already a singleton.
-    if let Some(p) = state.domain.proposed_branch_point() {
-        let part = state.domain.partition();
-        let cell = part.cell_of(p);
-        let is_base_cell = part.base_cells().contains(&cell);
-        if is_base_cell && part.cell(cell).len() > 1 {
+    //
+    // Suppressed entirely when a branch-first threshold is set (the
+    // Aut(widget) sub-search): honouring a proposal could branch an aux
+    // point before the real points are exhausted, breaking the real-base
+    // prefix invariant the shortcut relies on. No refiner used by that
+    // sub-search proposes anyway.
+    if state.domain.branch_first_threshold().is_none() {
+        if let Some(p) = state.domain.proposed_branch_point() {
+            let part = state.domain.partition();
+            let cell = part.cell_of(p);
+            let is_base_cell = part.base_cells().contains(&cell);
+            if is_base_cell && part.cell(cell).len() > 1 {
+                info!(
+                    "Selector consuming refiner proposal: point {:?} -> cell {:?} from {:?}",
+                    p,
+                    cell,
+                    part.extended_as_list_set()
+                );
+                return cell;
+            }
             info!(
-                "Selector consuming refiner proposal: point {:?} -> cell {:?} from {:?}",
-                p,
-                cell,
-                part.extended_as_list_set()
-            );
-            return cell;
-        }
-        info!(
             "Refiner proposed point {:?} but its cell {:?} is not a usable branch target (is_base={}, size={}); falling back",
             p,
             cell,
             is_base_cell,
             part.cell(cell).len()
         );
+        }
     }
+
+    let cells = candidate_cells(state);
 
     let choice = *SELECTOR;
     let cell = match choice {
-        Selector::Smallest => {
-            find_best_cell(state, |s, i| s.domain.partition().cell(i).len() as i64)
-        }
-        Selector::Largest => {
-            find_best_cell(state, |s, i| -(s.domain.partition().cell(i).len() as i64))
-        }
-        Selector::First => find_first_cell(state),
-        Selector::MostConnected => find_best_cell(state, |s, i| -cell_refining_power(s, i)),
-        Selector::MostConnectedSmallest => find_best_cell(state, |s, i| {
-            (
-                -cell_refining_power(s, i),
-                s.domain.partition().cell(i).len() as i64,
-            )
+        Selector::Smallest => find_best_cell(state, &cells, |s, i| s.domain.partition().cell(i).len() as i64),
+        Selector::Largest => find_best_cell(state, &cells, |s, i| -(s.domain.partition().cell(i).len() as i64)),
+        Selector::First => find_first_cell(&cells),
+        Selector::MostConnected => find_best_cell(state, &cells, |s, i| -cell_refining_power(s, i)),
+        Selector::MostConnectedSmallest => find_best_cell(state, &cells, |s, i| {
+            (-cell_refining_power(s, i), s.domain.partition().cell(i).len() as i64)
         }),
-        Selector::MostConnectedLargest => find_best_cell(state, |s, i| {
-            (
-                -cell_refining_power(s, i),
-                -(s.domain.partition().cell(i).len() as i64),
-            )
+        Selector::MostConnectedLargest => find_best_cell(state, &cells, |s, i| {
+            (-cell_refining_power(s, i), -(s.domain.partition().cell(i).len() as i64))
         }),
-        Selector::SmallestMostConnected => find_best_cell(state, |s, i| {
-            (
-                s.domain.partition().cell(i).len() as i64,
-                -cell_refining_power(s, i),
-            )
+        Selector::SmallestMostConnected => find_best_cell(state, &cells, |s, i| {
+            (s.domain.partition().cell(i).len() as i64, -cell_refining_power(s, i))
         }),
     };
+
+    // With a branch-first threshold, real and aux points must never share
+    // a branch cell — they are kept apart by the snapshot graph's
+    // refinement (aux vertices have distinct connectivity). Assert it, so
+    // a violated assumption crashes here instead of silently corrupting
+    // the real/aux prefix split.
+    if let Some(t) = state.domain.branch_first_threshold() {
+        let c = state.domain.partition().cell(cell);
+        let real = c[0] < t;
+        assert!(
+            c.iter().all(|&x| (x < t) == real),
+            "branch cell mixes base ({}) and aux points: {:?}",
+            t,
+            c
+        );
+    }
 
     info!(
         "Choosing to branch on cell {:?} from {:?}",

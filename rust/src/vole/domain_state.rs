@@ -29,6 +29,14 @@ pub struct DomainState {
     /// recent refinement. Backtracking-stacked so the proposal is
     /// per-search-node.
     proposed_branch_point: Backtracking<Option<usize>>,
+    /// If set, the selector branches on points `< threshold` before any
+    /// point `>= threshold`. The sub-search that finds `Aut(widget)` runs
+    /// on the extended domain (base + auxiliary vertices) but sets this to
+    /// the real base size `n`, so the rbase comes out as a real-point
+    /// prefix (a base for the restricted group) followed by aux points.
+    /// `None` (the outer search) leaves branching order untouched. Not
+    /// backtracking-stacked: it is constant for the whole search.
+    branch_first_threshold: Option<usize>,
 }
 
 impl DomainState {
@@ -42,6 +50,7 @@ impl DomainState {
             digraph_stack_cells_refined: Backtracking::new(0),
             rbase_branch_vals: vec![],
             proposed_branch_point: Backtracking::new(None),
+            branch_first_threshold: None,
         }
     }
 }
@@ -171,6 +180,14 @@ impl DomainState {
 
     pub fn proposed_branch_point(&self) -> Option<usize> {
         *self.proposed_branch_point
+    }
+
+    pub fn set_branch_first_threshold(&mut self, t: usize) {
+        self.branch_first_threshold = Some(t);
+    }
+
+    pub fn branch_first_threshold(&self) -> Option<usize> {
+        self.branch_first_threshold
     }
 
     pub fn refine_graphs(&mut self) -> trace::Result<()> {

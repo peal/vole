@@ -110,7 +110,13 @@ pub fn sub_simple_search(state: &mut State, search_config: &SearchConfig) -> (So
     let refiners = RefinerStore::new_from_refiners(refiners);
     let tracer = trace::Tracer::new();
     let dsize = state.domain.partition().extended_domain_size();
-    let domain = DomainState::new(dsize, tracer);
+    let base_n = state.domain.partition().base_domain_size();
+    let mut domain = DomainState::new(dsize, tracer);
+    // Search the full extended domain (so the canonical image / orbits are
+    // the true ones for FGR), but branch the real points `[0..base_n)`
+    // before any auxiliary vertex. The resulting rbase is then a real-base
+    // prefix (a base for the restricted group) followed by aux points.
+    domain.set_branch_first_threshold(base_n);
     let mut solutions = Solutions::new(dsize);
     let mut new_state = State {
         domain,

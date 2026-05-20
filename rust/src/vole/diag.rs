@@ -51,9 +51,7 @@ bitflags::bitflags! {
 }
 
 impl DumpLevel {
-    const FULL: Self = Self::from_bits_truncate(
-        Self::PARTITION.bits | Self::BRANCH.bits | Self::TRACE.bits,
-    );
+    const FULL: Self = Self::from_bits_truncate(Self::PARTITION.bits | Self::BRANCH.bits | Self::TRACE.bits);
 
     fn parse(s: &str) -> Self {
         let mut out = Self::empty();
@@ -72,11 +70,9 @@ impl DumpLevel {
 }
 
 /// Active dump level.  Read once on first reference and cached.
-static LEVEL: Lazy<DumpLevel> = Lazy::new(|| {
-    match std::env::var("VOLE_DUMP") {
-        Ok(s) => DumpLevel::parse(&s),
-        Err(_) => DumpLevel::empty(),
-    }
+static LEVEL: Lazy<DumpLevel> = Lazy::new(|| match std::env::var("VOLE_DUMP") {
+    Ok(s) => DumpLevel::parse(&s),
+    Err(_) => DumpLevel::empty(),
 });
 
 /// Per-search-call event counter.  Each call to a top-level search
@@ -155,13 +151,7 @@ pub fn dump_partition(label: &str, depth: usize, state: &DomainState) {
 /// rbase value being mapped to `value` — i.e. the assignment we are
 /// trying is `rbase_src -> value`.  `None` if we are still building
 /// the rbase (left descent).
-pub fn dump_branch(
-    depth: usize,
-    cell: usize,
-    value: usize,
-    cell_size: usize,
-    rbase_src: Option<usize>,
-) {
+pub fn dump_branch(depth: usize, cell: usize, value: usize, cell_size: usize, rbase_src: Option<usize>) {
     if !enabled(DumpLevel::BRANCH) {
         return;
     }
