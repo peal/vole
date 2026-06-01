@@ -64,13 +64,20 @@ end;
 # backtrack vs GAP's backtrack" rather than "Vole's whole pipeline
 # vs GAP's whole pipeline".
 #
-# Caveat: a separate dispatcher `DoNormalizerSA` (gpprmsya.gi:1400)
-# intercepts `Normalizer(Sym(n), U)` and reduces to
-# `Normalizer(NormalizerParentSA(G,U), U)` before
-# `NormalizerPermGroup` is reached — this hook does not interfere
-# with that path.  For large primitive / affine inputs GAP's
-# pre-backtrack maths is what wins, not its backtrack itself; see
-# the loss-hunt analysis.
+# `Normalizer(Sym(n), U)` takes a different route in: it dispatches
+# to `DoNormalizerSA` (gpprmsya.gi:1400), which first reduces via
+# `NormalizerParentSA` and then runs the backtrack on the reduced
+# parent P -- either through the recursive `Normalizer(P, U)` or, if
+# there is no reduction, via TryNextMethod to the generic method.
+# Either way that residual backtrack still bottoms out in
+# `DoNormalizerPermGroup` (resolved by name), so the hook DOES fire
+# here, on the reduced problem.  When `NormalizerParentSA` settles
+# the normaliser purely from symmetric-group structure (e.g. a full
+# imprimitive wreath), there is no backtrack at all and the hook
+# correctly does not fire.  That asymmetry is the whole point: the
+# hook pits backtrack against backtrack and leaves GAP's efficient
+# non-backtrack reductions in place.  To run Vole end to end instead,
+# call Vole.Normalizer directly.
 #
 # Contract: `DoNormalizerPermGroup(G, E, L, Omega)` returns the
 # normaliser N_G(E) acting on Omega.  Vole.Normalizer(G, E) already

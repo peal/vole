@@ -24,9 +24,11 @@ substantial performance work on that machinery.
   section for the safety boundary).
 - `Vole.DDPD`: disjoint direct-product decomposition of a permutation group
   (Chang–Jefferson), used to factor highly-intransitive normaliser problems.
-- An optional hook to install Vole's normaliser in place of &GAP;'s
-  `DoNormalizerPermGroup`, so existing code calling `Normalizer` can use Vole
-  transparently.
+- An optional benchmarking hook that routes &GAP;'s `DoNormalizerPermGroup`
+  — the backtrack core that `Normalizer` falls into — to Vole, for
+  backtrack-vs-backtrack comparison. &GAP;'s efficient non-backtrack
+  reductions are deliberately left in place; to run Vole end to end, call
+  `Vole.Normalizer` directly.
 - A settable branching-cell selector strategy, via the `selector` option or
   the `VOLE_SELECTOR` environment variable.
 - A new manual section, *Normalisers and canonical images of groups*,
