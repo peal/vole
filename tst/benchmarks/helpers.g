@@ -4,7 +4,7 @@
 
 # Run a single normaliser variant on (G ≤ S_n, n) and return stats.
 BenchVariant := function(variant, G, n)
-    local refiner, t, ret, vgroup, voleSize, gapResult, gapSize;
+    local refiner, t, stats, vgroup, voleSize, gapResult, gapSize;
     t := NanosecondsSinceEpoch();
     if variant = "gap" then
         gapResult := Normalizer(SymmetricGroup(n), G);
@@ -17,17 +17,17 @@ BenchVariant := function(variant, G, n)
             vole_eq_gap := true);
     fi;
     refiner := GB_Con.(Concatenation("Normaliser", variant))(G);
-    ret := VoleFind.Group(SymmetricGroup(n), refiner : raw := true);
+    vgroup := VoleFind.Group(SymmetricGroup(n), refiner);
+    stats := _Vole.LastStats;
     t := Int((NanosecondsSinceEpoch() - t) / 1000000);
-    vgroup := ret.group;
     voleSize := Size(vgroup);
     # Validate against GAP (only at problem creation time would normally
     # be useful, but here we redo it to catch drift).
     gapResult := Normalizer(SymmetricGroup(n), G);
     gapSize := Size(gapResult);
     return rec(
-        nodes := ret.raw.stats.search_nodes,
-        refiner_calls := ret.raw.stats.refiner_calls,
+        nodes := stats.search_nodes,
+        refiner_calls := stats.refiner_calls,
         wall_time_ms := t,
         size := voleSize,
         vole_eq_gap := vgroup = gapResult);

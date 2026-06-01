@@ -77,13 +77,14 @@ cases := [
 ];
 
 _RunCanonical := function(G, H, refinerName)
-    local refiner, t, ret, ms;
+    local refiner, t, ret, stats, ms;
     refiner := GB_Con.(Concatenation("Normaliser", refinerName))(H);
     t := NanosecondsSinceEpoch();
-    ret := VoleFind.Canonical(G, refiner : raw := true);
+    ret := VoleFind.Canonical(G, refiner);
+    stats := _Vole.LastStats;
     ms := Int((NanosecondsSinceEpoch() - t) / 1000000);
     return rec(ms := ms, canonical := H ^ ret.canonical,
-               nodes := ret.raw.stats.search_nodes);
+               nodes := stats.search_nodes);
 end;
 
 # Per (case, refiner): time the first call, then test 4 random

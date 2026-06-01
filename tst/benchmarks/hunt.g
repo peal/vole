@@ -44,17 +44,18 @@ _HuntChildGap := function(gens, n)
 end;
 
 _HuntChildVole := function(gens, n, variant)
-    local G, refiner, t, ret, ms;
+    local G, refiner, t, vgroup, stats, ms;
     G := Group(gens);
     refiner := GB_Con.(Concatenation("Normaliser", variant))(G);
     t := NanosecondsSinceEpoch();
-    ret := VoleFind.Group(SymmetricGroup(n), refiner : raw := true);
+    vgroup := VoleFind.Group(SymmetricGroup(n), refiner);
+    stats := _Vole.LastStats;
     ms := Int((NanosecondsSinceEpoch() - t) / 1000000);
     return rec(
         ms := ms,
-        size := Size(ret.group),
-        nodes := ret.raw.stats.search_nodes,
-        refiner_calls := ret.raw.stats.refiner_calls);
+        size := Size(vgroup),
+        nodes := stats.search_nodes,
+        refiner_calls := stats.refiner_calls);
 end;
 
 # Wrapper-level backend: uses the Vole.Normalizer wrapper machinery so

@@ -32,16 +32,16 @@ _Disjoint := function(groups)
 end;
 
 _Drill := function(p, k)
-    local H, n, t, gms, vms, raw, stats;
+    local H, n, t, gms, vms, stats;
     H := _Disjoint(List([1..k], i -> CyclicGroup(IsPermGroup, p)));
     n := LargestMovedPoint(H);
     t := NanosecondsSinceEpoch();
     Size(Normalizer(SymmetricGroup(n), H));;
     gms := Int((NanosecondsSinceEpoch() - t) / 1000000);
     t := NanosecondsSinceEpoch();
-    raw := Vole.Normalizer(SymmetricGroup(n), H : raw := true);
+    Vole.Normalizer(SymmetricGroup(n), H);;
     vms := Int((NanosecondsSinceEpoch() - t) / 1000000);
-    stats := raw.raw.stats;
+    stats := _Vole.LastStats;
     Print("C_", p, "^", k, "  deg=", n, "  |H|=", Size(H),
           "  GAP=", gms, "ms  Vole=", vms, "ms",
           "  nodes=", stats.search_nodes,

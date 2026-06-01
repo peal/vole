@@ -75,7 +75,7 @@ _TimeMs := function(fn)
 end;
 
 _Compare := function(p, k)
-    local d, v, e, t, bliss_grp, bliss_ms, raw, stats;
+    local d, v, e, t, bliss_grp, bliss_ms, vole_grp, vole_ms, stats;
     d := _BuildCpkWidget(p, k);
     v := DigraphNrVertices(d);
     e := DigraphNrEdges(d);
@@ -84,10 +84,12 @@ _Compare := function(p, k)
     bliss_grp := AutomorphismGroup(d);
     bliss_ms := Int((NanosecondsSinceEpoch() - t) / 1000000);
 
-    raw := Vole.AutomorphismGroup(d : raw := true);
-    stats := raw.raw.stats;
+    t := NanosecondsSinceEpoch();
+    vole_grp := Vole.AutomorphismGroup(d);
+    vole_ms := Int((NanosecondsSinceEpoch() - t) / 1000000);
+    stats := _Vole.LastStats;
 
-    if Size(raw.group) <> Size(bliss_grp) then
+    if Size(vole_grp) <> Size(bliss_grp) then
         Print("C_", p, "^", k, "  *** MISMATCH ***\n");
         return;
     fi;
@@ -96,7 +98,7 @@ _Compare := function(p, k)
           "  V=", v, "  E=", e,
           "  |Aut|=", Size(bliss_grp),
           "  Bliss=", bliss_ms, "ms",
-          "  Vole=", raw.time, "ms",
+          "  Vole=", vole_ms, "ms",
           "  nodes=", stats.search_nodes,
           "  refines=", stats.refiner_calls,
           "  trace_fail=", stats.trace_fail_nodes,
