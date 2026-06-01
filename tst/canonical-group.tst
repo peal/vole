@@ -16,6 +16,18 @@ true
 gap> Vole.CanonicalImage(G, H, OnPoints) = Vole.CanonicalImage(G, H^PseudoRandom(G), OnPoints);
 true
 
+# The action is optional and defaults to OnPoints (matching Vole.CanonicalPerm
+# and the documented signature): omitting it must equal passing OnPoints, and
+# stay conjugacy-invariant.
+gap> Vole.CanonicalImage(G, H) = Vole.CanonicalImage(G, H, OnPoints);
+true
+gap> Vole.CanonicalImage(G, H) = Vole.CanonicalImage(G, H^PseudoRandom(G));
+true
+gap> Vole.CanonicalImagePerm(G, H) = Vole.CanonicalPerm(G, H, OnPoints);
+true
+gap> Vole.CanonicalImage(G, H, OnPoints, OnSets);
+Error, Vole.CanonicalImage args: G, object[, action]
+
 gap> G := SymmetricGroup(9);; H := Group([(1,2,3),(4,5,6),(7,8,9)]);;
 gap> Vole.CanonicalImage(G, H, OnPoints) = Vole.CanonicalImage(G, H^PseudoRandom(G), OnPoints);
 true

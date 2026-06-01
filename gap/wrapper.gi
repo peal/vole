@@ -450,10 +450,16 @@ end;
 Vole.CanonicalImagePerm := Vole.CanonicalPerm;
 
 Vole.CanonicalImage := function(G, object, action...)
-    local x, args;
-    args := Concatenation([G, object], action);
-    x := CallFuncList(Vole.CanonicalPerm, args);
-    return action[1](object, x);
+    local x;
+    if Length(action) > 1 then
+        ErrorNoReturn("Vole.CanonicalImage args: G, object[, action]");
+    elif Length(action) = 1 then
+        action := action[1];
+    else
+        action := OnPoints;
+    fi;
+    x := Vole.CanonicalPerm(G, object, action);
+    return action(object, x);
 end;
 
 ################################################################################
