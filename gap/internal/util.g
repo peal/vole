@@ -8,6 +8,13 @@
 DeclareGlobalVariable("_Vole");
 InstallValue(_Vole, rec());
 
+# Statistics from the most recent Vole search (search_nodes, refiner_calls,
+# vole_time, and the gap_callbacks breakdown). Set by _Vole.Solve on every
+# call; `fail` before any search has run. This is how GAP-side code (the
+# benchmark harness, node-count regression tests) reads search statistics,
+# now that the per-call `raw` option has been removed.
+_Vole.LastStats := fail;
+
 
 # ForceQuitGap is only available in GAP >= 4.12, it used to be FORCE_QUIT_GAP
 if not IsBound(ForceQuitGap) and IsBound(FORCE_QUIT_GAP) then
@@ -61,7 +68,6 @@ end;
 # I want the 'main' configuration interface to just be listing the options
 # as value options individually, i.e.
 # VoleFind.Group(constraints : points := 5);
-# VoleFind.Group(constraints : raw := true);
 #
 # Fill in a configuration 'default', using user-supplied values from
 # ValueOptions

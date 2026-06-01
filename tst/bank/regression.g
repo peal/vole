@@ -23,7 +23,39 @@ RegressionEntries := [
     # structured (immutable list-of-sorted-lists) keys.
     rec(n := 26,
         gens := GeneratorsOfGroup(PSL(2, 25)),
-        note := "partitionByKey record-name overflow on 26-vertex canonical form")
+        note := "partitionByKey record-name overflow on 26-vertex canonical form"),
+
+    # 2026-05: the default refiner OrbitalRegOrbitChar ran FittingSubgroup
+    # unconditionally in findRegularCharacteristicSubgroup; on this group
+    # (|H|~6e21, not solvable, no regular char subgroup) that cost 7.6 s for
+    # a guaranteed-fail. Fix: gate FittingSubgroup behind IsSolvableGroup.
+    # Entry guards that the gate keeps the answer correct.
+    rec(n := 56,
+        gens := GeneratorsOfGroup(WreathProduct(
+            WreathProduct(SymmetricGroup(2), SymmetricGroup(4)),
+            SymmetricGroup(7))),
+        note := "FittingSubgroup gate (S_2 wr S_4 wr S_7)"),
+
+    # 2026-06: dropped the wrapper's IsNormal(G,U) pre-check (matching GAP,
+    # which only checks U=G); normal U must now be confirmed N=G by the
+    # backtrack itself. A_n is normal in S_n — guards that path.
+    rec(n := 7,
+        gens := GeneratorsOfGroup(AlternatingGroup(7)),
+        note := "IsNormal pre-check removal: A_7 normal in S_7"),
+
+    # 2026-06: graph compression (clique / complete-multipartite gadgets)
+    # is applied to the pushed orbital and block-system graphs. These
+    # wreaths exercise both gadget kinds (within-block cliques, between-
+    # block multipartite); the C_10 example is the symmetry-safety
+    # counterexample — regular, so its orbital graphs are matchings that
+    # MUST be left uncompressed (compressing them would be wrong).
+    rec(n := 25,
+        gens := GeneratorsOfGroup(WreathProduct(
+            SymmetricGroup(5), SymmetricGroup(5))),
+        note := "graph compression on S_5 wr S_5 (clique + multipartite)"),
+    rec(n := 10,
+        gens := [(1,2,3,4,5)(6,7,8,9,10), (1,6)(2,7)(3,8)(4,9)(5,10)],
+        note := "compression must leave C_10's matching orbital graphs alone")
 ];
 
 RunBank_regression := function(mode)

@@ -11,7 +11,7 @@ VoleFind.Representative := function(arguments...)
     if IsEmpty(arguments) then
         ErrorNoReturn("VoleFind.Rep: At least one argument must be given");
     fi;
-    conf := _Vole.getConfig(rec(raw := false, points := infinity));
+    conf := _Vole.getConfig(rec(points := infinity));
     if IsInt(conf.points) then
         Add(arguments, conf.points);
     fi;
@@ -23,9 +23,7 @@ VoleFind.Representative := function(arguments...)
     bounds := _Vole.getBounds(constraints, conf.points, true);
     ret    := _Vole.CosetSolve(Minimum(bounds.min, bounds.max), constraints);
 
-    if conf.raw then
-        return ret;
-    elif not IsEmpty(ret.sols) then
+    if not IsEmpty(ret.sols) then
         return ret.sols[1];
     else
         return fail;
@@ -40,7 +38,7 @@ VoleFind.Group := function(arguments...)
         ErrorNoReturn("VoleFind.Group: At least one argument must be given");
     fi;
 
-    conf        := _Vole.getConfig(rec(raw := false, points := infinity));
+    conf        := _Vole.getConfig(rec(points := infinity));
     if IsInt(conf.points) then
         Add(arguments, conf.points);
     fi;
@@ -52,11 +50,7 @@ VoleFind.Group := function(arguments...)
     bounds      := _Vole.getBounds(constraints, conf.points, false);
     ret         := _Vole.GroupSolve(bounds.max, constraints);
 
-    if conf.raw then
-        return ret;
-    else
-        return ret.group;
-    fi;
+    return ret.group;
 end;
 
 VoleFind.Coset := function(arguments...)
@@ -65,7 +59,7 @@ VoleFind.Coset := function(arguments...)
     if IsEmpty(arguments) then
         ErrorNoReturn("VoleFind.Coset: At least one argument must be given");
     fi;
-    conf := _Vole.getConfig(rec(raw := false, points := infinity));
+    conf := _Vole.getConfig(rec(points := infinity));
     if IsInt(conf.points) then
         Add(arguments, conf.points);
     fi;
@@ -78,9 +72,7 @@ VoleFind.Coset := function(arguments...)
     bounds := _Vole.getBounds(constraints, conf.points, false);
     ret    := _Vole.CosetSolve(bounds.max, constraints);
 
-    if conf.raw then
-        return ret;
-    elif ret.cosetrep <> fail then
+    if ret.cosetrep <> fail then
         return RightCoset(ret.group, ret.cosetrep);
     else
         return fail;
@@ -151,15 +143,11 @@ VoleFind.Canonical := function(G, arguments...)
     fi;
 
     constraints := Flat(List(constraints, VoleRefiner.FromConstraint));
-    conf   := _Vole.getConfig(rec(raw := false, points := infinity));
+    conf   := _Vole.getConfig(rec(points := infinity));
     bounds := _Vole.getBounds(Concatenation(constraints, [G]), conf.points, false);
     ret    := _Vole.CanonicalSolve(bounds.max, G, constraints);
 
-    if conf.raw then
-        return ret;
-    else
-        return rec(group := ret.group, canonical := ret.canonical);
-    fi;
+    return rec(group := ret.group, canonical := ret.canonical);
 end;
 
 VoleFind.CanonicalPerm := {G, constraints...} ->

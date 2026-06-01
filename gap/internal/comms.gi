@@ -473,9 +473,7 @@ end;
 # TODO: Add Canonical group
 _Vole.Solve :=
 function(points, find_single, find_coset, find_canonical, constraints, canonical_group, root_search)
-    local ret, gapcons, i, sc, gens, group, result, start_time,cosetrep, grprefiner;
-
-    start_time := NanosecondsSinceEpoch();
+    local ret, gapcons, i, sc, gens, group, result, cosetrep, grprefiner;
 
     # Get rid of trivial cases
     points := Maximum(2, points);
@@ -525,7 +523,8 @@ function(points, find_single, find_coset, find_canonical, constraints, canonical
               canonical_group
           );
 
-    result := rec(raw := ret, time := Int((NanosecondsSinceEpoch() - start_time)/1000000));
+    _Vole.LastStats := ret.stats;
+    result := rec();
 
     if find_single then
         result.sol := List(ret.sols, PermList);

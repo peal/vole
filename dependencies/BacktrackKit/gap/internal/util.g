@@ -130,7 +130,7 @@ _BTKit.getOrbitalListWithOptions := function(sc, options...)
                       orbreps := _BTKit.fillRepElements(G, orb);
                     fi;
                     for val in orb do
-                        p := orbreps[val]; 
+                        p := orbreps[val];
                         graph[val] := OnTuples(iorb, p);
                     od;
                     Add(graphlist, graph);
@@ -231,6 +231,143 @@ end;
 
 #############################################################################
 ##
+## Graph compression: replace big "futile" substructures with compact
+## auxiliary-vertex gadgets that have the SAME automorphism group, so the
+## engine sends and refines far fewer arcs.  This is a post-processing pass
+## over any digraph we build — the graph-construction code stays oblivious.
+##
+## We only touch WHOLE connected components (of the underlying undirected
+## graph) that are themselves a complete graph or a complete multipartite
+## graph.  Working at the component level makes the choice canonical
+## (components are unique) and symmetry-safe: we never pick one overlapping
+## clique over another, which would break the graph's symmetry.
+##
+##   - clique component C (|C| >= 3): drop its |C|(|C|-1) internal arcs, add
+##     one COMPRESS_CLIQUE vertex z, and an arc c -> z for each c in C.
+##     Aut = Sym(C), matching the clique; |C| arcs instead of |C|(|C|-1).
+##   - complete-multipartite component with parts P_1..P_t: drop its arcs,
+##     add a COMPRESS_MP_PART vertex m_j per part with arcs p -> m_j, and a
+##     single COMPRESS_MP_TOP vertex T with arcs m_j -> T.  Aut matches
+##     (within-part Sym, equal-size parts permuted); |C|+t arcs instead of
+##     |C|^2 - sum|P_j|^2.
+##
+## Real vertices keep colour 0; only equal-size cliques/parts share a colour
+## so they stay permutable.  A component is compressed only when the gadget
+## has strictly fewer arcs, so tiny cliques (K_2) and small multipartite
+## graphs are left untouched.  Returns rec(graph := <Digraph>, vertlabels)
+## with vertlabels omitted when nothing compressed (a plain graph on [1..n]).
+##
+_BTKit.COMPRESS_REAL    := 0;
+_BTKit.COMPRESS_CLIQUE  := 1;
+_BTKit.COMPRESS_MP_PART := 2;
+_BTKit.COMPRESS_MP_TOP  := 3;
+
+# Kill-switch (also lets us A/B the pass). When false, compressGraph is the
+# identity (returns the graph unchanged on [1..n]).
+_BTKit.COMPRESS_ENABLE := true;
+
+_BTKit.compressGraph := function(D)
+    local n, out, comps, comp, Cset, nbrC, v, u, symmetric, isClique,
+          partOf, partsOK, parts, origE, gadgetE, t,
+          newadj, labels, nextAux, changed, z, mj, T, partVerts, P, p;
+
+    if not _BTKit.COMPRESS_ENABLE then
+        return rec(graph := D);
+    fi;
+
+    n := DigraphNrVertices(D);
+    out := OutNeighbours(D);
+    comps := DigraphConnectedComponents(
+                 DigraphSymmetricClosure(
+                     DigraphRemoveLoops(DigraphMutableCopy(D)))).comps;
+
+    newadj := List([1 .. n], v -> ShallowCopy(out[v]));
+    labels := ListWithIdenticalEntries(n, _BTKit.COMPRESS_REAL);
+    nextAux := n;
+    changed := false;
+
+    for comp in comps do
+        if Length(comp) < 3 then continue; fi;
+        Cset := Set(comp);
+
+        # within-component out-neighbours (excluding self)
+        nbrC := HashMap();
+        for v in comp do
+            nbrC[v] := Difference(Intersection(Set(out[v]), Cset), [v]);
+        od;
+
+        # clique/multipartite are undirected: require symmetry in-component
+        symmetric := true;
+        for v in comp do
+            for u in nbrC[v] do
+                if not (v in nbrC[u]) then symmetric := false; break; fi;
+            od;
+            if not symmetric then break; fi;
+        od;
+        if not symmetric then continue; fi;
+
+        origE := Sum(comp, v -> Length(nbrC[v]));
+
+        # clique: every vertex adjacent to all others in the component
+        isClique := ForAll(comp, v -> Length(nbrC[v]) = Length(comp) - 1);
+
+        if isClique then
+            gadgetE := Length(comp);                 # c -> z
+            if gadgetE >= origE then continue; fi;
+            for v in comp do
+                newadj[v] := Filtered(newadj[v], w -> not (w in Cset));
+            od;
+            nextAux := nextAux + 1; z := nextAux;
+            newadj[z] := []; labels[z] := _BTKit.COMPRESS_CLIQUE;
+            for v in comp do Add(newadj[v], z); od;
+            changed := true;
+            continue;
+        fi;
+
+        # complete multipartite: non-adjacency (within the component) is an
+        # equivalence relation, i.e. non-adjacent vertices share a part and
+        # have identical in-component neighbour sets.
+        partsOK := true;
+        for v in comp do
+            for u in comp do
+                if u <> v and not (u in nbrC[v]) then     # u, v non-adjacent
+                    if nbrC[u] <> nbrC[v] then partsOK := false; break; fi;
+                fi;
+            od;
+            if not partsOK then break; fi;
+        od;
+        if not partsOK then continue; fi;
+
+        # parts = classes of "C minus my neighbours" (each contains its v)
+        parts := Set(comp, v -> Difference(Cset, nbrC[v]));
+        t := Length(parts);
+        gadgetE := Length(comp) + t;                 # p -> m_j , m_j -> T
+        if gadgetE >= origE then continue; fi;
+
+        for v in comp do
+            newadj[v] := Filtered(newadj[v], w -> not (w in Cset));
+        od;
+        partVerts := [];
+        for P in parts do
+            nextAux := nextAux + 1; mj := nextAux;
+            newadj[mj] := []; labels[mj] := _BTKit.COMPRESS_MP_PART;
+            Add(partVerts, mj);
+            for p in P do Add(newadj[p], mj); od;
+        od;
+        nextAux := nextAux + 1; T := nextAux;
+        newadj[T] := []; labels[T] := _BTKit.COMPRESS_MP_TOP;
+        for mj in partVerts do Add(newadj[mj], T); od;
+        changed := true;
+    od;
+
+    if not changed then
+        return rec(graph := D);
+    fi;
+    return rec(graph := DigraphNC(newadj), vertlabels := labels);
+end;
+
+#############################################################################
+##
 ## Partition a list by a key function. Returns a HashMap from key to
 ## sublist (in original list order). HashMap (rather than a record) so
 ## keys may be arbitrary immutable values — including long structured
@@ -255,31 +392,59 @@ end;
 ## Equivalence key for an orbital graph, used to group orbital graphs into
 ## families that the normaliser may permute among themselves.
 ##
-## Phase-A: use the multiset of out-degrees (a coarse but sound invariant).
-## Orbital graphs of a transitive group are arc-transitive on their support
-## orbit, so vertices in the support all share the same out-degree (the
-## valence); vertices outside have out-degree 0. Two orbital graphs with
-## different valences cannot be permuted into each other by Sym(Ω).
-##
-## This can be tightened in Phase B with canonical-form hashing.
+## We compute a 1-dimensional Weisfeiler-Leman (colour-refinement) invariant
+## of the digraph rather than a full canonical form. Two orbital graphs get
+## the same key iff they have the same stable 1-WL colouring. This is an
+## isomorphism *invariant*, not a complete isomorphism test: 1-WL can assign
+## the same key to two non-isomorphic graphs (it fails to separate e.g.
+## regular graphs of the same parameters). That is sound here — over-merging
+## only ever lets the normaliser *attempt* to permute graphs it could not in
+## fact swap, which the engine then rejects per-graph. It never excludes a
+## legitimate permutation, so the normaliser stays correct. We choose 1-WL
+## over a Bliss canonical form deliberately: BlissCanonicalDigraph was the
+## dominant GAP-side cost on root-heavy groups (~88% of refiner time), and
+## it pulls in the external Digraphs/Bliss graph tooling, which muddies
+## experiments. 1-WL is O(rounds·(n+m)) with no external call.
 ##
 _BTKit.orbitalEquivalenceKey := function(og)
-    # Canonical-form key via Bliss. Two orbital graphs go into the same
-    # family iff they are isomorphic as digraphs on Ω — exactly the
-    # equivalence class that the normaliser can permute among itself.
-    #
-    # IMPORTANT: BlissCanonicalDigraph returns a digraph whose edge SET
-    # is canonical, but the adjacency lists are stored in arbitrary
-    # order. Two equal digraphs may have adjacency lists in different
-    # orders, so sort each one to get a value that is deterministic per
-    # isomorphism class. We return the structured value directly (a
-    # list of sorted lists) — HashMap keys may be arbitrary immutable
-    # values, and we avoid the GAP 1023-char record-name limit that
-    # String(...) would otherwise hit on large graphs.
-    local canon, neighbours;
-    canon := BlissCanonicalDigraph(og);
-    neighbours := OutNeighbours(canon);
-    return Immutable(List(neighbours, Set));
+    local out, inn, n, colour, sigs, distinct, rank, i,
+          numColours, prevNum, rounds;
+
+    out := OutNeighbours(og);
+    inn := InNeighbours(og);
+    n := Length(out);
+
+    # Initial colour: (out-degree, in-degree). Canonicalise the labels by
+    # ranking signatures in sorted order, so the integer ids are themselves
+    # isomorphism-invariant (insertion order must not leak in).
+    colour := List([1 .. n], i -> [Length(out[i]), Length(inn[i])]);
+    distinct := SortedList(DuplicateFreeList(colour));
+    rank := HashMap();
+    for i in [1 .. Length(distinct)] do rank[distinct[i]] := i; od;
+    colour := List(colour, c -> rank[c]);
+    numColours := Length(distinct);
+
+    # Refine: a vertex's new colour is its old colour together with the
+    # sorted multisets of its out- and in-neighbour colours. Iterate until
+    # the number of colour classes stops growing (the stable colouring), or
+    # n rounds as a hard cap (it cannot take more than n).
+    rounds := 0;
+    repeat
+        prevNum := numColours;
+        sigs := List([1 .. n], i -> [colour[i],
+                    SortedList(List(out[i], j -> colour[j])),
+                    SortedList(List(inn[i], j -> colour[j]))]);
+        distinct := SortedList(DuplicateFreeList(sigs));
+        rank := HashMap();
+        for i in [1 .. Length(distinct)] do rank[distinct[i]] := i; od;
+        colour := List(sigs, s -> rank[s]);
+        numColours := Length(distinct);
+        rounds := rounds + 1;
+    until numColours = prevNum or rounds >= n;
+
+    # Key = histogram of the canonical stable colours. Isomorphic graphs
+    # produce the identical stable colouring, hence the identical histogram.
+    return Immutable(Collected(colour));
 end;
 
 #############################################################################
@@ -346,6 +511,33 @@ _BTKit.bfsOrbit := function(seed, gens)
         i := i + 1;
     od;
     return rec(orbit := orbit, position := position);
+end;
+
+# Variant of bfsOrbit that also tracks, for each point, an element of
+# <gens> sending the seed to that point.  treeElement[p] is a word in
+# the generators such that seed ^ treeElement[p] = p.
+_BTKit.bfsOrbitWithTrace := function(seed, gens)
+    local orbit, position, treeElement, i, x, g, y;
+    orbit := [seed];
+    position := HashMap();
+    position[seed] := 1;
+    treeElement := HashMap();
+    treeElement[seed] := ();
+    i := 1;
+    while i <= Length(orbit) do
+        x := orbit[i];
+        for g in gens do
+            y := x ^ g;
+            if not (y in position) then
+                Add(orbit, y);
+                position[y] := Length(orbit);
+                treeElement[y] := treeElement[x] * g;
+            fi;
+        od;
+        i := i + 1;
+    od;
+    return rec(orbit := orbit, position := position,
+               treeElement := treeElement);
 end;
 
 #############################################################################

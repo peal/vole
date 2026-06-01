@@ -85,7 +85,7 @@ We can find the canonical image of many different types of objects, for example:
 
 @BeginExampleSession
 gap> Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsSets);
-[ [ 2, 3, 7, 12 ], [ 3, 6, 10, 11 ] ]
+[ [ 2, 3, 7, 10 ], [ 3, 4, 5, 12 ] ]
 gap> Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsTuples);
 [ [ 2, 8, 3, 6 ], [ 6, 4, 10, 5 ] ]
 gap> Vole.CanonicalImage(M12, DigraphCycle(12), OnDigraphs);
@@ -100,6 +100,82 @@ The <C>CanonicalImage</C> and <C>CanonicalImagePerm</C> functions work on a wide
 </URL> and we will investigate if it is possible to add.
 
 
+
+@Section Normalisers and canonical images of groups
+@SectionLabel groupconj
+
+A permutation group $G$ acts on its subgroups by conjugation,
+$H \mapsto H^g = g^{-1}Hg$. Two computations on this action are especially
+useful, and &Vole; provides both:
+
+* the **normaliser** $N_G(H)$ is the stabiliser of $H$ under conjugation
+  -- the elements of $G$ that map $H$ to itself; and
+* a **canonical image** of $H$ is a canonical representative of the orbit of
+  $H$ under conjugation by $G$, so that two subgroups are conjugate in $G$
+  if and only if they have the same canonical image.
+
+&Vole; computes both by directed-graph backtracking. At each node of the
+search it constrains the result with the orbital graphs and block systems of
+the relevant subgroup -- and, when one exists, a regular orbit -- which the
+engine refines to a fixed point. This is often competitive with, or faster
+than, &GAP;, especially on intransitive and imprimitive groups; &GAP; retains
+an advantage on affine and some primitive groups, where it has closed-form
+methods that avoid backtracking entirely. The refiners are documented in
+Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>.
+
+@Subsection Normalisers
+
+`Vole.Normalizer(<A>G</A>, <A>H</A>)` returns $N_G(H)$. (If the second
+argument is a permutation $x$, it returns $N_G(\langle x \rangle)$.)
+
+@BeginExampleSession
+gap> Vole.Normalizer(SymmetricGroup(6), PSL(2,5)) = PGL(2,5);
+true
+gap> H := WreathProduct(SymmetricGroup(3), SymmetricGroup(3));;
+gap> Vole.Normalizer(SymmetricGroup(9), H) = Normalizer(SymmetricGroup(9), H);
+true
+@EndExampleSession
+
+See <Ref Func="Vole.Normalizer"/> for the full description.
+
+@Subsection Canonical images of a group under conjugacy
+
+The conjugation action is <Ref Func="OnPoints" BookName="Ref"/>, which, applied
+to a group <A>H</A> and a permutation $g$, returns $H^g$. So a canonical image
+of <A>H</A> under conjugation by <A>G</A> is
+`Vole.CanonicalImage(<A>G</A>, <A>H</A>, OnPoints)`. Two subgroups are conjugate
+in <A>G</A> exactly when their canonical images are equal -- which makes this a
+direct test for conjugacy of subgroups:
+
+@BeginExampleSession
+gap> G := SymmetricGroup(8);;
+gap> C4  := Group([(1,2,3,4)]);;
+gap> C4b := Group([(5,6,7,8)]);;     # a conjugate copy of C4
+gap> V4  := Group([(1,2),(3,4)]);;   # not conjugate to C4
+gap> Vole.CanonicalImage(G, C4, OnPoints) = Vole.CanonicalImage(G, C4b, OnPoints);
+true
+gap> Vole.CanonicalImage(G, C4, OnPoints) = Vole.CanonicalImage(G, V4, OnPoints);
+false
+@EndExampleSession
+
+As for any canonical image, <Ref Func="Vole.CanonicalPerm"/> gives the
+permutation that carries <A>H</A> to its canonical image.
+
+**Canonical safety.** Computing a canonical image of a group is a *stronger*
+requirement than computing its normaliser. For a canonical image, not only the
+refiners but the *order* in which the search branches must be an invariant of
+the input under $\mathrm{Sym}(\Omega)$, so that conjugate inputs follow
+corresponding search trajectories and therefore receive the same canonical
+image. Some accelerations are sound for normalisers but not for canonical
+images: the regular-orbit branch ordering (Theißen&nbsp;§3.7) picks its branch
+point from a regular orbit of <A>H</A>, a point set tied to the input's
+labelling. It only reorders the search, so it is sound for the normaliser, but
+conjugate inputs can then be given *different* canonical images. &Vole;
+therefore uses a canonical-safe refiner for canonical-image searches
+automatically -- you do not need to do anything. (As for all canonical
+computations, the specific image returned may also differ between versions of
+&Vole; or &GAP; and across hardware; see the warning under
+<Ref Func="Vole.CanonicalImage"/>.)
 
 @Section The full Vole interface
 

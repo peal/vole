@@ -1,4 +1,14 @@
 
+# Global node counter for diagnostics.  Incremented once per refine.fixed
+# call (left + right).  Read with _BTKit.NormaliserNodeCount().
+_BTKit._NORMALISER_NODE_COUNT := 0;
+_BTKit.NormaliserNodeCount := function()
+    return _BTKit._NORMALISER_NODE_COUNT;
+end;
+_BTKit.ResetNormaliserNodeCount := function()
+    _BTKit._NORMALISER_NODE_COUNT := 0;
+end;
+
 GB_Con.NormaliserSimple := function(group)
     local orbList,getOrbits, orbMap, pointMap, r, invperm,minperm;
 
@@ -212,7 +222,7 @@ _BTKit.makeNormaliserOrbitalRecords := function(group, points, n, isRoot, strate
     # canonical-form results and conjugating to the current
     # representation. (See Chris's note on R(S)^g = R(S^g).)
     local out, orbs, graph, cols, blockSystems, ogList, families, key, fam,
-          pushOrbitals, pushBlocks, ogOptions, sortedKeys, stabSize;
+          pushOrbitals, pushBlocks, ogOptions, sortedKeys, stabSize, comp, idxs;
     out := [];
 
     # (1) Orbit-length-coloured partition. Always invariant under N(G);
@@ -241,7 +251,14 @@ _BTKit.makeNormaliserOrbitalRecords := function(group, points, n, isRoot, strate
             # families in the same order — required for trace consistency.
             for key in SortedList(Keys(families)) do
                 fam := List(families[key], bs -> bs.graph);
-                Append(out, _BTKit.buildSetOfGraphsWidget(fam, n));
+                # Block-system graphs are unions of cliques (intra-block
+                # complete digraphs); compress a singleton to its clique-star
+                # gadget. Multi-member families keep the set widget.
+                if Length(fam) = 1 then
+                    Add(out, _BTKit.compressGraph(fam[1]));
+                else
+                    Append(out, _BTKit.buildSetOfGraphsWidget(fam, n));
+                fi;
             od;
         fi;
     fi;
@@ -266,11 +283,25 @@ _BTKit.makeNormaliserOrbitalRecords := function(group, points, n, isRoot, strate
         fi;
         ogList := StabTreeStabilizerOrbitalGraphs(group, points, ogOptions);
         if not IsEmpty(ogList) then
-            families := _BTKit.partitionByKey(ogList,
-                og -> _BTKit.orbitalEquivalenceKey(og));
+            # Compress each orbital graph (clique / complete-multipartite
+            # components -> compact gadgets), then group by the equivalence
+            # key of the COMPRESSED form. A clique gadget and a multipartite
+            # gadget have different structure, so this also stops the (coarse,
+            # over-merging) 1-WL key from bundling non-isomorphic orbital
+            # graphs together: distinct gadgets land in singleton families and
+            # are pushed compressed. Genuinely isomorphic orbitals still group
+            # and fall back to the set widget on the original graphs.
+            comp := List(ogList, _BTKit.compressGraph);
+            families := _BTKit.partitionByKey([1 .. Length(ogList)],
+                i -> _BTKit.orbitalEquivalenceKey(comp[i].graph));
             for key in SortedList(Keys(families)) do
-                Append(out,
-                    _BTKit.buildSetOfGraphsWidget(families[key], n));
+                idxs := families[key];
+                if Length(idxs) = 1 then
+                    Add(out, comp[idxs[1]]);
+                else
+                    Append(out, _BTKit.buildSetOfGraphsWidget(
+                        List(idxs, i -> ogList[i]), n));
+                fi;
             od;
         fi;
     fi;
@@ -294,7 +325,7 @@ _MakeGroupConjugacyOrbital := function(groupL, groupR, strategy, name)
                 return r!.refine.fixed(ps, buildingRBase);
             end,
             fixed := function(ps, buildingRBase)
-                local fixedpoints, result, group, n, i;
+                local fixedpoints, result, group, n, i, regGroup, regOrbOps;
                 if buildingRBase then
                     group := groupL;
                 else
@@ -335,14 +366,29 @@ _MakeGroupConjugacyOrbital := function(groupL, groupR, strategy, name)
                 # subgroup, e.g. C_p ≤ AGL(1, p).
                 if IsBound(strategy.regOrbit)
                    and strategy.regOrbit = "always" then
-                    Append(result,
-                        _BTKit.makeNormaliserRegOrbitDeduction(
-                            _BTKit.regOrbitDeductionGroup(group, strategy),
-                            fixedpoints, ps, n,
-                            _BTKit.regOrbitProposeEnabled(strategy)));
+                    regGroup := _BTKit.regOrbitDeductionGroup(
+                        group, strategy);
+                    regOrbOps := _BTKit.makeNormaliserRegOrbitDeduction(
+                        regGroup, fixedpoints, ps, n,
+                        _BTKit.regOrbitProposeEnabled(strategy));
+                    Append(result, regOrbOps[1]);
+                    # Cross-orbit propagation (Theißen §3.7.2):
+                    # RegularOrbit3 — when the Phase-C BFS orbit D
+                    # is non-empty, propagate deductions from the
+                    # regular orbit to every anchored E-orbit.
+                    if IsBound(strategy.regOrbitCross)
+                       and strategy.regOrbitCross = "always"
+                       and regOrbOps[2] <> false then
+                        Append(result,
+                            _BTKit.makeNormaliserRegOrbitCrossDeduction(
+                                regGroup, fixedpoints, ps, n,
+                                regOrbOps[2]));
+                    fi;
                 fi;
 
                 r!.btdata.seenDepth := Length(fixedpoints);
+                _BTKit._NORMALISER_NODE_COUNT :=
+                    _BTKit._NORMALISER_NODE_COUNT + 1;
                 return result;
             end)
     );
@@ -436,9 +482,24 @@ _BTKit.findRegularCharacteristicSubgroup := function(group, sizeCap)
         return fail;
     fi;
 
-    candidates := [DerivedSubgroup(group),
-                   FittingSubgroup(group),
-                   Centre(group)];
+    # DerivedSubgroup and Centre are cheap for any permutation group.
+    candidates := [DerivedSubgroup(group)];
+    # FittingSubgroup is the natural regular-characteristic-subgroup
+    # candidate for a SOLVABLE group (its nilpotent radical), and is cheap
+    # to compute via the solvable-group machinery. For a large NON-solvable
+    # group FittingSubgroup can cost orders of magnitude more than the whole
+    # normaliser problem (measured: 7.6 s on S_2 wr S_4 wr S_7, |H|≈6·10^21,
+    # vs 74 ms for the entire normaliser) while never being regular — so
+    # gate it on solvability. This mirrors GAP, whose NormalizerParentSA
+    # dispatch only reaches the regular-characteristic-subgroup machinery in
+    # the solvable / primitive-affine regime (GAP calls FittingSubgroup zero
+    # times on that wreath). IsSolvableGroup is ~5 ms here.
+    if IsSolvableGroup(group) then
+        Add(candidates, FittingSubgroup(group));
+    fi;
+    Add(candidates, Centre(group));
+    # Socle is the relevant candidate for primitive groups (the AGL/affine
+    # case, F = regular socle); cheap on primitive inputs.
     if IsTransitive(group, mp) and IsPrimitive(group, mp) then
         Add(candidates, Socle(group));
     fi;
@@ -487,7 +548,7 @@ _BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n,
     local data, regOrbFPs, b1, gens, i, bfs, out, p, ci, best_idx, best_p;
     data := StabTreeRegularOrbitData(group);
     if data = fail then
-        return [];
+        return [[], false];
     fi;
 
     out := [];
@@ -500,7 +561,7 @@ _BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n,
         # g-equivariant (they're determined by trace-matching splits);
         # point values are not, which is why we don't iterate over
         # sorted points and pick the first.
-        if not proposeEnabled then return []; fi;
+        if not proposeEnabled then return [[], false]; fi;
         best_idx := infinity;
         best_p := fail;
         for p in data.regOrbit do
@@ -513,7 +574,7 @@ _BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n,
         if best_p <> fail then
             Add(out, rec(proposeBranchPoint := best_p));
         fi;
-        return out;
+        return [out, false];
     fi;
 
     # D = orbit of b_1 under <gens>. Build gens for i = 2..|regOrbFPs|.
@@ -556,6 +617,85 @@ _BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n,
         if best_p <> fail then
             Add(out, rec(proposeBranchPoint := best_p));
         fi;
+    fi;
+
+    return [out, bfs];
+end;
+
+# RegularOrbit3 cross-propagation (Theißen §3.7.2).
+#
+# Once the regular-orbit deduction (Phase C) has isolated a subset D of
+# the regular orbit, the images of points in OTHER orbits can sometimes
+# be deduced.  For a fixed point y (whose g-image is known) and any
+# yh in yE, if bh = ω₁^(h⁻¹) is in D, then yh^g = y^g · h^g is also
+# known, because h^g is determined by the regular-orbit map on bh.
+#
+# This function emits label functions that isolate such yh, extending
+# the regular-orbit deduction across E-orbits.  It is the Vole
+# equivalent of GAP's Refinements.RegularOrbit3 (stbcbckt.gi:1867).
+#
+# Arguments as for makeNormaliserRegOrbitDeduction.  `phaseC_D` is the
+# BFS-orbit record from the Phase C deduction (the set D above); if
+# empty, no cross-propagation is possible.
+_BTKit.makeNormaliserRegOrbitCrossDeduction :=
+    function(group, points, ps, n, phaseC_D)
+    local data, D_set, E_orbits, processed_orbits, out, bfs_y, labelMap,
+          omega1, genE, orbMin, orb, p, h, bh, orbitOffset;
+
+    if IsEmpty(phaseC_D.orbit) then
+        return [];
+    fi;
+
+    data := StabTreeRegularOrbitData(group);
+    if data = fail then
+        return [];
+    fi;
+
+    omega1 := data.omega1;
+    genE := GeneratorsOfGroup(group);
+    D_set := Set(phaseC_D.orbit);
+
+    # Collect E-orbits.  For efficiency we only process orbits that
+    # contain at least one fixed point (anchored orbits).
+    E_orbits := Orbits(group, [1 .. n]);
+
+    out := [];
+    processed_orbits := HashMap();
+    labelMap := HashMap();
+    orbitOffset := 0;
+
+    for orb in E_orbits do
+        if Length(orb) = 1 then continue; fi;
+        if not ForAny(orb, p -> p in points) then continue; fi;
+
+        # One BFS tree per anchored orbit, cached by orbit-minimum.
+        orbMin := Minimum(orb);
+        if orbMin in processed_orbits then
+            bfs_y := processed_orbits[orbMin];
+        else
+            bfs_y := _BTKit.bfsOrbitWithTrace(orbMin, genE);
+            processed_orbits[orbMin] := bfs_y;
+        fi;
+
+        for p in orb do
+            h := bfs_y.treeElement[p];
+            # bh = ω₁^(h⁻¹) — the regular-orbit preimage under h.
+            bh := omega1 / h;
+            if bh in D_set then
+                labelMap[p] := orbitOffset + bfs_y.position[p];
+            fi;
+        od;
+
+        orbitOffset := orbitOffset + Length(orb) + 1;
+    od;
+
+    if not IsEmpty(Keys(labelMap)) then
+        Add(out, function(p)
+            if p in labelMap then
+                return labelMap[p];
+            fi;
+            return 0;
+        end);
     fi;
 
     return out;
@@ -672,11 +812,14 @@ end;
 # wrong for the inputs we actually care about (subdirect mixers etc.).
 # Caller can override via ValueOption "regCharSizeCap".
 #
-# Note the cheap candidate list (DerivedSubgroup, FittingSubgroup,
-# Centre, Socle when primitive) is ALWAYS tried regardless of sizeCap;
-# only the exhaustive CS scan is gated. Theißen's primary motivating
-# case (AGL family, where F = the regular socle) is caught by the
-# cheap path, so the sizeCap cut doesn't lose those.
+# The structural candidate list (DerivedSubgroup, Centre always;
+# FittingSubgroup only when solvable; Socle only when primitive) is tried
+# regardless of sizeCap; only the exhaustive CS scan is gated by sizeCap.
+# Theißen's primary motivating case (AGL family, where F = the regular
+# socle) is caught by the cheap Socle path, so neither cut loses those.
+# FittingSubgroup is gated on solvability because it is the pathologically
+# expensive candidate on large non-solvable groups (see
+# findRegularCharacteristicSubgroup).
 GB_Con.GroupConjugacyOrbitalRegOrbitChar := function(groupL, groupR)
     local F, sizeCap;
     Assert(0, IsIdenticalObj(groupL, groupR),
@@ -699,10 +842,40 @@ GB_Con.GroupConjugacyOrbitalRegOrbitChar := function(groupL, groupR)
         "GroupConjugacyOrbitalRegOrbitChar");
 end;
 
-GB_Con.NormaliserOrbital             := {g} -> GB_Con.GroupConjugacyOrbital(g, g);
-GB_Con.NormaliserOrbitalRoot         := {g} -> GB_Con.GroupConjugacyOrbitalRoot(g, g);
-GB_Con.NormaliserOrbitalNone         := {g} -> GB_Con.GroupConjugacyOrbitalNone(g, g);
-GB_Con.NormaliserOrbitalDeep         := {g} -> GB_Con.GroupConjugacyOrbitalDeep(g, g);
-GB_Con.NormaliserOrbitalSmall        := {g} -> GB_Con.GroupConjugacyOrbitalSmall(g, g);
-GB_Con.NormaliserOrbitalRegOrbit     := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbit(g, g);
-GB_Con.NormaliserOrbitalRegOrbitChar := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbitChar(g, g);
+# Phase C + RegularOrbit3 cross-propagation.
+# Full Theißen §3.7.1-§3.7.2: regular-orbit branching proposal,
+# forced-refinement labels for the Phase-C-deduced subset D of the
+# regular orbit, and cross-orbit labels for every E-orbit anchored by
+# a fixed point (once D is non-empty).  Inert when the group has no
+# regular orbit.
+GB_Con.GroupConjugacyOrbitalRegOrbitCross := function(groupL, groupR)
+    return _MakeGroupConjugacyOrbital(groupL, groupR,
+        rec(orbitals := "always", blocks := "root",
+            regOrbit := "always",
+            regOrbitCross := "always"),
+        "GroupConjugacyOrbitalRegOrbitCross");
+end;
+
+# Phase C + cross-propagation, without the regular-orbit branching
+# proposal.  The Phase-C forced-refinement labels and the cross-orbit
+# labels are still emitted; only the selector hint is suppressed.
+# This isolates the effect of the cross-propagation labels from the
+# proposal-driven base change.
+GB_Con.GroupConjugacyOrbitalRegOrbitCrossNoPropose := function(groupL, groupR)
+    return _MakeGroupConjugacyOrbital(groupL, groupR,
+        rec(orbitals := "always", blocks := "root",
+            regOrbit := "always",
+            regOrbitCross := "always",
+            regOrbitPropose := false),
+        "GroupConjugacyOrbitalRegOrbitCrossNoPropose");
+end;
+
+GB_Con.NormaliserOrbital                 := {g} -> GB_Con.GroupConjugacyOrbital(g, g);
+GB_Con.NormaliserOrbitalRoot             := {g} -> GB_Con.GroupConjugacyOrbitalRoot(g, g);
+GB_Con.NormaliserOrbitalNone             := {g} -> GB_Con.GroupConjugacyOrbitalNone(g, g);
+GB_Con.NormaliserOrbitalDeep             := {g} -> GB_Con.GroupConjugacyOrbitalDeep(g, g);
+GB_Con.NormaliserOrbitalSmall            := {g} -> GB_Con.GroupConjugacyOrbitalSmall(g, g);
+GB_Con.NormaliserOrbitalRegOrbit         := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbit(g, g);
+GB_Con.NormaliserOrbitalRegOrbitChar     := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbitChar(g, g);
+GB_Con.NormaliserOrbitalRegOrbitCross    := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbitCross(g, g);
+GB_Con.NormaliserOrbitalRegOrbitCrossNoPropose := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbitCrossNoPropose(g, g);

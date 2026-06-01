@@ -8,7 +8,6 @@
 ################################################################################
 # Wrapper for the GAP library
 
-# Respects raw := true
 Vole.Intersection := function(permcolls...)
     local ret;
     if Length(permcolls) = 1 and IsList(permcolls[1]) then
@@ -26,14 +25,13 @@ Vole.Intersection := function(permcolls...)
     else
         ret := VoleFind.Coset(permcolls);
         if ret <> fail then
-            return ret;  # Always returns here if ValueOption raw := true
+            return ret;
         else
             return [];
         fi;
     fi;
 end;
 
-# Respects raw := true
 Vole.Stabilizer := function(G, object, action...)
     local con, ret;
     con := CallFuncList(Constraint.Stabilize, Concatenation([object], action));
@@ -80,10 +78,6 @@ Vole.Stabiliser := Vole.Stabilizer;
 # All wrappers preserve the kept-algorithm contract: none of them is
 # strictly stronger than the others on every input, and removing one
 # would lose a benchmarking baseline. Default = "direct".
-#
-# Raw mode (`ValueOption "raw" := true`) bypasses any wrapper — the raw
-# inner-solver record is exposed directly. Wrappers that compose
-# multiple inner searches can't be expressed as a single raw record.
 #
 # Reference: M. S. Chang, C. Jefferson, C. M. Roney-Dougal,
 # "Computing normalisers of intransitive groups",
@@ -327,8 +321,6 @@ _Vole.NormalizerDefaultWrapper := "direct";
 # at GroupConjugacyOrbital via refiners.gi:26.
 _Vole.NormalizerDefaultRefiner := "OrbitalRegOrbitChar";
 
-# Respects raw := true (raw bypasses all wrappers — the orbit
-# decomposition doesn't naturally yield a single `raw` record).
 # Respects ValueOption "wrapper" (string, key into _Vole.NormalizerWrappers).
 Vole.Normalizer := function(G, U)
     local wrapperName, wrapper;
@@ -342,19 +334,16 @@ Vole.Normalizer := function(G, U)
         ErrorNoReturn("Vole.Normalizer: The second argument ",
                       "must a perm group or a permutation");
     fi;
-    if ValueOption("raw") = true then
-        # raw := true requests the inner solver's raw record. Wrappers
-        # that compose multiple inner solves can't expose a single
-        # raw record; fall through to the direct path unconditionally.
-        return _Vole.NormalizerDirect(G, U);
-    fi;
-    # Cheap pre-checks borrowed from GAP's NormalizerPermGroup
-    # (stbcbckt.gi:2660-2676). These short-circuit a backtrack that
-    # would otherwise enumerate all of G to confirm a trivial answer.
+    # Cheap pre-checks, matching GAP's NormalizerPermGroup
+    # (stbcbckt.gi:2837+): trivial U, or U = G. GAP does NOT do a full
+    # IsNormal(G, U) here — it relies on the backtrack (which is seeded with
+    # U <= N(U)). A full IsNormal costs e.g. 1.2s at degree 200 for an answer
+    # the search already reaches in ~0 nodes, so we drop it and use only the
+    # O(1) checks GAP uses: IsSubset (cheap for natural S_n) + Size equality.
     if IsTrivial(U) then
         return G;
     fi;
-    if IsSubset(G, U) and IsNormal(G, U) then
+    if IsSubset(G, U) and Size(G) = Size(U) then
         return G;
     fi;
     wrapperName := ValueOption("wrapper");
@@ -371,7 +360,6 @@ Vole.Normalizer := function(G, U)
 end;
 Vole.Normaliser := Vole.Normalizer;
 
-# Respects raw := true
 Vole.Centralizer := function(G, x)
     local ret;
     if not IsPermGroup(G) then
@@ -387,7 +375,6 @@ Vole.Centralizer := function(G, x)
 end;
 Vole.Centraliser := Vole.Centralizer;
 
-# Ignores raw := true
 Vole.IsConjugate := function(G, x, y)
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.IsConjugate: ",
@@ -396,10 +383,9 @@ Vole.IsConjugate := function(G, x, y)
         ErrorNoReturn("Vole.IsConjugate: The second and third arguments ",
                       "must either be both permutations or both perm groups");
     fi;
-    return Vole.RepresentativeAction(G, x, y : raw := false) <> fail;
+    return Vole.RepresentativeAction(G, x, y) <> fail;
 end;
 
-# Respects raw := true
 Vole.RepresentativeAction := function(G, object1, object2, action...)
     if not IsPermGroup(G) then
         ErrorNoReturn("Vole.RepresentativeAction: ",
@@ -415,7 +401,6 @@ Vole.RepresentativeAction := function(G, object1, object2, action...)
     return VoleFind.Representative(G, Constraint.Transport(object1, object2, action));
 end;
 
-# Sometimes respects raw := true (depending on whether it does a search)
 Vole.TwoClosure := function(G)
     local points, func, digraphs, digraph_con;
     if not IsPermGroup(G) then
@@ -447,7 +432,6 @@ end;
 ################################################################################
 # Wrapper for the images package
 
-# Respects raw := true
 Vole.CanonicalPerm := function(G, object, action...)
     local ret;
     if not IsPermGroup(G) then
@@ -461,26 +445,20 @@ Vole.CanonicalPerm := function(G, object, action...)
         action := OnPoints;
     fi;
     ret := VoleFind.Canonical(G, Constraint.Stabilize(object, action));
-    if IsBound(ret.raw) then
-        return ret;
-    else
-        return ret.canonical;
-    fi;
+    return ret.canonical;
 end;
 Vole.CanonicalImagePerm := Vole.CanonicalPerm;
 
-# Ignores raw := true
 Vole.CanonicalImage := function(G, object, action...)
     local x, args;
     args := Concatenation([G, object], action);
-    x := CallFuncList(Vole.CanonicalPerm, args : raw := false);
+    x := CallFuncList(Vole.CanonicalPerm, args);
     return action[1](object, x);
 end;
 
 ################################################################################
 # Wrapper for the Digraphs package
 
-# Respects raw := true
 Vole.AutomorphismGroup := function(D, colours...)
     if not IsDigraph(D) then
         ErrorNoReturn("Vole.AutomorphismGroup: ",
@@ -491,7 +469,6 @@ Vole.AutomorphismGroup := function(D, colours...)
     return Vole.Stabilizer(SymmetricGroup(DigraphVertices(D)), D, OnDigraphs);
 end;
 
-# Ignores raw := true
 Vole.CanonicalDigraph := function(D)
     if not IsDigraph(D) then
         ErrorNoReturn("Vole.AutomorphismGroup: ",
@@ -500,7 +477,6 @@ Vole.CanonicalDigraph := function(D)
     return Vole.CanonicalImage(SymmetricGroup(DigraphVertices(D)), D, OnDigraphs);
 end;
 
-# Respects raw := true
 Vole.DigraphCanonicalLabelling := function(D, colours...)
     if not IsDigraph(D) then
         ErrorNoReturn("Vole.AutomorphismGroup: ",
@@ -511,7 +487,6 @@ Vole.DigraphCanonicalLabelling := function(D, colours...)
     return Vole.CanonicalPerm(SymmetricGroup(DigraphVertices(D)), D, OnDigraphs);
 end;
 
-# Ignores raw := true
 Vole.IsIsomorphicDigraph := function(D1, D2)
     if not IsDigraph(D1) or not IsDigraph(D2) then
         ErrorNoReturn("Vole.IsIsomorphicDigraph: ",
@@ -520,7 +495,6 @@ Vole.IsIsomorphicDigraph := function(D1, D2)
     return Vole.IsomorphismDigraphs(D1, D2) <> fail;
 end;
 
-# Respects raw := true
 Vole.IsomorphismDigraphs := function(D1, D2)
     local G;
     if not (IsDigraph(D1) and IsDigraph(D2)) then

@@ -6,7 +6,7 @@ true
 # VoleFind.Representative
 gap> VoleFind.Representative();
 Error, VoleFind.Rep: At least one argument must be given
-gap> VoleFind.Representative(1 : raw).sols[1] = ();
+gap> VoleFind.Representative(1) = ();
 true
 
 # VoleFind.Group
@@ -63,7 +63,6 @@ ints/refiners are not allowed either;
 gap> VoleFind.Canonical(
 >        SymmetricGroup(4),
 >        Constraint.Normalise(AlternatingGroup(4))
->        : raw
 >    ).group = SymmetricGroup(4);
 true
 

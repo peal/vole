@@ -10,9 +10,8 @@ true
 # StabChainBaseStrongGenerators trusts its base/SGS and will silently
 # return a wrong size for a bad base, so this is checked, not assumed.
 gap> ValidateOne := function(glist)
->     local ret, g, gens, gindep, base, szc, szi;
->     ret := CallFuncList(VoleFind.Group, glist : raw := true);
->     g := ret.group;
+>     local g, gens, gindep, base, szc, szi;
+>     g := CallFuncList(VoleFind.Group, glist);
 >     gens := GeneratorsOfGroup(g);
 >     gindep := Group(gens, ());
 >     szc := Size(g);

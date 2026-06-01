@@ -23,14 +23,14 @@ gap> VoleComp(12, [Constraint.Stabilize(neigh, OnDigraphs)]);
 gap> VoleComp(7, [GB_Con.NormaliserSimple(Group([(1,2,3,4), (1,2), (5,6,7)]))]);
 
 # Another bug found by Mun See Chang
-gap> r := VoleFind.Rep(BTKit_Refiner.IdentityForTesting(0) : points := 6, raw := true);;
-gap> r.raw.stats.search_nodes;
+gap> VoleFind.Rep(BTKit_Refiner.IdentityForTesting(0) : points := 6);;
+gap> _Vole.LastStats.search_nodes;
 6
-gap> r := VoleFind.Rep(BTKit_Refiner.IdentityForTesting(3) : points := 6, raw := true);;
-gap> r.raw.stats.search_nodes;
+gap> VoleFind.Rep(BTKit_Refiner.IdentityForTesting(3) : points := 6);;
+gap> _Vole.LastStats.search_nodes;
 40
-gap> r := VoleFind.Rep(BTKit_Refiner.IdentityForTesting(6) : points := 6, raw := true);;
-gap> r.raw.stats.search_nodes;
+gap> VoleFind.Rep(BTKit_Refiner.IdentityForTesting(6) : points := 6);;
+gap> _Vole.LastStats.search_nodes;
 518
 
 #

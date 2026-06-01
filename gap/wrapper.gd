@@ -228,11 +228,12 @@
 #! @BeginExampleSession
 #! gap> LoadPackage("vole", false);;
 #! gap> Set(RecNames(Vole));
-#! [ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage", 
-#!   "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer", 
-#!   "DigraphCanonicalLabelling", "Intersection", "IsConjugate", 
-#!   "IsIsomorphicDigraph", "IsomorphismDigraphs", "Normaliser", "Normalizer", 
-#!   "RepresentativeAction", "Stabiliser", "Stabilizer", "TwoClosure" ]
+#! [ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage",
+#!   "CanonicalImagePerm", "CanonicalPerm", "Centraliser", "Centralizer",
+#!   "DDPD", "DigraphCanonicalLabelling", "Intersection", "IsConjugate",
+#!   "IsDDPDIndecomposable", "IsIsomorphicDigraph", "IsomorphismDigraphs",
+#!   "Normaliser", "Normalizer", "RepresentativeAction", "Stabiliser",
+#!   "Stabilizer", "TwoClosure" ]
 #! @EndExampleSession
 DeclareGlobalVariable("Vole");
 # TODO When we require GAP >= 4.12, use GlobalName rather than GlobalVariable
@@ -450,6 +451,10 @@ DeclareGlobalFunction("Vole.RepresentativeAction");
 #! If <A>U</A> is instead a permutation, then
 #! `Vole.Normalizer(<A>G</A>,<A>U</A>)` returns $N_{G}(\langle U \rangle)$.
 #!
+#! Section&nbsp;<Ref Sect="Section_groupconj"/> gives worked examples and
+#! outlines how &Vole; computes normalisers (and canonical images) of groups
+#! by graph backtracking.
+#!
 #! @InsertChunk gap-faster
 #! @InsertChunk bettergroup
 DeclareGlobalFunction("Vole.Normaliser");
@@ -664,6 +669,12 @@ DeclareGlobalFunction("Vole.CanonicalImagePerm");
 #! `g` is the permutation returned by
 #! Vole.CanonicalPerm(<A>G</A>,<A>object</A>,<A>action</A>).
 #! See <Ref Func="Vole.CanonicalPerm"/> for more information.
+#!
+#! When <A>object</A> is a group and <A>action</A> is
+#! <Ref Func="OnPoints" BookName="Ref"/>, this computes a canonical image of
+#! the group under conjugacy, which gives a direct conjugacy test for
+#! subgroups; see Section&nbsp;<Ref Sect="Section_groupconj"/>, including the
+#! note there on *canonical safety*.
 #!
 #! @InsertChunk AvailableActions
 #!
