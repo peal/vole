@@ -96,6 +96,12 @@ Dependencies := rec(
     ["primgrp", ">=3.4.0" ],
   ], # For the tests  ],
   SuggestedOtherPackages := [
+    # Vole bundles copies of BacktrackKit and GraphBacktracking under
+    # dependencies/ as a fallback. If they are installed as real packages we
+    # prefer those: listing them here makes GAP load them (and order them
+    # before Vole), and init.g/read.g then skip the bundled copies.
+    [ "BacktrackKit", ">= 1.1.0" ],
+    [ "GraphBacktracking", ">= 1.1.0" ],
     [ "AutoDoc", ">= 2019.09.04" ], # to compile documentation
     [ "ferret", ">= 1.0.2" ],       # used in tests
     [ "QuickCheck", ">= 0.1" ],     # used in tests

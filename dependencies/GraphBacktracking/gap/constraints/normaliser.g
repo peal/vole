@@ -372,15 +372,20 @@ _MakeGroupConjugacyOrbital := function(groupL, groupR, strategy, name)
                         regGroup, fixedpoints, ps, n,
                         _BTKit.regOrbitProposeEnabled(strategy));
                     Append(result, regOrbOps[1]);
-                    # Cross-orbit propagation (Theißen §3.7.2):
-                    # RegularOrbit3 — when the Phase-C BFS orbit D
-                    # is non-empty, propagate deductions from the
-                    # regular orbit to every anchored E-orbit.
-                    if IsBound(strategy.regOrbitCross)
-                       and strategy.regOrbitCross = "always"
+                    # Optional caller-supplied extra deduction, run after
+                    # the Phase C regular-orbit deduction and handed its
+                    # BFS-orbit record (regOrbOps[2], the deduced subset D
+                    # of the regular orbit). An extension point for
+                    # downstream code that wants to build further deductions
+                    # on top of the regular-orbit machinery (e.g. Theißen
+                    # §3.7.2 RegularOrbit3 cross-orbit propagation) without
+                    # this constructor depending on it. Inert unless
+                    # `extraRegOrbitDeduction` is supplied and the Phase C
+                    # deduction produced a non-empty D.
+                    if IsBound(strategy.extraRegOrbitDeduction)
                        and regOrbOps[2] <> false then
                         Append(result,
-                            _BTKit.makeNormaliserRegOrbitCrossDeduction(
+                            strategy.extraRegOrbitDeduction(
                                 regGroup, fixedpoints, ps, n,
                                 regOrbOps[2]));
                     fi;
@@ -622,85 +627,6 @@ _BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n,
     return [out, bfs];
 end;
 
-# RegularOrbit3 cross-propagation (Theißen §3.7.2).
-#
-# Once the regular-orbit deduction (Phase C) has isolated a subset D of
-# the regular orbit, the images of points in OTHER orbits can sometimes
-# be deduced.  For a fixed point y (whose g-image is known) and any
-# yh in yE, if bh = ω₁^(h⁻¹) is in D, then yh^g = y^g · h^g is also
-# known, because h^g is determined by the regular-orbit map on bh.
-#
-# This function emits label functions that isolate such yh, extending
-# the regular-orbit deduction across E-orbits.  It is the Vole
-# equivalent of GAP's Refinements.RegularOrbit3 (stbcbckt.gi:1867).
-#
-# Arguments as for makeNormaliserRegOrbitDeduction.  `phaseC_D` is the
-# BFS-orbit record from the Phase C deduction (the set D above); if
-# empty, no cross-propagation is possible.
-_BTKit.makeNormaliserRegOrbitCrossDeduction :=
-    function(group, points, ps, n, phaseC_D)
-    local data, D_set, E_orbits, processed_orbits, out, bfs_y, labelMap,
-          omega1, genE, orbMin, orb, p, h, bh, orbitOffset;
-
-    if IsEmpty(phaseC_D.orbit) then
-        return [];
-    fi;
-
-    data := StabTreeRegularOrbitData(group);
-    if data = fail then
-        return [];
-    fi;
-
-    omega1 := data.omega1;
-    genE := GeneratorsOfGroup(group);
-    D_set := Set(phaseC_D.orbit);
-
-    # Collect E-orbits.  For efficiency we only process orbits that
-    # contain at least one fixed point (anchored orbits).
-    E_orbits := Orbits(group, [1 .. n]);
-
-    out := [];
-    processed_orbits := HashMap();
-    labelMap := HashMap();
-    orbitOffset := 0;
-
-    for orb in E_orbits do
-        if Length(orb) = 1 then continue; fi;
-        if not ForAny(orb, p -> p in points) then continue; fi;
-
-        # One BFS tree per anchored orbit, cached by orbit-minimum.
-        orbMin := Minimum(orb);
-        if orbMin in processed_orbits then
-            bfs_y := processed_orbits[orbMin];
-        else
-            bfs_y := _BTKit.bfsOrbitWithTrace(orbMin, genE);
-            processed_orbits[orbMin] := bfs_y;
-        fi;
-
-        for p in orb do
-            h := bfs_y.treeElement[p];
-            # bh = ω₁^(h⁻¹) — the regular-orbit preimage under h.
-            bh := omega1 / h;
-            if bh in D_set then
-                labelMap[p] := orbitOffset + bfs_y.position[p];
-            fi;
-        od;
-
-        orbitOffset := orbitOffset + Length(orb) + 1;
-    od;
-
-    if not IsEmpty(Keys(labelMap)) then
-        Add(out, function(p)
-            if p in labelMap then
-                return labelMap[p];
-            fi;
-            return 0;
-        end);
-    fi;
-
-    return out;
-end;
-
 # Named entry points. Strategy choices documented above.
 GB_Con.GroupConjugacyOrbital := function(groupL, groupR)
     return _MakeGroupConjugacyOrbital(groupL, groupR,
@@ -761,7 +687,7 @@ end;
 # point) depends on data.regOrbit, a point set in the original Ω
 # labelling. For conjugate inputs U vs U^σ this set is σ-conjugate,
 # not equal, so the search trajectories diverge in a way the
-# canonical-trace minimiser can't reconcile — `Vole.CanonicalImage`
+# canonical-trace minimiser can't reconcile — a canonical-image search
 # with this variant can return different (conjugate) groups for U
 # and U^σ. Symmetry-mode (normaliser equality) is correct; canonical
 # mode is not. Use `GroupConjugacyOrbital` for canonical applications
@@ -842,34 +768,6 @@ GB_Con.GroupConjugacyOrbitalRegOrbitChar := function(groupL, groupR)
         "GroupConjugacyOrbitalRegOrbitChar");
 end;
 
-# Phase C + RegularOrbit3 cross-propagation.
-# Full Theißen §3.7.1-§3.7.2: regular-orbit branching proposal,
-# forced-refinement labels for the Phase-C-deduced subset D of the
-# regular orbit, and cross-orbit labels for every E-orbit anchored by
-# a fixed point (once D is non-empty).  Inert when the group has no
-# regular orbit.
-GB_Con.GroupConjugacyOrbitalRegOrbitCross := function(groupL, groupR)
-    return _MakeGroupConjugacyOrbital(groupL, groupR,
-        rec(orbitals := "always", blocks := "root",
-            regOrbit := "always",
-            regOrbitCross := "always"),
-        "GroupConjugacyOrbitalRegOrbitCross");
-end;
-
-# Phase C + cross-propagation, without the regular-orbit branching
-# proposal.  The Phase-C forced-refinement labels and the cross-orbit
-# labels are still emitted; only the selector hint is suppressed.
-# This isolates the effect of the cross-propagation labels from the
-# proposal-driven base change.
-GB_Con.GroupConjugacyOrbitalRegOrbitCrossNoPropose := function(groupL, groupR)
-    return _MakeGroupConjugacyOrbital(groupL, groupR,
-        rec(orbitals := "always", blocks := "root",
-            regOrbit := "always",
-            regOrbitCross := "always",
-            regOrbitPropose := false),
-        "GroupConjugacyOrbitalRegOrbitCrossNoPropose");
-end;
-
 GB_Con.NormaliserOrbital                 := {g} -> GB_Con.GroupConjugacyOrbital(g, g);
 GB_Con.NormaliserOrbitalRoot             := {g} -> GB_Con.GroupConjugacyOrbitalRoot(g, g);
 GB_Con.NormaliserOrbitalNone             := {g} -> GB_Con.GroupConjugacyOrbitalNone(g, g);
@@ -877,5 +775,3 @@ GB_Con.NormaliserOrbitalDeep             := {g} -> GB_Con.GroupConjugacyOrbitalD
 GB_Con.NormaliserOrbitalSmall            := {g} -> GB_Con.GroupConjugacyOrbitalSmall(g, g);
 GB_Con.NormaliserOrbitalRegOrbit         := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbit(g, g);
 GB_Con.NormaliserOrbitalRegOrbitChar     := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbitChar(g, g);
-GB_Con.NormaliserOrbitalRegOrbitCross    := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbitCross(g, g);
-GB_Con.NormaliserOrbitalRegOrbitCrossNoPropose := {g} -> GB_Con.GroupConjugacyOrbitalRegOrbitCrossNoPropose(g, g);

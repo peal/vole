@@ -5,17 +5,29 @@
 #
 # Reading the implementation part of the package.
 
-_ReadGBPackage := {f} -> ReadPackage("Vole", Concatenation("dependencies/GraphBacktracking/", f));
-_ReadBTPackage := {f} -> ReadPackage("Vole", Concatenation("dependencies/BacktrackKit/", f));
+# See init.g: read each bundled dependency only when the corresponding external
+# package is not available, otherwise defer to the real (suggested) package.
 _BT_SKIP_INTERFACE := true;
-ReadPackage("Vole", "dependencies/BacktrackKit/read.g");
-ReadPackage("Vole", "dependencies/GraphBacktracking/read.g");
+if TestPackageAvailability("BacktrackKit", "1.1.0") = fail then
+    _ReadBTPackage := {f} -> ReadPackage("Vole", Concatenation("dependencies/BacktrackKit/", f));
+    ReadPackage("Vole", "dependencies/BacktrackKit/read.g");
+    Unbind(_ReadBTPackage);
+fi;
+if TestPackageAvailability("GraphBacktracking", "1.1.0") = fail then
+    _ReadGBPackage := {f} -> ReadPackage("Vole", Concatenation("dependencies/GraphBacktracking/", f));
+    ReadPackage("Vole", "dependencies/GraphBacktracking/read.g");
+    Unbind(_ReadGBPackage);
+fi;
 UnbindGlobal("_BT_SKIP_INTERFACE");
-Unbind(_ReadBTPackage);
-Unbind(_ReadGBPackage);
 
 
 ReadPackage("Vole", "gap/internal/util.g");
+
+# Experimental regular-orbit cross-propagation refiners. These extend the
+# GraphBacktracking normaliser refiners (loaded above) via its
+# extraRegOrbitDeduction hook, and are kept in Vole rather than upstream
+# because they are still research-grade.
+ReadPackage("Vole", "gap/normaliser-cross.g");
 
 ReadPackage("Vole", "gap/internal/comms.gi");
 ReadPackage("Vole", "gap/interface.gi");

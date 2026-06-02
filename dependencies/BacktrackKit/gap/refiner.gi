@@ -91,6 +91,14 @@ function(con)
         fi;
     fi;
 
-    # TODO: Give a severe warning!
+    # No specialised refiner matched this constraint, so we fall back to a
+    # DummyRefiner: it performs no refinement, and the search verifies each
+    # candidate against the constraint directly (Check/ImageFunc). That is
+    # correct but amounts to a brute-force solution check with no pruning, so
+    # warn loudly rather than silently degrading to that behaviour.
+    Info(InfoBTKit, 1,
+         "No specialised refiner for ", Name(con),
+         "; falling back to an unrefined brute-force solution check ",
+         "(correct but potentially very slow).");
     return DummyRefiner(con);
 end);
