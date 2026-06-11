@@ -175,6 +175,12 @@ VoleRefiner.FromConstraint := function(con)
         elif action = OnPoints and IsPerm(source) then
             return BTKit_Refiner.PermTransporter(source, result);
 
+        elif action = OnPoints and IsTransformation(source) then
+            return GB_Con.TransformationConjugacy(source, result);
+
+        elif action = OnPoints and IsPartialPerm(source) then
+            return GB_Con.PartialPermConjugacy(source, result);
+
         fi;
 
     fi;

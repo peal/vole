@@ -1,4 +1,4 @@
-#@local
+#@local t, p, r
 gap> START_TEST("wrapper.tst");
 gap> LoadPackage("vole", false);
 true
@@ -32,6 +32,17 @@ Error, Function: number of arguments must be at least 2 (not 1)
 gap> Vole.Stabiliser(AlternatingGroup(5), CycleDigraph(5), OnDigraphs);
 Group([ (1,2,3,4,5) ])
 gap> Parent(last) = AlternatingGroup(5);
+true
+
+# Conjugacy stabilisers of a transformation and a partial permutation (OnPoints),
+# dispatched to GraphBacktracking's conjugacy refiners.
+gap> t := Transformation([2, 2, 3, 1]);;
+gap> Vole.Stabiliser(SymmetricGroup(4), t, OnPoints)
+>      = Stabiliser(SymmetricGroup(4), t, OnPoints);
+true
+gap> p := PartialPerm([1, 2, 3], [2, 3, 4]);;
+gap> Vole.Stabiliser(SymmetricGroup(4), p, OnPoints)
+>      = Stabiliser(SymmetricGroup(4), p, OnPoints);
 true
 
 # Vole.Normaliser
@@ -89,6 +100,15 @@ gap> Vole.RepresentativeAction(Group(()), fail, fail, fail, fail);
 Error, Vole.RepresentativeAction args: G, object1, object2[, action]
 gap> Vole.RepresentativeAction(Group(()), fail, fail, fail);
 Error, Constraint.Transport: args: x, y[, action]
+gap> r := Vole.RepresentativeAction(SymmetricGroup(4), t, t ^ (1,2,3), OnPoints);;
+gap> r <> fail and t ^ r = t ^ (1,2,3);
+true
+gap> Vole.RepresentativeAction(SymmetricGroup(4), t,
+>      Transformation([1, 1, 1, 1]), OnPoints);
+fail
+gap> r := Vole.RepresentativeAction(SymmetricGroup(4), p, p ^ (1,2,4), OnPoints);;
+gap> r <> fail and p ^ r = p ^ (1,2,4);
+true
 
 # Vole.TwoClosure
 gap> Vole.TwoClosure();
