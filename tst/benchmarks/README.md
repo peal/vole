@@ -88,6 +88,24 @@ Scaling sweeps (push a family until runs take seconds):
 Canonical image of a group:
 - `canonical-group.g`         — canonical image of a group inside another.
 - `canonical-refiner-sweep.g` — the same across refiner variants.
+- `setof-pairs.g`             — enumerate transformations / partial permutations,
+                                and ordered/unordered pairs of them, up to
+                                conjugacy, via `SetOf`/`TupleOf`/`MultisetOf`
+                                canonical images; checks every count against a
+                                published table (OEIS A001372 for the single
+                                column). A heavy fan-out (~98k searches at n=4);
+                                set `SETOF_PAIRS_MAXN` to cap the degree. SLOW.
+- `pairs-one-canonical.g`     — readable example: unordered pairs of
+                                transformations up to conjugacy via `SetOf`,
+                                cutting `|M|^2` to `|singles| * |M|` by the
+                                "one member canonical" fact (and explaining why
+                                two-canonical fails). GAP `Orbits` cross-check at
+                                n <= 4; `PAIRS_ONE_CANONICAL_MAXN` caps degree.
+- `orderly-transformations.g` — orderly generation of single transformations up
+                                to conjugacy, building n from n-1 through partial
+                                transformations; self-checks reps = A126285(n)
+                                and totals = A001372(n) at every level. Reaches
+                                n=13 in ~5 min; `ORDERLY_MAXN`/`ORDERLY_BUDGET`.
 
 Showcase (curated input/comparison pairs):
 - `showcase.g`, `showcase-big.g`.

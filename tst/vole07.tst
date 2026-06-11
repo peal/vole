@@ -10,38 +10,106 @@
 #
 gap> START_TEST("vole07.tst");
 
-# doc/_Chapter_Refiners.xml:29-35
+# doc/_Chapter_Refiners.xml:29-36
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(VoleRefiner));
-[ "DigraphStab", "DigraphTransporter", "FromConstraint", "InSymmetricGroup", 
-  "SetSetStab", "SetSetTransporter", "SetStab", "SetTransporter", 
-  "SetTupleStab", "SetTupleTransporter", "TupleStab", "TupleTransporter" ]
+[ "DigraphStab", "DigraphTransporter", "FromConstraint", "InSymmetricGroup",
+  "MultisetOf", "SetOf", "SetSetStab", "SetSetTransporter", "SetStab",
+  "SetTransporter", "SetTupleStab", "SetTupleTransporter", "TupleOf",
+  "TupleStab", "TupleTransporter" ]
 
-# doc/_Chapter_Refiners.xml:54-57
+# doc/_Chapter_Refiners.xml:55-58
 gap> true;
 true
 
-# doc/_Chapter_Refiners.xml:71-74
+# doc/_Chapter_Refiners.xml:72-75
 gap> true;
 true
 
-# doc/_Chapter_Refiners.xml:88-91
+# doc/_Chapter_Refiners.xml:89-92
 gap> true;
 true
 
-# doc/_Chapter_Refiners.xml:105-108
+# doc/_Chapter_Refiners.xml:106-109
 gap> true;
 true
 
-# doc/_Chapter_Refiners.xml:122-125
+# doc/_Chapter_Refiners.xml:123-126
 gap> true;
 true
 
-# doc/_Chapter_Refiners.xml:139-142
+# doc/_Chapter_Refiners.xml:140-143
 gap> true;
 true
 
-# doc/_Chapter_Refiners.xml:161-164
+# doc/_Chapter_Refiners.xml:210-226
+gap> setofsets := VoleRefiner.SetOf(
+>      [BTKit_Refiner.SetStab([1, 2, 3]), BTKit_Refiner.SetStab([3, 4])]);;
+gap> G := VoleFind.Group(SymmetricGroup(4), setofsets);;
+gap> G = Stabilizer(SymmetricGroup(4), Set([[1, 2, 3], [3, 4]]), OnSetsSets);
+true
+gap> Size(G);
+2
+gap> grps := [Group((1, 2)), Group((3, 4))];;
+gap> conj := VoleRefiner.SetOf(List(grps, GB_Con.NormaliserSimple2));;
+gap> N := VoleFind.Group(SymmetricGroup(4), conj);;
+gap> N = Group(Filtered(SymmetricGroup(4),
+>              p -> Set(grps, g -> g ^ p) = Set(grps)));
+true
+gap> Size(N);
+8
+
+# doc/_Chapter_Refiners.xml:248-257
+gap> mems := List([[1, 2], [1, 2], [3, 4]], BTKit_Refiner.SetStab);;
+gap> M := VoleFind.Group(SymmetricGroup(4), VoleRefiner.MultisetOf(mems));;
+gap> M = Group(Filtered(SymmetricGroup(4),
+>              p -> SortedList(List([[1, 2], [1, 2], [3, 4]], s -> OnSets(s, p)))
+>                 = SortedList([[1, 2], [1, 2], [3, 4]])));
+true
+gap> Size(M);
+4
+
+# doc/_Chapter_Refiners.xml:286-301
+gap> tup := VoleRefiner.TupleOf(
+>      [BTKit_Refiner.SetStab([1, 2]), BTKit_Refiner.SetStab([3, 4, 5])]);;
+gap> VoleFind.Group(SymmetricGroup(5), tup)
+>    = Intersection(Stabilizer(SymmetricGroup(5), [1, 2], OnSets),
+>                   Stabilizer(SymmetricGroup(5), [3, 4, 5], OnSets));
+true
+gap> pair := t -> VoleRefiner.TupleOf(
+>      [BTKit_Refiner.TupleStab([t[1]]), BTKit_Refiner.TupleStab([t[2]])]);;
+gap> setoftuples := VoleRefiner.SetOf([pair([1, 2]), pair([3, 4])]);;
+gap> G := VoleFind.Group(SymmetricGroup(4), setoftuples);;
+gap> G = Stabilizer(SymmetricGroup(4), Set([[1, 2], [3, 4]]), OnSetsTuples);
+true
+gap> Size(G);
+2
+
+# doc/_Chapter_Refiners.xml:339-362
+gap> n := 3;;
+gap> S := SymmetricGroup(n);;
+gap> M := Elements(FullTransformationMonoid(n));;
+gap> canon1 := t -> t ^ VoleFind.CanonicalPerm(S,
+>                          GB_Con.TransformationConjugacy(t, t));;
+gap> singles := Set(M, canon1);;
+gap> Length(singles);   # transformations up to conjugacy
+7
+gap> canonPair := function(a, b)
+>      local c;
+>      c := VoleFind.CanonicalPerm(S, VoleRefiner.SetOf(
+>             [GB_Con.TransformationConjugacy(a, a),
+>              GB_Con.TransformationConjugacy(b, b)]));
+>      return Set([a ^ c, b ^ c]);
+>    end;;
+gap> pairs := Set(Filtered(Cartesian(singles, M), p -> p[1] <> p[2]),
+>                 p -> canonPair(p[1], p[2]));;
+gap> Length(pairs);   # distinct unordered pairs up to simultaneous conjugacy
+67
+gap> Length(pairs) = Length(Orbits(S, Combinations(M, 2),
+>        {p, g} -> Set([p[1] ^ g, p[2] ^ g])));   # cross-check against GAP
+true
+
+# doc/_Chapter_Refiners.xml:380-383
 gap> true;
 true
 
