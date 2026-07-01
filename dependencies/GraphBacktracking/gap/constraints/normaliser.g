@@ -477,7 +477,7 @@ _BTKit.findRegularCharacteristicSubgroup := function(group, sizeCap)
     # uniqueness check fails. Skipping early also dodges a GAP-internal
     # performance pathology in which CharacteristicSubgroups hangs
     # after Size/Orbits have been called on Derived/Fitting/Centre
-    # subgroups (reproducer in tst/benchmarks/refiner-sweep-slow.g).
+    # subgroups.
     # This is a heuristic: there exist exotic H where two equal-length
     # orbits have non-isomorphic H-actions and no Aut(H)-swap exists,
     # in which case we may miss a usable F. But those cases are rare
@@ -544,7 +544,7 @@ end;
 # regOrbit, fp_R = g(fp_L), and the deduction-set D_R = g(D_L). The
 # labels match between sides because BFS-position(p) on the left
 # equals BFS-position(g(p)) on the right (the generator-correspondence
-# h_i^g = h_i' under conjugation by g — see notes/phase-c-notes.md).
+# h_i^g = h_i' under conjugation by g).
 # The branch-point proposal points to corresponding cells (same cell
 # index) on both sides since cell indices are g-equivariant for valid
 # candidates.

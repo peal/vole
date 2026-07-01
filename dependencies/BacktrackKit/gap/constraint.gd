@@ -21,6 +21,53 @@
 #! This constraint will typically not be required by the user.
 #! @EndChunk
 
+#! @BeginChunk DefaultAction
+#! If you do not give the optional <A>action</A> argument, then it defaults to
+#! <C>OnPoints</C>. This default suits a point, a permutation, or a permutation
+#! group; for the other kinds of object below you must name the action
+#! yourself.
+#! @EndChunk
+
+#! @BeginChunk ActionsTable
+#! <Table Align="ll">
+#! <Row>
+#!   <Item>Object</Item>
+#!   <Item>Action</Item>
+#! </Row>
+#! <HorLine/>
+#! <Row>
+#!   <Item>A point (a positive integer)</Item>
+#!   <Item><C>OnPoints</C></Item>
+#! </Row>
+#! <Row>
+#!   <Item>A list of points</Item>
+#!   <Item><C>OnTuples</C></Item>
+#! </Row>
+#! <Row>
+#!   <Item>A set of points</Item>
+#!   <Item><C>OnSets</C></Item>
+#! </Row>
+#! <Row>
+#!   <Item>A permutation</Item>
+#!   <Item><C>OnPoints</C></Item>
+#! </Row>
+#! <Row>
+#!   <Item>A permutation group</Item>
+#!   <Item><C>OnPoints</C></Item>
+#! </Row>
+#! <Row>
+#!   <Item>A digraph (from the <Package>Digraphs</Package> package)</Item>
+#!   <Item><C>OnDigraphs</C></Item>
+#! </Row>
+#! </Table>
+#! <P/>
+#! BacktrackKit solves each combination in this table with a dedicated refiner.
+#! Any other object and action still gives a correct answer, but BacktrackKit
+#! has no specialised refiner for it, and so falls back to an unrefined search
+#! that tests each candidate permutation directly. This is correct, but it can
+#! be very slow.
+#! @EndChunk
+
 ## End chunks
 ################################################################################
 
@@ -324,11 +371,10 @@ DeclareGlobalFunction("Constraint.InLeftCoset");
 #!
 #! @InsertChunk ActionsTable
 #! @BeginExampleSession
-#! gap> setofsets1 := [[1, 3, 6], [2, 4]];;
-#! gap> setofsets2 := [[1, 2, 5], [3, 7]];;
-#! gap> con := Constraint.Transport(setofsets1, setofsets2, OnSetsSets);
-#! <constraint: transporter of [ [ 1, 3, 6 ], [ 2, 4 ] ] to
-#! [ [ 1, 2, 5 ], [ 3, 7 ] ] under OnSetsSets>
+#! gap> set1 := [1, 3, 6];;
+#! gap> set2 := [2, 4, 5];;
+#! gap> con := Constraint.Transport(set1, set2, OnSets);
+#! <constraint: transporter of [ 1, 3, 6 ] to [ 2, 4, 5 ] under OnSets>
 #! @EndExampleSession
 DeclareGlobalFunction("Constraint.Transport");
 

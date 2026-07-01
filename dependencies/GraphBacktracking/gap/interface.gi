@@ -15,9 +15,9 @@ end);
 InstallGlobalFunction( GB_SimpleAllPermSearch,
     {ps, conlist, conf...} -> _BTKit.SimpleSinglePermSearch(_GB.BuildProblem(ps, conlist, conf), false));
 
-#! Build the initial graph stack, and return the automorphisms
-#! of this graph stack. second argument is if this is the solution
-#! (if not it will be a super-group of the solutions).
+# Build the initial graph stack, and return the automorphisms
+# of this graph stack. second argument is if this is the solution
+# (if not it will be a super-group of the solutions).
 InstallGlobalFunction( GB_CheckInitialGroup,
     function(ps, conlist)
         local state, tracer, sols, saved, gens, ret;

@@ -15,7 +15,6 @@ GB_Con.InCosetSimple := function(group, perm)
                 array[j] := i;
             od;
         od;
-        #Print(group, pointlist, orbs, array, "\n");
         return rec(points := array, graphs := graphs);
     end;
 

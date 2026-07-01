@@ -86,9 +86,12 @@ InstallMethod(ApplyFilters, [IsGBState, IsTracer, IsObject],
                 fi;
             fi;
             if IsBound(f.graph) then
-                # TODO (maybe) -- this skipping of merged graphs ignores
-                # vertex colourings.
-                pos := fail; # This isn't valid for normalisers (and others): Position(state!.raw_graphs, f.graph);
+                # We never merge a repeated graph: refiners such as the
+                # normaliser push graphs that must all be kept, and
+                # deduplicating by Position would also ignore vertex
+                # colourings. So pos is always fail; the merge branch
+                # below is kept for the day we can merge safely.
+                pos := fail;
                 if pos = fail then
                     Add(state!.raw_graphs, f.graph);
                     if PS_Points(state!.ps) < DigraphNrVertices(f.graph) then

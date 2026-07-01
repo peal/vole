@@ -13,22 +13,18 @@ InstallMethod(GB_MakeEquitableWeak, [IsPartitionStack, IsTracer, IsList],
         while cellcount <> PS_Cells(ps) and PS_Cells(ps) <> PS_ExtendedPoints(ps) do
             cellcount := PS_Cells(ps);
             for graph in graphlist do
-                #Print(graph,"\n");
                 hm := [];
                 for v in [1..PS_ExtendedPoints(ps)] do
                     hm[v] := List(_BTKit.OutNeighboursSafe(graph, v), {x} -> PS_CellOfPoint(ps, x));
-                    # We negate to distinguish in and out neighbours ---------v
+                    # Negate the in-neighbour cells to distinguish them from out-neighbours.
                     Append(hm[v], List(_BTKit.InNeighboursSafe(graph, v), {x} -> -PS_CellOfPoint(ps, x)));
-                    #Print(v,":",hm[v],"\n");
                     Sort(hm[v]);
                 od;
-                #Print(hm,"\n");
                 if not PS_SplitCellsByFunction(ps, tracer, {x} -> hm[x]) then
                     Info(InfoGB, 2, "EquitableWeak trace violation");
                     return false;
                 fi;
             od;
-            #Print(hm,"\n");
         od;
         return true;
 end);
@@ -62,7 +58,6 @@ InstallMethod(GB_MakeEquitableStrong, [IsPartitionStack, IsTracer, IsList],
                 Info(InfoGB, 2, "EquitableStrong trace violation");
                 return false;
             fi;
-            #Print(hm,"\n");
         od;
         return true;
 end);
