@@ -642,6 +642,8 @@ DeclareGlobalFunction("Vole.TwoClosure");
 #! @EndChunk
 #! @InsertChunk native-canonical
 #!
+#! @InsertChunk bettercanonical
+#!
 #! @InsertChunk canonical-warning-session
 #! @EndGroup
 DeclareGlobalFunction("Vole.CanonicalPerm");
@@ -681,6 +683,8 @@ DeclareGlobalFunction("Vole.CanonicalImagePerm");
 #! @InsertChunk DefaultAction
 #!
 #! @InsertChunk native-canonical
+#!
+#! @InsertChunk bettercanonical
 #!
 #! @InsertChunk canonical-warning-session
 #!
