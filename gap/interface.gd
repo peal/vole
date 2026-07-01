@@ -444,11 +444,11 @@ DeclareGlobalFunction("VoleFind.Canonical");
 #! gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
 #! >  Constraint.Normalise(Group([ (1,2) ]))
 #! > );
-#! (1,3,4)
+#! (1,2,4)
 #! @EndExampleSession
 #! Thus the canonical image of $\langle (1\,2) \rangle$ under this action of
-#! $A_{4}$ is the group ${\langle (1\,2) \rangle}^{(1\,3\,4)}$,
-#! i.e. $\langle (2\,3) \rangle$.
+#! $A_{4}$ is the group ${\langle (1\,2) \rangle}^{(1\,2\,4)}$,
+#! i.e. $\langle (2\,4) \rangle$.
 #!
 #! This second example shows how to compute a canonical permutation
 #! for the pair $[S, D]$ under the specified componentwise action of $S_{4}$,

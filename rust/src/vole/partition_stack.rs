@@ -203,15 +203,28 @@ impl PartitionStack {
         self.as_list_set(self.extended_cells())
     }
 
-    /// Convert partition to an indicator function (include only 'base' values)
-    pub fn base_as_indicator(&self) -> Vec<usize> {
-        let mut p = vec![0; self.base_domain_size()];
-        for &i in self.base_cells() {
-            for &c in self.cell(i) {
-                p[c] = i;
+    /// The base partition in the form consumed by GAP's `_PS_ForcePartition`:
+    /// `(values, cellstarts, fixed)`, all **1-indexed** for GAP.
+    ///
+    /// * `values`     -- the base points laid out in cell order (base cells
+    ///                   concatenated; each cell's values contiguous).
+    /// * `cellstarts` -- 1-indexed position in `values` at which each cell
+    ///                   begins (strictly increasing, first entry 1).
+    /// * `fixed`      -- the singleton-cell base values, in fixing order.
+    ///
+    /// This lets GAP overwrite its mirror partition in O(n) instead of
+    /// re-deriving it by sorting a transmitted per-point cell map.
+    pub fn base_as_force_partition(&self) -> (Vec<usize>, Vec<usize>, Vec<usize>) {
+        let mut values = Vec::with_capacity(self.base_size);
+        let mut cellstarts = Vec::with_capacity(self.base_cells().len());
+        for &c in self.base_cells() {
+            cellstarts.push(values.len() + 1);
+            for &v in self.cell(c) {
+                values.push(v + 1);
             }
         }
-        p
+        let fixed = self.base_fixed_values().iter().map(|&v| v + 1).collect();
+        (values, cellstarts, fixed)
     }
 
     /// Convert partition to an indicator function (include 'extended' values)
