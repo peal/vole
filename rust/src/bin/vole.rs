@@ -40,9 +40,22 @@ fn main() -> anyhow::Result<()> {
         panic::set_hook(Box::new(|_| {}));
     }
 
-    let result = panic::catch_unwind(|| -> Result<(), anyhow::Error> {
-        let problem = parse_input::read_problem(&mut GAP_CHAT.lock().unwrap().in_file.as_mut().unwrap())?;
+    // Serve problems until GAP closes the pipe (EOF). A single-shot GAP
+    // session closes the pipe after one problem, so we read EOF and exit
+    // immediately; a daemon session keeps the pipe open and sends another
+    // problem, which we pick up on the next iteration. Every per-problem
+    // object below is constructed fresh inside the loop, so nothing leaks
+    // between problems. On any error or panic we send the error and exit:
+    // an error never leaves a half-consumed daemon stream behind -- the GAP
+    // side simply respawns on its next call.
+    loop {
+    let result = panic::catch_unwind(|| -> Result<bool, anyhow::Error> {
+        let problem = match parse_input::read_problem(&mut GAP_CHAT.lock().unwrap().in_file.as_mut().unwrap())? {
+            Some(p) => p,
+            None => return Ok(false), // EOF: shut down the daemon
+        };
 
+        let nonce = problem.nonce;
         let refiners = RefinerStore::new_from_refiners(parse_input::build_constraints(&problem.constraints));
 
         let tracer = if problem.config.find_canonical {
@@ -89,7 +102,12 @@ fn main() -> anyhow::Result<()> {
             state.domain.rbase_branch_vals(),
             base_n
         );
+        // Drop any GapRef-bearing canonical images now, while GAP is still
+        // servicing callbacks, so no dropGapRef traffic arrives after the
+        // end/goodbye handshake (which would block a reused daemon process).
+        solutions.release_images();
         GAP_CHAT.lock().unwrap().send_results(
+            nonce,
             &solutions,
             match state.domain.rbase_partition() {
                 Some(p) => p.base_fixed_values(),
@@ -99,21 +117,25 @@ fn main() -> anyhow::Result<()> {
             state.stats,
         )?;
 
-        Ok(())
+        Ok(true) // processed a problem; keep serving
     });
 
-    // Result is a double-nested error (first level panic, second level vole)
+    // Result is a double-nested error (first level panic, second level vole).
+    // `Ok(true)` -> processed a problem, loop for the next one.
+    // `Ok(false)` -> EOF, shut down. `Err`/panic -> report and shut down.
     match result {
-        Ok(m) => match m {
-            Ok(()) => {}
-            Err(e) => {
-                GapChatType::send_error(e.to_string());
-            }
-        },
+        Ok(Ok(true)) => continue,
+        Ok(Ok(false)) => break,
+        Ok(Err(e)) => {
+            GapChatType::send_error(e.to_string());
+            break;
+        }
         Err(e) => {
             let s: Box<&'static str> = e.downcast().unwrap();
             GapChatType::send_error(s.to_string());
+            break;
         }
+    }
     }
 
     GAP_CHAT.lock().unwrap().close();

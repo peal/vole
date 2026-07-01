@@ -172,6 +172,26 @@ else
     _Vole.UsePipe := true;
 fi;
 
+# Daemon mode: when true, the forked vole process is kept alive between
+# searches and reused, instead of being forked afresh for every search.
+# This amortises the (dominant, for tiny problems) process-spawn cost. The
+# vole binary serves problems in a loop until its pipe is closed; GAP caches
+# the live pipe in _Vole.daemon and reuses it. A daemon is torn down (and a
+# fresh one spawned next time) on any error, so an error never leaves a
+# half-consumed stream behind. Each problem carries a nonce that vole echoes
+# back, so a desynchronised stream is detected (and the daemon discarded)
+# rather than trusted. Set _Vole.UseDaemon to false to fork afresh per search.
+_Vole.UseDaemon := true;
+_Vole.daemon := fail;
+# Monotonic per-call id, echoed back by vole so we can detect a desynchronised
+# stream when reusing a daemon (a mismatch => kill the daemon and error).
+_Vole.nonce := 0;
+# The pipe of a search currently in progress. It is cleared on clean completion;
+# if a search errors out (here or in a GAP callback), it is left set, and the
+# next call reaps that (now-unusable) process before starting. This guarantees
+# a crash never wedges future calls.
+_Vole.inflight := fail;
+
 # Toggle for Rust-side full-graph-refinement (sub-search at each
 # search node that computes Aut(current digraph stack) and refines
 # the partition by its orbits, plus a FullGraph trace hash event for
@@ -361,17 +381,76 @@ _Vole.ForkVole := function(extraargs...)
     fi;
 end;
 
+# Close and reap a vole pipe (the record returned by _Vole.ForkVole).
+_Vole.ClosePipe := function(pipe)
+    if _Vole.UsePipe then
+        IO_Close(pipe.write);
+        IO_Close(pipe.read);
+    else
+        # read + write are the same FD when using TCP
+        IO_Close(pipe.read);
+        IO_Close(pipe.socket);
+    fi;
+    if IsBound(pipe.pid) then
+        IO_WaitPid(pipe.pid, true);
+    else
+        CloseStream(pipe.child);
+    fi;
+end;
+
+# Tear down the cached daemon process, if any. Closing the pipe makes the
+# daemon read EOF and exit.
+_Vole.StopDaemon := function()
+    if _Vole.daemon <> fail then
+        _Vole.ClosePipe(_Vole.daemon);
+        _Vole.daemon := fail;
+    fi;
+    if _Vole.inflight <> fail then
+        _Vole.ClosePipe(_Vole.inflight);
+        _Vole.inflight := fail;
+    fi;
+end;
+
 # Run vole
 # obj contains the problem to run. 'refiners' is an optional list of GraphBacktracking refiners, which vole can "call back"
 # and query
 _Vole.ExecuteVole := function(obj, refiners, canonicalgroup)
-    local pipe,str, st, result, preimage, postimage, gapcallbacks, savedvals, flush, time, pwd;
+    local pipe, nonce, str, st, result, preimage, postimage, gapcallbacks, savedvals, flush, time, pwd;
     gapcallbacks := rec(name := 0, is_group := 0, check := 0, begin := 0,
       fixed := 0, changed := 0, rBaseFinished := 0, solutionFound := 0, image := 0,
       compare := 0, refiner_time := 0, canonicalmin_time := 0,
       save_state := 0, restore_state := 0);
 
-    pipe := _Vole.ForkVole();
+    # Reap a process left in-flight by a previous call that did not finish
+    # cleanly: an error here or in a GAP callback, a break loop entered inside
+    # vole and then quit, or a genuinely re-entrant call (a Vole search started
+    # from within a Vole callback -- which we do not support). In every case the
+    # stream is unusable, so we close it and start clean; this is what lets the
+    # next call recover instead of the session locking up. It also surfaces
+    # accidental re-entrancy, which would trip this on every nested call.
+    if _Vole.inflight <> fail then
+        Info(InfoVole, 1, "Previous vole call didn't exit cleanly, restarting vole");
+        _Vole.ClosePipe(_Vole.inflight);
+        _Vole.inflight := fail;
+        _Vole.daemon := fail;
+    fi;
+
+    # Reuse the live daemon if we have one; otherwise fork a fresh vole.
+    if _Vole.UseDaemon and _Vole.daemon <> fail then
+        pipe := _Vole.daemon;
+    else
+        pipe := _Vole.ForkVole();
+    fi;
+    # Check the pipe out: clear the cache, and only restore it on a clean
+    # 'end'. If anything below errors, the daemon is not reused, and 'inflight'
+    # ensures the process is reaped on the next call.
+    _Vole.daemon := fail;
+    _Vole.inflight := pipe;
+
+    # Stamp this call with a unique id, echoed back in the 'end' result.
+    nonce := _Vole.nonce + 1;
+    _Vole.nonce := nonce;
+    obj.nonce := nonce;
 
     # Set up cache
     savedvals := rec(map := HashMap(), count := 1);
@@ -384,41 +463,43 @@ _Vole.ExecuteVole := function(obj, refiners, canonicalgroup)
         str := IO_ReadLine(pipe.read);
         Info(InfoVole, 2, "Read: '",str,"'\n");
         if IsEmpty(str) then
+            # vole died without replying (hard crash): reap and report. The
+            # daemon is already cleared, so the next call forks afresh.
+            _Vole.ClosePipe(pipe);
+            _Vole.inflight := fail;
             ErrorNoReturn("No return value from 'vole'");
         fi;
         result := JsonStringToGap(str);
         if result[1] = "end" then
-            # This is just here to make sure we have read all output from Vole before it closes
+            # Confirm the reply belongs to the problem we sent. A mismatch means
+            # the daemon stream is desynchronised: kill it and refuse the result.
+            if not IsBound(result[2].nonce) or result[2].nonce <> nonce then
+                _Vole.ClosePipe(pipe);
+                _Vole.inflight := fail;
+                ErrorNoReturn("vole: response nonce mismatch (daemon desync); ",
+                              "expected ", nonce, " got ",
+                              result[2].nonce);
+            fi;
+            # Acknowledge, so vole knows we have read all of its output. In
+            # daemon mode it then loops to await the next problem and we keep
+            # the pipe open; otherwise we close it (vole reads EOF and exits).
             IO_WriteLine(pipe.write, "goodbye");
             IO_Flush(pipe.write);
-            if _Vole.UsePipe then
-                IO_Close(pipe.write);
-                IO_Close(pipe.read);
+            _Vole.inflight := fail;
+            if _Vole.UseDaemon then
+                _Vole.daemon := pipe;
             else
-                # read + write the same when using TCP
-                IO_Close(pipe.read);
-                IO_close(pipe.socket);
-            fi;
-
-            if IsBound(pipe.pid) then
-                IO_WaitPid(pipe.pid, true);
-            else
-                CloseStream(pipe.child);
+                _Vole.ClosePipe(pipe);
             fi;
             result[2].stats.gap_callbacks := gapcallbacks;
             return result[2];
         elif result[1] = "error" then
-            # This is just here to make sure we have read all output from Vole before it closes
+            # vole hit a fatal error and is exiting; drain, close, and drop any
+            # daemon cache so the next call spawns a fresh process.
             IO_WriteLine(pipe.write, "goodbye");
             IO_Flush(pipe.write);
-            if _Vole.UsePipe then
-                IO_Close(pipe.write);
-                IO_Close(pipe.read);
-            else
-                # read + write the same when using TCP
-                IO_Close(pipe.read);
-                IO_close(pipe.socket);
-            fi;
+            _Vole.ClosePipe(pipe);
+            _Vole.inflight := fail;
             ErrorNoReturn("There was a fatal error in vole: ", result[2]);
         elif result[1] = "canonicalmin" then
             time := NanosecondsSinceEpoch();
@@ -448,13 +529,8 @@ _Vole.ExecuteVole := function(obj, refiners, canonicalgroup)
             # Need to still send something, as Rust expects a response
             IO_WriteLine(pipe.write, "[]");
         else
-            IO_Close(pipe.write);
-            IO_Close(pipe.read);
-            if IsBound(pipe.pid) then
-                IO_WaitPid(pipe.pid, true);
-            else
-                CloseStream(pipe.child);
-            fi;
+            _Vole.ClosePipe(pipe);
+            _Vole.inflight := fail;
             ErrorNoReturn("Invalid return value from Vole: ", result);
         fi;
         flush := IO_Flush(pipe.write);

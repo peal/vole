@@ -194,10 +194,21 @@ impl GapChatType {
         out_file.flush()?;
         debug!("Sent to GAP, now reading");
         let mut line = String::new();
-        let _ = in_file
+        let bytes = in_file
             .read_line(&mut line)
             .map_err(anyhow::Error::msg)
             .context("Internal error in communication between vole and GAP")?;
+
+        // A closed pipe (EOF, 0 bytes) means GAP has gone away: it errored, quit
+        // a break loop, or reaped this process (possibly parked mid-callback) to
+        // recover a daemon. There is nothing correct left to do and no one to
+        // report to, so exit cleanly rather than unwinding -- unwinding would run
+        // GapRef destructors that try to talk to the now-dead pipe (the same EOF,
+        // one level down). `read_problem` handles this EOF at the top of the serve
+        // loop; this covers EOF arriving mid-request.
+        if bytes == 0 {
+            std::process::exit(0);
+        }
 
         let out: U = serde_json::from_str(&line)?;
         debug!("Recieving from GAP: {:?}", out);
@@ -206,6 +217,7 @@ impl GapChatType {
 }
 #[derive(Debug, Deserialize, Serialize)]
 struct Results {
+    nonce: u64,
     sols: Vec<Vec<usize>>,
     canonical: Option<Vec<usize>>,
     search_fix_order: Vec<usize>,
@@ -215,9 +227,11 @@ struct Results {
 
 impl GapChatType {
     /// Send results (list of permutations) and rbase (which can be used as a redundant base)
-    /// to GAP
+    /// to GAP. `nonce` is echoed back from the problem so GAP can confirm this
+    /// reply belongs to the problem it sent (daemon desync detection).
     pub fn send_results(
         &mut self,
+        nonce: u64,
         solutions: &Solutions,
         fixed: &[usize],
         rbase_base: &[usize],
@@ -241,6 +255,7 @@ impl GapChatType {
             &(
                 "end",
                 Results {
+                    nonce,
                     sols,
                     canonical,
                     search_fix_order,

@@ -273,6 +273,10 @@ pub struct ProblemConfig {
 /// The Problem to be solved
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Problem {
+    /// Per-call identifier, echoed back in the results so GAP can detect a
+    /// desynchronised (daemon) stream. Defaults to 0 if the caller omits it.
+    #[serde(default)]
+    pub nonce: u64,
     /// Configuration
     pub config: ProblemConfig,
     /// List of constraints
@@ -284,12 +288,18 @@ pub fn build_constraints(constraints: &[Constraint]) -> Vec<Box<dyn Refiner>> {
     constraints.iter().map(|x| x.build_refiner()).collect()
 }
 
-/// Read a `Problem` from an input stream (Problem should be in JSON)
-pub fn read_problem<R: BufRead>(prob: &mut R) -> Result<Problem> {
+/// Read a `Problem` from an input stream (Problem should be in JSON).
+///
+/// Returns `Ok(None)` on end-of-input (GAP closed the pipe), which is the
+/// signal for a persistent ("daemon") vole process to shut down cleanly.
+pub fn read_problem<R: BufRead>(prob: &mut R) -> Result<Option<Problem>> {
     let mut line = String::new();
-    let _ = prob.read_line(&mut line)?;
+    let bytes = prob.read_line(&mut line)?;
+    if bytes == 0 {
+        return Ok(None);
+    }
     let parsed: Problem = serde_json::from_str(&line)
         .context("Invalid problem specification. Does one of your constraints have the wrong argument type?")?;
     assert!(parsed.config.points > 1, "Problems must have at least two points");
-    Ok(parsed)
+    Ok(Some(parsed))
 }

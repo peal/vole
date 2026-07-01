@@ -85,6 +85,18 @@ impl Solutions {
         &self.canonical
     }
 
+    /// Release the cached canonical images. For GAP-backed refiners these
+    /// `Box<dyn Any>` hold `GapRef`s, whose `Drop` sends a `dropGapRef` to
+    /// GAP and awaits a reply. This must run before the end-of-search
+    /// handshake, so that drop traffic is serviced while GAP is still in its
+    /// read loop -- not after it has returned, which would block a reused
+    /// (daemon) vole process. The canonical permutation itself is retained.
+    pub fn release_images(&mut self) {
+        if let Some(c) = self.canonical.as_mut() {
+            c.images.clear();
+        }
+    }
+
     pub fn set_canonical(&mut self, c: Option<Canonical>) {
         self.canonical = c
     }
