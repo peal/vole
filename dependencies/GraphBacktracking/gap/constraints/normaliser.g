@@ -273,7 +273,11 @@ _BTKit.makeNormaliserOrbitalRecords := function(group, points, n, isRoot, strate
     pushOrbitals := (strategy.orbitals = "always")
                     or (strategy.orbitals = "root" and isRoot);
     if pushOrbitals then
-        ogOptions := rec(maxval := n, skipOneLarge := false);
+        if BTKIT_ORBITAL_BUDGET then
+            ogOptions := rec(maxval := n, skipOneLarge := false, budgetMode := "normaliser");
+        else
+            ogOptions := rec(maxval := n, skipOneLarge := false, budgetMode := false);
+        fi;
         # Optional size-cutoff on orbital arcs. `strategy.cutoff` is
         # either `false` (no cutoff — include every orbital) or a
         # positive integer (skip orbitals with more than that many

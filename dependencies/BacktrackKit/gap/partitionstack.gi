@@ -332,3 +332,93 @@ InstallMethod(PS_RevertToCellCount, [IsPartitionStackRep, IsPosInt],
             fi;
         od;
     end);
+
+#############################################################################
+##
+##  _PS_ForcePartition(ps, vals, cellstarts, fixedpts)
+##
+##  ###################################################################
+##  #  DANGER: THIS IS A VERY SHARP TOOL.                             #
+##  #                                                                 #
+##  #  It exists solely to improve the performance of the 'vole'      #
+##  #  package by letting Vole overwrite GAP's mirror partition       #
+##  #  directly, instead of re-deriving it by sorting. Its name,      #
+##  #  arguments and behaviour may change, or it may be removed,      #
+##  #  WITHOUT WARNING and WITHOUT a deprecation period.              #
+##  #                                                                 #
+##  #  If you think you need this functionality, please DO NOT use    #
+##  #  it -- open an issue on GitHub and ask instead.                 #
+##  ###################################################################
+##
+##  Overwrites the ENTIRE current state of the partition stack <ps> in one
+##  O(n) pass, bypassing the normal split machinery (PS_SplitCells*): no
+##  per-point sorting, no tracer, and NO split history. The partition is
+##  given directly in the internal representation:
+##    * <vals>       -- a permutation of [1..n] (n = PS_Points(ps)), the
+##                      points listed in cell order.
+##    * <cellstarts> -- strictly increasing list of indices into <vals> at
+##                      which each cell begins; cellstarts[1] must be 1.
+##                      Cells are numbered 1..Length(cellstarts) in this order.
+##    * <fixedpts>   -- the singleton-cell points, in the order they became
+##                      fixed (this order is semantically significant to
+##                      refiners via PS_FixedPoints, so the caller -- Vole --
+##                      must supply its own fixing order, not let GAP guess).
+##
+##  The caller is fully trusted: none of the above is validated at runtime
+##  (only cheap asserts at assert-level 2). Passing an inconsistent
+##  (vals, cellstarts, fixedpts) triple yields a corrupt partition stack.
+##
+##  Because there is no split history afterwards, PS_RevertToCellCount (hence
+##  the stack-based SaveState/RestoreState) is INVALID on a force-written
+##  stack; ps!.splits is cleared to `fail` so any such attempt errors loudly
+##  rather than silently corrupting state. A force-rewrite scheme must manage
+##  backtracking by re-writing the whole partition, not by reverting.
+##
+BindGlobal("_PS_ForcePartition",
+function(ps, vals, cellstarts, fixedpts)
+    local n, ncells, invvals, marks, cellsize, cellof, c, i, hi;
+    n := ps!.original_len;
+    Assert(2, Length(vals) = n);
+    Assert(2, not IsEmpty(cellstarts) and cellstarts[1] = 1);
+    ncells := Length(cellstarts);
+
+    # Inverse permutation: position of each point within <vals>.
+    invvals := EmptyPlist(n);
+    invvals[n] := 0;
+    for i in [1 .. n] do
+        invvals[vals[i]] := i;
+    od;
+
+    # marks[j] = c iff cell c starts at index j of vals; 0 otherwise.
+    marks := ListWithIdenticalEntries(n + 1, 0);
+    marks[n + 1] := n + 1;
+    for c in [1 .. ncells] do
+        marks[cellstarts[c]] := c;
+    od;
+
+    # cellsize and cellof, straight from the cell boundaries.
+    cellsize := EmptyPlist(ncells);
+    cellof := EmptyPlist(n);
+    for c in [1 .. ncells] do
+        if c < ncells then
+            hi := cellstarts[c + 1] - 1;
+        else
+            hi := n;
+        fi;
+        cellsize[c] := hi - cellstarts[c] + 1;
+        for i in [cellstarts[c] .. hi] do
+            cellof[i] := c;
+        od;
+    od;
+
+    ps!.len       := n;
+    ps!.vals      := vals;
+    ps!.invvals   := invvals;
+    ps!.marks     := marks;
+    ps!.cellstart := ShallowCopy(cellstarts);
+    ps!.cellsize  := cellsize;
+    ps!.cellof    := cellof;
+    ps!.fixed     := List(fixedpts, p -> cellof[invvals[p]]);
+    # A force-written stack has no meaningful split history: see comment above.
+    ps!.splits    := fail;
+end);

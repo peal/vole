@@ -50,18 +50,71 @@ _BTKit.options := function(default, useroptions)
   end;
 
 _BTKit.orbitalOptions := function(options)
-    return _BTKit.options(rec(skipOneLarge := false, cutoff := false, maxval := false), options);
+    return _BTKit.options(rec(skipOneLarge := false, cutoff := false, maxval := false,
+                              budgetMode := false), options);
 end;
 
 _BTKit.getOrbitalList := function(sc, maxval)
     return _BTKit.getOrbitalListWithOptions(sc, rec(maxval := maxval, skipOneLarge := true));
 end;
 
+#
+# Orbital-graph budgeting (prototype).
+#
+# A group with a large (near-)regular orbit produces ~|G| orbital graphs,
+# each with ~|G| arcs (a regular action is the worst case: as many
+# orbitals as group elements). Shipping them all to Vole costs O(|G|^2)
+# arcs per refiner callback. `budgetMode` caps this. Graphs are grouped
+# into edge-count classes and taken cheapest-class-first up to a total-arc
+# budget; smaller orbitals are both cheaper to ship and finer refiners.
+#
+#   "ingroup"    — the InGroup / canonical-group refiner. Orbital graphs
+#                  are only a *sound* pruning heuristic here (group
+#                  membership is enforced by a separate check), so any
+#                  subset is correct and a class may be taken partially.
+#                  `maxPerClass` additionally bounds redundant same-size
+#                  orbitals (a regular orbit's arcs are single-element
+#                  Cayley graphs; a handful already propagate a fixed
+#                  point through the orbit).
+#   "normaliser" — the set of orbital graphs must stay closed under the
+#                  normaliser, so a class is atomic: taken whole or dropped
+#                  whole (an edge-count class is a union of complete
+#                  canonical-form families, since isomorphic orbitals share
+#                  an arc count). A larger budget is allowed, as dropping
+#                  costs a genuine constraint (see normaliser.g).
+#   false        — no budget: original behaviour, exact same graph list.
+#
+# Master switch for the orbital-graph budget (prototype). When false, the
+# InGroup/normaliser call sites request budgetMode `false`, restoring the
+# original unbounded orbital list. Distinct budgetMode values keep the
+# per-group orbital cache correct across a toggle, so this can be flipped
+# at runtime (used for A/B benchmarking).
+BTKIT_ORBITAL_BUDGET := true;
+
+_BTKit.orbitalBudget := function(mode, maxval, groupsize)
+    if mode = "ingroup" then
+        return rec(edgeBudget      := 8 * maxval * (LogInt(Maximum(2, maxval), 2) + 1),
+                   maxPerClass     := Maximum(8, 2 * LogInt(Maximum(2, groupsize), 2)),
+                   dropPartialClass := false);
+    elif mode = "normaliser" then
+        return rec(edgeBudget      := 32 * maxval * (LogInt(Maximum(2, maxval), 2) + 1),
+                   maxPerClass     := infinity,
+                   dropPartialClass := true);
+    elif mode = false then
+        return rec(edgeBudget := infinity, maxPerClass := infinity,
+                   dropPartialClass := false);
+    else
+        ErrorNoReturn("Unknown budgetMode: ", mode);
+    fi;
+end;
+
 _BTKit.getOrbitalListWithOptions := function(sc, options...)
     local G, maxval,
         orb, orbitsG, iorb, graph, graphlist, val, p, i, orbsizes, orbpos, innerorblist, orbitsizes,
-            biggestOrbit, skippedOneLargeOrbit, orbreps, cutoff;
-    
+            biggestOrbit, skippedOneLargeOrbit, orbreps, cutoff,
+            budget, descriptors, desc, classmap, classkeys, key, cls, cap, fit, take,
+            selected, total, repcache;
+
     options := _BTKit.orbitalOptions(options);
 
     if options.cutoff = false then
@@ -88,10 +141,11 @@ _BTKit.getOrbitalListWithOptions := function(sc, options...)
         return [];
     fi;
 
-    graphlist := [];
+    budget := _BTKit.orbitalBudget(options.budgetMode, maxval, Size(G));
+
     # Make sure orbits are sorted, so we always get the same list of graphs
     orbitsG := Set(Orbits(G,[1..maxval]), Set);
-    
+
     orbsizes := [];
     orbpos := [];
     # Efficently store size of orbits of values
@@ -101,18 +155,22 @@ _BTKit.getOrbitalListWithOptions := function(sc, options...)
             orbpos[i] := orb;
         od;
     od;
-    
+
     innerorblist := List(orbitsG, o -> Set(Orbits(Stabilizer(G, o[1]), [1..LargestMovedPoint(G)]), Set));
 
     orbitsizes := List([1..Length(orbitsG)], x -> List(innerorblist[x], y -> Size(orbitsG[x])*Size(y)));
-    
+
     biggestOrbit := Maximum(Flat(orbitsizes));
 
     skippedOneLargeOrbit := false;
 
+    # Phase 1: collect candidate (orbit, suborbit) descriptors, in the same
+    # deterministic order the graphs were previously built (orbit, then
+    # suborbit). Materialising the arcs is deferred to Phase 3 so dropped
+    # graphs cost nothing to build.
+    descriptors := [];
     for i in [1..Size(orbitsG)] do
         orb := orbitsG[i];
-        orbreps := [];
         for iorb in innerorblist[i] do
             if (Size(orb) * Size(iorb) = biggestOrbit and options.skipOneLarge and not skippedOneLargeOrbit) then
                 skippedOneLargeOrbit := true;
@@ -125,20 +183,81 @@ _BTKit.getOrbitalListWithOptions := function(sc, options...)
                 # don't want to take the fixed point orbit
                 not(orb[1] = iorb[1] and Size(iorb) = 1)
                     then
-                    graph := List([1..maxval], x -> []);
-                    if IsEmpty(orbreps) then
-                      orbreps := _BTKit.fillRepElements(G, orb);
-                    fi;
-                    for val in orb do
-                        p := orbreps[val];
-                        graph[val] := OnTuples(iorb, p);
-                    od;
-                    Add(graphlist, graph);
+                    Add(descriptors, rec(orbIndex := i, iorb := iorb,
+                                         edges := Size(orb) * Size(iorb)));
                 fi;
             fi;
         od;
     od;
-    #Print(sc, ":", maxval, ":", graphlist, "\n");
+
+    # Phase 2: budget selection over edge-count classes, cheapest first.
+    if budget.edgeBudget = infinity and budget.maxPerClass = infinity then
+        selected := descriptors;
+    else
+        classmap := HashMap();
+        for desc in descriptors do
+            if not (desc.edges in classmap) then
+                classmap[desc.edges] := [];
+            fi;
+            Add(classmap[desc.edges], desc);
+        od;
+        classkeys := Set(Keys(classmap));   # ascending arc counts
+        selected := [];
+        total := 0;
+        for key in classkeys do
+            cls := classmap[key];
+            if budget.maxPerClass = infinity then
+                cap := Length(cls);
+            else
+                cap := Minimum(Length(cls), budget.maxPerClass);
+            fi;
+            if total + cap * key <= budget.edgeBudget then
+                Append(selected, cls{[1 .. cap]});
+                total := total + cap * key;
+            elif budget.dropPartialClass then
+                # normaliser: keep classes atomic to stay closed under N,
+                # so we cannot take a partial class -- skip this one and
+                # keep scanning (a later, larger-arc class with fewer arcs
+                # may still fit). FLOOR: never ship an empty set. For a
+                # (near-)regular group every orbital lands in one big class
+                # that busts the budget; dropping it would leave the refiner
+                # powerless and the search would explode. So if nothing has
+                # been selected yet, take this whole class regardless of
+                # budget (the "willing to pay more" case).
+                if IsEmpty(selected) then
+                    Append(selected, cls);
+                    total := total + Length(cls) * key;
+                fi;
+                continue;
+            else
+                # ingroup: a partial class is sound. Take as many as fit.
+                fit := QuoInt(budget.edgeBudget - total, key);
+                take := Minimum(cap, fit);
+                if take > 0 then
+                    Append(selected, cls{[1 .. take]});
+                    total := total + take * key;
+                fi;
+            fi;
+        od;
+    fi;
+
+    # Phase 3: materialise the selected orbital graphs.
+    graphlist := [];
+    repcache := [];
+    for desc in selected do
+        i := desc.orbIndex;
+        orb := orbitsG[i];
+        if not IsBound(repcache[i]) then
+            repcache[i] := _BTKit.fillRepElements(G, orb);
+        fi;
+        orbreps := repcache[i];
+        graph := List([1..maxval], x -> []);
+        for val in orb do
+            p := orbreps[val];
+            graph[val] := OnTuples(desc.iorb, p);
+        od;
+        Add(graphlist, graph);
+    od;
     # Use NC because we trust our graphs, and it takes a long time for 'Digraph' to check.
     return List(graphlist, DigraphNC);
 end;

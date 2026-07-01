@@ -205,7 +205,13 @@ StabTreeStabilizerOrbitalGraphs := function(group, points, options...)
 end;
 
 StabTreeStabilizerReducedOrbitalGraphs := function(group, points, omega)
-    return StabTreeStabilizerOrbitalGraphs(group, points, rec(maxval := Maximum(omega), skipOneLarge := true));
+    local bm;
+    # Used by the InGroup / canonical-group refiner (GB_Con.InGroupSimple):
+    # orbital graphs are a sound pruning heuristic layered on an explicit
+    # membership check, so we may cap the shipped set (budgetMode "ingroup").
+    if BTKIT_ORBITAL_BUDGET then bm := "ingroup"; else bm := false; fi;
+    return StabTreeStabilizerOrbitalGraphs(group, points,
+        rec(maxval := Maximum(omega), skipOneLarge := true, budgetMode := bm));
 end;
 
 #############################################################################
