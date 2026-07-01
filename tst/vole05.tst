@@ -15,21 +15,21 @@ gap> LoadPackage("vole", false);;
 gap> Set(RecNames(VoleFind));
 [ "Canonical", "CanonicalPerm", "Coset", "Group", "Rep", "Representative" ]
 
-# doc/_Chapter_interface.xml:89-95
+# doc/_Chapter_interface.xml:78-84
 gap> tuple_transport := Constraint.Transport([1,2,3], [1,2,4], OnTuples);;
 gap> VoleFind.Rep(Constraint.InGroup(SymmetricGroup(4)), tuple_transport);
 (3,4)
 gap> VoleFind.Rep(AlternatingGroup(4), tuple_transport);
 fail
 
-# doc/_Chapter_interface.xml:127-133
+# doc/_Chapter_interface.xml:108-114
 gap> graph_auto := Constraint.Stabilise(JohnsonDigraph(4,2), OnDigraphs);;
 gap> set_stab := Constraint.Stabilise([2,4,6], OnSets);;
 gap> G := VoleFind.Group(graph_auto, set_stab, 6);;
 gap> G = Group([ (2,4)(3,5), (1,3,5)(2,6,4) ]);
 true
 
-# doc/_Chapter_interface.xml:137-144
+# doc/_Chapter_interface.xml:117-124
 gap> norm_PSL25 := Constraint.Normalise(PSL(2,5));;
 gap> in_A6  := Constraint.InGroup(AlternatingGroup(6));;
 gap> in_D12 := Constraint.InGroup(DihedralGroup(IsPermGroup, 12));;
@@ -37,7 +37,7 @@ gap> G := VoleFind.Group(in_A6, in_D12, norm_PSL25);;
 gap> G = Group([ (1,3,5)(2,4,6) ]);
 true
 
-# doc/_Chapter_interface.xml:187-196
+# doc/_Chapter_interface.xml:157-166
 gap> tuple_transport := Constraint.Transport([1,2,3], [1,2,4], OnTuples);;
 gap> VoleFind.Coset(Constraint.InGroup(SymmetricGroup(6)), tuple_transport);
 RightCoset(Group([ (5,6), (4,5,6) ]),(3,4,6))
@@ -47,7 +47,7 @@ gap> VoleFind.Coset(AlternatingGroup(5), Constraint.Transport(
 > CycleDigraph(5), DigraphReverse(CycleDigraph(5)), OnDigraphs));
 RightCoset(Group([ (1,2,3,4,5) ]),(1,4)(2,3))
 
-# doc/_Chapter_interface.xml:323-332
+# doc/_Chapter_interface.xml:287-296
 gap> cycle := CycleDigraph(6);;
 gap> reverse := DigraphReverse(cycle);;
 gap> A6 := AlternatingGroup(6);;
@@ -57,29 +57,29 @@ gap> canon2 := VoleFind.Canonical(A6,
 >                                 Constraint.Stabilise(reverse, OnDigraphs));
 rec( canonical := (1,4,5), group := Group([ (1,3,5)(2,4,6) ]) )
 
-# doc/_Chapter_interface.xml:337-342
+# doc/_Chapter_interface.xml:300-305
 gap> SignPerm(canon1.canonical) = 1 and SignPerm(canon2.canonical) = 1
 > and canon1.group = Vole.Stabiliser(A6, cycle, OnDigraphs)
 > and canon2.group = Vole.Stabiliser(A6, reverse, OnDigraphs);
 true
 
-# doc/_Chapter_interface.xml:348-354
+# doc/_Chapter_interface.xml:310-316
 gap> OnDigraphs(cycle, canon1.canonical)
 > = OnDigraphs(reverse, canon2.canonical);
 true
 gap> Vole.RepresentativeAction(A6, cycle, reverse, OnDigraphs);
 (1,5)(2,4)
 
-# doc/_Chapter_interface.xml:360-364
+# doc/_Chapter_interface.xml:321-325
 gap> G := Group([ (1,2,3,4,6), (1,4)(5,6) ]);;
 gap> Vole.RepresentativeAction(G, cycle, reverse, OnDigraphs) <> fail;
 true
 
-# doc/_Chapter_interface.xml:370-373
+# doc/_Chapter_interface.xml:330-333
 gap> colours1 := [[1,3,5],[2,4,6]];;
 gap> colours2 := [[2,4,6],[1,3,5]];;
 
-# doc/_Chapter_interface.xml:380-389
+# doc/_Chapter_interface.xml:339-348
 gap> canon1 := VoleFind.Canonical(G,
 >                                 Constraint.Stabilise(cycle, OnDigraphs),
 >                                 Constraint.Stabilise(colours1, OnTuplesSets));
@@ -89,12 +89,12 @@ gap> canon2 := VoleFind.Canonical(G,
 >                                 Constraint.Stabilise(colours2, OnTuplesSets));
 rec( canonical := (1,6,5,4,3), group := Group(()) )
 
-# doc/_Chapter_interface.xml:393-397
+# doc/_Chapter_interface.xml:351-355
 gap> OnDigraphs(cycle, canon1.canonical)
 > = OnDigraphs(reverse, canon2.canonical);
 false
 
-# doc/_Chapter_interface.xml:402-414
+# doc/_Chapter_interface.xml:359-371
 gap> canon1 := VoleFind.Canonical(SymmetricGroup(6),
 >                                 Constraint.Stabilise(cycle, OnDigraphs),
 >                                 Constraint.Stabilise(colours1, OnTuplesSets));
@@ -107,13 +107,13 @@ gap> OnDigraphs(cycle, canon1.canonical)
 > = OnDigraphs(reverse, canon2.canonical);
 true
 
-# doc/_Chapter_interface.xml:441-446
+# doc/_Chapter_interface.xml:394-399
 gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
 >  Constraint.Normalise(Group([ (1,2) ]))
 > );
 (1,3,4)
 
-# doc/_Chapter_interface.xml:457-463
+# doc/_Chapter_interface.xml:409-415
 gap> VoleFind.CanonicalPerm(SymmetricGroup(4),
 >  Constraint.Stabilise([ [1,2], [1,4], [2,3], [3,4] ], OnSetsSets),
 >  Constraint.Stabilise(CycleDigraph(4), OnDigraphs)

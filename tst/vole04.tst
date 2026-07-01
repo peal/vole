@@ -10,7 +10,7 @@
 #
 gap> START_TEST("vole04.tst");
 
-# doc/_Chapter_wrapper.xml:96-105
+# doc/_Chapter_wrapper.xml:94-103
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(Vole));
 [ "AutomorphismGroup", "CanonicalDigraph", "CanonicalImage",
@@ -20,7 +20,7 @@ gap> Set(RecNames(Vole));
   "Normaliser", "Normalizer", "RepresentativeAction", "Stabiliser",
   "Stabilizer", "TwoClosure" ]
 
-# doc/_Chapter_wrapper.xml:236-245
+# doc/_Chapter_wrapper.xml:227-236
 gap> A6 := AlternatingGroup(6);;
 gap> D12 := DihedralGroup(IsPermGroup, 12);;
 gap> Vole.Intersection(A6, D12);
@@ -30,7 +30,7 @@ RightCoset(Group([ (2,6)(3,5), (1,3)(4,6) ]),(1,5,4,2,6,3))
 gap> Vole.Intersection(A6 * (1,2), D12 * (3,4), PSL(2,5));
 [  ]
 
-# doc/_Chapter_wrapper.xml:278-288
+# doc/_Chapter_wrapper.xml:263-273
 gap> Vole.Stabiliser(PGL(2,5), [1,2,3], OnSets);
 Group([ (1,3)(5,6), (1,2,3)(4,5,6) ])
 gap> D := JohnsonDigraph(4,2);;
@@ -41,7 +41,7 @@ gap> Elements(G)
 >  = SortedList(Filtered(PSL(2,5), g -> OnDigraphs(D, g) = D));
 true
 
-# doc/_Chapter_wrapper.xml:323-331
+# doc/_Chapter_wrapper.xml:301-309
 gap> Vole.RepresentativeAction(SymmetricGroup(4), (1,2,3), (1,2,4));
 (1,4,3,2)
 gap> RepresentativeAction(AlternatingGroup(4), (1,2,3), (1,2,4));
@@ -50,20 +50,20 @@ gap> D := CycleDigraph(6);;
 gap> Vole.RepresentativeAction(PGL(2,5), D, DigraphReverse(D), OnDigraphs);
 (1,4)(2,3)(5,6)
 
-# doc/_Chapter_wrapper.xml:365-371
+# doc/_Chapter_wrapper.xml:338-344
 gap> Vole.Normaliser(SymmetricGroup(6), PSL(2,5)) = PGL(2,5);
 true
 gap> D12 := DihedralGroup(IsPermGroup, 12);;
 gap> Vole.Normaliser(SymmetricGroup(6), (1,2,3,4,5,6)) = D12;
 true
 
-# doc/_Chapter_wrapper.xml:395-400
+# doc/_Chapter_wrapper.xml:366-371
 gap> Vole.Centraliser(MathieuGroup(12), (1,11,9,4,3,2)(5,7,8,6,12,10));
 Group([ (1,2,3,4,9,11)(5,10,12,6,8,7), (1,5,3,12,9,8)(2,10,4,6,11,7) ])
 gap> Vole.Centraliser(Group((1,2,3,4,5,6)), DihedralGroup(IsPermGroup, 12));
 Group([ (1,4)(2,5)(3,6) ])
 
-# doc/_Chapter_wrapper.xml:433-442
+# doc/_Chapter_wrapper.xml:400-409
 gap> # Conjugacy of permutations
 gap> x := (1,2,3,4,5);; y := (1,2,3,4,6);;
 gap> Vole.IsConjugate(SymmetricGroup(6), x, y);
@@ -73,7 +73,7 @@ false
 gap> Vole.IsConjugate(Group([ (5,6) ]), x, y);
 true
 
-# doc/_Chapter_wrapper.xml:446-455
+# doc/_Chapter_wrapper.xml:412-421
 gap> x := Group([ (1,2,3,4,5) ]);;
 gap> y := Group([ (1,2,3,4,6) ]);;
 gap> Vole.IsConjugate(SymmetricGroup(6), x, y);
@@ -83,7 +83,7 @@ false
 gap> Vole.IsConjugate(Group([ (5,6) ]), x, y);
 true
 
-# doc/_Chapter_wrapper.xml:485-492
+# doc/_Chapter_wrapper.xml:447-454
 gap> LoadPackage("orbitalgraphs", false);;
 gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;  # A4 on six points
 gap> (3,6) in G;
@@ -91,11 +91,11 @@ false
 gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
 true
 
-# doc/_Chapter_wrapper.xml:565-568
+# doc/_Chapter_wrapper.xml:522-525
 gap> Vole.CanonicalPerm(PSL(2,5), JohnsonDigraph(4,2), OnDigraphs);
 (1,2,6)(3,4,5)
 
-# doc/_Chapter_wrapper.xml:613-622
+# doc/_Chapter_wrapper.xml:565-574
 gap> tuple1 := [1,2,3,4];; tuple2 := [1,2,3,5];; tuple3 := [1,5,2,3];;
 gap> A5 := AlternatingGroup(5);;
 gap> Vole.CanonicalImage(A5, tuple1, OnTuples);
@@ -105,7 +105,7 @@ gap> Vole.CanonicalImage(A5, tuple2, OnTuples);
 gap> Vole.CanonicalImage(A5, tuple3, OnTuples);
 [ 4, 5, 3, 2 ]
 
-# doc/_Chapter_wrapper.xml:627-634
+# doc/_Chapter_wrapper.xml:578-585
 gap> Vole.RepresentativeAction(A5, tuple1, tuple2, OnTuples);
 fail
 gap> Vole.RepresentativeAction(A5, tuple1, tuple3, OnTuples);
@@ -113,26 +113,26 @@ fail
 gap> Vole.RepresentativeAction(A5, tuple2, tuple3, OnTuples);
 (2,5,3)
 
-# doc/_Chapter_wrapper.xml:730-733
+# doc/_Chapter_wrapper.xml:676-679
 gap> Vole.AutomorphismGroup(JohnsonDigraph(4,2));
 Group([ (3,4), (2,3,5,4), (1,2,6,5)(3,4) ])
 
-# doc/_Chapter_wrapper.xml:763-766
+# doc/_Chapter_wrapper.xml:705-708
 gap> Vole.DigraphCanonicalLabelling(JohnsonDigraph(4,2));
 (1,2,4,5,3,6)
 
-# doc/_Chapter_wrapper.xml:793-796
+# doc/_Chapter_wrapper.xml:732-735
 gap> Vole.CanonicalDigraph(JohnsonDigraph(4,2));
 <immutable digraph with 6 vertices, 24 edges>
 
-# doc/_Chapter_wrapper.xml:820-826
+# doc/_Chapter_wrapper.xml:757-763
 gap> D := CycleDigraph(6);;
 gap> Vole.IsIsomorphicDigraph(D, DigraphReverse(D));
 true
 gap> Vole.IsIsomorphicDigraph(D, DigraphDual(D));
 false
 
-# doc/_Chapter_wrapper.xml:854-860
+# doc/_Chapter_wrapper.xml:789-795
 gap> D := CycleDigraph(6);;
 gap> Vole.IsomorphismDigraphs(D, DigraphReverse(D));
 (1,4)(2,3)(5,6)

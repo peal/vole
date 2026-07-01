@@ -10,10 +10,10 @@
 #
 gap> START_TEST("vole08.tst");
 
-# doc/_Chapter_expert.xml:40-42
+# doc/_Chapter_expert.xml:39-41
 gap> LoadPackage("vole", false);;
 
-# doc/_Chapter_expert.xml:68-74
+# doc/_Chapter_expert.xml:66-72
 gap> D := PetersenGraph();;
 gap> constraint := Constraint.Stabilise(D, OnDigraphs);;
 gap> G := VoleFind.Group(constraint : points := DigraphNrVertices(D));;

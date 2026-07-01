@@ -10,7 +10,7 @@
 #
 gap> START_TEST("vole07.tst");
 
-# doc/_Chapter_Refiners.xml:29-36
+# doc/_Chapter_Refiners.xml:28-35
 gap> LoadPackage("vole", false);;
 gap> Set(RecNames(VoleRefiner));
 [ "DigraphStab", "DigraphTransporter", "FromConstraint", "InSymmetricGroup",
@@ -18,31 +18,31 @@ gap> Set(RecNames(VoleRefiner));
   "SetTransporter", "SetTupleStab", "SetTupleTransporter", "TupleOf",
   "TupleStab", "TupleTransporter" ]
 
-# doc/_Chapter_Refiners.xml:55-58
+# doc/_Chapter_Refiners.xml:51-54
 gap> true;
 true
 
-# doc/_Chapter_Refiners.xml:72-75
+# doc/_Chapter_Refiners.xml:66-69
 gap> true;
 true
 
-# doc/_Chapter_Refiners.xml:89-92
+# doc/_Chapter_Refiners.xml:81-84
 gap> true;
 true
 
-# doc/_Chapter_Refiners.xml:106-109
+# doc/_Chapter_Refiners.xml:96-99
 gap> true;
 true
 
-# doc/_Chapter_Refiners.xml:123-126
+# doc/_Chapter_Refiners.xml:111-114
 gap> true;
 true
 
-# doc/_Chapter_Refiners.xml:140-143
+# doc/_Chapter_Refiners.xml:126-129
 gap> true;
 true
 
-# doc/_Chapter_Refiners.xml:210-226
+# doc/_Chapter_Refiners.xml:193-209
 gap> setofsets := VoleRefiner.SetOf(
 >      [BTKit_Refiner.SetStab([1, 2, 3]), BTKit_Refiner.SetStab([3, 4])]);;
 gap> G := VoleFind.Group(SymmetricGroup(4), setofsets);;
@@ -59,7 +59,7 @@ true
 gap> Size(N);
 8
 
-# doc/_Chapter_Refiners.xml:248-257
+# doc/_Chapter_Refiners.xml:229-238
 gap> mems := List([[1, 2], [1, 2], [3, 4]], BTKit_Refiner.SetStab);;
 gap> M := VoleFind.Group(SymmetricGroup(4), VoleRefiner.MultisetOf(mems));;
 gap> M = Group(Filtered(SymmetricGroup(4),
@@ -69,7 +69,7 @@ true
 gap> Size(M);
 4
 
-# doc/_Chapter_Refiners.xml:286-301
+# doc/_Chapter_Refiners.xml:265-280
 gap> tup := VoleRefiner.TupleOf(
 >      [BTKit_Refiner.SetStab([1, 2]), BTKit_Refiner.SetStab([3, 4, 5])]);;
 gap> VoleFind.Group(SymmetricGroup(5), tup)
@@ -85,7 +85,7 @@ true
 gap> Size(G);
 2
 
-# doc/_Chapter_Refiners.xml:339-362
+# doc/_Chapter_Refiners.xml:316-339
 gap> n := 3;;
 gap> S := SymmetricGroup(n);;
 gap> M := Elements(FullTransformationMonoid(n));;
@@ -109,7 +109,7 @@ gap> Length(pairs) = Length(Orbits(S, Combinations(M, 2),
 >        {p, g} -> Set([p[1] ^ g, p[2] ^ g])));   # cross-check against GAP
 true
 
-# doc/_Chapter_Refiners.xml:380-383
+# doc/_Chapter_Refiners.xml:354-357
 gap> true;
 true
 
