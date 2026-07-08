@@ -49,13 +49,39 @@ _BTKit.options := function(default, useroptions)
     return ret;
   end;
 
+# Forward declarations (both documented and defaulted near orbitalBudget below);
+# set here too so orbitalOptions / getOrbitalList parse without an
+# unbound-global warning.
+BTKIT_ORBITAL_STRATEGY := false;
+BTKIT_ORBITAL_BUDGET := true;
+
 _BTKit.orbitalOptions := function(options)
-    return _BTKit.options(rec(skipOneLarge := false, cutoff := false, maxval := false,
-                              budgetMode := false), options);
+    local ret;
+    ret := _BTKit.options(rec(skipOneLarge := false, cutoff := false, maxval := false,
+                              budgetMode := false, strategyId := ""), options);
+    # Stamp the active selection-strategy id into the normalised record, so the
+    # per-group orbital cache (keyed by this record in stabtree.g) stays correct
+    # when the strategy is switched at runtime for benchmarking. Always "" in
+    # normal/production use (BTKIT_ORBITAL_STRATEGY = false).
+    if IsRecord(BTKIT_ORBITAL_STRATEGY) then
+        ret.strategyId := BTKIT_ORBITAL_STRATEGY.id;
+    else
+        ret.strategyId := "";
+    fi;
+    return ret;
 end;
 
 _BTKit.getOrbitalList := function(sc, maxval)
-    return _BTKit.getOrbitalListWithOptions(sc, rec(maxval := maxval, skipOneLarge := true));
+    local bm;
+    # The InGroup / InCoset refiner ("InGroup-GB", GB_Con.InGroup, and the
+    # BacktrackKit InGroupWithOrbitals refiner) uses this. Orbital graphs are a
+    # sound pruning heuristic layered on an explicit membership check, so we may
+    # cap the shipped set -- the SAME budget rule as the canonical InGroupSimple
+    # path (StabTreeStabilizerReducedOrbitalGraphs). Normalisers are a different
+    # refiner (budgetMode "normaliser") and are unaffected by this.
+    if BTKIT_ORBITAL_BUDGET then bm := "ingroup"; else bm := false; fi;
+    return _BTKit.getOrbitalListWithOptions(sc,
+        rec(maxval := maxval, skipOneLarge := true, budgetMode := bm));
 end;
 
 #
@@ -91,17 +117,47 @@ end;
 # at runtime (used for A/B benchmarking).
 BTKIT_ORBITAL_BUDGET := true;
 
+# Runtime selection-strategy override for benchmarking (default false = use the
+# per-mode budgets below). When set to a record it fully determines the Phase-2
+# selection for EVERY orbital-graph path (including the uncached InGroup-GB
+# stabiliser path, which flows through orbitalBudget too). Shape:
+#   rec( id          := <string, stamped into the cache key by orbitalOptions>,
+#        order       := "ascending" | "descending",   # cheapest- or dearest-class first
+#        edgeBudget  := infinity | <int> | function(maxval, groupsize),
+#        maxPerClass := infinity | <int> | function(maxval, groupsize) )
+# dropPartialClass is NOT taken from the strategy: it stays governed by path
+# soundness (normalisers require whole edge-count classes), so a strategy can be
+# swept across all three problem families without producing wrong groups.
+BTKIT_ORBITAL_STRATEGY := false;
+
+_BTKit.resolveKnob := function(k, maxval, groupsize)
+    if IsFunction(k) then
+        return k(maxval, groupsize);
+    fi;
+    return k;
+end;
+
 _BTKit.orbitalBudget := function(mode, maxval, groupsize)
+    local s;
+    if IsRecord(BTKIT_ORBITAL_STRATEGY) then
+        s := BTKIT_ORBITAL_STRATEGY;
+        return rec(order            := s.order,
+                   edgeBudget       := _BTKit.resolveKnob(s.edgeBudget, maxval, groupsize),
+                   maxPerClass      := _BTKit.resolveKnob(s.maxPerClass, maxval, groupsize),
+                   dropPartialClass := (mode = "normaliser"));
+    fi;
     if mode = "ingroup" then
-        return rec(edgeBudget      := 8 * maxval * (LogInt(Maximum(2, maxval), 2) + 1),
+        return rec(order := "ascending",
+                   edgeBudget      := 8 * maxval * (LogInt(Maximum(2, maxval), 2) + 1),
                    maxPerClass     := Maximum(8, 2 * LogInt(Maximum(2, groupsize), 2)),
                    dropPartialClass := false);
     elif mode = "normaliser" then
-        return rec(edgeBudget      := 32 * maxval * (LogInt(Maximum(2, maxval), 2) + 1),
+        return rec(order := "ascending",
+                   edgeBudget      := 32 * maxval * (LogInt(Maximum(2, maxval), 2) + 1),
                    maxPerClass     := infinity,
                    dropPartialClass := true);
     elif mode = false then
-        return rec(edgeBudget := infinity, maxPerClass := infinity,
+        return rec(order := "ascending", edgeBudget := infinity, maxPerClass := infinity,
                    dropPartialClass := false);
     else
         ErrorNoReturn("Unknown budgetMode: ", mode);
@@ -112,7 +168,7 @@ _BTKit.getOrbitalListWithOptions := function(sc, options...)
     local G, maxval,
         orb, orbitsG, iorb, graph, graphlist, val, p, i, orbsizes, orbpos, innerorblist, orbitsizes,
             biggestOrbit, skippedOneLargeOrbit, orbreps, cutoff,
-            budget, descriptors, desc, classmap, classkeys, key, cls, cap, fit, take,
+            budget, descriptors, desc, classmap, classkeys, key, unit, cls, cap, fit, take,
             selected, total, repcache;
 
     options := _BTKit.orbitalOptions(options);
@@ -190,9 +246,21 @@ _BTKit.getOrbitalListWithOptions := function(sc, options...)
         od;
     od;
 
-    # Phase 2: budget selection over edge-count classes, cheapest first.
+    # Phase 2: select descriptors by edge-count class, in `budget.order`
+    # (ascending = cheapest first, descending = dearest first), up to the
+    # budget. Normaliser classes are atomic; InGroup classes may be partial.
+    #
+    # COST MODEL: each materialised orbital graph is a Digraph on `maxval`
+    # vertices (a full-length out-adjacency list, Phase 3), so it costs
+    # `maxval + arcs` in memory regardless of how few arcs it carries. We
+    # budget against this V+E cost, not arcs alone: a near-regular stabiliser
+    # produces a flood of single-suborbit graphs with tiny E but a full V
+    # skeleton each; costing arcs-only lets ~150k of them through (they OOM),
+    # whereas V+E bounds the graph COUNT by budget/maxval automatically. Class
+    # grouping stays keyed on arc count (V is constant, so classes are
+    # unchanged and normaliser atomicity is preserved).
     if budget.edgeBudget = infinity and budget.maxPerClass = infinity then
-        selected := descriptors;
+        selected := descriptors;                    # fast path: take everything
     else
         classmap := HashMap();
         for desc in descriptors do
@@ -201,41 +269,45 @@ _BTKit.getOrbitalListWithOptions := function(sc, options...)
             fi;
             Add(classmap[desc.edges], desc);
         od;
-        classkeys := Set(Keys(classmap));   # ascending arc counts
+        classkeys := Set(Keys(classmap));           # ascending arc counts
+        if budget.order = "descending" then
+            classkeys := Reversed(classkeys);
+        fi;
         selected := [];
         total := 0;
         for key in classkeys do
             cls := classmap[key];
-            if budget.maxPerClass = infinity then
-                cap := Length(cls);
-            else
-                cap := Minimum(Length(cls), budget.maxPerClass);
-            fi;
-            if total + cap * key <= budget.edgeBudget then
-                Append(selected, cls{[1 .. cap]});
-                total := total + cap * key;
-            elif budget.dropPartialClass then
-                # normaliser: keep classes atomic to stay closed under N,
-                # so we cannot take a partial class -- skip this one and
-                # keep scanning (a later, larger-arc class with fewer arcs
-                # may still fit). FLOOR: never ship an empty set. For a
-                # (near-)regular group every orbital lands in one big class
-                # that busts the budget; dropping it would leave the refiner
-                # powerless and the search would explode. So if nothing has
-                # been selected yet, take this whole class regardless of
-                # budget (the "willing to pay more" case).
-                if IsEmpty(selected) then
+            unit := maxval + key;                    # V+E memory cost per graph
+            if budget.dropPartialClass then
+                # normaliser: an edge-count class is a union of whole
+                # canonical-form families, so it must be taken whole or not at
+                # all to stay closed under N. Skip if it busts the budget, but
+                # keep scanning. FLOOR: never ship an empty set (a regular
+                # group has one giant class; dropping it would leave the
+                # refiner powerless), so take it whole if nothing else fit.
+                if total + Length(cls) * unit <= budget.edgeBudget
+                   or IsEmpty(selected) then
                     Append(selected, cls);
-                    total := total + Length(cls) * key;
+                    total := total + Length(cls) * unit;
                 fi;
-                continue;
             else
-                # ingroup: a partial class is sound. Take as many as fit.
-                fit := QuoInt(budget.edgeBudget - total, key);
-                take := Minimum(cap, fit);
-                if take > 0 then
-                    Append(selected, cls{[1 .. take]});
-                    total := total + take * key;
+                # InGroup: orbital graphs are a sound heuristic, so a partial
+                # class is fine. Cap per class, then fit within the budget.
+                if budget.maxPerClass = infinity then
+                    cap := Length(cls);
+                else
+                    cap := Minimum(Length(cls), budget.maxPerClass);
+                fi;
+                if total + cap * unit <= budget.edgeBudget then
+                    Append(selected, cls{[1 .. cap]});
+                    total := total + cap * unit;
+                else
+                    fit := QuoInt(budget.edgeBudget - total, unit);
+                    take := Minimum(cap, fit);
+                    if take > 0 then
+                        Append(selected, cls{[1 .. take]});
+                        total := total + take * unit;
+                    fi;
                 fi;
             fi;
         od;
