@@ -31,10 +31,12 @@ gap> VoleFind.Group(10, con) = Centraliser(SymmetricGroup(10), x);
 true
 
 # OnTuplesDigraphs
+#@if LoadPackage("orbitalgraphs", false) <> fail
 gap> G := DihedralGroup(IsPermGroup, 12);;
 gap> VoleFind.Group(6,
 > Constraint.Stabilise(OrbitalGraphs(G), OnTuplesDigraphs)) = G;
 true
+#@fi
 gap> D := DigraphFromGraph6String("Esa?");;
 gap> x := CycleDigraph(6);;
 gap> y := DigraphReverse(CycleDigraph(6));;

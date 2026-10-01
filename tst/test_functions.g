@@ -1,6 +1,6 @@
+# This file must only LoadPackage packages that Vole requires. Tests that need
+# optional packages (quickcheck, ferret) load and guard them themselves.
 LoadPackage("vole", false);
-LoadPackage("quickcheck", false);
-LoadPackage("ferret", false);
 
 _Vole.LoadFullDependencies();
 
@@ -24,6 +24,13 @@ VoleTestCanonical := function(grp, obj, VoleFunc, action)
     fi;
     return true;
 end;
+
+# FerretSolve and QuickChecker compare Vole against ferret, so they are only
+# defined when ferret is available. TestPackageAvailability is used instead of
+# LoadPackage so nothing is printed when ferret is not installed, which would
+# break the output comparison of the tests that read this file.
+if TestPackageAvailability("ferret", "") <> fail then
+LoadPackage("ferret", false);
 
 FerretSolve := function(p, l)
     local c, g, lmp;
@@ -68,6 +75,7 @@ QuickChecker := function(p, c)
     ret2 := FerretSolve(p, c);
     return ret2 = ret1;
 end;
+fi;
 
 
 GAPSolve :=

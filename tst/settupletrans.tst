@@ -4,6 +4,7 @@ gap> ReadPackage("vole", "tst/test_functions.g");
 true
 
 #
+#@if LoadPackage("quickcheck", false) <> fail
 gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 >      local s2, res, p;
 >      p := Random(g);
@@ -15,6 +16,7 @@ gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 >      return true;
 >  end);
 true
+#@fi
 
 # Issue #40
 gap> VoleFind.Rep(4, VoleRefiner.SetTupleTransporter([[]], []));

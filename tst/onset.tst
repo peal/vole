@@ -23,6 +23,7 @@ gap> GR := D -> Objectify(GBRefinerType, rec(
 # SetOf rejects duplicate members, so the random family is made duplicate-free
 # first; this is exactly the set { a, b, c }, which is what OnSetsSets sees too.
 gap> mkset := s -> BTKit_Refiner.SetStab(s);;
+#@if LoadPackage("quickcheck", false) <> fail
 gap> QC_Check(List([1 .. 3], i -> QC_SetOf(IsPosInt)),
 >   function(a, b, c)
 >     local sets, n, G, H;
@@ -33,9 +34,11 @@ gap> QC_Check(List([1 .. 3], i -> QC_SetOf(IsPosInt)),
 >     return G = H;
 >   end);
 true
+#@fi
 
 # Setwise stabiliser of a family of tuples agrees with OnSetsTuples (randomised).
 gap> mktup := t -> BTKit_Refiner.TupleStab(t);;
+#@if LoadPackage("quickcheck", false) <> fail
 gap> QC_Check(List([1 .. 2], i -> QC_SetOf(IsPosInt)),
 >   function(a, b)
 >     local tt, n, G, H;
@@ -46,6 +49,7 @@ gap> QC_Check(List([1 .. 2], i -> QC_SetOf(IsPosInt)),
 >     return G = H;
 >   end);
 true
+#@fi
 
 # SetOf is a genuine SET, not a multiset: duplicate members (the same typed
 # object) are rejected with an error rather than silently merged. (Widen the

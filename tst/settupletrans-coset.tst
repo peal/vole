@@ -4,6 +4,7 @@ gap> ReadPackage("vole", "tst/test_functions.g");
 true
 
 #
+#@if LoadPackage("quickcheck", false) <> fail
 gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 >      local s2, res, p, grp;
 >      p := Random(g);
@@ -16,6 +17,7 @@ gap> QC_Check([ QC_SetOf(QC_ListOf(IsPosInt)), IsPermGroup ], function(s,g)
 >      return true;
 >  end);
 true
+#@fi
 
 #
 gap> STOP_TEST("settupletrans-coset.tst");

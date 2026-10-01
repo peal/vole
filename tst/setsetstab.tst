@@ -4,10 +4,12 @@ gap> ReadPackage("vole", "tst/test_functions.g");
 true
 
 #
+#@if LoadPackage("quickcheck", false) <> fail and LoadPackage("ferret", false) <> fail
 gap> QC_Check([QC_SetOf(QC_SetOf(IsPosInt))],
 > {s} -> QuickChecker(Maximum(Flat([0, s])), [Constraint.Stabilize(s, OnSetsSets)])
 > );
 true
+#@fi
 
 # Issue #45
 gap> Vole.Stabiliser(SymmetricGroup(3), [], OnSetsSets) = SymmetricGroup(3);

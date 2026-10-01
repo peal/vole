@@ -115,8 +115,10 @@ gap> Vole.TwoClosure();
 Error, Function: number of arguments must be 1 (not 0)
 gap> Vole.TwoClosure(fail);
 Error, Vole.TwoClosure: The argument must be a perm group
+#@if LoadPackage("orbitalgraphs", false) <> fail
 gap> Vole.TwoClosure(AlternatingGroup(4)) = SymmetricGroup(4);
 true
+#@fi
 
 # Vole.CanonicalPerm
 gap> Vole.CanonicalPerm();

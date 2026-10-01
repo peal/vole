@@ -4,6 +4,7 @@ gap> ReadPackage("vole", "tst/test_functions.g");
 true
 
 #
+#@if LoadPackage("quickcheck", false) <> fail
 gap> QC_Check([IsPermGroup, IsPermGroup], function(g, h)
 >      local h2, res, p;
 >      p := Random(g);
@@ -15,6 +16,7 @@ gap> QC_Check([IsPermGroup, IsPermGroup], function(g, h)
 >      return true;
 >  end);
 true
+#@fi
 
 #
 gap> STOP_TEST("grpconjtrans.tst");

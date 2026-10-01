@@ -568,13 +568,17 @@ DeclareGlobalFunction("Vole.IsConjugate");
 #! @InsertChunk gap-faster
 #! @InsertChunk bettergroup
 #! @BeginExampleSession
-#! gap> LoadPackage("orbitalgraphs", false);;
 #! gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;  # A4 on six points
 #! gap> (3,6) in G;
 #! false
+#! @EndExampleSession
+#! The following example is displayed but not tested, so that the package
+#! tests can run when &OrbitalGraphs; is not installed.
+#! @BeginLogSession
+#! gap> LoadPackage("orbitalgraphs", false);;
 #! gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
 #! true
-#! @EndExampleSession
+#! @EndLogSession
 DeclareGlobalFunction("Vole.TwoClosure");
 #! @EndGroup
 
