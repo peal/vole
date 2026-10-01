@@ -5,15 +5,15 @@
 #
 # Reading the implementation part of the package.
 
-# See init.g: read each bundled dependency only when the corresponding external
-# package is not available, otherwise defer to the real (suggested) package.
+# See init.g: use bundled dependencies unless GAP is loading compatible
+# external packages.
 _BT_SKIP_INTERFACE := true;
-if TestPackageAvailability("BacktrackKit", "1.1.0") = fail then
+if not IsPackageMarkedForLoading("BacktrackKit", "1.2.0") then
     _ReadBTPackage := {f} -> ReadPackage("Vole", Concatenation("dependencies/BacktrackKit/", f));
     ReadPackage("Vole", "dependencies/BacktrackKit/read.g");
     Unbind(_ReadBTPackage);
 fi;
-if TestPackageAvailability("GraphBacktracking", "1.1.0") = fail then
+if not IsPackageMarkedForLoading("GraphBacktracking", "1.2.0") then
     _ReadGBPackage := {f} -> ReadPackage("Vole", Concatenation("dependencies/GraphBacktracking/", f));
     ReadPackage("Vole", "dependencies/GraphBacktracking/read.g");
     Unbind(_ReadGBPackage);
