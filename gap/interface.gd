@@ -60,18 +60,14 @@
 #! are used.
 #! @EndChunk
 
-#! @BeginChunk bounds-ref
-#! Otherwise, an error is given.
-#! This guarantees that &Vole; terminates (given sufficient resources).
-#! See Section&nbsp;<Ref Sect="Section_bounds"/> for examples and further
-#! information.
-#! @EndChunk
-
 #! @BeginChunk need-lmp
 #! For at least one of the <A>arguments</A>, &Vole; must be able to
 #! immediately deduce a (finite) largest moved point of all the permutations
 #! that satisfy the corresponding constraint.
-#! @InsertChunk bounds-ref
+#! Otherwise, an error is given.
+#! This guarantees that &Vole; terminates (given sufficient resources).
+#! See Section&nbsp;<Ref Sect="Section_bounds"/> for examples and further
+#! information.
 #! @EndChunk
 
 #! @BeginChunk need-lrp
@@ -80,7 +76,10 @@
 #! * there exists a permutation satisfying the constraint
 #!   if and only if there exists an element of `Sym([1..k])` satisfying
 #!   the constraint.
-#! @InsertChunk bounds-ref
+#! Otherwise, an error is given.
+#! This guarantees that &Vole; terminates (given sufficient resources).
+#! See Section&nbsp;<Ref Sect="Section_bounds"/> for examples and further
+#! information.
 #! @EndChunk
 
 ## End chunks
@@ -444,11 +443,11 @@ DeclareGlobalFunction("VoleFind.Canonical");
 #! gap> VoleFind.CanonicalPerm(AlternatingGroup(4),
 #! >  Constraint.Normalise(Group([ (1,2) ]))
 #! > );
-#! (1,3,4)
+#! (1,2,4)
 #! @EndExampleSession
 #! Thus the canonical image of $\langle (1\,2) \rangle$ under this action of
-#! $A_{4}$ is the group ${\langle (1\,2) \rangle}^{(1\,3\,4)}$,
-#! i.e. $\langle (2\,3) \rangle$.
+#! $A_{4}$ is the group ${\langle (1\,2) \rangle}^{(1\,2\,4)}$,
+#! i.e. $\langle (2\,4) \rangle$.
 #!
 #! This second example shows how to compute a canonical permutation
 #! for the pair $[S, D]$ under the specified componentwise action of $S_{4}$,

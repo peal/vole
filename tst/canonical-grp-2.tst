@@ -4,6 +4,7 @@ gap> ReadPackage("vole", "tst/test_functions.g");
 true
 
 #
+#@if LoadPackage("quickcheck", false) <> fail
 gap> QC_Check([IsPermGroup, IsPermGroup, IsPermGroup],
 > function(g, s1, s2)
 >   return VoleTestCanonical(g, [s1, s2],
@@ -11,6 +12,7 @@ gap> QC_Check([IsPermGroup, IsPermGroup, IsPermGroup],
 >     OnPairs);
 > end);
 true
+#@fi
 
 #
 gap> STOP_TEST("canonical-grp-2.tst");

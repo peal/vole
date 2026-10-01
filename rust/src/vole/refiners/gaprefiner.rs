@@ -71,12 +71,19 @@ impl GapRefiner {
     }
 
     fn generic_refine(&mut self, state: &mut DomainState, refiner_type: &str, side: Side) -> trace::Result<()> {
+        // Transmit the partition as (values-in-cell-order, cellstarts, fixed)
+        // so GAP can overwrite its mirror partition directly via
+        // `_PS_ForcePartition`, instead of re-deriving it by sorting a
+        // per-point cell map (which dominated GAP-side refiner time).
+        let (values, cellstarts, fixed) = state.partition().base_as_force_partition();
         let ret_list: Vec<GapRefinerReturn> = GapChatType::send_request(&(
             "refiner",
             &self.gap_id,
             refiner_type,
             side,
-            state.partition().base_as_indicator(),
+            values,
+            cellstarts,
+            fixed,
         ))
         .unwrap();
 

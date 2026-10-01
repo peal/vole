@@ -9,24 +9,17 @@
 # dependencies/, purely as a fallback for users who do not have them installed
 # as separate packages.
 #
-# If either package IS installed, Vole lists it as a suggested package (see
-# PackageInfo.g), so GAP loads the real package -- and orders its declarations
-# before Vole's. In that case we must NOT read our bundled copy, or we would
-# shadow/duplicate the real one. We therefore read a bundled copy only when the
-# corresponding package is not available at all. This also keeps the load cycle
-# BacktrackKit -> images -> Vole well behaved: when BacktrackKit is a real
-# package, Vole defers to it rather than racing in its own bundled copy.
-# The version checked here must match the bundled copy and the minimum
-# declared in PackageInfo.g: an externally-installed copy that is too old to
-# contain the refiners Vole relies on must be rejected so we fall back to the
-# (compatible) bundled copy.
+# Defer to external packages only when GAP has marked them for loading.
+# Installed suggested packages are skipped by OnlyNeeded. Checking the loading
+# plan also handles the BacktrackKit -> images -> Vole dependency cycle before
+# all packages have finished loading.
 _BT_SKIP_INTERFACE := true;
-if TestPackageAvailability("BacktrackKit", "1.1.0") = fail then
+if not IsPackageMarkedForLoading("BacktrackKit", "1.2.0") then
     _ReadBTPackage := {f} -> ReadPackage("Vole", Concatenation("dependencies/BacktrackKit/", f));
     ReadPackage("Vole", "dependencies/BacktrackKit/init.g");
     Unbind(_ReadBTPackage);
 fi;
-if TestPackageAvailability("GraphBacktracking", "1.1.0") = fail then
+if not IsPackageMarkedForLoading("GraphBacktracking", "1.2.0") then
     _ReadGBPackage := {f} -> ReadPackage("Vole", Concatenation("dependencies/GraphBacktracking/", f));
     ReadPackage("Vole", "dependencies/GraphBacktracking/init.g");
     Unbind(_ReadGBPackage);

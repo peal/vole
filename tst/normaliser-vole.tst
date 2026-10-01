@@ -6,6 +6,7 @@ true
 # The user-facing Vole.Normalizer (default refiner + wrapper + base/SGS
 # handoff) must agree with GAP's Normalizer in the symmetric group on the
 # moved points, for random permutation groups.
+#@if LoadPackage("quickcheck", false) <> fail
 gap> QC_Check([IsPermGroup], function(g)
 >     local n, S;
 >     n := LargestMovedPoint(g);
@@ -17,6 +18,7 @@ gap> QC_Check([IsPermGroup], function(g)
 >     return StringFormatted("Normalizer mismatch for {}", g);
 > end);
 true
+#@fi
 
 # The same entry point over every transitive group of small degree.
 gap> ForAll([2 .. 8], n -> ForAll([1 .. NrTransitiveGroups(n)], k ->
@@ -27,6 +29,7 @@ true
 # Group transporter through the user-facing wrappers: for random (g, h) and
 # random p in g, Vole.RepresentativeAction conjugates h to h^p, and
 # Vole.IsConjugate confirms the two are conjugate in g.
+#@if LoadPackage("quickcheck", false) <> fail
 gap> QC_Check([IsPermGroup, IsPermGroup], function(g, h)
 >     local p, h2, e;
 >     p := Random(g);
@@ -41,6 +44,7 @@ gap> QC_Check([IsPermGroup, IsPermGroup], function(g, h)
 >     return true;
 > end);
 true
+#@fi
 
 #
 gap> STOP_TEST("normaliser-vole.tst");

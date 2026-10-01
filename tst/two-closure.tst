@@ -4,6 +4,7 @@ gap> LoadPackage("vole", false);
 true
 
 #
+#@if LoadPackage("orbitalgraphs", false) <> fail
 gap> n := 9;;
 gap> for g in AllTransitiveGroups(NrMovedPoints, n, Transitivity, 1) do
 >   gap := TwoClosure(g);
@@ -13,6 +14,7 @@ gap> for g in AllTransitiveGroups(NrMovedPoints, n, Transitivity, 1) do
 >   if gap <> vole1 then Print(g, ":", gap, vole1); fi;
 >   if gap <> vole2 then Print(g, ":", gap, vole2); fi;
 > od;
+#@fi
 
 #
 gap> STOP_TEST("two-closure.tst");

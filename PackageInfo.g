@@ -100,8 +100,8 @@ Dependencies := rec(
     # dependencies/ as a fallback. If they are installed as real packages we
     # prefer those: listing them here makes GAP load them (and order them
     # before Vole), and init.g/read.g then skip the bundled copies.
-    [ "BacktrackKit", ">= 1.1.0" ],
-    [ "GraphBacktracking", ">= 1.1.0" ],
+    [ "BacktrackKit", ">= 1.2.0" ],
+    [ "GraphBacktracking", ">= 1.2.0" ],
     [ "AutoDoc", ">= 2019.09.04" ], # to compile documentation
     [ "ferret", ">= 1.0.2" ],       # used in tests
     [ "QuickCheck", ">= 0.1" ],     # used in tests

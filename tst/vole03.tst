@@ -40,9 +40,9 @@ true
 
 # doc/_Chapter_tut.xml:142-149
 gap> Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsSets);
-[ [ 2, 3, 7, 10 ], [ 3, 4, 5, 12 ] ]
+[ [ 2, 3, 7, 12 ], [ 3, 4, 5, 10 ] ]
 gap> Vole.CanonicalImage(M12, [[1,2,3,4],[4,5,6,7]], OnSetsTuples);
-[ [ 2, 8, 3, 6 ], [ 6, 4, 10, 5 ] ]
+[ [ 2, 10, 3, 9 ], [ 9, 4, 6, 5 ] ]
 gap> Vole.CanonicalImage(M12, DigraphCycle(12), OnDigraphs);
 <immutable digraph with 12 vertices, 12 edges>
 

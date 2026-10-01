@@ -4,9 +4,11 @@ gap> ReadPackage("vole", "tst/test_functions.g");
 true
 
 #
+#@if LoadPackage("quickcheck", false) <> fail
 gap> QC_Check([IsPermGroup, QC_SetOf(QC_SetOf(IsPosInt))],
 > {g, s} -> VoleTestCanonical(g, s, x -> Constraint.Stabilize(x, OnSetsSets), OnSetsSets));
 true
+#@fi
 
 #
 gap> STOP_TEST("canonical-setset.tst");
