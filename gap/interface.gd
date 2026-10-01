@@ -60,18 +60,14 @@
 #! are used.
 #! @EndChunk
 
-#! @BeginChunk bounds-ref
-#! Otherwise, an error is given.
-#! This guarantees that &Vole; terminates (given sufficient resources).
-#! See Section&nbsp;<Ref Sect="Section_bounds"/> for examples and further
-#! information.
-#! @EndChunk
-
 #! @BeginChunk need-lmp
 #! For at least one of the <A>arguments</A>, &Vole; must be able to
 #! immediately deduce a (finite) largest moved point of all the permutations
 #! that satisfy the corresponding constraint.
-#! @InsertChunk bounds-ref
+#! Otherwise, an error is given.
+#! This guarantees that &Vole; terminates (given sufficient resources).
+#! See Section&nbsp;<Ref Sect="Section_bounds"/> for examples and further
+#! information.
 #! @EndChunk
 
 #! @BeginChunk need-lrp
@@ -80,7 +76,10 @@
 #! * there exists a permutation satisfying the constraint
 #!   if and only if there exists an element of `Sym([1..k])` satisfying
 #!   the constraint.
-#! @InsertChunk bounds-ref
+#! Otherwise, an error is given.
+#! This guarantees that &Vole; terminates (given sufficient resources).
+#! See Section&nbsp;<Ref Sect="Section_bounds"/> for examples and further
+#! information.
 #! @EndChunk
 
 ## End chunks

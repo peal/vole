@@ -5,37 +5,32 @@
 #
 # Declarations: Wrappers for Vole functions that emulate GAP/images/Digraphs
 
-#! @Chunk better
+#! @Chunk bettergroup
 #! It may be possible to obtain better performance from &Vole; by
 #! specifying custom refiners with the native interface, see
-#! @EndChunk
-
-#! @Chunk refiner-chapref
+#! <Ref Func="VoleFind.Group"/>
 #! and Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>.
 #! @EndChunk
 
-#! @Chunk bettergroup
-#! @InsertChunk better
-#! <Ref Func="VoleFind.Group"/>
-#! @InsertChunk refiner-chapref
-#! @EndChunk
-
 #! @Chunk betterrep
-#! @InsertChunk better
+#! It may be possible to obtain better performance from &Vole; by
+#! specifying custom refiners with the native interface, see
 #! <Ref Func="VoleFind.Rep"/>
-#! @InsertChunk refiner-chapref
+#! and Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>.
 #! @EndChunk
 
 #! @Chunk bettercanonical
-#! @InsertChunk better
+#! It may be possible to obtain better performance from &Vole; by
+#! specifying custom refiners with the native interface, see
 #! <Ref Func="VoleFind.Canonical"/>
-#! @InsertChunk refiner-chapref
+#! and Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>.
 #! @EndChunk
 
 #! @Chunk betterall
-#! @InsertChunk better
+#! It may be possible to obtain better performance from &Vole; by
+#! specifying custom refiners with the native interface, see
 #! Chapter&nbsp;<Ref Chap="Chapter_interface"/>
-#! @InsertChunk refiner-chapref
+#! and Chapter&nbsp;<Ref Chap="Chapter_Refiners"/>.
 #! @EndChunk
 
 #! @BeginChunk DefaultAction
