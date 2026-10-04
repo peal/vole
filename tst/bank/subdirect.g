@@ -62,23 +62,25 @@ end;
 # the bank's progress is visible even when nothing has gone wrong
 # yet.
 _BankSubdCheck := function(name, H)
-    local n, t, gap_ms, vole_ms, raw_gap, raw_vole, gap_sz, vole_sz;
+    local n, t, vole_ms, raw_gap, raw_vole, gap_group, vole_group;
     n := LargestMovedPoint(H);
 
     raw_gap := IO_CallWithTimeout(rec(seconds := 60),
-        function(g, m) return Size(Normalizer(SymmetricGroup(m), g)); end,
+        function(g, m)
+            return GeneratorsOfGroup(Normalizer(SymmetricGroup(m), g));
+        end,
         H, n);
     if Length(raw_gap) < 2 or raw_gap[1] <> true then
         _BankStats.skipped := _BankStats.skipped + 1;
         Print("[subdirect] SKIP ", name, "  gap timeout/crash\n");
         return false;
     fi;
-    gap_sz := raw_gap[2];
+    gap_group := Group(Concatenation(raw_gap[2], [()]));
 
     t := NanosecondsSinceEpoch();
     raw_vole := IO_CallWithTimeout(rec(seconds := 60),
         function(g, m)
-            return Size(Vole.Normalizer(SymmetricGroup(m), g));
+            return GeneratorsOfGroup(Vole.Normalizer(SymmetricGroup(m), g));
         end,
         H, n);
     vole_ms := Int((NanosecondsSinceEpoch() - t) / 1000000);
@@ -88,22 +90,22 @@ _BankSubdCheck := function(name, H)
         # we have the input recorded for investigation.
         _BankStats.skipped := _BankStats.skipped + 1;
         Print("[subdirect] SLOW ", name,
-              "  gap_|N|=", gap_sz, "  vole TIMEOUT (>60s)\n");
+              "  gap_|N|=", Size(gap_group), "  vole TIMEOUT (>60s)\n");
         return false;
     fi;
-    vole_sz := raw_vole[2];
+    vole_group := Group(Concatenation(raw_vole[2], [()]));
 
-    if gap_sz <> vole_sz then
+    if gap_group <> vole_group then
         _BankStats.fail := _BankStats.fail + 1;
-        Add(_BankStats.failures, rec(label := name, kind := "size_mismatch",
-            gap_sz := gap_sz, vole_sz := vole_sz));
+        Add(_BankStats.failures, rec(label := name, kind := "group_mismatch",
+            gap_gens := raw_gap[2], vole_gens := raw_vole[2]));
         Print("[subdirect] FAIL ", name,
-              "  gap_|N|=", gap_sz, "  vole_|N|=", vole_sz, "\n");
+              "  gap_|N|=", Size(gap_group), "  vole_|N|=", Size(vole_group), "\n");
         return false;
     fi;
     _BankStats.pass := _BankStats.pass + 1;
     Print("[subdirect] ok ", name,
-          "  |N|=", gap_sz, "  vole_ms=", vole_ms, "\n");
+          "  |N|=", Size(gap_group), "  vole_ms=", vole_ms, "\n");
     return true;
 end;
 

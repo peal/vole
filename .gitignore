@@ -40,6 +40,7 @@
 /tst/benchmarks/hunt.csv
 /tst/benchmarks/hunt-stdout.log
 /tst/benchmarks/hunt-stdout-*.log
+/tst/benchmarks/__pycache__/
 
 # Local-only scratch: research notes and stale planning docs. Kept on disk
 # but not version-controlled; superseded by doc/ and CHANGES.md.

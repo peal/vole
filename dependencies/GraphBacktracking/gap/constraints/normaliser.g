@@ -188,8 +188,8 @@ GB_Con.NormaliserSimple2 := {g} -> GB_Con.GroupConjugacySimple2(g,g);
 #   strategy.regOrbit = "never"   no regular-orbit deductions (default —
 #                                 behaviour pre-Phase C)
 #                     = "always"  Theißen §3.7: if E has a regular orbit
-#                                 O, force the selector to branch on O
-#                                 first (in canonical BFS order) and
+#                                 O, propose a cell meeting regular points
+#                                 (then the first anchored regular orbit) and
 #                                 emit forced-refinement labels for the
 #                                 subset of O whose images are deducible
 #                                 from the fixed points so far. After
@@ -273,7 +273,11 @@ _BTKit.makeNormaliserOrbitalRecords := function(group, points, n, isRoot, strate
     pushOrbitals := (strategy.orbitals = "always")
                     or (strategy.orbitals = "root" and isRoot);
     if pushOrbitals then
-        ogOptions := rec(maxval := n, skipOneLarge := false);
+        if BTKIT_ORBITAL_BUDGET then
+            ogOptions := rec(maxval := n, skipOneLarge := false, budgetMode := "normaliser");
+        else
+            ogOptions := rec(maxval := n, skipOneLarge := false, budgetMode := false);
+        fi;
         # Optional size-cutoff on orbital arcs. `strategy.cutoff` is
         # either `false` (no cutoff — include every orbital) or a
         # positive integer (skip orbitals with more than that many
@@ -369,8 +373,7 @@ _MakeGroupConjugacyOrbital := function(groupL, groupR, strategy, name)
                     regGroup := _BTKit.regOrbitDeductionGroup(
                         group, strategy);
                     regOrbOps := _BTKit.makeNormaliserRegOrbitDeduction(
-                        regGroup, fixedpoints, ps, n,
-                        _BTKit.regOrbitProposeEnabled(strategy));
+                        regGroup, fixedpoints, ps, n, false);
                     Append(result, regOrbOps[1]);
                     # Optional caller-supplied extra deduction, run after
                     # the Phase C regular-orbit deduction and handed its
@@ -395,6 +398,23 @@ _MakeGroupConjugacyOrbital := function(groupL, groupR, strategy, name)
                 _BTKit._NORMALISER_NODE_COUNT :=
                     _BTKit._NORMALISER_NODE_COUNT + 1;
                 return result;
+            end,
+            changed := function(ps, buildingRBase)
+                local group, ops;
+                if not IsBound(strategy.regOrbit)
+                   or strategy.regOrbit <> "always"
+                   or not _BTKit.regOrbitProposeEnabled(strategy) then
+                    return [];
+                fi;
+                if buildingRBase then group := groupL; else group := groupR; fi;
+                # Earlier label/graph splits can move an arbitrarily chosen
+                # point into non-corresponding cells. Refresh proposals on
+                # the current partition after each split.
+                ops := _BTKit.makeNormaliserRegOrbitDeduction(
+                    _BTKit.regOrbitDeductionGroup(group, strategy),
+                    PS_FixedPoints(ps), ps, PS_Points(ps), true);
+                return Filtered(ops[1], op ->
+                    IsRecord(op) and IsBound(op.proposeBranchPoint));
             end)
     );
     return Objectify(GBRefinerType, r);
@@ -410,20 +430,13 @@ _BTKit.regOrbitDeductionGroup := function(group, strategy)
     return group;
 end;
 
-# Whether to emit a proposeBranchPoint hint from the regular-orbit
-# deduction. Phase C: yes (sound, gives ~50% speedup on AGL(1,p)).
-# Phase D: no by default — the propose currently has a soundness bug
-# on some inputs (e.g. TransGrp(8,33)); the regOrbit-set passed via
-# strategy.regOrbitGroup = F can have the L/R selector picking
-# non-corresponding cells when F is properly contained in E. The forced
-# labels remain sound and are kept. TODO: trace the bug and re-enable.
+# Characteristic-subgroup strategies retain their conservative no-proposal
+# default. Explicit regOrbitPropose overrides it for controlled experiments.
 _BTKit.regOrbitProposeEnabled := function(strategy)
     if IsBound(strategy.regOrbitPropose) then
         return strategy.regOrbitPropose;
     fi;
     if IsBound(strategy.regOrbitGroup) then
-        # Phase D path — propose disabled until the soundness bug is
-        # fixed (see above).
         return false;
     fi;
     # Phase C path (regOrbitGroup unbound): propose enabled.
@@ -529,35 +542,38 @@ end;
 # At each refine.fixed event with fp = [b_1, .., b_d]:
 #   - Filter regOrbFPs = fp ∩ regOrbit (preserving order).
 #   - If |regOrbFPs| ≥ 2, let b = regOrbFPs[1] and form the generators
-#     h_i = treeE[regOrbFPs[i]] · treeE[b]^-1 for i = 2..k. These are
+#     h_i = treeE[b]^-1 · treeE[regOrbFPs[i]] for i = 2..k. These are
 #     the elements of E sending b to the other fixed regular-orbit
 #     points. The BFS orbit D of b under <h_i> is the set whose
 #     g-images are deducible from the fp ∩ regOrbit data alone. We
 #     label each p ∈ D with its BFS position (so all D points get
 #     distinct labels and the refinement isolates them).
-#   - Propose the first non-singleton-cell point in the cached
-#     canonical BFS-from-omega1 order as the next branch target.
+#   - Propose a point in the smallest-index non-singleton cell
+#     meeting the remaining points of the anchored regular orbit.
 #
-# Covariance: regOrbit / treeE come from StabTreeRegularOrbitData,
-# cached on the group itself (L = R for normaliser, so both sides see
-# identical structural data). For valid g ∈ N(E), g maps regOrbit to
-# regOrbit, fp_R = g(fp_L), and the deduction-set D_R = g(D_L). The
-# labels match between sides because BFS-position(p) on the left
-# equals BFS-position(g(p)) on the right (the generator-correspondence
-# h_i^g = h_i' under conjugation by g).
-# The branch-point proposal points to corresponding cells (same cell
-# index) on both sides since cell indices are g-equivariant for valid
-# candidates.
+# Choose the orbit containing the first fixed regular point: valid
+# transporters can exchange regular orbits. The unique elements taking
+# b_1 to the other fixed points then correspond under conjugation, so
+# their ordered BFS labels correspond too. Before an anchor exists,
+# proposals use the invariant union of all regular orbits.
+# Assisted-by: OpenAI Codex (GPT-6), deduction and orbit-selection repair.
 _BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n,
                                                    proposeEnabled)
-    local data, regOrbFPs, b1, gens, i, bfs, out, p, ci, best_idx, best_p;
+    local data, regularPoints, regOrbFPs, b1, gens, i, bfs, out, p, ci, best_idx, best_p;
     data := StabTreeRegularOrbitData(group);
     if data = fail then
         return [[], false];
     fi;
 
+    if IsBound(data.regularPoints) then
+        regularPoints := data.regularPoints;
+    else
+        # BacktrackKit 1.2.0 only caches its first regular orbit.
+        regularPoints := Set(Flat(Filtered(StabTree(group).orbits,
+            orb -> Length(orb) = Size(group))));
+    fi;
     out := [];
-    regOrbFPs := Filtered(points, p -> p in data.regOrbitSet);
+    regOrbFPs := Filtered(points, p -> p in regularPoints);
 
     if IsEmpty(regOrbFPs) then
         # No regular-orbit point branched on yet. Propose the first
@@ -569,7 +585,7 @@ _BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n,
         if not proposeEnabled then return [[], false]; fi;
         best_idx := infinity;
         best_p := fail;
-        for p in data.regOrbit do
+        for p in regularPoints do
             ci := PS_CellOfPoint(ps, p);
             if PS_CellLen(ps, ci) > 1 and ci < best_idx then
                 best_idx := ci;
@@ -582,6 +598,16 @@ _BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n,
         return [out, false];
     fi;
 
+    if not regOrbFPs[1] in data.regOrbitSet then
+        if IsBound(data.regularPoints) then
+            data := StabTreeRegularOrbitData(group, regOrbFPs[1]);
+        else
+            data := _BTKit.regularOrbitSchreierTreeData(
+                group, Orbit(group, regOrbFPs[1]));
+        fi;
+    fi;
+    regOrbFPs := Filtered(regOrbFPs, p -> p in data.regOrbitSet);
+
     # D = orbit of b_1 under <gens>. Build gens for i = 2..|regOrbFPs|.
     # Element of E sending b_1 to regOrbFPs[i] is
     # treeE[b_1]^-1 * treeE[regOrbFPs[i]] in GAP's left-to-right
@@ -592,6 +618,9 @@ _BTKit.makeNormaliserRegOrbitDeduction := function(group, points, ps, n,
         Add(gens, data.treeE[b1] ^ -1 * data.treeE[regOrbFPs[i]]);
     od;
     bfs := _BTKit.bfsOrbit(b1, gens);
+    # Cross-orbit deductions must use these corresponding generators,
+    # rather than the arbitrary presentation of E.
+    bfs.generators := gens;
 
     # Forced-refinement labels: each p ∈ D = orbit of b_1 under <gens>
     # gets a unique BFS-position label, others get 0. Canonical-safe
@@ -672,8 +701,8 @@ GB_Con.GroupConjugacyOrbitalSmall := function(groupL, groupR)
 end;
 
 # Phase C variant: orbital widget + Theißen §3.7 regular-orbit deductions.
-# When E has a regular orbit, the selector is steered onto that orbit
-# in canonical BFS order, and once enough generators are "tied down"
+# When E has regular orbits, the selector is steered towards them,
+# and once enough generators on an anchored orbit are "tied down"
 # the rest of the orbit is forced to isolate. When E has no regular
 # orbit (e.g. AGL(1,p)), the regular-orbit refiner is inert and
 # behaviour matches GroupConjugacyOrbital. The eventual Phase D will
@@ -682,16 +711,9 @@ end;
 # data is fetched from StabTreeRegularOrbitData(group) rather than
 # anything tied to E specifically.
 #
-# KNOWN LIMITATION: this variant is NOT canonical-safe. The
-# selector-hook proposal (smallest cell index containing a regOrbit
-# point) depends on data.regOrbit, a point set in the original Ω
-# labelling. For conjugate inputs U vs U^σ this set is σ-conjugate,
-# not equal, so the search trajectories diverge in a way the
-# canonical-trace minimiser can't reconcile — a canonical-image search
-# with this variant can return different (conjugate) groups for U
-# and U^σ. Symmetry-mode (normaliser equality) is correct; canonical
-# mode is not. Use `GroupConjugacyOrbital` for canonical applications
-# until a canonical-safe proposal is designed.
+# Canonical dispatch remains GroupConjugacyOrbital. The former regular-S3
+# counterexample is repaired by refreshing proposals after cell splits;
+# broader canonical validation is still required before changing dispatch.
 GB_Con.GroupConjugacyOrbitalRegOrbit := function(groupL, groupR)
     return _MakeGroupConjugacyOrbital(groupL, groupR,
         rec(orbitals := "always", blocks := "root",
@@ -711,9 +733,7 @@ end;
 # 2-transitive (no orbital pruning, no regular orbit of E) but F = C_p
 # (the radical) is regular.
 #
-# Same canonical-unsafety caveat as OrbitalRegOrbit applies (regOrbit
-# point set depends on the labelling; conjugate inputs see conjugate
-# regOrbits).
+# Canonical dispatch does not use characteristic-subgroup selection.
 #
 # `sizeCap` parameter on the exhaustive CharacteristicSubgroups search
 # defaults to 10^3, chosen by measuring the cost crossover.
@@ -754,8 +774,7 @@ GB_Con.GroupConjugacyOrbitalRegOrbitChar := function(groupL, groupR)
     if sizeCap = fail then sizeCap := 10 ^ 3; fi;
     F := _BTKit.findRegularCharacteristicSubgroup(groupL, sizeCap);
     if F = fail then
-        # No regular characteristic subgroup; fall back to Phase C
-        # (which is also inert in this case, so this matches Orbital).
+        # Phase C can still use interchangeable regular orbits of E.
         return _MakeGroupConjugacyOrbital(groupL, groupR,
             rec(orbitals := "always", blocks := "root",
                 regOrbit := "always"),

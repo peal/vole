@@ -5,7 +5,7 @@
 #
 # Modes: "quick" (≤ 1 min, PR gate), "nightly" (≤ 30 min), "full" (hours).
 
-LoadPackage("vole", false);
+LoadPackage("vole", false : OnlyNeeded);
 LoadPackage("transgrp", false);
 LoadPackage("primgrp", false);
 LoadPackage("smallgrp", false);
@@ -22,6 +22,7 @@ Read("tst/bank/regression.g");
 Read("tst/bank/jnp.g");
 Read("tst/bank/directprod.g");
 Read("tst/bank/subdirect.g");
+Read("tst/bank/regular-orbits.g");
 
 # Each runner returns `true` iff all its checks passed.
 RunBank := function(mode)
@@ -38,6 +39,7 @@ RunBank := function(mode)
     results.jnp          := RunBank_jnp(mode);
     results.directprod   := RunBank_directprod(mode);
     results.subdirect    := RunBank_subdirect(mode);
+    results.regular_orbits := RunBank_regular_orbits(mode);
 
     overall := ForAll(RecNames(results), n -> results.(n));
     Print(StringFormatted("\n=== Bank result (mode={}) ===\n", mode));

@@ -1,8 +1,7 @@
 #@local edges, frucht, neigh, r, D, con_stab, con_trans, p
+#@local G, H, K, x, H2, res, s2
 gap> START_TEST("basic.tst");
 gap> LoadPackage("vole", false);
-true
-gap> LoadPackage("quickcheck", false);
 true
 gap> ReadPackage("vole", "tst/test_functions.g");
 true
@@ -72,6 +71,46 @@ true
 gap> IsTrivial(VoleFind.Group(Constraint.LargestMovedPoint(0)));
 true
 gap> IsTrivial(VoleFind.Group(Constraint.LargestMovedPoint(1)));
+true
+
+# Deterministic versions of the quickcheck tests from the other test files,
+# so the core native API is still checked (against GAP where possible) when
+# quickcheck is not installed. The quickcheck tests cross-check the same
+# properties much more heavily.
+gap> G := SymmetricGroup(7);;
+gap> VoleTestCanonical(G, [2,3,5], s -> Constraint.Stabilize(s, OnSets), OnSets);
+true
+gap> VoleTestCanonical(G, [[1,2],[3,4,5]], x -> Constraint.Stabilize(x, OnSetsSets), OnSetsSets);
+true
+gap> VoleTestCanonical(G, [[1,2],[3,5]], x -> Constraint.Stabilize(x, OnSetsTuples), OnSetsTuples);
+true
+gap> VoleTestCanonical(G, Group([(1,2,3),(4,5,6)]), x -> Constraint.Stabilize(x, OnPoints), OnPoints);
+true
+
+# Subgroup intersection
+gap> H := Group([(1,2,3),(1,4)(5,6)]);;
+gap> K := Group([(2,3,4),(3,4)(5,6)]);;
+gap> VoleFind.Group(GB_Con.InGroupSimple(H), GB_Con.InGroupSimple(K)) = Intersection(H, K);
+true
+gap> VoleFind.Group(GB_Con.InGroup(H), GB_Con.InGroup(K)) = Intersection(H, K);
+true
+
+# Coset intersection
+gap> x := (1,2,3,4,5,6,7);;
+gap> VoleFind.Coset(GB_Con.InCosetSimple(H, x), GB_Con.InCosetSimple(K, x))
+>      = RightCoset(Intersection(H, K), x);
+true
+
+# Transporter of a group under conjugation
+gap> H2 := H ^ (2,3,6)(4,5,7);;
+gap> res := VoleFind.Rep(Constraint.Transport(H, H2), BTKit_Refiner.InGroupSimple(G));;
+gap> res <> fail and H ^ res = H2 and res in G;
+true
+
+# Transporter of a set of tuples
+gap> s2 := OnSetsTuples([[1,2],[3,5]], x);;
+gap> res := VoleFind.Rep(Constraint.Transport([[1,2],[3,5]], s2, OnSetsTuples));;
+gap> res <> fail and OnSetsTuples([[1,2],[3,5]], res) = s2;
 true
 
 #

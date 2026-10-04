@@ -28,6 +28,16 @@ benchmarks are curated *performance* measurements.
   - `random.g` — random subgroups of `S_n`, seeded for reproducibility.
   - `regression.g` — permanent entries for inputs that exposed a bug.
     New entries are mandatory whenever a bug is found and fixed.
+  - `regular-orbits.g` — repeated regular actions and regular-plus-quotient
+    actions of SmallGroups, with the root shortcut disabled and relabelled
+    presentations. Includes both experimental cross variants.
+
+The default `.tst` suite also runs `normaliser-regorbit.tst`: fixed witnesses,
+proper ambient groups, exact equality, deduction covariance and transporters.
+Fresh sessions request bundled dependencies; preloaded sessions test their
+active copies.
+
+Assisted-by: OpenAI Codex (GPT-6), regular-orbit regression coverage.
 
 ## Modes
 

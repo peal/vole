@@ -4,10 +4,12 @@ gap> ReadPackage("vole", "tst/test_functions.g");
 true
 
 #
+#@if LoadPackage("quickcheck", false) <> fail
 gap> QC_Check([IsPermGroup, IsPermGroup],
 > {g, s} -> VoleTestCanonical(g, s, GB_Con.NormaliserSimple, OnPoints),
 > rec(limit := 7));
 true
+#@fi
 
 # This examples used to give a wrong result, caused by a problem where one
 # trace is a prefix of another.

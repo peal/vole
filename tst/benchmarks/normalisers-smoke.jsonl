@@ -1,0 +1,3 @@
+{"id":"diagonal-C3-two-regular-orbits","degree":6,"generators":[[2,3,1,5,6,4]]}
+{"id":"C6-with-three-quotient-orbits","degree":12,"generators":[[2,3,4,5,6,1,8,7,10,9,12,11]]}
+{"id":"regular-S3-in-A6","degree":6,"generators":[[2,1,5,6,3,4],[4,3,6,5,1,2]],"ambient_generators":[[2,3,4,5,1,6],[1,2,3,5,6,4]],"expected_input_order":6,"expected_ambient_order":360}

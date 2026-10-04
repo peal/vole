@@ -10,7 +10,9 @@
 #   category, name, n, size, backend, ms, nodes, refiner_calls,
 #   eq_gap, status
 #
-# status: "ok" | "timeout" | "crash" | "wrong"
+# status: "ok" | "timeout" | "crash" | "wrong" | "unverified"
+# eq_gap: "true" | "false" | "unknown" (no completed oracle).
+# Assisted-by: OpenAI Codex (GPT-6), complete timing and exact verification.
 # `size` is filled from GAP on the gap row; for vole rows it is the
 # size of the returned subgroup (cross-check). nodes/refiner_calls
 # are -1 for the gap backend.
@@ -40,20 +42,21 @@ _HuntChildGap := function(gens, n)
     t := NanosecondsSinceEpoch();
     N := Normalizer(SymmetricGroup(n), G);
     ms := Int((NanosecondsSinceEpoch() - t) / 1000000);
-    return rec(ms := ms, size := Size(N));
+    return rec(ms := ms, size := Size(N), gens := GeneratorsOfGroup(N));
 end;
 
 _HuntChildVole := function(gens, n, variant)
     local G, refiner, t, vgroup, stats, ms;
     G := Group(gens);
-    refiner := GB_Con.(Concatenation("Normaliser", variant))(G);
     t := NanosecondsSinceEpoch();
+    refiner := GB_Con.(Concatenation("Normaliser", variant))(G);
     vgroup := VoleFind.Group(SymmetricGroup(n), refiner);
     stats := _Vole.LastStats;
     ms := Int((NanosecondsSinceEpoch() - t) / 1000000);
     return rec(
         ms := ms,
         size := Size(vgroup),
+        gens := GeneratorsOfGroup(vgroup),
         nodes := stats.search_nodes,
         refiner_calls := stats.refiner_calls);
 end;
@@ -70,8 +73,15 @@ _HuntChildWrapper := function(gens, n, wrapperName)
     return rec(
         ms := ms,
         size := Size(N),
+        gens := GeneratorsOfGroup(N),
         nodes := -1,
         refiner_calls := -1);
+end;
+
+_HuntCompareResult := function(referenceGens, resultGens)
+    if referenceGens = fail then return fail; fi;
+    return Group(Concatenation(referenceGens, [()]))
+         = Group(Concatenation(resultGens, [()]));
 end;
 
 # ─── Family builders ────────────────────────────────────────────────
@@ -444,7 +454,7 @@ end;
 # Run one instance across all backends.
 RunHuntInstance := function(spec, backends, budget, path)
     local gens, n, name, category, timeoutRec, raw, b,
-          eq, sz, status, refSize;
+          eq, eqText, sz, status, referenceGens;
     gens := GeneratorsOfGroup(spec.G);
     n := spec.n;
     name := spec.name;
@@ -452,12 +462,12 @@ RunHuntInstance := function(spec, backends, budget, path)
     timeoutRec := rec(seconds := budget);
     Print("# ", category, "/", name, " (n=", n, ")\n");
 
-    # Always run GAP first so we have a reference size.
-    refSize := -1;
+    # Verification happens in the parent, outside each child's timed call.
+    referenceGens := fail;
     if "gap" in backends then
         raw := IO_CallWithTimeout(timeoutRec, _HuntChildGap, gens, n);
         if Length(raw) >= 2 and raw[1] = true then
-            refSize := raw[2].size;
+            referenceGens := raw[2].gens;
             _HuntCsvRow(path, category, name, n, raw[2].size,
                 "gap", raw[2].ms, -1, -1, "true", "ok");
             Print("    gap     ", raw[2].ms, "ms |N|=", raw[2].size, "\n");
@@ -484,11 +494,20 @@ RunHuntInstance := function(spec, backends, budget, path)
         fi;
         if Length(raw) >= 2 and raw[1] = true then
             sz := raw[2].size;
-            eq := refSize = -1 or sz = refSize;
-            if eq then status := "ok"; else status := "wrong"; fi;
+            eq := _HuntCompareResult(referenceGens, raw[2].gens);
+            if eq = fail then
+                status := "unverified";
+                eqText := "unknown";
+            elif eq then
+                status := "ok";
+                eqText := "true";
+            else
+                status := "wrong";
+                eqText := "false";
+            fi;
             _HuntCsvRow(path, category, name, n, sz, b,
                 raw[2].ms, raw[2].nodes, raw[2].refiner_calls,
-                String(eq), status);
+                eqText, status);
             Print("    ", b, "  ", raw[2].ms, "ms nodes=",
                   raw[2].nodes, " calls=", raw[2].refiner_calls,
                   " |N|=", sz, "\n");

@@ -83,19 +83,16 @@ false
 gap> Vole.IsConjugate(Group([ (5,6) ]), x, y);
 true
 
-# doc/_Chapter_wrapper.xml:447-454
-gap> LoadPackage("orbitalgraphs", false);;
+# doc/_Chapter_wrapper.xml:447-451
 gap> G := Group([ (1,4)(2,5), (1,3,5)(2,4,6) ]);;  # A4 on six points
 gap> (3,6) in G;
 false
-gap> Vole.TwoClosure(G) = ClosureGroup(G, (3,6));
-true
 
-# doc/_Chapter_wrapper.xml:522-525
+# doc/_Chapter_wrapper.xml:527-530
 gap> Vole.CanonicalPerm(PSL(2,5), JohnsonDigraph(4,2), OnDigraphs);
 (1,2,6)(3,4,5)
 
-# doc/_Chapter_wrapper.xml:565-574
+# doc/_Chapter_wrapper.xml:570-579
 gap> tuple1 := [1,2,3,4];; tuple2 := [1,2,3,5];; tuple3 := [1,5,2,3];;
 gap> A5 := AlternatingGroup(5);;
 gap> Vole.CanonicalImage(A5, tuple1, OnTuples);
@@ -105,7 +102,7 @@ gap> Vole.CanonicalImage(A5, tuple2, OnTuples);
 gap> Vole.CanonicalImage(A5, tuple3, OnTuples);
 [ 4, 5, 3, 2 ]
 
-# doc/_Chapter_wrapper.xml:578-585
+# doc/_Chapter_wrapper.xml:583-590
 gap> Vole.RepresentativeAction(A5, tuple1, tuple2, OnTuples);
 fail
 gap> Vole.RepresentativeAction(A5, tuple1, tuple3, OnTuples);
@@ -113,26 +110,26 @@ fail
 gap> Vole.RepresentativeAction(A5, tuple2, tuple3, OnTuples);
 (2,5,3)
 
-# doc/_Chapter_wrapper.xml:676-679
+# doc/_Chapter_wrapper.xml:681-684
 gap> Vole.AutomorphismGroup(JohnsonDigraph(4,2));
 Group([ (3,4), (2,3,5,4), (1,2,6,5)(3,4) ])
 
-# doc/_Chapter_wrapper.xml:705-708
+# doc/_Chapter_wrapper.xml:710-713
 gap> Vole.DigraphCanonicalLabelling(JohnsonDigraph(4,2));
 (1,2,4,5,3,6)
 
-# doc/_Chapter_wrapper.xml:732-735
+# doc/_Chapter_wrapper.xml:737-740
 gap> Vole.CanonicalDigraph(JohnsonDigraph(4,2));
 <immutable digraph with 6 vertices, 24 edges>
 
-# doc/_Chapter_wrapper.xml:757-763
+# doc/_Chapter_wrapper.xml:762-768
 gap> D := CycleDigraph(6);;
 gap> Vole.IsIsomorphicDigraph(D, DigraphReverse(D));
 true
 gap> Vole.IsIsomorphicDigraph(D, DigraphDual(D));
 false
 
-# doc/_Chapter_wrapper.xml:789-795
+# doc/_Chapter_wrapper.xml:794-800
 gap> D := CycleDigraph(6);;
 gap> Vole.IsomorphismDigraphs(D, DigraphReverse(D));
 (1,4)(2,3)(5,6)

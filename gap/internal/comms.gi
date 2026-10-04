@@ -88,17 +88,26 @@ function(savedvals, state, type, args)
             return 1;
         fi;
     elif type = "save_state" then
-        Add(state!.saved_stack, SaveState(state));
+        # Vole force-overwrites the whole mirror partition on every refine
+        # callback (see the "else" branch), and the partition is only ever
+        # read inside such a callback -- so there is nothing to save/restore
+        # for the partition itself. We only need the refiners' own backtrack
+        # data. (This also avoids PS_RevertToCellCount, which is invalid after
+        # a _PS_ForcePartition; see its comment in partitionstack.gi.)
+        Add(state!.saved_stack, List(state!.conlist, SaveState));
         return true;
     elif type = "restore_state" then
-        RestoreState(state, Remove(state!.saved_stack));
+        saved := Remove(state!.saved_stack);
+        for c in [1 .. Length(saved)] do
+            RestoreState(state!.conlist[c], saved[c]);
+        od;
         return true;
     else
         Assert(2, type in ["begin", "fixed", "changed", "rBaseFinished", "solutionFound"]);
         Assert(2, args[1] = "Left" or args[1] = "Right");
         is_left := (args[1] = "Left");
-        tracer := RecordingTracer();
-        PS_SplitCellsByFunction(state!.ps, tracer, x -> args[2][x]);
+        # args[2]=values (cell order), args[3]=cellstarts, args[4]=fixed order.
+        _PS_ForcePartition(state!.ps, args[2], args[3], args[4]);
 
         Assert(2, Length(state!.conlist) = 1);
         filters := [];
@@ -232,8 +241,8 @@ _Vole.FullGraphRefine := false;
 # C_5^4 (deg 20): main search 105 ms, shortcut 1713 ms — a 16×
 # regression even though both return the same correct answer.
 #
-# So this is opt-in. Useful for probing whether a given input class
-# is 2-closed and well-served by the root-Aut answer; not a default.
+# Enabled by default; benchmark with it disabled too, since it can both
+# dominate run time and mask failures in the residual search.
 _Vole.RootAutShortcut := true;
 
 # Branching-cell selector strategy passed to the Rust engine. One of:
