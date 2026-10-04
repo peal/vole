@@ -13,7 +13,53 @@ search, then read `_Vole.LastStats.search_nodes` etc. immediately after.
 
 ## Drivers
 
-Two self-contained entry points:
+The fresh-process normaliser runner requires Python 3.9+ and POSIX and uses
+explicit JSONL inputs:
+
+```sh
+cargo build --release --manifest-path rust/Cargo.toml
+python3 tst/benchmarks/normalisers.py tst/benchmarks/normalisers-smoke.jsonl \
+  --output /tmp/vole-normalisers-run --repeats 5 --shortcut both
+```
+
+Each input records `id`, `degree`, and generators as permutation image lists
+of exactly that degree, retaining fixed points. Optional `ambient_generators`
+specify a proper ambient group. The smoke catalogue is a correctness pilot,
+not a performance study. Supply larger family inputs for useful timings.
+
+Every measurement starts a fresh GAP process using the bundled dependencies
+and reconstructed groups. It records call wall time in nanoseconds, including
+refiner/characteristic discovery, and monotonic process wall time including
+startup. GAP's call timer uses the system wall clock. Method/trial order is
+seeded and shuffled; paired methods receive the same GAP random-source seed.
+`--selectors smallest,most-connected-smallest` crosses selector choices;
+`--backends gap,direct,by-orbits,refiner:OrbitalRegOrbitCross` chooses methods.
+
+`--timeout` caps the whole measurement process, including startup; on expiry
+the runner kills its GAP/Rust process group. Exact group equality, generator
+validity and ambient membership are checked in separate fresh processes with
+`--verify-timeout`. An unavailable oracle is `oracle_unavailable`, never a
+verified result. Incorrect results and crashes give a nonzero runner exit.
+
+The output directory must be new. It contains copied inputs, configuration,
+commit/build/source hashes, and a flushed `observations.jsonl` event log.
+Join measurement and verification events by `(trial, backend)`; a `finished`
+measurement is not a solved/verified instance until its verification event
+says `verified`. Interrupted runs retain their completed measurement events.
+Only compare timings of verified observations. Node/refiner counts describe
+the last search, not totals over ByOrbits' constituent searches. Combined
+memory is currently not measured or capped; this must be added before making
+publication memory claims.
+
+Harness failure-path tests:
+
+```sh
+python3 -m unittest discover -s tst/benchmarks -p 'test_normalisers.py'
+```
+
+Assisted-by: OpenAI Codex (GPT-6), runner, verification and regression tests.
+
+Two legacy GAP entry points remain:
 
     # Curated harness: cyclic-prime, primitive, intransitive families.
     gap -q -c 'Read("tst/benchmarks/run.g"); RunBenchmarks(); QUIT;'
@@ -39,7 +85,10 @@ where `variant` names the refiner (or the `gap` reference), `size` is the
 order of the returned group (cross-check), and `vole_eq_gap` records
 whether Vole's answer equalled GAP's. The `gap` reference row reports
 `nodes = refiner_calls = -1` (not applicable). `run-hunt.g` uses its own
-wider schema (see the header of `hunt.g`).
+wider schema (see the header of `hunt.g`); `eq_gap` can be `unknown` and
+`status` can be `unverified` when its GAP oracle did not finish. Its forked
+process measurements are exploratory; use the fresh-process runner for cold
+comparisons.
 
 ## Refiner variants
 
@@ -63,8 +112,8 @@ which deductions they push, hence in node count and speed.
 | `OrbitalRegOrbitCross`          | every depth          | root only     | + cross-orbit propagation         |
 | `OrbitalRegOrbitCrossNoPropose` | every depth          | root only     | cross, no branch-cell proposal    |
 
-`Vole.Normalizer`'s default is **`OrbitalRegOrbitChar`** (canonical-unsafe;
-canonical-image dispatch stays at `Orbital`). Plus `gap` as the reference,
+`Vole.Normalizer`'s default is **`OrbitalRegOrbitChar`** (experimental for
+canonical use; canonical-image dispatch stays at `Orbital`). Plus `gap` as the reference,
 calling `Normalizer(SymmetricGroup(n), G)`.
 
 ## Catalogue
