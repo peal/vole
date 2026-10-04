@@ -1,13 +1,13 @@
 # Vole: experimental regular-orbit cross-propagation normaliser refiners.
 #
 # These refiners are NOT part of GraphBacktracking. They sit on top of the
-# polished regular-orbit machinery in
+# regular-orbit machinery in
 # GraphBacktracking's gap/constraints/normaliser.g (the GroupConjugacyOrbital
 # family and _MakeGroupConjugacyOrbital), extending it via the documented
 # `extraRegOrbitDeduction` strategy hook. They live here, in Vole, because
 # the cross-propagation is still research-grade: it has not been validated
 # across the input space the way the GraphBacktracking refiners have, and it
-# inherits the same canonical-unsafety as the underlying RegOrbit variant.
+# is not selected by the canonical-image dispatch.
 #
 # Both _MakeGroupConjugacyOrbital and the GB_Con / _BTKit namespaces are
 # provided by GraphBacktracking (the real package or Vole's bundled copy),
@@ -15,81 +15,49 @@
 
 # RegularOrbit3 cross-propagation (Theißen §3.7.2).
 #
-# Once the regular-orbit deduction (Phase C) has isolated a subset D of
-# the regular orbit, the images of points in OTHER orbits can sometimes
-# be deduced.  For a fixed point y (whose g-image is known) and any
-# yh in yE, if bh = ω₁^(h⁻¹) is in D, then yh^g = y^g · h^g is also
-# known, because h^g is determined by the regular-orbit map on bh.
-#
-# This function emits label functions that isolate such yh, extending
-# the regular-orbit deduction across E-orbits.  It is the Vole
-# equivalent of GAP's Refinements.RegularOrbit3 (stbcbckt.gi:1867).
+# The fixed regular points determine corresponding generators of K ≤ E.
+# For each fixed anchor y, ordered BFS labels on yK correspond too.
+# Using E's original generators, an orbit minimum, or numerical orbit
+# offsets does not preserve this correspondence.
 #
 # Arguments as for makeNormaliserRegOrbitDeduction.  `phaseC_D` is the
 # BFS-orbit record from the Phase C deduction (the set D above); if
 # empty, no cross-propagation is possible.
 _BTKit.makeNormaliserRegOrbitCrossDeduction :=
     function(group, points, ps, n, phaseC_D)
-    local data, D_set, E_orbits, processed_orbits, out, bfs_y, labelMap,
-          omega1, genE, orbMin, orb, p, h, bh, orbitOffset;
+    local gens, regOrbit, b1, positions, covered, y, bfs;
 
     if IsEmpty(phaseC_D.orbit) then
         return [];
     fi;
 
-    data := StabTreeRegularOrbitData(group);
-    if data = fail then
-        return [];
+    if IsBound(phaseC_D.generators) then
+        gens := phaseC_D.generators;
+    else
+        # Compatible with external GraphBacktracking's older hook record.
+        b1 := phaseC_D.orbit[1];
+        regOrbit := Orbit(group, b1);
+        gens := List(Filtered(points, p -> p in regOrbit),
+            p -> RepresentativeAction(group, b1, p));
     fi;
+    if IsEmpty(gens) then return []; fi;
 
-    omega1 := data.omega1;
-    genE := GeneratorsOfGroup(group);
-    D_set := Set(phaseC_D.orbit);
-
-    # Collect E-orbits.  For efficiency we only process orbits that
-    # contain at least one fixed point (anchored orbits).
-    E_orbits := Orbits(group, [1 .. n]);
-
-    out := [];
-    processed_orbits := HashMap();
-    labelMap := HashMap();
-    orbitOffset := 0;
-
-    for orb in E_orbits do
-        if Length(orb) = 1 then continue; fi;
-        if not ForAny(orb, p -> p in points) then continue; fi;
-
-        # One BFS tree per anchored orbit, cached by orbit-minimum.
-        orbMin := Minimum(orb);
-        if orbMin in processed_orbits then
-            bfs_y := processed_orbits[orbMin];
-        else
-            bfs_y := _BTKit.bfsOrbitWithTrace(orbMin, genE);
-            processed_orbits[orbMin] := bfs_y;
-        fi;
-
-        for p in orb do
-            h := bfs_y.treeElement[p];
-            # bh = ω₁^(h⁻¹) — the regular-orbit preimage under h.
-            bh := omega1 / h;
-            if bh in D_set then
-                labelMap[p] := orbitOffset + bfs_y.position[p];
-            fi;
-        od;
-
-        orbitOffset := orbitOffset + Length(orb) + 1;
+    positions := [];
+    covered := Set(phaseC_D.orbit);
+    for y in points do
+        if y in covered then continue; fi;
+        bfs := _BTKit.bfsOrbit(y, gens);
+        UniteSet(covered, bfs.orbit);
+        if Length(bfs.orbit) > 1 then Add(positions, bfs.position); fi;
     od;
-
-    if not IsEmpty(Keys(labelMap)) then
-        Add(out, function(p)
-            if p in labelMap then
-                return labelMap[p];
-            fi;
+    if IsEmpty(positions) then return []; fi;
+    # A tuple retains the fixed-anchor order without numerical orbit IDs.
+    return [function(p)
+        return List(positions, function(pos)
+            if p in pos then return pos[p]; fi;
             return 0;
         end);
-    fi;
-
-    return out;
+    end];
 end;
 
 # Phase C + RegularOrbit3 cross-propagation.

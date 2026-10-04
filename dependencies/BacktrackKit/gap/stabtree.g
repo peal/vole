@@ -221,44 +221,39 @@ end;
 ## tuple, because the deduction in Theißen §3.7 uses the regular orbit
 ## of E itself, not of any stabiliser of E).
 ##
-## Returns rec(omega1, regOrbit, regOrbitSet, regOrbitBFS, treeE), or
-## `fail` if `group` has no regular orbit on the points it moves.
-##
-## The cache stores the canonical (orbit-min indexed) Schreier-tree
-## data; because L = R for the normaliser refiner, both sides pull the
-## same data from this cache without any per-side conjugation. The
-## deductions made from this data are g-covariant by virtue of the
-## symmetry of the formula (the same indices b_1..b_d are used on each
-## side; the points differ but the deduction is conjugation-symmetric
-## — see notes in normaliser.g).
+## An optional point selects its regular orbit. Without a point, return
+## data for the first orbit, plus regularPoints (the union of all regular
+## orbits). Orbit minima are cache keys, not invariant orbit choices.
 ##
 ## Callers must not mutate the returned record, its HashMap, or lists.
 ##
-StabTreeRegularOrbitData := function(group)
-    local tree, regOrbits, regOrb, o, data;
+# Assisted-by: OpenAI Codex (GPT-6), regular-orbit soundness repair.
+StabTreeRegularOrbitData := function(group, point...)
+    local tree, regOrb, key, data;
     tree := StabTree(group);
-    if not IsBound(tree.regOrbitData) then
-        # Regular orbits are E-orbits of size |E|.
-        regOrbits := Filtered(tree.orbits, o ->
-            Length(o) > 1 and Length(o) = Size(tree.group));
-        if IsEmpty(regOrbits) then
-            tree.regOrbitData := false;
-        else
-            # Canonical: the regular orbit with smallest minimum point.
-            regOrb := regOrbits[1];
-            for o in regOrbits do
-                if Minimum(o) < Minimum(regOrb) then
-                    regOrb := o;
-                fi;
-            od;
-            data := _BTKit.regularOrbitSchreierTreeData(tree.group, regOrb);
-            tree.regOrbitData := data;
-        fi;
+    if not IsBound(tree.regularOrbits) then
+        tree.regularOrbits := Immutable(Filtered(tree.orbits, o ->
+            Length(o) > 1 and Length(o) = tree.size));
+        tree.regularPoints := Immutable(Set(Flat(tree.regularOrbits)));
+        tree.regOrbitDataByOrbit := HashMap();
     fi;
-    if tree.regOrbitData = false then
+    if IsEmpty(tree.regularOrbits) then
         return fail;
     fi;
-    return tree.regOrbitData;
+    Assert(0, Length(point) <= 1);
+    if IsEmpty(point) then
+        regOrb := tree.regularOrbits[1];
+    else
+        regOrb := First(tree.regularOrbits, o -> point[1] in o);
+        if regOrb = fail then return fail; fi;
+    fi;
+    key := Minimum(regOrb);
+    if not (key in tree.regOrbitDataByOrbit) then
+        data := _BTKit.regularOrbitSchreierTreeData(tree.group, regOrb);
+        data.regularPoints := tree.regularPoints;
+        tree.regOrbitDataByOrbit[key] := data;
+    fi;
+    return tree.regOrbitDataByOrbit[key];
 end;
 
 

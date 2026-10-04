@@ -241,8 +241,8 @@ _Vole.FullGraphRefine := false;
 # C_5^4 (deg 20): main search 105 ms, shortcut 1713 ms — a 16×
 # regression even though both return the same correct answer.
 #
-# So this is opt-in. Useful for probing whether a given input class
-# is 2-closed and well-served by the root-Aut answer; not a default.
+# Enabled by default; benchmark with it disabled too, since it can both
+# dominate run time and mask failures in the residual search.
 _Vole.RootAutShortcut := true;
 
 # Branching-cell selector strategy passed to the Rust engine. One of:

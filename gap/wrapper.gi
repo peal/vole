@@ -317,7 +317,7 @@ _Vole.NormalizerDefaultWrapper := "direct";
 # across the input space). OrbitalRegOrbitChar extends OrbitalRegOrbit
 # with Phase D — regular characteristic subgroup deductions — which
 # closes the AGL family gap (the biggest loss family in the hunt).
-# Both refiners are canonical-unsafe; canonical-image dispatch stays
+# Both refiners remain experimental for canonical use; dispatch stays
 # at GroupConjugacyOrbital via refiners.gi:26.
 _Vole.NormalizerDefaultRefiner := "OrbitalRegOrbitChar";
 

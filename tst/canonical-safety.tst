@@ -1,22 +1,13 @@
-#@local canon, H, G, safe
+# Assisted-by: OpenAI Codex (GPT-6), branch-proposal regression tests.
+#@local canon, H, G, safe, check, variant
 gap> START_TEST("canonical-safety.tst");
-gap> ReadPackage("vole", "tst/test_functions.g");
+gap> LoadPackage("vole", false);
 true
 
-# The canonical-safety boundary.
-#
-# Computing a canonical image of a group under conjugacy imposes a STRONGER
-# requirement than computing its normaliser: not only the refiners but the
-# search's branch ORDER must be a Sym(Omega)-invariant of the input, so that
-# conjugate inputs follow corresponding search trajectories. The regular-orbit
-# accelerator (NormaliserOrbitalRegOrbit, Theissen 3.7) proposes its branch
-# from a regular orbit of H -- a point set tied to the INPUT labelling -- so it
-# is sound for the normaliser (it only reorders the search) but UNSAFE for
-# canonical images: conjugate inputs can receive different canonical images.
-# Vole's canonical dispatch therefore uses the safe NormaliserOrbital refiner.
-#
-# This test pins that boundary on a minimal witness: the regular representation
-# of S_3 on 6 points, with sigma = (2,3,4).
+# A proposal chosen before later splits could select non-corresponding
+# cells. Regular S3 formerly gave different canonical images after (2,3,4).
+# Refreshing proposals on changed partitions repairs this witness; it does
+# not certify every regular/characteristic strategy as canonical-safe.
 gap> canon := {grp, sub, ref} -> sub ^ VoleFind.CanonicalPerm(grp, ref(sub));;
 gap> H := Image(RegularActionHomomorphism(SymmetricGroup(3)));;
 gap> G := SymmetricGroup(6);;
@@ -27,12 +18,22 @@ gap> ForAll([(2, 3, 4), (1, 2)(3, 4), (1, 5, 3)], s ->
 >       canon(G, H ^ s, GB_Con.NormaliserOrbital) = safe);
 true
 
-# Unsafe (regular-orbit) refiner: NOT constant on the class. H and H^(2,3,4)
-# are conjugate in G yet receive different canonical images -- the documented
-# unsafety. If a canonical-safe regular-orbit ordering is ever designed this
-# assertion will flip; update it together with the canonical dispatch.
-gap> canon(G, H ^ (2, 3, 4), GB_Con.NormaliserOrbitalRegOrbit)
->      <> canon(G, H, GB_Con.NormaliserOrbitalRegOrbit);
+# Compare within each strategy: different strategies may choose different
+# representatives. Canonical permutations must remain in the ambient group.
+gap> check := function(ref)
+>     local base, s, p, image, gens;
+>     base := canon(G, H, ref);
+>     for s in [(2,3,4), (1,2)(3,4), (1,5,3), (1,2,3,4,5)] do
+>         gens := GeneratorsOfGroup(H ^ s);
+>         image := Group(Concatenation(Reversed(gens), [Product(gens)]));
+>         p := VoleFind.CanonicalPerm(G, ref(image));
+>         if not p in G or image ^ p <> base then return false; fi;
+>     od;
+>     return canon(G, base, ref) = base;
+> end;;
+gap> ForAll(["Orbital", "OrbitalRegOrbit", "OrbitalRegOrbitCross",
+>     "OrbitalRegOrbitCrossNoPropose"], v ->
+>         check(GB_Con.(Concatenation("Normaliser", v))));
 true
 
 gap> STOP_TEST("canonical-safety.tst");
