@@ -1,6 +1,6 @@
 # Canonical-image-of-group consistency sweep.
 #
-# For each group G in TransitiveGroups (and PrimitiveGroups) up to a
+# For each group G in TransitiveGroups up to a
 # degree cap, conjugate G by `num_conjugates` random perms π ∈ S_n
 # and assert that Vole.CanonicalImage gives the same group for G and
 # every G^π. Random perms come from a seeded RandomSource so failures
@@ -32,13 +32,10 @@ end;
 # here once verified.
 BankCanonicalSafeVariants := ["default", "Orbital"];
 
-# Variants that are KNOWN canonical-unsafe (symmetry-correct but
-# canonical mode can return conjugate-not-equal canonicals). Listed
-# explicitly so a regression that re-introduces canonical-safety can
-# be detected (we'd see the variant pass a check we'd marked as
-# expected-to-fail). The current canonical-unsafe variant family is
-# `OrbitalRegOrbit` — see notes in normaliser.g.
-BankCanonicalUnsafeVariants := ["OrbitalRegOrbit", "OrbitalRegOrbitChar"];
+# Experimental strategies awaiting broader canonical validation. The old
+# regular-S3 failure is now a positive regression in canonical-safety.tst.
+BankCanonicalExperimentalVariants := ["OrbitalRegOrbit", "OrbitalRegOrbitChar",
+    "OrbitalRegOrbitCross", "OrbitalRegOrbitCrossNoPropose"];
 
 BankCanonicalVariants := BankCanonicalSafeVariants;
 

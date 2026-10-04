@@ -16,6 +16,14 @@ if not IsBoundGlobal("BankCompareNormaliser") then
 fi;
 
 RegressionEntries := [
+    # Assisted-by: OpenAI Codex (GPT-6), 2026-10 regular-orbit witnesses.
+    rec(n := 6, gens := [(1,2,3)(4,5,6)], shortcut := false,
+        variants := ["OrbitalRegOrbit", "OrbitalRegOrbitChar",
+            "OrbitalRegOrbitCross", "OrbitalRegOrbitCrossNoPropose"],
+        note := "normaliser can exchange two regular orbits"),
+    rec(n := 12, gens := [(1,2,3,4,5,6)(7,8)(9,10)(11,12)], shortcut := false,
+        variants := ["OrbitalRegOrbitCross", "OrbitalRegOrbitCrossNoPropose"],
+        note := "cross deduction used an unfixed orbit minimum and unrelated generators"),
     # 2026-05-17: PSL(2,25) on 26 points crashed the orbital refiner
     # because _BTKit.orbitalEquivalenceKey serialised the canonical
     # form to a multi-kB string and exceeded GAP's 1023-char record-
@@ -59,12 +67,19 @@ RegressionEntries := [
 ];
 
 RunBank_regression := function(mode)
-    local entry, G;
+    local entry, G, savedShortcut;
     BankResetStats();
     Print(StringFormatted("[regression] {} entries\n", Length(RegressionEntries)));
     for entry in RegressionEntries do
         G := Group(entry.gens);
-        BankCompareNormaliser(entry.n, G);
+        savedShortcut := _Vole.RootAutShortcut;
+        if IsBound(entry.shortcut) then _Vole.RootAutShortcut := entry.shortcut; fi;
+        if IsBound(entry.variants) then
+            BankCheckVariants(entry.n, G, entry.note, entry.variants);
+        else
+            BankCompareNormaliser(entry.n, G);
+        fi;
+        _Vole.RootAutShortcut := savedShortcut;
     od;
     BankReportStats("regression");
     return _BankStats.fail = 0;

@@ -1,10 +1,8 @@
 # Variant cross-check.
 #
-# The main bank validates Vole.Normalizer (which dispatches to the
-# default `Orbital` variant) against GAP's Normalizer. This file
-# additionally validates that EVERY variant — Simple, Simple2,
-# OrbitalNone, OrbitalRoot, Orbital, OrbitalDeep, OrbitalSmall —
-# produces the same normaliser group on a sample of inputs. This
+# The main bank validates Vole.Normalizer against GAP's Normalizer. This file
+# additionally validates that every named normaliser variant produces
+# the same normaliser group on a sample of inputs. This
 # catches bugs in non-default variants that bank's main sweep wouldn't.
 #
 # Sample size is small in quick mode to keep CI cheap; nightly does
@@ -19,10 +17,12 @@ fi;
 BankAllVariantNames     := ["Simple", "Simple2", "OrbitalNone",
                              "OrbitalRoot", "Orbital", "OrbitalDeep",
                              "OrbitalSmall", "OrbitalRegOrbit",
-                             "OrbitalRegOrbitChar"];
+                             "OrbitalRegOrbitChar", "OrbitalRegOrbitCross",
+                             "OrbitalRegOrbitCrossNoPropose"];
 BankFastVariantNames    := ["OrbitalRoot", "Orbital", "OrbitalDeep",
                              "OrbitalSmall", "OrbitalRegOrbit",
-                             "OrbitalRegOrbitChar"];
+                             "OrbitalRegOrbitChar", "OrbitalRegOrbitCross",
+                             "OrbitalRegOrbitCrossNoPropose"];
 
 # Returns true iff every variant in `variantNames` produces a group equal
 # to GAP's Normalizer(SymmetricGroup(n), G). Failures dumped to stdout.
