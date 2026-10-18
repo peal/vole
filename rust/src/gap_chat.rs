@@ -16,40 +16,40 @@ use tracing::{debug, trace};
 
 use std::io::Write;
 
-use structopt::StructOpt;
+use clap::Parser;
 
 use crate::vole::{solutions::Solutions, stats::Stats};
 
 /// Store command line arguments
-#[derive(StructOpt, Debug)]
-#[structopt(name = "basic")]
+#[derive(Parser, Debug)]
+#[command(name = "basic")]
 pub struct Opt {
     /// Input file
-    #[structopt(parse(from_os_str))]
+    #[arg(value_parser)]
     input: Option<PathBuf>,
 
     /// Output file
-    #[structopt(parse(from_os_str))]
+    #[arg(value_parser)]
     output: Option<PathBuf>,
 
     /// Input pipe (as a POSIX file id)
-    #[structopt(short, long)]
+    #[arg(short, long)]
     inpipe: Option<i32>,
 
     /// Output pipe (as a POSIX file id)
-    #[structopt(short, long)]
+    #[arg(short, long)]
     outpipe: Option<i32>,
 
     /// TCP port
-    #[structopt(short, long)]
+    #[arg(short, long)]
     port: Option<i32>,
 
     /// Enable tracing
-    #[structopt(short, long)]
+    #[arg(short, long)]
     pub trace: bool,
 
     /// Be quiet (hide rust backtraces on crash)
-    #[structopt(short, long)]
+    #[arg(short, long)]
     pub quiet: bool,
 }
 
@@ -119,7 +119,7 @@ impl Opt {
 
 lazy_static! {
     /// Global command line arguments
-    pub static ref OPTIONS: Opt = Opt::from_args();
+    pub static ref OPTIONS: Opt = Opt::parse();
     /// Global communication channel with GAP
     pub static ref GAP_CHAT: Mutex<GapChatType> = {
         let opt = &OPTIONS;
